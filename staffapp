@@ -142,7 +142,6 @@ async function submitApp() {
         return;
     }
 
-    // Build webhook message
     const payload = {
         content: "**New Staff Application Submitted**",
         embeds: [
@@ -153,4 +152,28 @@ async function submitApp() {
                     { name: "Discord Username", value: d },
                     { name: "Why they want staff", value: w },
                     { name: "What makes them different", value: dif },
-                    { name: "Anything
+                    { name: "Anything else", value: ex || "None" }
+                ],
+                footer: { text: "Black Velvet Clan — Staff System" }
+            }
+        ]
+    };
+
+    await fetch("https://discord.com/api/webhooks/1537205583109824666/3gxBmMgToPpfoP66uXMHKiYlQKCUcghUGdkmwHXyk058eDdExdF_u9hpSPtoP82BxA6S", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+
+    document.getElementById("successSound").play();
+    document.getElementById("message").style.color = "#0f0";
+    document.getElementById("message").innerText = "Application submitted successfully.";
+
+    setTimeout(() => {
+        window.location.href = "staff.html";  // Redirect after success
+    }, 1500);
+}
+</script>
+
+</body>
+</html>
