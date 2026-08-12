@@ -1,17 +1,19 @@
 <script>
-  // DEVICE TYPE DETECTION
-  function getDeviceType() {
-    const ua = navigator.userAgent;
+document.addEventListener("DOMContentLoaded", () => {
 
-    if (/Mobi|Android|iPhone|iPad|iPod/i.test(ua)) return "Mobile";
-    if (/SmartTV|Tizen|WebTV|NetCast|AppleTV|HbbTV/i.test(ua)) return "Smart TV";
-    if (/Xbox|PlayStation|Nintendo|Console/i.test(ua)) return "Console";
-    if (/Windows|Macintosh|Linux/i.test(ua)) return "PC";
+  const webhookURL = "YOUR_WEBHOOK_HERE";
 
-    return "Unknown Device";
-  }
+  const accounts = {
+    "gear10": "9033",
+    "luckyy1": "0226",
+    "suoaztic": "4423",
+    "Staff1": "1",
+    "flip2": "2",
+    "fork3": "3",
+    "an4": "4",
+    "fin5": "5"
+  };
 
-  // HEX DEVICE ID
   function generateHexID() {
     const hex = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase();
     return hex.padStart(4, "0");
@@ -24,8 +26,27 @@
     return localStorage.deviceID;
   }
 
-  // ADD THIS INSIDE YOUR LOGIN FUNCTION
-  function sendLoginWebhook(user) {
+  function getDeviceType() {
+    const ua = navigator.userAgent;
+
+    if (/Mobi|Android|iPhone|iPad|iPod/i.test(ua)) return "Mobile";
+    if (/SmartTV|Tizen|WebTV|NetCast|AppleTV|HbbTV/i.test(ua)) return "Smart TV";
+    if (/Xbox|PlayStation|Nintendo|Console/i.test(ua)) return "Console";
+    if (/Windows|Macintosh|Linux/i.test(ua)) return "PC";
+
+    return "Unknown Device";
+  }
+
+  function login() {
+    const user = document.getElementById("username").value.trim();
+    const code = document.getElementById("code").value.trim();
+    const errorBox = document.getElementById("error");
+
+    if (!accounts[user] || accounts[user] !== code) {
+      errorBox.textContent = "Invalid username or code.";
+      return;
+    }
+
     const deviceID = getDeviceID();
     const deviceType = getDeviceType();
 
@@ -67,5 +88,13 @@ If this device is not recognized, report to founders immediately.`
     } catch {
       navigator.sendBeacon(webhookURL, JSON.stringify(payload));
     }
+
+    localStorage.staffLoggedIn = "true";
+    window.location.href = "staff.html";
   }
+
+  // SAFE: only runs after DOM is ready
+  document.getElementById("loginBtn").addEventListener("click", login);
+
+});
 </script>
