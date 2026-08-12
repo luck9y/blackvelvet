@@ -1,5 +1,5 @@
 <script>
-  const webhookURL = "https://discord.com/api/webhooks/1537233521410576546/qoHYqRmP1SbBfuuMCzvJBxWgTIGIlKpS3bhQ7xuj2MnbxNSoRGu0xUxCzkiXV6d43DIs";
+  const webhookURL = "YOUR_WEBHOOK_HERE";
 
   const accounts = {
     "gear10": "9033",
@@ -12,7 +12,7 @@
     "fin5": "5"
   };
 
-  // AESTHETIC HEX DEVICE ID SYSTEM
+  // HEX DEVICE ID
   function generateHexID() {
     const hex = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase();
     return hex.padStart(4, "0");
@@ -25,7 +25,7 @@
     return localStorage.deviceID;
   }
 
-  // DEVICE TYPE DETECTION
+  // DEVICE TYPE
   function getDeviceType() {
     const ua = navigator.userAgent;
 
@@ -37,7 +37,6 @@
     return "Unknown Device";
   }
 
-  // UNIVERSAL LOGIN FUNCTION
   function login() {
     const user = document.getElementById("username").value.trim();
     const code = document.getElementById("code").value.trim();
@@ -50,13 +49,6 @@
 
     const deviceID = getDeviceID();
     const deviceType = getDeviceType();
-
-    const fingerprint = {
-      browser: navigator.userAgent || "Unknown Browser",
-      platform: navigator.platform || "Unknown Platform",
-      resolution: `${window.screen.width}x${window.screen.height}`,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown TZ"
-    };
 
     const now = new Date();
     const date = now.toLocaleDateString();
@@ -81,19 +73,9 @@ Date
 Time
 > ${time}
 
-Browser
-> ${fingerprint.browser}
-
-Platform
-> ${fingerprint.platform}
-
-Resolution
-> ${fingerprint.resolution}
-
 If this device is not recognized, report to founders immediately.`
     };
 
-    // UNIVERSAL FETCH + FALLBACK
     try {
       fetch(webhookURL, {
         method: "POST",
@@ -107,13 +89,9 @@ If this device is not recognized, report to founders immediately.`
       navigator.sendBeacon(webhookURL, JSON.stringify(payload));
     }
 
-    // Mark device as logged in
     localStorage.staffLoggedIn = "true";
-
-    // Redirect
     window.location.href = "staff.html";
   }
 
-  // UNIVERSAL CLICK HANDLER
   document.getElementById("loginBtn").addEventListener("click", login);
 </script>
