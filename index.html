@@ -2,31 +2,123 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Audio Test</title>
+<title>Black Velvet Clan — Home</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    background: #0d0d0d;
+    color: white;
+    font-family: Arial, sans-serif;
+    padding: 40px;
+    line-height: 1.6;
+    position: relative;
+  }
+
+  .signature {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    color: #888;
+    opacity: 0.8;
+    text-align: right;
+  }
+
+  h1 {
+    text-align: center;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 32px;
+    margin-bottom: 30px;
+    color: #ffffff;
+    letter-spacing: 2px;
+  }
+
+  .intro-box {
+    max-width: 900px;
+    margin: auto;
+    background: #1a1a1a;
+    padding: 25px;
+    border-radius: 10px;
+    border-left: 6px solid #ffffff;
+    margin-bottom: 40px;
+  }
+
+  .intro-text {
+    font-size: 15px;
+    color: #d0d0d0;
+    line-height: 1.7;
+  }
+
+  .nav-btn {
+    display: block;
+    width: 300px;
+    margin: 15px auto;
+    text-align: center;
+    padding: 15px;
+    background: #111;
+    border: 2px solid #444;
+    border-radius: 10px;
+    font-family: 'Press Start 2P', cursive;
+    color: white;
+    text-decoration: none;
+    transition: 0.2s;
+  }
+
+  .nav-btn:hover {
+    border-color: #ffffff;
+    background: #222;
+    transform: scale(1.03);
+  }
+
+  .staff-hidden {
+    margin-top: 40px;
+    text-align: center;
+  }
+
+  .staff-hidden a {
+    font-size: 10px;
+    opacity: 0.3;
+    text-decoration: none;
+    color: #666;
+    font-family: 'Press Start 2P', cursive;
+  }
+
+  .staff-hidden a:hover {
+    opacity: 0.6;
+  }
+</style>
 </head>
 
-<body style="background:black; color:white; padding:40px;">
+<body>
 
-<h1>Black Velvet — Audio Test</h1>
+<div class="signature">
+  by someone formerly known as<br>luckyy / rin
+</div>
 
-<button id="testAudioBtn" style="padding:20px; font-size:20px;">
-  TEST AUDIO
-</button>
+<h1>BLACK VELVET CLAN</h1>
 
-<!-- AUDIO FILES -->
-<audio id="clickSound" src="sounds/click.mp3" preload="auto"></audio>
-<audio id="correctSound" src="sounds/correct.mp3" preload="auto"></audio>
-<audio id="incorrectSound" src="sounds/wrong.mp3" preload="auto"></audio>
+<div class="intro-box">
+  <div class="intro-text">
+    Welcome to the official Black Velvet Clan website.<br><br>
+    Navigate through our ranks, staff directory, rules, and more.<br>
+    Staff members may access their private tools and logs through the hidden panel below.
+  </div>
+</div>
 
-<script>
-document.getElementById("testAudioBtn").addEventListener("click", () => {
-    const sound = document.getElementById("clickSound");
-    sound.currentTime = 0;
-    sound.play().catch(err => {
-        console.log("Audio error:", err);
-    });
-});
-</script>
+<!-- MAIN NAVIGATION -->
+<a class="nav-btn" href="ranks.html">RANK DIRECTORY</a>
+<a class="nav-btn" href="staff.html">STAFF DIRECTORY</a>
+<a class="nav-btn" href="rules.html">RULES</a>
+<a class="nav-btn" href="info.html">MORE INFORMATION</a>
+<a class="nav-btn" href="staffapp.html">STAFF APPLICATIONS</a>
+
+<!-- HIDDEN STAFF BUTTON -->
+<div class="staff-hidden">
+  <a href="staffpass.html">staff only</a>
+</div>
 
 </body>
 </html>
