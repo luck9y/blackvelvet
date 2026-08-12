@@ -2,97 +2,147 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Staff Passcode — Black Velvet</title>
+<title>Black Velvet Clan — Home</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
-    body {
-        background: #0d0d0d;
-        color: white;
-        font-family: Arial, sans-serif;
-        text-align: center;
-        padding-top: 80px;
-    }
+  body {
+    background: #0d0d0d;
+    color: white;
+    font-family: Arial, sans-serif;
+    padding: 40px;
+    line-height: 1.6;
+    position: relative;
+  }
 
-    h1 {
-        font-family: 'Press Start 2P', cursive;
-        font-size: 26px;
-        margin-bottom: 30px;
-        text-shadow: 0 0 10px #fff;
-    }
+  h1 {
+    text-align: center;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 32px;
+    margin-bottom: 30px;
+    color: #ffffff;
+    letter-spacing: 2px;
+  }
 
-    input {
-        width: 250px;
-        padding: 15px;
-        background: #111;
-        border: 2px solid #444;
-        border-radius: 8px;
-        color: white;
-        font-family: 'Press Start 2P', cursive;
-        font-size: 16px;
-        text-align: center;
-        box-shadow: 0 0 12px #ffffff55;
-    }
+  .nav-btn {
+    display: block;
+    width: 300px;
+    margin: 15px auto;
+    text-align: center;
+    padding: 15px;
+    background: #111;
+    border: 2px solid #444;
+    border-radius: 10px;
+    font-family: 'Press Start 2P', cursive;
+    color: white;
+    text-decoration: none;
+    transition: 0.2s;
+  }
 
-    input:focus {
-        outline: none;
-        border-color: #fff;
-        box-shadow: 0 0 18px #ffffffaa;
-    }
+  .nav-btn:hover {
+    border-color: #ffffff;
+    background: #222;
+    transform: scale(1.03);
+  }
 
-    button {
-        margin-top: 25px;
-        width: 250px;
-        padding: 15px;
-        background: #222;
-        border: 2px solid #fff;
-        border-radius: 8px;
-        font-family: 'Press Start 2P', cursive;
-        color: white;
-        font-size: 14px;
-        cursor: pointer;
-        box-shadow: 0 0 12px #ffffff55;
-        transition: 0.2s;
-    }
+  .staff-hidden {
+    margin-top: 40px;
+    text-align: center;
+  }
 
-    button:hover {
-        background: #333;
-        box-shadow: 0 0 18px #ffffffaa;
-        transform: scale(1.05);
-    }
+  .staff-hidden a {
+    font-size: 10px;
+    opacity: 0.3;
+    text-decoration: none;
+    color: #666;
+    font-family: 'Press Start 2P', cursive;
+  }
 
-    #error {
-        margin-top: 20px;
-        color: red;
-        font-family: 'Press Start 2P', cursive;
-        font-size: 12px;
-        text-shadow: 0 0 10px #ff0000aa;
-    }
+  .staff-hidden a:hover {
+    opacity: 0.6;
+  }
+
+  .credits-right {
+    position: fixed;
+    right: 20px;
+    bottom: 40px;
+    width: 260px;
+    text-align: right;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 9px;
+    color: #777;
+    opacity: 0.7;
+    line-height: 1.6;
+  }
+
+  .credits-left {
+    position: fixed;
+    left: 20px;
+    bottom: 40px;
+    width: 260px;
+    text-align: left;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 9px;
+    color: #777;
+    opacity: 0.7;
+    line-height: 1.6;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .blue {
+    color: #4da6ff;
+    text-decoration: underline;
+  }
+
+  .red {
+    color: #ff4d4d;
+    text-decoration: underline;
+  }
 </style>
 </head>
 
 <body>
 
-<h1>ENTER STAFF PASSCODE</h1>
+<h1>BLACK VELVET CLAN</h1>
 
-<input id="passcode" type="password" placeholder="••••">
+<!-- NEW NAVIGATION ORDER -->
+<a class="nav-btn" href="rules.html">RULES</a>
+<a class="nav-btn" href="ranks.html">RANKS</a>
+<a class="nav-btn" href="staff.html">STAFF TEAM</a>
+<a class="nav-btn" href="info.html">MORE INFORMATION</a>
+<a class="nav-btn" href="staffapp.html">STAFF APPLICATION</a>
 
-<button onclick="checkPass()">ENTER</button>
+<!-- HIDDEN STAFF BUTTON -->
+<div class="staff-hidden">
+  <a href="staffpass.html">staff only</a>
+</div>
 
-<div id="error"></div>
+<!-- LEFT-SIDE CREDIT -->
+<div class="credits-left">
+  From the founders of 
+  <a href="https://discord.gg/Fn2ref2uMz" class="blue">Azul Clan</a>
+</div>
 
-<script>
-function checkPass() {
-    const code = document.getElementById("passcode").value;
+<!-- RIGHT-SIDE CREDITS -->
+<div class="credits-right">
+  This clan is operated by 
+  <a href="discord.html" class="blue">Fond</a> & 
+  <a href="discord.html" class="red">Rin</a><br>
 
-    if (code === "9033") {
-        window.location.href = "stafflogs.html";
-    } else {
-        document.getElementById("error").innerText = "Incorrect passcode.";
-    }
-}
-</script>
+  Website created and maintained by 
+  <a href="discord.html" class="red">Rin</a><br>
+
+  Owner usernames:<br>
+  <a href="discord.html" class="red">jsfeelings</a><br>
+  <a href="discord.html" class="blue">Suoaz</a><br>
+
+  Reborn in the flames of the abyss
+</div>
 
 </body>
 </html>
