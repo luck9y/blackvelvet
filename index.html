@@ -7,106 +7,105 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
-    body {
-        background: #0d0d0d;
-        color: white;
-        font-family: Arial, sans-serif;
-        padding: 40px;
-        line-height: 1.6;
-        position: relative;
-    }
+  body {
+    background: #0d0d0d;
+    color: white;
+    font-family: Arial, sans-serif;
+    padding: 40px;
+    line-height: 1.6;
+    position: relative;
+  }
 
-    .signature {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        font-family: 'Press Start 2P', cursive;
-        font-size: 10px;
-        color: #888;
-        opacity: 0.8;
-        text-align: right;
-    }
+  .signature {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    color: #888;
+    opacity: 0.8;
+    text-align: right;
+  }
 
-    h1 {
-        text-align: center;
-        font-family: 'Press Start 2P', cursive;
-        font-size: 32px;
-        margin-bottom: 30px;
-        color: #ffffff;
-        letter-spacing: 2px;
-    }
+  h1 {
+    text-align: center;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 32px;
+    margin-bottom: 30px;
+    color: #ffffff;
+    letter-spacing: 2px;
+  }
 
-    .intro-box {
-        max-width: 900px;
-        margin: auto;
-        background: #1a1a1a;
-        padding: 25px;
-        border-radius: 10px;
-        border-left: 6px solid #ffffff;
-        margin-bottom: 40px;
-    }
+  .intro-box {
+    max-width: 900px;
+    margin: auto;
+    background: #1a1a1a;
+    padding: 25px;
+    border-radius: 10px;
+    border-left: 6px solid #ffffff;
+    margin-bottom: 40px;
+  }
 
-    .intro-text {
-        font-size: 15px;
-        color: #d0d0d0;
-        line-height: 1.7;
-    }
+  .intro-text {
+    font-size: 15px;
+    color: #d0d0d0;
+    line-height: 1.7;
+  }
 
-    .nav-btn {
-        display: block;
-        width: 300px;
-        margin: 15px auto;
-        text-align: center;
-        padding: 15px;
-        background: #111;
-        border: 2px solid #444;
-        border-radius: 10px;
-        font-family: 'Press Start 2P', cursive;
-        color: white;
-        text-decoration: none;
-        transition: 0.2s;
-    }
+  .nav-btn {
+    display: block;
+    width: 300px;
+    margin: 15px auto;
+    text-align: center;
+    padding: 15px;
+    background: #111;
+    border: 2px solid #444;
+    border-radius: 10px;
+    font-family: 'Press Start 2P', cursive;
+    color: white;
+    text-decoration: none;
+    transition: 0.2s;
+  }
 
-    .nav-btn:hover {
-        border-color: #ffffff;
-        background: #222;
-        transform: scale(1.03);
-    }
+  .nav-btn:hover {
+    border-color: #ffffff;
+    background: #222;
+    transform: scale(1.03);
+  }
 
-    /* Hidden staff button */
-    .staff-hidden {
-        margin-top: 40px;
-        text-align: center;
-    }
+  .staff-hidden {
+    margin-top: 40px;
+    text-align: center;
+  }
 
-    .staff-hidden a {
-        font-size: 10px;
-        opacity: 0.3;
-        text-decoration: none;
-        color: #666;
-        font-family: 'Press Start 2P', cursive;
-    }
+  .staff-hidden a {
+    font-size: 10px;
+    opacity: 0.3;
+    text-decoration: none;
+    color: #666;
+    font-family: 'Press Start 2P', cursive;
+  }
 
-    .staff-hidden a:hover {
-        opacity: 0.6;
-    }
+  .staff-hidden a:hover {
+    opacity: 0.6;
+  }
 </style>
 </head>
 
 <body>
 
 <div class="signature">
-    by someone formerly known as<br>luckyy / rin
+  by someone formerly known as<br>luckyy / rin
 </div>
 
 <h1>BLACK VELVET CLAN</h1>
 
 <div class="intro-box">
-    <div class="intro-text">
-        Welcome to the official Black Velvet Clan website.<br><br>
-        Navigate through our ranks, staff directory, rules, and more.<br>
-        Staff members may access their private tools and logs through the hidden panel below.
-    </div>
+  <div class="intro-text">
+    Welcome to the official Black Velvet Clan website.<br><br>
+    Navigate through our ranks, staff directory, rules, and more.<br>
+    Staff members may access their private tools and logs through the hidden panel below.
+  </div>
 </div>
 
 <!-- MAIN NAVIGATION -->
@@ -118,19 +117,21 @@
 
 <!-- HIDDEN STAFF BUTTON -->
 <div class="staff-hidden">
-    <a href="staffpass.html">staff only</a>
+  <a href="staffpass.html">staff only</a>
 </div>
 
 <!-- AUDIO -->
-<audio id="clickSound" src="sounds/Click.mp3"></audio>
-<audio id="correctSound" src="sounds/Correct.mp3"></audio>
-<audio id="incorrectSound" src="sounds/Wrong.mp3"></audio>
+<audio id="clickSound" src="sounds/click.mp3"></audio>
+<audio id="correctSound" src="sounds/correct.mp3"></audio>
+<audio id="incorrectSound" src="sounds/wrong.mp3"></audio>
 
 <script>
 document.querySelectorAll("a, button").forEach(el => {
-    el.addEventListener("click", () => {
-        document.getElementById("clickSound").play();
-    });
+  el.addEventListener("click", () => {
+    const sound = document.getElementById("clickSound");
+    sound.load(); // ensures browser refreshes the audio buffer
+    sound.play();
+  });
 });
 </script>
 
