@@ -12,7 +12,7 @@
     "fin5": "5"
   };
 
-  // UNIVERSAL DEVICE ID (HEX ONLY)
+  // AESTHETIC HEX DEVICE ID SYSTEM
   function generateHexID() {
     const hex = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase();
     return hex.padStart(4, "0");
@@ -25,7 +25,19 @@
     return localStorage.deviceID;
   }
 
-  // UNIVERSAL LOGIN FUNCTION (works on TV, Xbox, Mobile, PC)
+  // DEVICE TYPE DETECTION
+  function getDeviceType() {
+    const ua = navigator.userAgent;
+
+    if (/Mobi|Android|iPhone|iPad|iPod/i.test(ua)) return "Mobile";
+    if (/SmartTV|Tizen|WebTV|NetCast|AppleTV|HbbTV/i.test(ua)) return "Smart TV";
+    if (/Xbox|PlayStation|Nintendo|Console/i.test(ua)) return "Console";
+    if (/Windows|Macintosh|Linux/i.test(ua)) return "PC";
+
+    return "Unknown Device";
+  }
+
+  // UNIVERSAL LOGIN FUNCTION
   function login() {
     const user = document.getElementById("username").value.trim();
     const code = document.getElementById("code").value.trim();
@@ -37,6 +49,7 @@
     }
 
     const deviceID = getDeviceID();
+    const deviceType = getDeviceType();
 
     const fingerprint = {
       browser: navigator.userAgent || "Unknown Browser",
@@ -55,6 +68,9 @@
 
 User
 > ${deviceID}
+
+Device Type
+> ${deviceType}
 
 Logged in using
 > ${user}
@@ -77,7 +93,7 @@ Resolution
 If this device is not recognized, report to founders immediately.`
     };
 
-    // UNIVERSAL FETCH (works on TV, Xbox, Mobile)
+    // UNIVERSAL FETCH + FALLBACK
     try {
       fetch(webhookURL, {
         method: "POST",
@@ -85,21 +101,19 @@ If this device is not recognized, report to founders immediately.`
         body: JSON.stringify(payload)
       })
       .catch(() => {
-        // fallback for devices that block fetch
         navigator.sendBeacon(webhookURL, JSON.stringify(payload));
       });
     } catch {
-      // final fallback
       navigator.sendBeacon(webhookURL, JSON.stringify(payload));
     }
 
     // Mark device as logged in
     localStorage.staffLoggedIn = "true";
 
-    // Universal redirect (works on TV/Xbox)
+    // Redirect
     window.location.href = "staff.html";
   }
 
-  // UNIVERSAL CLICK HANDLER (TV/Xbox safe)
+  // UNIVERSAL CLICK HANDLER
   document.getElementById("loginBtn").addEventListener("click", login);
 </script>
