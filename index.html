@@ -1,10 +1,126 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Black Velvet Clan</title>
-  </head>
-  <body>
-    <h1>Welcome to the Black Velvet Clan!</h1>
-    <p>This is our official site.</p>
-  </body>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Black Velvet Clan — Home</title>
+
+<!-- Video Game Font -->
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        background: #0d0d0d;
+        color: white;
+        font-family: Arial, sans-serif;
+        padding: 40px;
+        line-height: 1.6;
+        position: relative;
+    }
+
+    /* Signature top-right */
+    .signature {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-family: 'Press Start 2P', cursive;
+        font-size: 10px;
+        color: #888;
+        opacity: 0.8;
+        text-align: right;
+    }
+
+    h1 {
+        text-align: center;
+        font-family: 'Press Start 2P', cursive;
+        font-size: 32px;
+        margin-bottom: 30px;
+        color: #ffffff;
+        letter-spacing: 2px;
+    }
+
+    .intro-box {
+        max-width: 850px;
+        margin: auto;
+        background: #1a1a1a;
+        padding: 30px;
+        border-radius: 10px;
+        border-left: 6px solid #ffffff;
+        margin-bottom: 40px;
+    }
+
+    .intro-text {
+        font-size: 16px;
+        line-height: 1.7;
+    }
+
+    /* Navigation buttons */
+    .nav-container {
+        max-width: 850px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .nav-btn {
+        background: #111;
+        padding: 20px;
+        border-radius: 10px;
+        border: 2px solid #444;
+        text-align: center;
+        font-family: 'Press Start 2P', cursive;
+        font-size: 14px;
+        color: white;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+    .nav-btn:hover {
+        border-color: #ffffff;
+        background: #222;
+        transform: scale(1.03);
+    }
+
+    .footer-space {
+        height: 100px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="signature">
+    by someone formerly known as<br>luckyy / rin
+</div>
+
+<h1>BLACK VELVET CLAN</h1>
+
+<div class="intro-box">
+    <div class="intro-text">
+        Welcome to the official home of the <strong>Black Velvet Clan</strong>.<br><br>
+        This is where everything begins — your journey, your rank, your identity.<br>
+        Whether you're here to compete, chill, or rise through the ranks, Black Velvet is built for you.<br><br>
+        Explore the sections below to learn about our ranks, staff, and more information about the clan.
+    </div>
+</div>
+
+<div class="nav-container">
+
+    <a class="nav-btn" href="ranks.html">
+        RANK DIRECTORY
+    </a>
+
+    <a class="nav-btn" href="staff.html">
+        STAFF DIRECTORY
+    </a>
+
+    <a class="nav-btn" href="info.html">
+        MORE INFORMATION
+    </a>
+
+</div>
+
+<div class="footer-space"></div>
+
+</body>
 </html>
