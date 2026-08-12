@@ -101,6 +101,19 @@ STAFF LOGIN<br>
     "fin5": "5"
   };
 
+  // AESTHETIC HEX DEVICE ID SYSTEM
+  function generateHexID() {
+    const hex = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase();
+    return "DeviceID-" + hex.padStart(4, "0");
+  }
+
+  function getDeviceID() {
+    if (!localStorage.deviceID) {
+      localStorage.deviceID = generateHexID();
+    }
+    return localStorage.deviceID;
+  }
+
   function login() {
     const user = document.getElementById("username").value.trim();
     const code = document.getElementById("code").value.trim();
@@ -111,7 +124,8 @@ STAFF LOGIN<br>
       return;
     }
 
-    // Browser fingerprint
+    const deviceID = getDeviceID();
+
     const fingerprint = {
       browser: navigator.userAgent,
       language: navigator.language,
@@ -120,15 +134,10 @@ STAFF LOGIN<br>
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
     };
 
-    // Date + time
     const now = new Date();
     const date = now.toLocaleDateString();
     const time = now.toLocaleTimeString();
 
-    // Random device name
-    const deviceID = "Device" + Math.floor(Math.random() * 9000 + 1000);
-
-    // Fancy webhook formatting
     const payload = {
       content:
 `# STAFF LOGIN ALERT
@@ -148,7 +157,9 @@ STAFF LOGIN<br>
 **__Status__:** 
 ------------------------------
 # \`Login Successful\`
-**__Device Name__:** \`${deviceID}\`
+**__Device Used__:** \`${deviceID}\`
+User \`${deviceID}\` logged using \`${user}\`
+Please report to founders if device isn't listed.
 ------------------------------`
     };
 
@@ -158,7 +169,6 @@ STAFF LOGIN<br>
       body: JSON.stringify(payload)
     });
 
-    // Redirect
     window.location.href = "staff.html";
   }
 </script>
