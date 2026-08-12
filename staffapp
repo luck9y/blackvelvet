@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Staff Application — Black Velvet</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        background: #0d0d0d;
+        color: white;
+        font-family: Arial, sans-serif;
+        padding: 40px;
+        line-height: 1.6;
+    }
+
+    h1 {
+        text-align: center;
+        font-family: 'Press Start 2P', cursive;
+        font-size: 28px;
+        margin-bottom: 30px;
+        text-shadow: 0 0 10px #fff;
+    }
+
+    .form-box {
+        max-width: 900px;
+        margin: auto;
+        background: #1a1a1a;
+        padding: 30px;
+        border-radius: 10px;
+        border-left: 6px solid #ffffff;
+        box-shadow: 0 0 15px #ffffff33;
+    }
+
+    label {
+        font-family: 'Press Start 2P', cursive;
+        font-size: 14px;
+        display: block;
+        margin-top: 20px;
+        text-shadow: 0 0 6px #fff;
+    }
+
+    input, textarea {
+        width: 100%;
+        background: #111;
+        border: 2px solid #444;
+        border-radius: 6px;
+        padding: 10px;
+        color: white;
+        margin-top: 10px;
+        font-size: 14px;
+        box-shadow: 0 0 10px #ffffff22;
+    }
+
+    input:focus, textarea:focus {
+        border-color: #fff;
+        box-shadow: 0 0 18px #ffffffaa;
+        outline: none;
+    }
+
+    textarea {
+        height: 120px;
+        resize: none;
+    }
+
+    .submit-btn {
+        margin-top: 30px;
+        width: 100%;
+        padding: 15px;
+        background: #222;
+        border: 2px solid #fff;
+        border-radius: 6px;
+        font-family: 'Press Start 2P', cursive;
+        cursor: pointer;
+        color: white;
+        font-size: 16px;
+        box-shadow: 0 0 12px #ffffff55;
+        transition: 0.2s;
+    }
+
+    .submit-btn:hover {
+        background: #333;
+        box-shadow: 0 0 18px #ffffffaa;
+        transform: scale(1.05);
+    }
+
+    #message {
+        margin-top: 20px;
+        text-align: center;
+        font-family: 'Press Start 2P', cursive;
+        font-size: 14px;
+        color: #0f0;
+        text-shadow: 0 0 10px #00ff00aa;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>STAFF APPLICATION</h1>
+
+<!-- AUDIO -->
+<audio id="successSound" src="success.mp3"></audio>
+<audio id="errorSound" src="error.mp3"></audio>
+
+<div class="form-box">
+
+    <label>Discord Username</label>
+    <input id="discord" type="text">
+
+    <label>Why do you want to be staff?</label>
+    <textarea id="why"></textarea>
+
+    <label>What makes you different from our staff?</label>
+    <textarea id="different"></textarea>
+
+    <label>Anything else we should know?</label>
+    <textarea id="extra"></textarea>
+
+    <p style="margin-top:20px; font-family:'Press Start 2P', cursive; font-size:12px;">
+        By applying, you understand staff is voluntary and unpaid.
+    </p>
+
+    <button class="submit-btn" onclick="submitApp()">SUBMIT</button>
+
+    <div id="message"></div>
+
+</div>
+
+<script>
+async function submitApp() {
+    let d = document.getElementById("discord").value.trim();
+    let w = document.getElementById("why").value.trim();
+    let dif = document.getElementById("different").value.trim();
+    let ex = document.getElementById("extra").value.trim();
+
+    if (!d || !w || !dif) {
+        document.getElementById("errorSound").play();
+        document.getElementById("message").style.color = "red";
+        document.getElementById("message").innerText = "Please fill out all required fields.";
+        return;
+    }
+
+    // Build webhook message
+    const payload = {
+        content: "**New Staff Application Submitted**",
+        embeds: [
+            {
+                title: "Black Velvet Staff Application",
+                color: 0xffffff,
+                fields: [
+                    { name: "Discord Username", value: d },
+                    { name: "Why they want staff", value: w },
+                    { name: "What makes them different", value: dif },
+                    { name: "Anything
