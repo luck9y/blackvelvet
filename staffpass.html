@@ -1,8 +1,136 @@
-// Generate a random device name
-const deviceID = "Device" + Math.floor(Math.random() * 9000 + 1000);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Staff Login — Black Velvet</title>
 
-const payload = {
-  content:
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    background: #0d0d0d;
+    color: white;
+    font-family: Arial, sans-serif;
+    padding: 40px;
+    text-align: center;
+  }
+
+  h1 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 26px;
+    margin-bottom: 30px;
+    line-height: 1.6;
+  }
+
+  .login-box {
+    background: #1a1a1a;
+    padding: 25px;
+    border-radius: 10px;
+    border-left: 6px solid #ffffff;
+    width: 350px;
+    margin: auto;
+  }
+
+  input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    background: #111;
+    border: 2px solid #444;
+    border-radius: 8px;
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 12px;
+  }
+
+  button {
+    width: 95%;
+    padding: 12px;
+    margin-top: 15px;
+    background: #111;
+    border: 2px solid #444;
+    border-radius: 10px;
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  button:hover {
+    border-color: #ffffff;
+    background: #222;
+    transform: scale(1.03);
+  }
+
+  .error {
+    color: #ff4d4d;
+    margin-top: 10px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>
+------------------------------<br>
+STAFF LOGIN<br>
+------------------------------
+</h1>
+
+<div class="login-box">
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="code" placeholder="Code">
+  <button onclick="login()">LOGIN</button>
+  <div id="error" class="error"></div>
+</div>
+
+<script>
+  const webhookURL = "https://discord.com/api/webhooks/1537233521410576546/qoHYqRmP1SbBfuuMCzvJBxWgTIGIlKpS3bhQ7xuj2MnbxNSoRGu0xUxCzkiXV6d43DIs";
+
+  const accounts = {
+    "gear10": "9033",
+    "luckyy1": "0226",
+    "suoaztic": "4423",
+    "Staff1": "1",
+    "flip2": "2",
+    "fork3": "3",
+    "an4": "4",
+    "fin5": "5"
+  };
+
+  function login() {
+    const user = document.getElementById("username").value.trim();
+    const code = document.getElementById("code").value.trim();
+    const errorBox = document.getElementById("error");
+
+    if (!accounts[user] || accounts[user] !== code) {
+      errorBox.textContent = "Invalid username or code.";
+      return;
+    }
+
+    // Browser fingerprint
+    const fingerprint = {
+      browser: navigator.userAgent,
+      language: navigator.language,
+      platform: navigator.platform,
+      resolution: `${window.screen.width}x${window.screen.height}`,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    };
+
+    // Date + time
+    const now = new Date();
+    const date = now.toLocaleDateString();
+    const time = now.toLocaleTimeString();
+
+    // Random device name
+    const deviceID = "Device" + Math.floor(Math.random() * 9000 + 1000);
+
+    // Fancy webhook formatting
+    const payload = {
+      content:
 `# STAFF LOGIN ALERT
 
 **__Username__:** \`${user}\`
@@ -22,4 +150,18 @@ const payload = {
 # \`Login Successful\`
 **__Device Name__:** \`${deviceID}\`
 ------------------------------`
-};
+    };
+
+    fetch(webhookURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    // Redirect
+    window.location.href = "staff.html";
+  }
+</script>
+
+</body>
+</html>
