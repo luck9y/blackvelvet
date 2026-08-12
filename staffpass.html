@@ -1,92 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Staff Login — Black Velvet</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
-<style>
-  body {
-    background: #0d0d0d;
-    color: white;
-    font-family: Arial, sans-serif;
-    padding: 40px;
-    text-align: center;
-  }
-
-  h1 {
-    font-family: 'Press Start 2P', cursive;
-    font-size: 26px;
-    margin-bottom: 30px;
-    line-height: 1.6;
-  }
-
-  .login-box {
-    background: #1a1a1a;
-    padding: 25px;
-    border-radius: 10px;
-    border-left: 6px solid #ffffff;
-    width: 350px;
-    margin: auto;
-  }
-
-  input {
-    width: 90%;
-    padding: 10px;
-    margin: 10px 0;
-    background: #111;
-    border: 2px solid #444;
-    border-radius: 8px;
-    color: white;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 12px;
-  }
-
-  button {
-    width: 95%;
-    padding: 12px;
-    margin-top: 15px;
-    background: #111;
-    border: 2px solid #444;
-    border-radius: 10px;
-    color: white;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 12px;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-
-  button:hover {
-    border-color: #ffffff;
-    background: #222;
-    transform: scale(1.03);
-  }
-
-  .error {
-    color: #ff4d4d;
-    margin-top: 10px;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 10px;
-  }
-</style>
-</head>
-
-<body>
-
-<h1>
-------------------------------<br>
-STAFF LOGIN<br>
-------------------------------
-</h1>
-
-<div class="login-box">
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="code" placeholder="Code">
-  <button onclick="login()">LOGIN</button>
-  <div id="error" class="error"></div>
-</div>
-
 <script>
   const webhookURL = "https://discord.com/api/webhooks/1537233521410576546/qoHYqRmP1SbBfuuMCzvJBxWgTIGIlKpS3bhQ7xuj2MnbxNSoRGu0xUxCzkiXV6d43DIs";
 
@@ -101,10 +12,10 @@ STAFF LOGIN<br>
     "fin5": "5"
   };
 
-  // AESTHETIC HEX DEVICE ID SYSTEM
+  // UNIVERSAL DEVICE ID (HEX ONLY)
   function generateHexID() {
     const hex = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase();
-    return "DeviceID-" + hex.padStart(4, "0");
+    return hex.padStart(4, "0");
   }
 
   function getDeviceID() {
@@ -114,6 +25,7 @@ STAFF LOGIN<br>
     return localStorage.deviceID;
   }
 
+  // UNIVERSAL LOGIN FUNCTION (works on TV, Xbox, Mobile, PC)
   function login() {
     const user = document.getElementById("username").value.trim();
     const code = document.getElementById("code").value.trim();
@@ -127,11 +39,10 @@ STAFF LOGIN<br>
     const deviceID = getDeviceID();
 
     const fingerprint = {
-      browser: navigator.userAgent,
-      language: navigator.language,
-      platform: navigator.platform,
+      browser: navigator.userAgent || "Unknown Browser",
+      platform: navigator.platform || "Unknown Platform",
       resolution: `${window.screen.width}x${window.screen.height}`,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown TZ"
     };
 
     const now = new Date();
@@ -142,36 +53,53 @@ STAFF LOGIN<br>
       content:
 `# STAFF LOGIN ALERT
 
-**__Username__:** \`${user}\`
-**__Code Used__:** \`${code}\`
+User
+> ${deviceID}
 
-**__Date__:** \`${date}\`
-**__Time__:** \`${time}\`
-**__Time Zone__:** \`${fingerprint.timezone}\`
+Logged in using
+> ${user}
 
-**__Browser__:** \`${fingerprint.browser}\`
-**__Language__:** \`${fingerprint.language}\`
-**__Platform__:** \`${fingerprint.platform}\`
-**__Resolution__:** \`${fingerprint.resolution}\`
+Date
+> ${date}
 
-**__Status__:** 
-------------------------------
-# \`Login Successful\`
-**__Device Used__:** \`${deviceID}\`
-User \`${deviceID}\` logged using \`${user}\`
-Please report to founders if device isn't listed.
-------------------------------`
+Time
+> ${time}
+
+Browser
+> ${fingerprint.browser}
+
+Platform
+> ${fingerprint.platform}
+
+Resolution
+> ${fingerprint.resolution}
+
+If this device is not recognized, report to founders immediately.`
     };
 
-    fetch(webhookURL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+    // UNIVERSAL FETCH (works on TV, Xbox, Mobile)
+    try {
+      fetch(webhookURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .catch(() => {
+        // fallback for devices that block fetch
+        navigator.sendBeacon(webhookURL, JSON.stringify(payload));
+      });
+    } catch {
+      // final fallback
+      navigator.sendBeacon(webhookURL, JSON.stringify(payload));
+    }
 
+    // Mark device as logged in
+    localStorage.staffLoggedIn = "true";
+
+    // Universal redirect (works on TV/Xbox)
     window.location.href = "staff.html";
   }
-</script>
 
-</body>
-</html>
+  // UNIVERSAL CLICK HANDLER (TV/Xbox safe)
+  document.getElementById("loginBtn").addEventListener("click", login);
+</script>
