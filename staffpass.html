@@ -12,7 +12,6 @@
     "fin5": "5"
   };
 
-  // HEX DEVICE ID
   function generateHexID() {
     const hex = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase();
     return hex.padStart(4, "0");
@@ -25,7 +24,6 @@
     return localStorage.deviceID;
   }
 
-  // DEVICE TYPE
   function getDeviceType() {
     const ua = navigator.userAgent;
 
