@@ -120,9 +120,24 @@
     const date = now.toLocaleDateString();
     const time = now.toLocaleTimeString();
 
-    // Webhook message
+    // Fancy webhook formatting
     const payload = {
-      content: `**STAFF LOGIN ALERT**\n\nUsername: ${user}\nCode Used: ${code}\n\nDate: ${date}\nTime: ${time}\nTime Zone: ${fingerprint.timezone}\n\nBrowser: ${fingerprint.browser}\nLanguage: ${fingerprint.language}\nPlatform: ${fingerprint.platform}\nResolution: ${fingerprint.resolution}\n\nStatus: Login Successful`
+      content:
+`# STAFF LOGIN ALERT
+
+\`Username: ${user}\`
+\`Code Used: ${code}\`
+
+\`Date: ${date}\`
+\`Time: ${time}\`
+\`Time Zone: ${fingerprint.timezone}\`
+
+\`Browser: ${fingerprint.browser}\`
+\`Language: ${fingerprint.language}\`
+\`Platform: ${fingerprint.platform}\`
+\`Resolution: ${fingerprint.resolution}\`
+
+\`Status: Login Successful\``
     };
 
     fetch(webhookURL, {
