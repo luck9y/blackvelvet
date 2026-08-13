@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Black Velvet — Clan Ranks</title>
+<title>Black Velvet — Staff Ranks</title>
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <style>
   :root{
@@ -32,6 +32,7 @@
     overflow-x:hidden;
     display:flex;
     justify-content:center;
+    align-items:flex-start;
   }
 
   /* Decorative petals (outside content) */
@@ -59,42 +60,34 @@
     100%{ transform:translateY(-360px) rotate(120deg) scale(0.9); opacity:0; }
   }
 
-  /* Main container */
+  /* Container */
   .container{
     width:100%;
-    max-width:1100px;
+    max-width:980px;
     position:relative;
     z-index:2;
-    display:grid;
-    grid-template-columns: 1fr 320px;
-    gap:20px;
-    align-items:start;
   }
 
-  /* Left: article-style ranks */
-  .content {
-    background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(0,0,0,0.06));
+  /* Hero */
+  .hero{
+    background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(0,0,0,0.06));
     border-radius:16px;
     padding:28px;
     border:1px solid rgba(255,255,255,0.02);
     box-shadow:0 18px 60px rgba(0,0,0,0.6);
-  }
-
-  header.top {
     display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
     gap:18px;
-    margin-bottom:18px;
+    align-items:center;
+    justify-content:space-between;
   }
 
-  .brand {
+  .brand{
     display:flex;
     gap:16px;
     align-items:center;
   }
 
-  .logo {
+  .logo{
     width:72px;
     height:72px;
     border-radius:14px;
@@ -109,12 +102,12 @@
     flex-shrink:0;
   }
 
-  h1{ margin:0; font-size:26px; color:var(--text); line-height:1.05; }
-  .lead{ margin-top:8px; color:var(--muted); font-size:15px; max-width:720px; }
+  .hero h1{ margin:0; font-size:24px; color:var(--accent-2); }
+  .hero p{ margin:6px 0 0 0; color:var(--muted); font-size:14px; max-width:640px; }
 
-  .controls { display:flex; gap:10px; align-items:center; }
-
-  .btn {
+  /* Controls */
+  .controls{ display:flex; gap:10px; align-items:center; }
+  .btn{
     padding:10px 14px;
     border-radius:10px;
     border:1px solid rgba(255,255,255,0.06);
@@ -134,8 +127,8 @@
   .btn.ghost{ background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--muted); box-shadow:none; }
   .btn.primary{ background:linear-gradient(180deg, rgba(191,166,255,0.14), rgba(191,166,255,0.06)); border-color:rgba(191,166,255,0.28); color:#fff; }
 
-  /* Article sections */
-  .section {
+  /* Sections */
+  .section{
     margin-top:18px;
     border-radius:12px;
     padding:22px;
@@ -144,91 +137,65 @@
     box-shadow:0 10px 30px rgba(0,0,0,0.45);
   }
 
-  .section h2{
-    margin:0 0 10px 0;
-    font-size:20px;
-    color:var(--accent-2);
-  }
-
+  .section h2{ margin:0 0 10px 0; font-size:20px; color:var(--accent-2); }
   .section .subtitle{ margin:0 0 14px 0; color:var(--muted); font-size:14px; }
   .section p{ margin:0 0 12px 0; color:var(--text); font-size:16px; line-height:1.6; }
 
-  /* Rank article card */
-  .rank-article{
-    margin-top:14px;
+  /* Staff blocks (large, article-like) */
+  .staff-block{
+    margin-top:12px;
     padding:18px;
     border-radius:12px;
     background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
     border:1px solid rgba(255,255,255,0.02);
   }
-  .rank-article h3{ margin:0 0 8px 0; font-size:18px; color:var(--accent); }
-  .rank-article p{ margin:0 0 10px 0; color:var(--text); font-size:15px; line-height:1.6; }
-  .rank-article .meta{ color:var(--muted); font-size:13px; margin-top:8px; }
 
-  /* Staff tiles (compact) */
+  .staff-block h3{ margin:0 0 8px 0; font-size:18px; color:var(--accent); }
+  .staff-block p{ margin:0 0 10px 0; color:var(--text); font-size:15px; line-height:1.6; }
   .staff-tiles{
     display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap:12px;
     margin-top:12px;
   }
+
   .tile{
     display:flex;
     gap:12px;
     align-items:center;
-    padding:12px;
+    padding:14px;
     border-radius:10px;
     background:rgba(255,255,255,0.01);
     border:1px solid rgba(255,255,255,0.02);
   }
+
   .tile .avatar{
-    width:56px;
-    height:56px;
-    border-radius:10px;
+    width:72px;
+    height:72px;
+    border-radius:12px;
     background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));
     display:flex;
     align-items:center;
     justify-content:center;
     font-weight:800;
-    font-size:20px;
+    font-size:22px;
     color:var(--muted);
     flex-shrink:0;
   }
-  .tile .info{ display:flex; flex-direction:column; gap:4px; }
-  .tile .info .name{ font-weight:800; color:var(--text); font-size:15px; }
-  .tile .info .role{ color:var(--muted); font-size:13px; }
 
-  /* Right: sidebar with staff list */
-  .sidebar {
-    background:var(--glass);
-    border-radius:12px;
-    padding:18px;
-    border:1px solid rgba(255,255,255,0.02);
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-    height:fit-content;
-  }
+  .tile .info{ display:flex; flex-direction:column; gap:6px; }
+  .tile .info .name{ font-size:18px; font-weight:800; color:var(--text); }
+  .tile .info .role{ font-size:13px; color:var(--muted); }
+  .tile .info .desc{ font-size:14px; color:var(--muted); }
 
-  .staff-block { padding:12px; border-radius:10px; background:rgba(255,255,255,0.01); border:1px solid rgba(255,255,255,0.02); }
-  .staff-block h4{ margin:0 0 8px 0; color:var(--accent); font-size:14px; }
-  .staff-block ul{ margin:0; padding-left:18px; color:var(--muted); font-size:13px; }
-  .staff-block li{ margin-bottom:8px; }
-
-  .sidebar .note{ color:var(--muted); font-size:13px; }
-
-  /* Footer small */
-  .footer-note{ margin-top:12px; color:var(--muted); font-size:13px; }
+  /* Back button area */
+  .back-row{ margin-top:18px; display:flex; gap:10px; align-items:center; }
 
   /* Responsive */
-  @media (max-width:1100px){
-    .container{ grid-template-columns: 1fr; }
-    .sidebar{ order:2; }
-    .content{ order:1; }
-  }
   @media (max-width:720px){
-    h1{ font-size:22px; }
+    .hero h1{ font-size:20px; }
     .logo{ width:56px; height:56px; font-size:18px; }
+    .tile .avatar{ width:60px; height:60px; font-size:18px; }
   }
 </style>
 </head>
@@ -238,148 +205,179 @@
   <div class="page">
     <div class="container">
 
-      <!-- Left: main article content -->
-      <main class="content" role="main" aria-labelledby="pageTitle">
-        <header class="top">
-          <div class="brand">
-            <div class="logo" aria-hidden>BV</div>
-            <div>
-              <h1 id="pageTitle">Clan Ranks — What They Mean</h1>
-              <div class="lead">Readable, article-style descriptions for each rank. Scroll down to read each rank in order. A quick link to staff ranks is included if you need staff-specific details.</div>
-            </div>
+      <header class="hero" role="banner">
+        <div class="brand">
+          <div class="logo" aria-hidden>BV</div>
+          <div>
+            <h1>Staff Ranks</h1>
+            <p>Detailed staff roster and role descriptions. Use the button on the right to return to the clan ranks overview.</p>
           </div>
-
-          <div class="controls" aria-hidden>
-            <a href="staffrank.html" class="btn primary" title="Open staff ranks">View Staff Ranks</a>
-            <a href="staffapply.html" class="btn ghost" title="Apply for staff">Apply for Staff</a>
-          </div>
-        </header>
-
-        <!-- Intro -->
-        <section class="section" aria-labelledby="introTitle">
-          <h2 id="introTitle">Overview</h2>
-          <div class="subtitle">Ranks reflect contribution, conduct, and community standing. Each rank below is presented as a short article so you can understand expectations and privileges.</div>
-          <p>Ranks are awarded by staff and reviewed periodically. Progression depends on activity, behavior, and contributions. Use these descriptions to understand what each rank represents and how to move up.</p>
-        </section>
-
-        <!-- GOAT -->
-        <section class="section" aria-labelledby="goatTitle">
-          <h2 id="goatTitle">GOAT — Singular Leadership</h2>
-          <div class="subtitle">The highest honor, reserved for a single member who exemplifies leadership and long-term contribution.</div>
-          <div class="rank-article">
-            <h3>About GOAT</h3>
-            <p>GOAT is awarded by Founders to a single member who consistently demonstrates exceptional leadership, mentorship, and positive impact. This rank is symbolic and carries community recognition and responsibility.</p>
-            <p class="meta"><strong>Privileges:</strong> Public recognition, priority for event leadership, and a direct line to Founders. <strong>Expectations:</strong> Model behavior, mentor others, and represent the community externally.</p>
-          </div>
-        </section>
-
-        <!-- ELITE -->
-        <section class="section" aria-labelledby="eliteTitle">
-          <h2 id="eliteTitle">ELITE — Top-tier Mentors</h2>
-          <div class="subtitle">Top-tier players who lead by example and mentor others.</div>
-          <div class="rank-article">
-            <h3>About ELITE</h3>
-            <p>ELITE members are recognized for skill, leadership, and consistent mentoring. They help run training sessions, lead teams, and support competitive events.</p>
-            <p class="meta"><strong>Privileges:</strong> Mentor channels, event leadership opportunities. <strong>Expectations:</strong> High conduct standards and active mentoring.</p>
-          </div>
-        </section>
-
-        <!-- LEGEND -->
-        <section class="section" aria-labelledby="legendTitle">
-          <h2 id="legendTitle">LEGEND — Respected Veterans</h2>
-          <div class="subtitle">Veterans who have contributed over time and are pillars of the community.</div>
-          <div class="rank-article">
-            <h3>About LEGEND</h3>
-            <p>LEGEND recognizes long-term contributors who consistently support the community. They are reliable, experienced, and often help organize events and initiatives.</p>
-            <p class="meta"><strong>Privileges:</strong> Recognition and priority for certain events. <strong>Expectations:</strong> Maintain positive conduct and support community initiatives.</p>
-          </div>
-        </section>
-
-        <!-- DECENT -->
-        <section class="section" aria-labelledby="decentTitle">
-          <h2 id="decentTitle">DECENT — Active Contributors</h2>
-          <div class="subtitle">Active members who participate regularly and contribute positively.</div>
-          <div class="rank-article">
-            <h3>About DECENT</h3>
-            <p>DECENT members are steady contributors who participate in events and help newer members. They are known for constructive involvement and reliability.</p>
-            <p class="meta"><strong>Privileges:</strong> Contributor channels and event invites. <strong>Expectations:</strong> Continue participating and help newer members when possible.</p>
-          </div>
-        </section>
-
-        <!-- ROOKIE -->
-        <section class="section" aria-labelledby="rookieTitle">
-          <h2 id="rookieTitle">ROOKIE — New Recruits</h2>
-          <div class="subtitle">New members learning the community and improving their skills.</div>
-          <div class="rank-article">
-            <h3>About ROOKIE</h3>
-            <p>ROOKIE is for new recruits who are learning the rules and culture. Rookies are encouraged to ask questions, participate, and follow guidance from Helpers and Moderators.</p>
-            <p class="meta"><strong>Privileges:</strong> Access to basic channels and events. <strong>Expectations:</strong> Learn the rules, be respectful, and engage constructively.</p>
-          </div>
-        </section>
-
-        <!-- MEMBER -->
-        <section class="section" aria-labelledby="memberTitle">
-          <h2 id="memberTitle">MEMBER — Community Foundation</h2>
-          <div class="subtitle">The baseline rank for community participants who keep the server active.</div>
-          <div class="rank-article">
-            <h3>About MEMBER</h3>
-            <p>MEMBER is the standard rank for participants. Members form the foundation of Black Velvet and are expected to follow rules and contribute positively.</p>
-            <p class="meta"><strong>Privileges:</strong> Full access to general channels. <strong>Expectations:</strong> Follow rules and contribute positively to the community.</p>
-          </div>
-        </section>
-
-        <div class="footer-note">Want these as separate pages or expanded articles with images and staff quotes? I can split them into individual pages or add visuals and staff endorsements on request.</div>
-      </main>
-
-      <!-- Right: sidebar with staff members and quick links -->
-      <aside class="sidebar" aria-label="Staff sidebar">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <strong style="color:var(--accent);">Staff Members</strong>
-          <a href="staffrank.html" class="btn" style="padding:8px 10px;font-size:13px;">Staff Ranks</a>
         </div>
+
+        <div class="controls" role="navigation" aria-label="Page controls">
+          <a href="ranks.html" class="btn ghost" title="Back to Ranks">← Back to Ranks</a>
+          <a href="staffapply.html" class="btn" title="Apply for Staff">Apply for Staff</a>
+        </div>
+      </header>
+
+      <!-- Founders -->
+      <section class="section" id="founders">
+        <h2>Founders</h2>
+        <div class="subtitle">Founders set the long-term direction and core values of Black Velvet.</div>
 
         <div class="staff-block" aria-labelledby="foundersTitle">
-          <h4 id="foundersTitle">Founders</h4>
-          <ul>
-            <li><strong>Rin</strong></li>
-            <li><strong>suoaz</strong></li>
-          </ul>
+          <h3 id="foundersTitle">Role & Responsibilities</h3>
+          <p>Founders approve major policy, oversee leadership, and ensure the community's vision is preserved. They handle escalations that require final decisions and mentor senior staff.</p>
+
+          <div class="staff-tiles" aria-hidden>
+            <div class="tile">
+              <div class="avatar">R</div>
+              <div class="info">
+                <div class="name">Rin</div>
+                <div class="role">Founder</div>
+                <div class="desc">Co-founder and strategic lead. Oversees partnerships and long-term planning.</div>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="avatar">S</div>
+              <div class="info">
+                <div class="name">suoaz</div>
+                <div class="role">Founder</div>
+                <div class="desc">Co-founder focused on community culture and governance processes.</div>
+              </div>
+            </div>
+          </div>
         </div>
+      </section>
+
+      <!-- President -->
+      <section class="section" id="presidents">
+        <h2>President</h2>
+        <div class="subtitle">Operational leadership and staff coordination.</div>
 
         <div class="staff-block" aria-labelledby="presTitle">
-          <h4 id="presTitle">Presidents</h4>
-          <ul>
-            <li><strong>Gears</strong></li>
-            <li>N/A</li>
-          </ul>
+          <h3 id="presTitle">Role & Responsibilities</h3>
+          <p>The President coordinates staff, runs operations, and leads incident reviews. They are the primary contact between Founders and the staff team and ensure policies are applied consistently.</p>
+
+          <div class="staff-tiles">
+            <div class="tile">
+              <div class="avatar">G</div>
+              <div class="info">
+                <div class="name">Gears</div>
+                <div class="role">President</div>
+                <div class="desc">Leads operations and staff coordination. Point of contact for escalations and event planning.</div>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="avatar">—</div>
+              <div class="info">
+                <div class="name">N/A</div>
+                <div class="role">Vacant</div>
+                <div class="desc">Position available — applications accepted via the staff application form.</div>
+              </div>
+            </div>
+          </div>
         </div>
+      </section>
+
+      <!-- Admins -->
+      <section class="section" id="admins">
+        <h2>Admins</h2>
+        <div class="subtitle">Technical operations, integrations, and evidence support.</div>
 
         <div class="staff-block" aria-labelledby="adminsTitle">
-          <h4 id="adminsTitle">Admins</h4>
-          <ul>
-            <li>N/A</li>
-            <li>N/A</li>
-          </ul>
+          <h3 id="adminsTitle">Role & Responsibilities</h3>
+          <p>Admins manage server configuration, bots, and technical troubleshooting. They assist with evidence collection during investigations and maintain system integrity.</p>
+
+          <div class="staff-tiles">
+            <div class="tile">
+              <div class="avatar">—</div>
+              <div class="info">
+                <div class="name">N/A</div>
+                <div class="role">Vacant</div>
+                <div class="desc">No admins currently assigned. Escalate technical concerns to the President or Founders.</div>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="avatar">—</div>
+              <div class="info">
+                <div class="name">N/A</div>
+                <div class="role">Vacant</div>
+                <div class="desc">Admin roles are appointed when technical needs require dedicated staff.</div>
+              </div>
+            </div>
+          </div>
         </div>
+      </section>
+
+      <!-- Moderators -->
+      <section class="section" id="mods">
+        <h2>Moderators</h2>
+        <div class="subtitle">Day-to-day moderation, member support, and enforcement.</div>
 
         <div class="staff-block" aria-labelledby="modsTitle">
-          <h4 id="modsTitle">Moderators</h4>
-          <ul>
-            <li>N/A</li>
-            <li>N/A</li>
-          </ul>
+          <h3 id="modsTitle">Role & Responsibilities</h3>
+          <p>Moderators handle reports, moderate channels, and guide members toward positive behavior. They document actions and escalate complex incidents to Admins or the President.</p>
+
+          <div class="staff-tiles">
+            <div class="tile">
+              <div class="avatar">—</div>
+              <div class="info">
+                <div class="name">N/A</div>
+                <div class="role">Vacant</div>
+                <div class="desc">Moderation requires fairness, patience, and clear communication.</div>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="avatar">—</div>
+              <div class="info">
+                <div class="name">N/A</div>
+                <div class="role">Vacant</div>
+                <div class="desc">Apply via the staff application if you'd like to help moderate the community.</div>
+              </div>
+            </div>
+          </div>
         </div>
+      </section>
+
+      <!-- Helpers -->
+      <section class="section" id="helpers">
+        <h2>Helpers</h2>
+        <div class="subtitle">Onboarding, answering questions, and keeping the community welcoming.</div>
 
         <div class="staff-block" aria-labelledby="helpersTitle">
-          <h4 id="helpersTitle">Helpers</h4>
-          <ul>
-            <li>N/A</li>
-            <li>N/A</li>
-          </ul>
-        </div>
+          <h3 id="helpersTitle">Role & Responsibilities</h3>
+          <p>Helpers welcome new members, answer basic questions, and point people to resources. They coordinate with Moderators to escalate issues that require enforcement.</p>
 
-        <div class="note">If you want avatars, Discord tags, or clickable profile links here, provide the names/tags and I’ll update the sidebar tiles.</div>
-      </aside>
+          <div class="staff-tiles">
+            <div class="tile">
+              <div class="avatar">—</div>
+              <div class="info">
+                <div class="name">N/A</div>
+                <div class="role">Vacant</div>
+                <div class="desc">Helpers are selected for friendliness and clarity in communication.</div>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="avatar">—</div>
+              <div class="info">
+                <div class="name">N/A</div>
+                <div class="role">Vacant</div>
+                <div class="desc">If you'd like to help new members, apply via the staff application form.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="back-row">
+        <a href="ranks.html" class="btn ghost" title="Return to Clan Ranks">← Back to Clan Ranks</a>
+      </div>
 
     </div>
   </div>
