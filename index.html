@@ -9,14 +9,29 @@
 
 <style>
   :root{
-    --bg-top:#e9eaec;        /* soft grey top */
-    --bg-bottom:#d6d7da;     /* soft grey bottom */
-    --muted:#6f7782;
-    --accent:#2f9cff;
-    --accent-2:#7be495;
-    --velvet-black: #050406; /* black velvet petals */
+    /* Light (default) palette - black & white focused */
+    --bg-top: #f3f4f6;        /* soft light grey top */
+    --bg-bottom: #e6e7ea;     /* soft light grey bottom */
+    --panel-bg: rgba(255,255,255,0.95);
+    --muted: #6f7782;
+    --accent: #111111;        /* primary text / accent in B/W mode */
+    --velvet-black: #050406;  /* black velvet petals */
     --menu-w:320px;
     --radius:14px;
+    --glass: rgba(0,0,0,0.04);
+    --shadow: rgba(11,15,20,0.06);
+  }
+
+  /* Dark mode overrides */
+  :root[data-theme="dark"]{
+    --bg-top: #0b0b0c;
+    --bg-bottom: #060607;
+    --panel-bg: rgba(6,6,8,0.85);
+    --muted: #9aa4b2;
+    --accent: #ffffff;
+    --velvet-black: #000000;
+    --glass: rgba(255,255,255,0.03);
+    --shadow: rgba(0,0,0,0.45);
   }
 
   /* Prevent page scrollbars */
@@ -25,7 +40,7 @@
     margin:0;
     overflow:hidden; /* page-level scroll prevented */
     background:linear-gradient(180deg,var(--bg-top) 0%, var(--bg-bottom) 100%);
-    color:#0b0f14;
+    color:var(--accent);
     font-family:Inter,system-ui,Arial,sans-serif;
     -webkit-font-smoothing:antialiased;
   }
@@ -36,40 +51,43 @@
   nav.menu{
     width:var(--menu-w);
     min-width:var(--menu-w);
-    background:rgba(255,255,255,0.85);
-    border-right:1px solid rgba(11,15,20,0.06);
+    background:var(--panel-bg);
+    border-right:1px solid var(--glass);
     padding:28px 22px;
     box-sizing:border-box;
     display:flex;
     flex-direction:column;
     gap:18px;
-    box-shadow: 0 12px 40px rgba(2,6,23,0.06);
+    box-shadow: 0 12px 40px var(--shadow);
     backdrop-filter: blur(6px);
   }
 
   .brand{display:flex;align-items:center;gap:12px;margin-bottom:6px}
   .logo{
     width:68px;height:68px;border-radius:12px;
-    background:linear-gradient(135deg,var(--accent),#6fb8ff);
-    display:flex;align-items:center;justify-content:center;font-weight:800;color:#071022;font-family:'Press Start 2P',cursive;font-size:16px;
-    box-shadow:0 8px 24px rgba(47,156,255,0.08)
+    background:linear-gradient(135deg, #dcdcdc, #bfbfbf);
+    display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--accent);font-family:'Press Start 2P',cursive;font-size:16px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.06)
   }
-  .brand h1{font-family:'Press Start 2P',cursive;font-size:12px;margin:0;line-height:1;color:#071022}
+  .brand h1{font-family:'Press Start 2P',cursive;font-size:12px;margin:0;line-height:1;color:var(--accent)}
   .brand p{margin:0;color:var(--muted);font-size:11px}
 
   /* Buttons: bright, single-line, with description underneath */
   .menu-list{display:flex;flex-direction:column;gap:10px;margin-top:6px}
   .menu-item{
-    display:block;border-radius:12px;padding:12px 14px;border:1px solid rgba(11,15,20,0.04);
-    background:linear-gradient(180deg, #ffffff, #f6f7f8);
+    display:block;border-radius:12px;padding:12px 14px;border:1px solid var(--glass);
+    background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.96));
     cursor:pointer;user-select:none;transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
-    color:#071022;font-weight:800;font-size:14px;text-decoration:none;
+    color:var(--accent);font-weight:800;font-size:14px;text-decoration:none;
   }
-  .menu-item:hover{ transform:translateX(6px); box-shadow:0 14px 30px rgba(11,15,20,0.06) }
+  :root[data-theme="dark"] .menu-item{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  }
+  .menu-item:hover{ transform:translateX(6px); box-shadow:0 14px 30px var(--shadow) }
   .menu-item.active{
-    background:linear-gradient(90deg,var(--accent),var(--accent-2));
-    color:#071022;
-    box-shadow:0 18px 60px rgba(47,156,255,0.10);
+    background:linear-gradient(90deg, rgba(0,0,0,0.06), rgba(0,0,0,0.02));
+    color:var(--accent);
+    box-shadow:0 18px 60px rgba(0,0,0,0.06);
     transform:none;
   }
 
@@ -77,13 +95,25 @@
   .menu-sub{color:var(--muted);font-size:12px;margin-top:8px;padding-left:6px}
 
   /* Description area under active button (large, decorative) */
-  .menu-desc-wrap{margin-top:6px;padding:14px;border-radius:12px;background:linear-gradient(180deg,#ffffff,#fbfbfc);border:1px solid rgba(11,15,20,0.04);color:var(--muted);font-size:13px;line-height:1.45}
-  .menu-desc-title{font-weight:800;color:#071022;margin-bottom:6px}
+  .menu-desc-wrap{margin-top:6px;padding:14px;border-radius:12px;background:var(--panel-bg);border:1px solid var(--glass);color:var(--muted);font-size:13px;line-height:1.45}
+  .menu-desc-title{font-weight:800;color:var(--accent);margin-bottom:6px}
   .menu-desc-text{color:var(--muted)}
 
   .menu-footer{margin-top:auto;font-size:11px;color:var(--muted);display:flex;flex-direction:column;gap:8px}
-  .small-cta{display:inline-block;padding:10px 12px;border-radius:10px;background:transparent;border:1px solid rgba(11,15,20,0.04);color:var(--muted);text-decoration:none;font-weight:700;font-size:12px}
-  .small-cta:hover{background:rgba(11,15,20,0.02);color:#071022}
+  .small-cta{display:inline-block;padding:10px 12px;border-radius:10px;background:transparent;border:1px solid var(--glass);color:var(--muted);text-decoration:none;font-weight:700;font-size:12px}
+  .small-cta:hover{background:rgba(0,0,0,0.02);color:var(--accent)}
+
+  /* Theme toggle */
+  .theme-toggle{
+    display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;border:1px solid var(--glass);background:transparent;color:var(--muted);font-weight:700;font-size:13px;cursor:pointer;
+  }
+  .theme-toggle .switch{
+    width:44px;height:24px;border-radius:999px;background:linear-gradient(90deg,#fff,#eee);border:1px solid rgba(0,0,0,0.06);position:relative;
+  }
+  .theme-toggle .knob{
+    position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#111;transition:left .18s ease, background .18s ease;
+  }
+  :root[data-theme="dark"] .theme-toggle .knob{ left:22px; background:#fff; }
 
   /* Main content */
   main.content{
@@ -97,20 +127,20 @@
   /* Foreground content area scrolls internally (prevents page scroll) */
   .foreground{position:relative;z-index:2;padding:40px;display:flex;gap:28px;align-items:flex-start;height:100%;box-sizing:border-box;overflow:auto}
   .hero{
-    flex:1;max-width:980px;background:linear-gradient(180deg,#ffffff,#fbfbfc);border-radius:14px;padding:28px;border:1px solid rgba(11,15,20,0.04);box-shadow:0 18px 60px rgba(2,6,23,0.06)
+    flex:1;max-width:980px;background:var(--panel-bg);border-radius:14px;padding:28px;border:1px solid var(--glass);box-shadow:0 18px 60px var(--shadow)
   }
-  .hero h2{font-family:'Press Start 2P',cursive;font-size:18px;margin:0 0 12px 0;color:#071022}
+  .hero h2{font-family:'Press Start 2P',cursive;font-size:18px;margin:0 0 12px 0;color:var(--accent)}
   .hero p{color:var(--muted);margin:0 0 18px 0;line-height:1.5}
 
   .quick-links{display:flex;flex-wrap:wrap;gap:12px}
   .quick{
-    padding:10px 14px;border-radius:10px;background:linear-gradient(90deg, rgba(47,156,255,0.08), rgba(123,228,149,0.06));color:#071022;font-weight:800;text-decoration:none;font-size:13px;border:1px solid rgba(11,15,20,0.02)
+    padding:10px 14px;border-radius:10px;background:transparent;color:var(--accent);font-weight:800;text-decoration:none;font-size:13px;border:1px solid var(--glass)
   }
 
   .panel{
-    width:360px;min-width:260px;background:linear-gradient(180deg,#ffffff,#fbfbfc);border-radius:12px;padding:18px;border:1px solid rgba(11,15,20,0.04);box-shadow:0 12px 40px rgba(2,6,23,0.05)
+    width:360px;min-width:260px;background:var(--panel-bg);border-radius:12px;padding:18px;border:1px solid var(--glass);box-shadow:0 12px 40px var(--shadow)
   }
-  .panel h3{margin:0 0 8px 0;font-size:14px;color:#071022}
+  .panel h3{margin:0 0 8px 0;font-size:14px;color:var(--accent)}
   .panel p{color:var(--muted);font-size:13px;margin:0 0 12px 0}
 
   /* Footer small */
@@ -170,6 +200,13 @@
       </div>
 
       <div class="menu-footer" aria-hidden="false">
+        <button id="themeToggle" class="theme-toggle" aria-pressed="false" title="Toggle dark / light">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="switch" aria-hidden="true"><div class="knob"></div></div>
+            <div style="min-width:120px;text-align:left">Dark mode</div>
+          </div>
+        </button>
+
         <a class="small-cta" href="discord.html">Join Discord</a>
         <a class="small-cta" href="contact.html">Contact Leadership</a>
         <div style="margin-top:8px;color:var(--muted);font-size:11px">Built by Rin • Reborn in the flames</div>
@@ -185,7 +222,7 @@
       <div class="foreground">
         <section class="hero" aria-labelledby="heroTitle">
           <h2 id="heroTitle">Welcome to Black Velvet Clan</h2>
-          <p>Competitive, creative, and community-first. Use the menu on the left to navigate. Click anywhere on the background to create a black-velvet flower bloom — petals will unfurl in a soft warm pulse.</p>
+          <p>Black & white theme with a velvet-flower background. Use the menu on the left to navigate. Click anywhere on the background to create a black-velvet bloom — petals unfurl in a soft warm pulse.</p>
 
           <div class="quick-links" role="navigation" aria-label="Quick links">
             <a class="quick" href="rules.html">Read Rules</a>
@@ -224,7 +261,7 @@
 <script>
 /* Canvas: black velvet flower theme on a pretty grey background
    - drifting black petals
-   - on pointerdown: bloom of black petals + warm soft pulse
+   - on pointerdown: bloom of black petals + soft warm pulse
    - pointermove creates subtle parallax attraction
 */
 
@@ -340,8 +377,8 @@
 
     // soft grey background (pretty)
     const g = ctx.createLinearGradient(0,0,0,h);
-    g.addColorStop(0, 'rgba(233,234,236,1)');
-    g.addColorStop(1, 'rgba(214,215,218,1)');
+    g.addColorStop(0, 'rgba(243,244,246,1)');
+    g.addColorStop(1, 'rgba(230,231,234,1)');
     ctx.fillStyle = g;
     ctx.fillRect(0,0,w,h);
 
@@ -364,14 +401,14 @@
       // outer warm ring (very soft)
       ctx.beginPath();
       ctx.arc(b.x, b.y, radius, 0, Math.PI*2);
-      ctx.strokeStyle = `rgba(255,120,100,${alpha*0.12})`;
+      ctx.strokeStyle = `rgba(0,0,0,${alpha*0.06})`;
       ctx.lineWidth = 2 + (1 - progress) * 6;
       ctx.stroke();
 
-      // soft center glow
+      // soft center glow (very subtle)
       ctx.beginPath();
       ctx.arc(b.x, b.y, radius * 0.28, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(255,90,80,${alpha*0.06})`;
+      ctx.fillStyle = `rgba(0,0,0,${alpha*0.02})`;
       ctx.fill();
     }
 
@@ -433,7 +470,8 @@
   requestAnimationFrame(tick);
 })();
 
-/* Menu interactions: show a short description under the active button and navigate */
+/* Menu interactions: show a short description under the active button and navigate,
+   plus theme toggle with persistence */
 (() => {
   const descriptions = {
     rules: { title: "Rules", text: "Clear, fair, and enforced. Read the server rules and enforcement tiers. Follow them to keep the community safe and fun." },
@@ -473,6 +511,29 @@
     btn.addEventListener('keydown', (e) => {
       if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
     });
+  });
+
+  // Theme toggle
+  const themeToggle = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  const storageKey = 'bv_theme';
+
+  function applyTheme(theme){
+    if(theme === 'dark') root.setAttribute('data-theme','dark');
+    else root.removeAttribute('data-theme');
+    themeToggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+    themeToggle.querySelector('div > div').textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
+  }
+
+  // load saved theme
+  const saved = localStorage.getItem(storageKey) || 'light';
+  applyTheme(saved);
+
+  themeToggle.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    localStorage.setItem(storageKey, next);
   });
 
   // initial
