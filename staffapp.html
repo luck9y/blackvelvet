@@ -119,14 +119,14 @@
           </div>
 
           <div class="field">
-            <label for="roles">Role(s) applying for</label>
+            <label for="roles">Role applying for</label>
             <div class="roles" id="roles">
-              <label class="checkbox"><input type="checkbox" name="role" value="Moderator"> Moderator</label>
-              <label class="checkbox"><input type="checkbox" name="role" value="Event Organizer"> Event Organizer</label>
-              <label class="checkbox"><input type="checkbox" name="role" value="Recruiter"> Recruiter</label>
-              <label class="checkbox"><input type="checkbox" name="role" value="Developer"> Developer</label>
-              <label class="checkbox"><input type="checkbox" name="role" value="Content Creator"> Content Creator</label>
+              <label class="checkbox"><input type="radio" name="role" value="President"> President</label>
+              <label class="checkbox"><input type="radio" name="role" value="Admin"> Admin</label>
+              <label class="checkbox"><input type="radio" name="role" value="Mod"> Mod</label>
+              <label class="checkbox"><input type="radio" name="role" value="Helper"> Helper</label>
             </div>
+            <div class="hint">Select the single role you are applying for.</div>
           </div>
 
           <div class="field">
@@ -185,7 +185,9 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  const webhookURL = "https://discord.com/api/webhooks/1537233521410576546/qoHYqRmP1SbBfuuMCzvJBxWgTIGIlKpS3bhQ7xuj2MnbxNSoRGu0xUxCzkiXV6d43DIs";
+  // Webhook provided by user
+  const webhookURL = "https://discord.com/api/webhooks/1537266764067377283/1ql9LGG7fPEyoAX7JxFA7drIwdEPCXlwZ0SLT_5Bm8irwYVGXOhguFExUx9T0LBzanWw";
+
   const submitBtn = document.getElementById('submitBtn');
   const clearBtn = document.getElementById('clearBtn');
   const statusEl = document.getElementById('status');
@@ -213,10 +215,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const references = document.getElementById('references').value.trim();
     const agree = document.getElementById('agree').checked;
 
-    const roleNodes = Array.from(document.querySelectorAll('input[name="role"]:checked'));
-    const roles = roleNodes.map(n => n.value);
+    const roleNode = document.querySelector('input[name="role"]:checked');
+    const role = roleNode ? roleNode.value : '';
 
-    return { discord, age, timezone, experience, roles, availability, why, references, agree };
+    return { discord, age, timezone, experience, role, availability, why, references, agree };
   }
 
   function validate(data) {
@@ -224,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!data.age || isNaN(Number(data.age)) || Number(data.age) < 13) return 'Valid age (13+) is required.';
     if (!data.timezone) return 'Timezone is required.';
     if (!data.experience) return 'Please describe your experience.';
-    if (!data.roles.length) return 'Select at least one role.';
+    if (!data.role) return 'Select a role to apply for.';
     if (!data.availability) return 'Availability is required.';
     if (!data.why) return 'Tell us why you want to join.';
     if (!data.agree) return 'You must agree to the rules.';
@@ -241,7 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (navigator.sendBeacon) navigator.sendBeacon(webhookURL, JSON.stringify(payload));
       });
     } catch (e) {
-      // silent
       console.warn('Webhook error', e);
     }
   }
@@ -255,24 +256,49 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Build a compact summary for webhook and local storage
     const now = new Date();
-    const summary = {
-      discord: data.discord,
-      age: data.age,
-      timezone: data.timezone,
-      roles: data.roles.join(', '),
-      availability: data.availability,
-      submittedAt: now.toISOString()
-    };
+    const submittedAt = now.toISOString();
 
-    // Save to localStorage as a simple queue (so leadership can review locally)
+    // Save to localStorage queue for leadership review (optional)
     const queueKey = 'staffApplications';
     const existing = JSON.parse(localStorage.getItem(queueKey) || '[]');
-    existing.push({ ...data, submittedAt: now.toISOString() });
+    existing.push({ ...data, submittedAt });
     localStorage.setItem(queueKey, JSON.stringify(existing));
 
-    // Send webhook with full details (leadership only)
-    const payload = {
-      content:
-`New Staff Application
+    // Build Discord webhook payload (clean, readable)
+    const content =
+`**New Staff Application**
+**Discord:** ${data.discord}
+**Age:** ${data.age}
+**Timezone:** ${data.timezone}
+**Role Applied For:** ${data.role}
+**Availability:** ${data.availability}
+**References:** ${data.references || '[none]'}
+**Submitted:** ${now.toLocaleString()}
+
+**Experience**
+${data.experience}
+
+**Why**
+${data.why}
+`;
+
+    // Use a simple JSON payload for Discord webhook
+    const payload = { content };
+
+    postWebhook(payload);
+
+    showStatus('Application submitted. Leadership will review and respond within 7–14 days.', 'success');
+
+    // Reset form
+    form.reset();
+  });
+
+  clearBtn.addEventListener('click', () => {
+    form.reset();
+    clearStatus();
+  });
+});
+</script>
+</body>
+</html>
