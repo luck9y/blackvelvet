@@ -23,17 +23,18 @@
     cursor:none; /* hide default cursor */
   }
 
-  /* Custom cursor aura */
-  #cursorAura{
+  /* Water after-aura blobs following cursor */
+  .cursor-water{
     position:absolute;
-    width:60px;
-    height:60px;
+    width:18px;
+    height:18px;
     border-radius:50%;
-    background:radial-gradient(circle, rgba(40,40,40,0.6), rgba(0,0,0,0.9));
+    background:radial-gradient(circle, rgba(180,180,200,0.7), rgba(60,60,80,0.0));
     pointer-events:none;
+    filter:blur(4px);
+    opacity:0.9;
+    transition:opacity 0.4s ease-out, transform 0.4s ease-out;
     z-index:9999;
-    filter:blur(6px);
-    transition:transform 0.05s linear;
   }
 
   /* Black Velvet Flower */
@@ -41,10 +42,10 @@
     position:absolute;
     width:320px;
     height:320px;
-    pointer-events:auto;
+    pointer-events:none;
     z-index:0;
     opacity:0.35;
-    transition:opacity 0.25s ease-out, transform 0.25s ease-out;
+    transition:opacity 0.6s ease-out, transform 0.6s ease-out;
   }
 
   .petal-shape{
@@ -72,23 +73,6 @@
     left:50%;
     transform:translate(-50%,-50%);
     box-shadow:0 0 32px rgba(255,255,255,0.15);
-  }
-
-  /* Water droplets */
-  .droplet{
-    position:absolute;
-    width:6px;
-    height:6px;
-    background:rgba(180,180,180,0.25);
-    border-radius:50%;
-    filter:blur(2px);
-    pointer-events:none;
-    animation:dropFall 4s linear forwards;
-  }
-
-  @keyframes dropFall{
-    0%{ transform:translateY(-20px) scale(1); opacity:0.8; }
-    100%{ transform:translateY(120vh) scale(0.4); opacity:0; }
   }
 
   /* Page content */
@@ -144,9 +128,6 @@
 </head>
 <body>
 
-<!-- Cursor Aura -->
-<div id="cursorAura"></div>
-
 <!-- Black Velvet Flower -->
 <div id="velvetFlower" class="velvet-flower">
   <div class="petal-shape petal1"></div>
@@ -156,8 +137,6 @@
   <div class="petal-shape petal5"></div>
   <div class="flower-center"></div>
 </div>
-
-<div id="dropletLayer"></div>
 
 <div class="page">
   <h1>Black Velvet</h1>
@@ -173,63 +152,57 @@
 </div>
 
 <script>
-/* Cursor Aura */
-const aura = document.getElementById("cursorAura");
+/* Cursor water after-aura */
 document.addEventListener("mousemove", e=>{
-  aura.style.left = (e.clientX - 30) + "px";
-  aura.style.top = (e.clientY - 30) + "px";
+  const blob = document.createElement("div");
+  blob.className = "cursor-water";
+  blob.style.left = (e.clientX - 9) + "px";
+  blob.style.top = (e.clientY - 9) + "px";
+  document.body.appendChild(blob);
+
+  setTimeout(()=>{
+    blob.style.opacity = "0";
+    blob.style.transform = "scale(1.6)";
+  }, 20);
+
+  setTimeout(()=>{
+    blob.remove();
+  }, 500);
 });
 
-/* Water droplets */
-(function(){
-  const layer = document.getElementById('dropletLayer');
-  function rand(min,max){ return Math.random()*(max-min)+min; }
-
-  function spawnDroplet(){
-    const d = document.createElement('div');
-    d.className = 'droplet';
-    d.style.left = rand(0, window.innerWidth) + 'px';
-    d.style.top = rand(-40, -10) + 'px';
-    layer.appendChild(d);
-    setTimeout(()=> d.remove(), 4000);
-  }
-
-  setInterval(spawnDroplet, 120);
-})();
-
-/* Touch-to-Dust Flower */
+/* Black Velvet Flower: 5s visible, 5s hidden, respawn elsewhere */
 (function(){
   const flower = document.getElementById("velvetFlower");
-  const clickSound = new Audio("sounds/click.mp3");
 
   function spawnFlower(){
     const maxX = window.innerWidth - 320;
     const maxY = window.innerHeight - 320;
-
     const x = Math.random() * maxX;
     const y = Math.random() * maxY;
-
     flower.style.left = x + "px";
     flower.style.top = y + "px";
   }
 
-  // Initial spawn
-  spawnFlower();
+  function cycleFlower(){
+    // show flower
+    spawnFlower();
+    flower.style.opacity = "0.35";
+    flower.style.transform = "scale(1)";
 
-  // When cursor touches the flower
-  flower.addEventListener("mouseenter", ()=>{
-    clickSound.currentTime = 0;
-    clickSound.play();
-
-    flower.style.opacity = "0";
-    flower.style.transform = "scale(0.4)";
-
+    // after 5 seconds, fade out
     setTimeout(()=>{
-      spawnFlower();
-      flower.style.opacity = "0.35";
-      flower.style.transform = "scale(1)";
-    }, 250);
-  });
+      flower.style.opacity = "0";
+      flower.style.transform = "scale(0.6)";
+    }, 5000);
+
+    // after another 5 seconds, respawn somewhere else
+    setTimeout(()=>{
+      cycleFlower();
+    }, 10000);
+  }
+
+  // initial cycle
+  cycleFlower();
 
   window.addEventListener("resize", spawnFlower);
 })();
