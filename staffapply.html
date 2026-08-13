@@ -12,9 +12,8 @@
     --accent:#bfa6ff;
     --muted:#9a8fb8;
     --glass: rgba(255,255,255,0.03);
-    --btn-bg: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.3));
-    --btn-border: rgba(255,255,255,0.08);
-    --btn-hover: rgba(255,255,255,0.06);
+    --btn-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.25));
+    --btn-border: rgba(255,255,255,0.06);
     font-family: Inter, system-ui;
   }
 
@@ -23,199 +22,171 @@
     background:var(--bg);
     color:#e9e6ef;
     overflow-x:hidden;
-    position:relative;
   }
 
-  /* OUTSIDE PETALS */
-  .petal-layer{
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    overflow:hidden;
-    z-index:0;
-  }
-
-  .petal{
-    position:absolute;
-    width:38px;
-    height:58px;
-    border-radius:50% 50% 40% 60% / 60% 60% 40% 40%;
-    background:linear-gradient(135deg, rgba(25,25,25,0.95), rgba(15,15,15,0.85) 60%, rgba(60,60,60,0.6));
-    opacity:0.95;
-    filter:drop-shadow(0 6px 18px rgba(0,0,0,0.7));
-    animation:petalFloat 3.2s forwards;
-  }
-
-  @keyframes petalFloat{
-    0%{ transform:translateY(0) rotate(0deg); opacity:1; }
-    100%{ transform:translateY(-240px) rotate(120deg); opacity:0; }
-  }
-
-  /* MAIN WRAPPER */
   .wrap{
     min-height:100vh;
     display:flex;
     align-items:center;
     justify-content:center;
     padding:40px;
-    position:relative;
-    z-index:2;
   }
 
-  /* CARD */
   .card{
     width:980px;
     max-width:96%;
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.22));
-    border-radius:20px;
-    border:1px solid rgba(255,255,255,0.04);
-    box-shadow:0 10px 40px rgba(0,0,0,0.75);
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.18));
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.03);
+    box-shadow:0 10px 40px rgba(0,0,0,0.7);
     display:grid;
-    grid-template-columns:1fr 300px;
+    grid-template-columns:1fr 280px;
+    position:relative;
     overflow:hidden;
   }
 
-  /* MAIN CONTENT */
   .main{
-    padding:40px 42px;
+    padding:34px 36px;
     display:flex;
     flex-direction:column;
-    gap:22px;
+    gap:18px;
+    z-index:2;
+  }
+
+  .sidebar{
+    background:var(--glass);
+    padding:24px;
+    border-left:1px solid rgba(255,255,255,0.03);
+    display:flex;
+    flex-direction:column;
+    gap:16px;
   }
 
   h2{
     margin:0;
-    font-size:22px;
+    font-size:20px;
     color:#efeaf8;
-    font-weight:600;
   }
 
   label{
-    font-size:14px;
+    font-size:13px;
     color:var(--muted);
-    margin-bottom:4px;
-    display:block;
+    margin-top:6px;
   }
 
   input, textarea{
     width:100%;
     background:var(--panel);
-    border:1px solid rgba(255,255,255,0.08);
-    border-radius:10px;
-    padding:12px;
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius:8px;
+    padding:10px;
     color:#e9e6ef;
     font-size:14px;
     resize:none;
-    transition:0.2s;
   }
 
-  input:focus, textarea:focus{
-    border-color:var(--accent);
-    outline:none;
-    box-shadow:0 0 0 2px rgba(191,166,255,0.25);
-  }
+  textarea{ min-height:80px; }
 
-  textarea{ min-height:90px; }
-
-  /* SOFT VELVET BUTTONS */
   .btn{
     border:1px solid var(--btn-border);
     background:var(--btn-bg);
     color:#efeaf8;
-    padding:12px 18px;
-    border-radius:12px;
+    padding:12px 16px;
+    border-radius:10px;
     font-size:14px;
     cursor:pointer;
-    box-shadow:0 6px 18px rgba(0,0,0,0.55);
-    transition:0.22s ease;
-    text-align:center;
+    box-shadow:0 6px 18px rgba(0,0,0,0.5);
+    transition:0.18s;
   }
 
   .btn:hover{
     transform:translateY(-4px);
-    background:var(--btn-hover);
-    box-shadow:0 18px 40px rgba(0,0,0,0.65);
+    box-shadow:0 18px 40px rgba(0,0,0,0.6);
   }
 
-  .btn:active{
-    transform:translateY(1px);
-  }
-
-  /* RADIO GROUP */
   .radio-group{
     display:flex;
     flex-direction:column;
-    gap:8px;
+    gap:6px;
     margin-top:6px;
   }
 
-  /* SIDEBAR */
-  .sidebar{
-    background:var(--glass);
-    padding:30px;
-    border-left:1px solid rgba(255,255,255,0.04);
-    display:flex;
-    flex-direction:column;
-    gap:22px;
+  .footer{
+    margin-top:20px;
+    font-size:12px;
+    color:var(--muted);
   }
 
   .sidebar h3{
     margin:0;
-    font-size:16px;
+    font-size:15px;
     color:#efeaf8;
-    font-weight:600;
   }
 
   .sidebar p{
     font-size:13px;
     color:var(--muted);
-    line-height:1.45;
+    line-height:1.4;
   }
 
   .nav-buttons{
     display:flex;
-    flex-direction:column;
-    gap:12px;
+    gap:8px;
+    flex-wrap:wrap;
   }
 
   .nav-buttons .btn{
-    width:100%;
+    flex:1;
+    text-align:center;
   }
 
-  .footer{
-    margin-top:10px;
-    font-size:12px;
-    color:var(--muted);
+  .petal-layer{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:1;
+  }
+
+  .petal{
+    position:absolute;
+    width:36px;
+    height:56px;
+    border-radius:50% 50% 40% 60% / 60% 60% 40% 40%;
+    background:linear-gradient(135deg, rgba(30,30,30,0.95), rgba(18,18,18,0.85) 60%, rgba(60,60,60,0.6));
+    opacity:0.95;
+    filter:drop-shadow(0 6px 18px rgba(0,0,0,0.6));
+    animation:petalFloat 3s forwards;
+  }
+
+  @keyframes petalFloat{
+    0%{ transform:translateY(0) rotate(0deg); opacity:1; }
+    100%{ transform:translateY(-200px) rotate(120deg); opacity:0; }
   }
 </style>
 </head>
 
 <body>
-
-<!-- OUTSIDE PETALS -->
-<div class="petal-layer" id="petalLayer"></div>
-
 <div class="wrap">
   <div class="card" id="cardRoot">
 
-    <!-- MAIN FORM -->
     <div class="main">
       <h2>Staff Application</h2>
-      <p style="color:var(--muted); font-size:14px;">
-        Apply to join the staff team. Leadership reviews every submission carefully.
-      </p>
+      <p style="color:var(--muted);">Apply to join the staff team. Complete all fields and be honest — leadership reviews every submission.</p>
 
       <label>Discord Tag</label>
       <input placeholder="Username#1234">
+      <small style="color:var(--muted);">Provide the exact tag so we can verify your account.</small>
 
       <label>Age</label>
       <input placeholder="Your age">
+      <small style="color:var(--muted);">Applicants must meet the minimum age requirement for staff roles.</small>
 
       <label>Timezone</label>
       <input placeholder="e.g., UTC-5 / America/Chicago">
 
       <label>Moderation / Staff Experience</label>
-      <textarea placeholder="Describe previous moderation or community management experience"></textarea>
+      <textarea placeholder="Describe previous moderation, community management, or relevant experience"></textarea>
 
       <label>Role applying for</label>
       <div class="radio-group">
@@ -234,25 +205,24 @@
       <label>References (optional)</label>
       <input placeholder="Discord tags or links to previous communities">
 
-      <label style="margin-top:10px;">
-        <input type="checkbox"> I agree to follow all community and staff rules
-      </label>
+      <div style="margin-top:10px;">
+        <label><input type="checkbox"> I have read and agree to follow the community and staff rules</label>
+      </div>
 
-      <div style="margin-top:18px; display:flex; gap:14px;">
-        <button class="btn" style="flex:1;">Submit Application</button>
-        <button class="btn" style="flex:1;">Clear</button>
+      <div style="margin-top:14px; display:flex; gap:10px;">
+        <button class="btn">Submit Application</button>
+        <button class="btn">Clear</button>
+      </div>
+
+      <div class="footer">
+        By submitting you confirm the information is accurate to the best of your knowledge.
       </div>
 
       <div style="margin-top:20px;">
         <button class="btn" onclick="location.href='index.html'">Back to Home</button>
       </div>
-
-      <div class="footer">
-        By submitting you confirm the information is accurate.
-      </div>
     </div>
 
-    <!-- SIDEBAR -->
     <div class="sidebar">
       <div class="nav-buttons">
         <button class="btn" onclick="location.href='rules.html'">Community Rules</button>
@@ -262,46 +232,26 @@
 
       <div>
         <h3>What we look for</h3>
-        <p>Reliability, communication, fairness, and willingness to learn.</p>
+        <p>Reliability, clear communication, fair judgment, and a willingness to learn. Experience is valued but not required for every role.</p>
       </div>
 
       <div>
         <h3>Process</h3>
-        <p>Leadership reviews applications. Expect a response within 7–14 days.</p>
+        <p>Applications are reviewed by leadership. If selected, you'll be invited to an interview and a short probation period. Expect a response within 7–14 days.</p>
       </div>
 
       <div>
         <h3>Privacy</h3>
-        <p>Your application is visible only to leadership and senior staff.</p>
+        <p>Application details are visible only to leadership and senior staff. Sensitive incidents are handled through private channels.</p>
       </div>
 
       <div>
         <h3>Need help?</h3>
-        <p>Message leadership or a senior staff member directly.</p>
+        <p>Contact leadership in the staff channel or message a senior staff member directly.</p>
       </div>
     </div>
 
+    <div class="petal-layer" id="petalLayer"></div>
+
   </div>
-</div>
-
-<script>
-/* Velvet Petal System */
-const layer = document.getElementById("petalLayer");
-
-function spawnPetal(x,y){
-  const p = document.createElement("div");
-  p.className="petal";
-  p.style.left = x+"px";
-  p.style.top = y+"px";
-  layer.appendChild(p);
-  setTimeout(()=>p.remove(),3200);
-}
-
-document.addEventListener("click",e=>{
-  const rect = layer.getBoundingClientRect();
-  spawnPetal(e.clientX - rect.left, e.clientY - rect.top);
-});
-</script>
-
-</body>
-</html>
+</div
