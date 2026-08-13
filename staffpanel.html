@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Black Velvet — Staffpanel</title>
+<title>Black Velvet — Staffpanel + LMS</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
   :root{
@@ -28,7 +28,7 @@
     overflow:hidden;
   }
 
-  /* Page layout */
+  /* Layout */
   .wrap{
     height:100vh;
     display:flex;
@@ -39,7 +39,7 @@
     box-sizing:border-box;
   }
 
-  /* Left column: login */
+  /* Login card */
   .login-card{
     width:420px;
     max-width:92vw;
@@ -53,212 +53,55 @@
     position:relative;
     overflow:visible;
   }
-
   .login-card:hover{ transform: translateY(-6px); box-shadow: 0 18px 60px rgba(0,0,0,0.7); }
 
-  .brand{
-    display:flex;
-    gap:12px;
-    align-items:center;
-    margin-bottom:14px;
-  }
-
-  .brand .logo{
-    width:48px;
-    height:48px;
-    border-radius:10px;
-    background:linear-gradient(135deg,#0b0b0b,#1b1b1b);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.6), 0 0 18px rgba(120,140,160,0.04);
-    border:1px solid rgba(255,255,255,0.03);
-  }
-
+  .brand{ display:flex; gap:12px; align-items:center; margin-bottom:14px; }
+  .brand .logo{ width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg,#0b0b0b,#1b1b1b); display:flex; align-items:center; justify-content:center; box-shadow: 0 6px 18px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.03); }
   .brand h2{ margin:0; font-size:18px; letter-spacing:0.6px; color:var(--accent); }
   .brand p{ margin:0; font-size:12px; color:var(--muted); }
 
-  .field{
-    margin-top:12px;
-  }
-
-  label{
-    display:block;
-    font-size:12px;
-    color:var(--muted);
-    margin-bottom:6px;
-  }
-
+  .field{ margin-top:12px; }
+  label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; }
   input[type="text"], input[type="password"]{
-    width:100%;
-    padding:12px 14px;
-    border-radius:10px;
-    border:1px solid rgba(255,255,255,0.04);
-    background: rgba(0,0,0,0.45);
-    color:var(--text);
-    outline:none;
-    transition: box-shadow .18s, border-color .18s, transform .12s;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
-    font-size:14px;
+    width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.04);
+    background: rgba(0,0,0,0.45); color:var(--text); outline:none; transition: box-shadow .18s, border-color .18s, transform .12s;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); font-size:14px;
   }
+  input:focus{ border-color: rgba(180,200,220,0.18); box-shadow: 0 6px 26px rgba(120,160,200,0.06), 0 0 18px rgba(180,200,220,0.04); transform: translateY(-1px); }
 
-  input:focus{
-    border-color: rgba(180,200,220,0.18);
-    box-shadow: 0 6px 26px rgba(120,160,200,0.06), 0 0 18px rgba(180,200,220,0.04);
-    transform: translateY(-1px);
-  }
-
-  .actions{
-    display:flex;
-    gap:12px;
-    margin-top:16px;
-    align-items:center;
-  }
-
-  .btn{
-    padding:10px 14px;
-    border-radius:10px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-    border:1px solid rgba(255,255,255,0.06);
-    color:var(--accent);
-    font-weight:700;
-    cursor:pointer;
-    transition: transform .12s, box-shadow .12s, background .12s;
-  }
-
+  .actions{ display:flex; gap:12px; margin-top:16px; align-items:center; }
+  .btn{ padding:10px 14px; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); border:1px solid rgba(255,255,255,0.06); color:var(--accent); font-weight:700; cursor:pointer; transition: transform .12s, box-shadow .12s, background .12s; }
   .btn:hover{ transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+  .btn.primary{ background: linear-gradient(180deg, rgba(120,180,220,0.12), rgba(80,140,200,0.08)); border:1px solid rgba(140,190,230,0.12); color: #eaf6ff; }
 
-  .btn.primary{
-    background: linear-gradient(180deg, rgba(120,180,220,0.12), rgba(80,140,200,0.08));
-    border:1px solid rgba(140,190,230,0.12);
-    color: #eaf6ff;
-  }
+  .small{ font-size:13px; color:var(--muted); }
+  .device-id{ margin-top:12px; font-size:13px; color:var(--muted); display:flex; align-items:center; gap:8px; }
+  .device-pill{ padding:6px 10px; border-radius:8px; background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); color:var(--accent); font-weight:700; letter-spacing:1px; font-size:13px; }
 
-  .small{
-    font-size:13px;
-    color:var(--muted);
-  }
-
-  .device-id{
-    margin-top:12px;
-    font-size:13px;
-    color:var(--muted);
-    display:flex;
-    align-items:center;
-    gap:8px;
-  }
-
-  .device-pill{
-    padding:6px 10px;
-    border-radius:8px;
-    background: rgba(255,255,255,0.02);
-    border:1px solid rgba(255,255,255,0.03);
-    color:var(--accent);
-    font-weight:700;
-    letter-spacing:1px;
-    font-size:13px;
-  }
-
-  /* Right column: staffpanel */
-  .panel-wrap{
-    width:760px;
-    max-width:calc(100vw - 64px);
-    border-radius:16px;
-    overflow:hidden;
-    position:relative;
-    transition: transform .28s ease, opacity .28s ease;
-    display:flex;
-    gap:0;
-    align-items:stretch;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-  }
-
-  .panel-left{
-    width:220px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-right:1px solid rgba(255,255,255,0.03);
-    padding:18px;
-    box-sizing:border-box;
-    backdrop-filter: blur(6px);
-  }
-
-  .panel-left .menu{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-  }
-
-  .menu button{
-    display:flex;
-    gap:10px;
-    align-items:center;
-    padding:10px 12px;
-    border-radius:10px;
-    background:transparent;
-    border:1px solid transparent;
-    color:var(--muted);
-    cursor:pointer;
-    text-align:left;
-    transition: all .18s;
-    font-weight:700;
-  }
-
+  /* Staff panel */
+  .panel-wrap{ width:760px; max-width:calc(100vw - 64px); border-radius:16px; overflow:hidden; position:relative; transition: transform .28s ease, opacity .28s ease; display:flex; gap:0; align-items:stretch; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+  .panel-left{ width:220px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-right:1px solid rgba(255,255,255,0.03); padding:18px; box-sizing:border-box; backdrop-filter: blur(6px); }
+  .panel-left .menu{ display:flex; flex-direction:column; gap:10px; }
+  .menu button{ display:flex; gap:10px; align-items:center; padding:10px 12px; border-radius:10px; background:transparent; border:1px solid transparent; color:var(--muted); cursor:pointer; text-align:left; transition: all .18s; font-weight:700; }
   .menu button:hover{ color:var(--accent); transform: translateX(6px); }
-  .menu button.active{
-    color:var(--accent);
-    background: linear-gradient(90deg, rgba(120,180,220,0.06), rgba(80,140,200,0.03));
-    border:1px solid rgba(140,190,230,0.06);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
-  }
+  .menu button.active{ color:var(--accent); background: linear-gradient(90deg, rgba(120,180,220,0.06), rgba(80,140,200,0.03)); border:1px solid rgba(140,190,230,0.06); box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); }
 
-  .panel-main{
-    flex:1;
-    padding:22px;
-    background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.28));
-    color:var(--text);
-    min-height:320px;
-    box-sizing:border-box;
-  }
-
-  .panel-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    margin-bottom:14px;
-  }
-
-  .panel-title{
-    display:flex;
-    gap:12px;
-    align-items:center;
-  }
-
+  .panel-main{ flex:1; padding:22px; background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.28)); color:var(--text); min-height:320px; box-sizing:border-box; }
+  .panel-header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
+  .panel-title{ display:flex; gap:12px; align-items:center; }
   .panel-title h3{ margin:0; font-size:16px; color:var(--accent); }
   .panel-title p{ margin:0; font-size:12px; color:var(--muted); }
+  .relock{ padding:8px 10px; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.04); color:var(--danger); font-weight:800; cursor:pointer; }
 
-  .relock{
-    padding:8px 10px;
-    border-radius:10px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border:1px solid rgba(255,255,255,0.04);
-    color:var(--danger);
-    font-weight:800;
-    cursor:pointer;
-  }
-
-  .card{
-    margin-top:12px;
-    padding:16px;
-    border-radius:12px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border:1px solid rgba(255,255,255,0.03);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-  }
-
+  .card{ margin-top:12px; padding:16px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); box-shadow: 0 8px 30px rgba(0,0,0,0.5); }
   .muted{ color:var(--muted); font-size:13px; }
 
-  /* small responsive */
+  /* LMS tools UI */
+  .lms-form{ display:flex; gap:8px; align-items:center; margin-top:12px; flex-wrap:wrap; }
+  .lms-form input{ padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:rgba(0,0,0,0.35); color:var(--text); }
+  .lms-list{ margin-top:12px; max-height:220px; overflow:auto; border-radius:8px; padding:8px; background:rgba(0,0,0,0.25); }
+
+  /* Petals / cursor visuals kept minimal here (they run in JS) */
   @media (max-width:980px){
     .wrap{ flex-direction:column; align-items:center; justify-content:flex-start; padding-top:28px; gap:18px; }
     .panel-wrap{ width:92vw; }
@@ -268,13 +111,13 @@
 </head>
 <body>
 
+<!-- Page structure -->
 <div class="wrap">
 
   <!-- LOGIN CARD -->
   <div class="login-card" id="loginCard" aria-live="polite">
     <div class="brand">
       <div class="logo" aria-hidden="true">
-        <!-- small decorative flower -->
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" style="opacity:0.95">
           <circle cx="12" cy="12" r="5" fill="#0d0d0d"></circle>
           <g fill="#111">
@@ -362,13 +205,25 @@
 
         <div id="panel2" class="card" style="display:none;">
           <h4 style="margin:0 0 8px 0;">Staff Logs</h4>
-          <p class="muted">Recent login attempts are sent to your webhook. This panel will show a local preview of the last attempts.</p>
+          <p class="muted">Recent login attempts are sent to your webhook. This panel shows a local preview of the last attempts.</p>
           <div id="logPreview" style="margin-top:12px; max-height:220px; overflow:auto; border-radius:8px; padding:8px; background:rgba(0,0,0,0.25);"></div>
         </div>
 
         <div id="panel3" class="card" style="display:none;">
-          <h4 style="margin:0 0 8px 0;">Tools</h4>
-          <p class="muted">Placeholder for staff tools (ban, warn, manage ranks, etc.).</p>
+          <h4 style="margin:0 0 8px 0;">Tools / LMS</h4>
+          <p class="muted">Manage staff accounts locally (LMS). Changes are stored in localStorage. You can optionally push changes to the webhook for audit.</p>
+
+          <!-- LMS form -->
+          <div class="lms-form">
+            <input id="lmsUser" placeholder="username" />
+            <input id="lmsCode" placeholder="code" />
+            <button id="lmsAdd" class="btn">Add / Update</button>
+            <button id="lmsExport" class="btn">Export</button>
+            <button id="lmsImport" class="btn">Import</button>
+            <button id="lmsPush" class="btn">Push to Webhook</button>
+          </div>
+
+          <div class="lms-list" id="lmsList"></div>
         </div>
 
         <div id="panel4" class="card" style="display:none;">
@@ -382,12 +237,14 @@
 
 </div>
 
+<!-- Minimal visual extras (petals, cursor) are created by JS below -->
+
 <script>
 /* ============================
-   Configuration & Accounts
+   Configuration & defaults
    ============================ */
 const WEBHOOK_URL = 'YOUR_WEBHOOK_URL_HERE'; // <-- replace with your webhook URL
-const STAFF_ACCOUNTS = {
+const DEFAULT_ACCOUNTS = {
   "gear10":"9033",
   "luckyy1":"0226",
   "suoaztic":"4423",
@@ -397,27 +254,48 @@ const STAFF_ACCOUNTS = {
   "an4":"4",
   "fin5":"5"
 };
+const STORAGE_KEYS = {
+  deviceHex: 'bv_device_hex',
+  staffAccounts: 'bv_staff_accounts',
+  notes: 'bv_staff_notes',
+  session: 'bv_staff_unlocked'
+};
 
 /* ============================
    Utilities
    ============================ */
-function randHex4(){
-  // deterministic-ish device hex stored in localStorage
-  const existing = localStorage.getItem('bv_device_hex');
-  if(existing) return existing;
-  const hex = Math.floor(Math.random()*0xFFFF).toString(16).toUpperCase().padStart(4,'0');
-  localStorage.setItem('bv_device_hex', hex);
+function rand(min, max){ return Math.random() * (max - min) + min; }
+function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+function nowISO(){ return new Date().toISOString(); }
+
+/* ============================
+   Device hex
+   ============================ */
+function getOrCreateDeviceHex(){
+  let hex = localStorage.getItem(STORAGE_KEYS.deviceHex);
+  if(hex) return hex;
+  hex = Math.floor(Math.random()*0xFFFF).toString(16).toUpperCase().padStart(4,'0');
+  localStorage.setItem(STORAGE_KEYS.deviceHex, hex);
   return hex;
 }
+const DEVICE_HEX = getOrCreateDeviceHex();
 
-function nowISO(){
-  return new Date().toISOString();
+/* ============================
+   Staff accounts (LMS) storage
+   ============================ */
+function loadAccounts(){
+  const raw = localStorage.getItem(STORAGE_KEYS.staffAccounts);
+  if(!raw) {
+    // seed defaults if none exist
+    localStorage.setItem(STORAGE_KEYS.staffAccounts, JSON.stringify(DEFAULT_ACCOUNTS));
+    return Object.assign({}, DEFAULT_ACCOUNTS);
+  }
+  try { return JSON.parse(raw) || {}; } catch(e){ return {}; }
 }
-
-function getBrowserInfo(){
-  const ua = navigator.userAgent;
-  return ua;
+function saveAccounts(obj){
+  localStorage.setItem(STORAGE_KEYS.staffAccounts, JSON.stringify(obj));
 }
+let STAFF_ACCOUNTS = loadAccounts();
 
 /* ============================
    DOM refs
@@ -442,75 +320,80 @@ const loggedDevice = document.getElementById('loggedDevice');
 const panelDevice = document.getElementById('panelDevice');
 const logPreview = document.getElementById('logPreview');
 
-/* ============================
-   Device hex + UI init
-   ============================ */
-const DEVICE_HEX = randHex4();
-devicePill.textContent = DEVICE_HEX;
-panelDevice.textContent = DEVICE_HEX;
+/* LMS elements */
+const lmsUser = document.getElementById('lmsUser');
+const lmsCode = document.getElementById('lmsCode');
+const lmsAdd = document.getElementById('lmsAdd');
+const lmsExport = document.getElementById('lmsExport');
+const lmsImport = document.getElementById('lmsImport');
+const lmsPush = document.getElementById('lmsPush');
+const lmsList = document.getElementById('lmsList');
+
+/* Notes */
+const staffNotes = document.getElementById('staffNotes');
 
 /* ============================
-   Session unlock persistence
+   Session persistence
    ============================ */
-const SESSION_KEY = 'bv_staff_unlocked';
 function setUnlocked(username){
-  sessionStorage.setItem(SESSION_KEY, JSON.stringify({user:username, time:Date.now()}));
+  sessionStorage.setItem(STORAGE_KEYS.session, JSON.stringify({user:username, time:Date.now()}));
 }
 function clearUnlocked(){
-  sessionStorage.removeItem(SESSION_KEY);
+  sessionStorage.removeItem(STORAGE_KEYS.session);
 }
 function getUnlocked(){
-  try{
-    return JSON.parse(sessionStorage.getItem(SESSION_KEY));
-  }catch(e){ return null; }
+  try{ return JSON.parse(sessionStorage.getItem(STORAGE_KEYS.session)); } catch(e){ return null; }
 }
 
 /* ============================
-   Webhook logging (same data, prettier payload)
+   Webhook logging (embed-like)
+   - Attempts to POST to webhook; if blocked by CORS, we still keep local preview.
    ============================ */
-async function sendWebhookAttempt({username, code, success, reason}){
-  // Build a clean, readable payload (Discord webhook embed-like plain text)
-  const payload = {
-    content: null,
-    embeds: [{
-      title: "🖤 Black Velvet Staff Login",
-      color: success ? 3066993 : 15158332,
-      fields: [
-        { name: "User", value: username || "—", inline: true },
-        { name: "Code", value: code ? String(code) : "—", inline: true },
-        { name: "Device Hex", value: DEVICE_HEX, inline: true },
-        { name: "Status", value: success ? "SUCCESS" : `FAIL — ${reason || 'invalid'}`, inline: true },
-        { name: "Time", value: new Date().toLocaleString(), inline: true },
-        { name: "Browser UA", value: navigator.userAgent || "—", inline: false }
-      ],
-      footer: { text: "Black Velvet • Staffpanel" },
-      timestamp: new Date().toISOString()
-    }]
+async function sendWebhookAttempt({username, code, success, reason, extra}){
+  const embed = {
+    title: "🖤 Black Velvet Staff Login",
+    color: success ? 3066993 : 15158332,
+    fields: [
+      { name: "User", value: username || "—", inline: true },
+      { name: "Code", value: code ? String(code) : "—", inline: true },
+      { name: "Device Hex", value: DEVICE_HEX, inline: true },
+      { name: "Status", value: success ? "SUCCESS" : `FAIL — ${reason || 'invalid'}`, inline: true },
+      { name: "Time", value: new Date().toLocaleString(), inline: true },
+      { name: "Browser UA", value: navigator.userAgent || "—", inline: false }
+    ],
+    footer: { text: "Black Velvet • Staffpanel" },
+    timestamp: new Date().toISOString()
   };
 
-  // Try to send; swallow errors but show local preview
-  try{
-    await fetch(WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-  }catch(e){
-    // network/CORS may block; still continue
-    console.warn('Webhook send failed', e);
-  }
-
-  // Add to local preview
+  // local preview entry
   const entry = document.createElement('div');
   entry.style.padding = '8px';
   entry.style.borderBottom = '1px dashed rgba(255,255,255,0.03)';
   entry.innerHTML = `<div style="font-weight:700;color:${success ? '#7be495' : '#ff9b9b'}">${username || '—'} — ${success ? 'SUCCESS' : 'FAIL'}</div>
                      <div style="font-size:12px;color:var(--muted)">${new Date().toLocaleString()} • Device ${DEVICE_HEX} • ${reason || ''}</div>`;
   logPreview.prepend(entry);
+
+  // attempt to send to webhook if configured
+  if(!WEBHOOK_URL || WEBHOOK_URL === 'YOUR_WEBHOOK_URL_HERE'){
+    console.warn('Webhook not configured; skipping send.');
+    return;
+  }
+
+  try{
+    const res = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ embeds: [embed] })
+    });
+    // log status in console for debugging
+    console.log('Webhook status', res.status);
+  }catch(err){
+    console.warn('Webhook send failed (likely CORS or network).', err);
+  }
 }
 
 /* ============================
-   Login logic (same checks)
+   Login logic
    ============================ */
 function attemptLogin(){
   const user = (usernameInput.value || '').trim();
@@ -524,7 +407,6 @@ function attemptLogin(){
   const expected = STAFF_ACCOUNTS[user];
   const success = expected && expected === code;
 
-  // send webhook (fire-and-forget)
   sendWebhookAttempt({ username: user, code, success, reason: success ? 'OK' : 'Invalid credentials' });
 
   if(success){
@@ -533,35 +415,29 @@ function attemptLogin(){
     showStaffPanel(user);
   } else {
     statusText.textContent = 'Invalid credentials';
-    // small shake animation
     loginCard.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-8px)' }, { transform: 'translateX(8px)' }, { transform: 'translateX(0)' }], { duration: 360 });
   }
 }
 
 /* ============================
-   Show / hide staffpanel (prettier animation)
+   Show / hide staffpanel
    ============================ */
 function showStaffPanel(user){
-  // populate UI
   loggedUser.textContent = user;
   loggedDevice.textContent = DEVICE_HEX;
 
-  // reveal panel with smooth animation
   staffPanel.style.pointerEvents = 'auto';
   staffPanel.style.opacity = '1';
   staffPanel.style.transform = 'translateY(0)';
   panelWrap.style.opacity = '1';
   panelWrap.style.transform = 'translateY(0)';
 
-  // subtle background dim of login card
   loginCard.style.opacity = '0.85';
   loginCard.style.filter = 'blur(0.2px)';
 
-  // ensure first panel active
   activatePanel('panel1');
 }
 
-/* hide staffpanel */
 function hideStaffPanel(){
   staffPanel.style.pointerEvents = 'none';
   staffPanel.style.opacity = '0';
@@ -575,18 +451,14 @@ function hideStaffPanel(){
    Panel switching
    ============================ */
 function activatePanel(id){
-  // hide all
   document.querySelectorAll('#panelContent > div').forEach(d => d.style.display = 'none');
   const el = document.getElementById(id);
   if(el) el.style.display = 'block';
-
-  // update menu active
   menuButtons.forEach(b => b.classList.toggle('active', b.dataset.panel === id));
-  // update header
   const titleMap = {
     panel1: ['Dashboard','Overview & quick actions'],
     panel2: ['Staff Logs','Recent login attempts'],
-    panel3: ['Tools','Staff utilities (coming soon)'],
+    panel3: ['Tools','Staff utilities (LMS)'],
     panel4: ['Notes','Local staff notes']
   };
   const t = titleMap[id] || ['Panel',''];
@@ -611,22 +483,143 @@ menuButtons.forEach(btn=>{
 });
 
 /* ============================
-   On load: check session
+   On load: restore session, UI init
    ============================ */
 window.addEventListener('load', ()=>{
   const unlocked = getUnlocked();
   if(unlocked && unlocked.user){
-    // restore unlocked state
     showStaffPanel(unlocked.user);
     statusText.textContent = `Restored session for ${unlocked.user}`;
   } else {
-    // keep panel hidden
     hideStaffPanel();
   }
 
-  // show device hex in UI
   devicePill.textContent = DEVICE_HEX;
   panelDevice.textContent = DEVICE_HEX;
+
+  // load notes
+  const notes = localStorage.getItem(STORAGE_KEYS.notes);
+  if(notes) staffNotes.value = notes;
+
+  // render LMS list
+  renderLmsList();
+});
+
+/* ============================
+   Notes persistence
+   ============================ */
+staffNotes.addEventListener('input', (e)=>{
+  localStorage.setItem(STORAGE_KEYS.notes, e.target.value);
+});
+
+/* ============================
+   LMS (Local Management System) functions
+   - add/update accounts
+   - export/import
+   - push to webhook (audit)
+   ============================ */
+function renderLmsList(){
+  STAFF_ACCOUNTS = loadAccounts();
+  lmsList.innerHTML = '';
+  const keys = Object.keys(STAFF_ACCOUNTS).sort((a,b)=> a.localeCompare(b));
+  if(keys.length === 0){
+    lmsList.innerHTML = '<div class="muted">No accounts configured.</div>';
+    return;
+  }
+  keys.forEach(u=>{
+    const row = document.createElement('div');
+    row.style.display = 'flex';
+    row.style.justifyContent = 'space-between';
+    row.style.alignItems = 'center';
+    row.style.padding = '8px';
+    row.style.borderBottom = '1px dashed rgba(255,255,255,0.03)';
+    row.innerHTML = `<div style="font-weight:700">${u}</div><div style="display:flex;gap:8px;align-items:center">
+      <div class="muted" style="font-size:13px">● ${String(STAFF_ACCOUNTS[u])}</div>
+      <button data-user="${u}" class="btn smallBtn" style="padding:6px 8px;border-radius:8px;">Edit</button>
+      <button data-user="${u}" class="btn delBtn" style="padding:6px 8px;border-radius:8px;background:rgba(255,80,80,0.06);">Delete</button>
+    </div>`;
+    lmsList.appendChild(row);
+  });
+
+  // attach handlers
+  Array.from(lmsList.querySelectorAll('.smallBtn')).forEach(b=>{
+    b.addEventListener('click', (e)=>{
+      const u = e.currentTarget.dataset.user;
+      lmsUser.value = u;
+      lmsCode.value = STAFF_ACCOUNTS[u];
+    });
+  });
+  Array.from(lmsList.querySelectorAll('.delBtn')).forEach(b=>{
+    b.addEventListener('click', (e)=>{
+      const u = e.currentTarget.dataset.user;
+      if(confirm(`Delete account ${u}?`)){
+        delete STAFF_ACCOUNTS[u];
+        saveAccounts(STAFF_ACCOUNTS);
+        renderLmsList();
+      }
+    });
+  });
+}
+
+lmsAdd.addEventListener('click', ()=>{
+  const u = (lmsUser.value || '').trim();
+  const c = (lmsCode.value || '').trim();
+  if(!u || !c){ alert('Enter username and code'); return; }
+  STAFF_ACCOUNTS[u] = c;
+  saveAccounts(STAFF_ACCOUNTS);
+  renderLmsList();
+  lmsUser.value = '';
+  lmsCode.value = '';
+});
+
+lmsExport.addEventListener('click', ()=>{
+  const data = JSON.stringify(STAFF_ACCOUNTS, null, 2);
+  // create a downloadable blob
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'bv_staff_accounts.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+
+lmsImport.addEventListener('click', ()=>{
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json';
+  input.addEventListener('change', (ev)=>{
+    const file = ev.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(){ 
+      try{
+        const obj = JSON.parse(reader.result);
+        if(typeof obj === 'object'){
+          STAFF_ACCOUNTS = Object.assign({}, STAFF_ACCOUNTS, obj);
+          saveAccounts(STAFF_ACCOUNTS);
+          renderLmsList();
+          alert('Imported accounts (merged).');
+        } else alert('Invalid file.');
+      }catch(e){ alert('Invalid JSON file.'); }
+    };
+    reader.readAsText(file);
+  });
+  input.click();
+});
+
+lmsPush.addEventListener('click', async ()=>{
+  if(!confirm('Push current accounts to webhook for audit?')) return;
+  // send a single webhook with the accounts snapshot
+  const snapshot = Object.entries(STAFF_ACCOUNTS).map(([u,c])=> `${u}: ${c}`).join('\n');
+  try{
+    await sendWebhookAttempt({ username: 'LMS_PUSH', code: '—', success: true, reason: 'LMS snapshot', extra: snapshot });
+    alert('Pushed snapshot to webhook (attempted).');
+  }catch(e){
+    alert('Push attempted; check console for errors.');
+  }
 });
 
 /* ============================
@@ -635,25 +628,189 @@ window.addEventListener('load', ()=>{
 setTimeout(()=> usernameInput.focus(), 300);
 
 /* ============================
-   Keep local log preview size reasonable
+   Visual extras: falling leaf-like petals
+   (keeps the page lively; purely decorative)
    ============================ */
 (function(){
-  // load any saved notes
-  const notes = localStorage.getItem('bv_staff_notes');
-  if(notes) document.getElementById('staffNotes').value = notes;
+  const spawnInterval = 260;
+  const life = 6000;
+  function spawnPetal(){
+    const p = document.createElement('div');
+    p.className = 'falling-petal';
+    p.style.position = 'absolute';
+    p.style.width = (rand(28,44)) + 'px';
+    p.style.height = (rand(40,64)) + 'px';
+    p.style.borderRadius = '50% 50% 40% 60%';
+    p.style.background = 'linear-gradient(135deg, rgba(34,34,34,0.98), rgba(64,64,64,0.88))';
+    p.style.left = rand(0, window.innerWidth) + 'px';
+    p.style.top = '-80px';
+    p.style.opacity = '0.95';
+    const sway = rand(20, 140) + 'px';
+    const startRot = rand(-40,40) + 'deg';
+    const startScale = rand(0.85,1.15).toFixed(2);
+    p.style.setProperty('--start-x', rand(-40,40) + 'px');
+    p.style.setProperty('--sway', sway);
+    p.style.setProperty('--start-rot', startRot);
+    p.style.setProperty('--start-scale', startScale);
+    const duration = rand(3.8, 6.2).toFixed(2) + 's';
+    p.style.transition = `transform ${duration} linear, opacity ${duration} linear`;
+    document.body.appendChild(p);
 
-  document.getElementById('staffNotes').addEventListener('input', (e)=>{
-    localStorage.setItem('bv_staff_notes', e.target.value);
-  });
+    // animate using JS for more natural motion
+    const start = performance.now();
+    const dur = parseFloat(duration) * 1000;
+    const left0 = parseFloat(p.style.left);
+    const swayVal = parseFloat(sway);
+    function anim(now){
+      const t = clamp((now - start) / dur, 0, 1);
+      const y = -80 + t * (window.innerHeight + 160);
+      const swayPhase = Math.sin(t * Math.PI * (1 + rand(0.2,1.6)));
+      const x = left0 + swayVal * swayPhase;
+      const rot = parseFloat(startRot) + t * 40;
+      p.style.transform = `translate(${x - left0}px, ${y}px) rotate(${rot}deg) scale(${startScale})`;
+      p.style.opacity = String(1 - t);
+      if(t < 1) requestAnimationFrame(anim);
+      else if(p.parentNode) p.parentNode.removeChild(p);
+    }
+    requestAnimationFrame(anim);
+  }
+  setInterval(spawnPetal, spawnInterval);
+  for(let i=0;i<6;i++) setTimeout(spawnPetal, i*120);
 })();
 
 /* ============================
-   Optional: graceful fallback if webhook not set
+   Cursor water trail (subtle)
+   ============================ */
+(function(){
+  let last = {x: window.innerWidth/2, y: window.innerHeight/2};
+  const spacing = 10;
+  document.addEventListener('mousemove', e=>{
+    const dx = e.clientX - last.x;
+    const dy = e.clientY - last.y;
+    const dist = Math.hypot(dx, dy);
+    if(dist > spacing){
+      const steps = Math.ceil(dist / spacing);
+      for(let i=0;i<steps;i++){
+        const t = (i+1)/steps;
+        const bx = last.x + dx * t;
+        const by = last.y + dy * t;
+        createWaterBlob(bx, by, dx, dy);
+      }
+      last.x = e.clientX;
+      last.y = e.clientY;
+    }
+  });
+
+  function createWaterBlob(x, y, dx, dy){
+    const blob = document.createElement('div');
+    blob.className = 'cursor-water';
+    blob.style.position = 'absolute';
+    const speed = Math.hypot(dx, dy);
+    const size = clamp(8 + speed * 0.4, 8, 34);
+    blob.style.width = size + 'px';
+    blob.style.height = size + 'px';
+    const offsetX = -dx * 0.02 + rand(-6,6);
+    const offsetY = -dy * 0.02 + rand(-6,6);
+    blob.style.left = (x + offsetX - size/2) + 'px';
+    blob.style.top = (y + offsetY - size/2) + 'px';
+    blob.style.borderRadius = '50%';
+    blob.style.background = 'radial-gradient(circle at 35% 30%, rgba(170,180,200,0.85), rgba(80,80,100,0.12))';
+    blob.style.filter = 'blur(4px)';
+    blob.style.opacity = '0.9';
+    blob.style.zIndex = '99998';
+    document.body.appendChild(blob);
+    requestAnimationFrame(()=>{ blob.style.transform = 'scale(1.8)'; blob.style.opacity = '0'; });
+    setTimeout(()=> { if(blob.parentNode) blob.parentNode.removeChild(blob); }, 700 + rand(0,200));
+  }
+})();
+
+/* ============================
+   Water ripple + droplets on background click
+   ============================ */
+(function(){
+  document.addEventListener('click', e=>{
+    // ignore clicks on UI elements
+    if(e.target.closest('.btn') || e.target.closest('a') || e.target.closest('input') || e.target.closest('textarea')) return;
+    const cx = e.clientX;
+    const cy = e.clientY;
+
+    for(let i=0;i<3;i++){
+      const ring = document.createElement('div');
+      ring.className = 'ripple-ring';
+      const baseSize = 60 + i*48;
+      ring.style.width = baseSize + 'px';
+      ring.style.height = baseSize + 'px';
+      ring.style.left = (cx - baseSize/2) + 'px';
+      ring.style.top = (cy - baseSize/2) + 'px';
+      ring.style.opacity = (0.9 - i*0.18).toString();
+      ring.style.transition = `transform ${0.9 + i*0.12}s cubic-bezier(.2,.8,.2,1), opacity ${0.9 + i*0.12}s ease-out`;
+      ring.style.position = 'absolute';
+      ring.style.zIndex = '99997';
+      ring.style.borderRadius = '50%';
+      ring.style.boxShadow = '0 0 18px rgba(160,170,190,0.12), inset 0 0 8px rgba(255,255,255,0.02)';
+      ring.style.border = '1px solid rgba(180,190,210,0.06)';
+      ring.style.background = 'radial-gradient(circle, rgba(200,210,230,0.06), rgba(80,80,100,0))';
+      document.body.appendChild(ring);
+
+      setTimeout(()=>{ ring.style.transform = 'scale(3.2)'; ring.style.opacity = '0'; }, 30 + i*90);
+      setTimeout(()=> { if(ring.parentNode) ring.parentNode.removeChild(ring); }, 1200 + i*200);
+    }
+
+    const drops = Math.round(rand(6,12));
+    for(let i=0;i<drops;i++) spawnWaterDrop(cx, cy);
+  });
+
+  function spawnWaterDrop(cx, cy){
+    const drop = document.createElement('div');
+    drop.className = 'water-drop';
+    const size = rand(6,10);
+    drop.style.width = size + 'px';
+    drop.style.height = size + 'px';
+    drop.style.position = 'absolute';
+    drop.style.zIndex = '99999';
+    const startX = cx + rand(-22,22);
+    const startY = cy + rand(-8,8);
+    drop.style.left = (startX - size/2) + 'px';
+    drop.style.top = (startY - size/2) + 'px';
+    drop.style.borderRadius = '50%';
+    drop.style.background = 'linear-gradient(180deg, rgba(220,230,250,0.95), rgba(120,130,160,0.6))';
+    document.body.appendChild(drop);
+
+    const rise = rand(28, 90);
+    const horiz = rand(-48, 48);
+    const duration = rand(700, 1200);
+    const start = performance.now();
+    function animate(now){
+      const t = clamp((now - start) / duration, 0, 1);
+      const easeUp = 1 - Math.pow(1 - t, 3);
+      const y = startY - rise * easeUp + (t * t * 18);
+      const x = startX + horiz * easeUp;
+      drop.style.left = (x - size/2) + 'px';
+      drop.style.top = (y - size/2) + 'px';
+      drop.style.opacity = String(1 - t);
+      if(t < 1) requestAnimationFrame(animate);
+      else if(drop.parentNode) drop.parentNode.removeChild(drop);
+    }
+    requestAnimationFrame(animate);
+  }
+})();
+
+/* ============================
+   Final: small safety hint if webhook not set
    ============================ */
 if(!WEBHOOK_URL || WEBHOOK_URL === 'YOUR_WEBHOOK_URL_HERE'){
-  // show a small hint in status
   statusText.textContent = 'Webhook not configured — replace WEBHOOK_URL in script';
 }
+
+/* ============================
+   Expose some debug helpers to console (optional)
+   ============================ */
+window._bv = {
+  DEVICE_HEX,
+  getAccounts: ()=> loadAccounts(),
+  saveAccounts: (o)=> { saveAccounts(o); STAFF_ACCOUNTS = o; renderLmsList(); },
+  sendWebhookAttempt
+};
 </script>
 </body>
 </html>
