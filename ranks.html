@@ -3,22 +3,22 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Black Velvet Clan — Ranks</title>
+<title>Black Velvet Clan — Staff Directory & Ranks</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-1: #07060a;
-    --bg-2: #0b0b12;
-    --card: rgba(255,255,255,0.03);
+    --bg-1:#05050a;
+    --bg-2:#0b0b12;
+    --card:#0f1720;
+    --muted:#9aa4b2;
+    --accent:#4da6ff;
+    --accent-2:#7be495;
+    --accent-3:#ff7aa2;
+    --gold:#ffd166;
+    --danger:#ff6b6b;
     --glass: rgba(255,255,255,0.02);
-    --muted: #9aa4b2;
-    --accent-1: #7be495;
-    --accent-2: #4da6ff;
-    --accent-3: #ff7aa2;
-    --gold: #ffd166;
-    --radius: 14px;
+    --radius:14px;
     --max-width:1200px;
-    --glow: 0 12px 40px rgba(77,166,255,0.08);
   }
 
   html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg-1) 0%, var(--bg-2) 100%);color:#eaf2ff;font-family:Inter,system-ui,Arial,sans-serif;-webkit-font-smoothing:antialiased}
@@ -28,7 +28,7 @@
   .brand{display:flex;align-items:center;gap:14px}
   .logo{
     width:64px;height:64px;border-radius:12px;
-    background:linear-gradient(135deg,var(--accent-2),#6fb8ff);
+    background:linear-gradient(135deg,var(--accent),#6fb8ff);
     display:flex;align-items:center;justify-content:center;font-weight:800;color:#071022;font-family:Montserrat,Inter;
     font-size:20px;box-shadow:0 10px 30px rgba(77,166,255,0.08);
   }
@@ -37,69 +37,60 @@
 
   .controls{display:flex;gap:10px;align-items:center}
   .btn {
-    padding:10px 14px;border-radius:10px;font-weight:700;text-decoration:none;color:#071022;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));border:none;cursor:pointer;
-    box-shadow:var(--glow);transition:transform .14s ease, box-shadow .14s ease;
+    padding:10px 14px;border-radius:10px;font-weight:700;text-decoration:none;color:#071022;background:linear-gradient(90deg,var(--accent),var(--accent-2));border:none;cursor:pointer;
+    box-shadow:0 12px 40px rgba(77,166,255,0.08);transition:transform .14s ease, box-shadow .14s ease;
   }
   .btn.ghost { background:transparent;color:var(--muted);box-shadow:none;border:1px solid rgba(255,255,255,0.03) }
   .btn:hover{transform:translateY(-4px)}
 
-  /* Hero */
-  .hero{
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius:var(--radius); padding:22px; display:flex; gap:18px; align-items:center; box-shadow:0 12px 40px rgba(2,6,23,0.6); border:1px solid rgba(255,255,255,0.03);
+  /* Layout */
+  .grid{display:grid;grid-template-columns:1fr 420px;gap:22px}
+  @media (max-width:980px){ .grid{grid-template-columns:1fr} .controls{width:100%;justify-content:flex-end} }
+
+  /* Staff Directory */
+  .staff-panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:var(--radius);border:1px solid rgba(255,255,255,0.03);box-shadow:0 12px 40px rgba(2,6,23,0.6)}
+  .intro{display:flex;gap:14px;align-items:flex-start}
+  .intro .text{flex:1}
+  .intro p{margin:6px 0;color:var(--muted)}
+  .role-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:18px}
+  @media (max-width:700px){ .role-list{grid-template-columns:1fr} }
+
+  .role-card{
+    display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border:1px solid rgba(255,255,255,0.02)
   }
-  .hero-left{flex:1}
-  .hero-right{width:220px;text-align:right}
-  .hero h2{margin:0;font-family:Montserrat;font-size:18px}
-  .hero p{margin:8px 0 0;color:var(--muted);font-size:13px}
-
-  /* Ranks grid */
-  .ranks-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}
-  .rank-card{
-    position:relative; overflow:hidden;
-    border-radius:14px;padding:18px;
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border:1px solid rgba(255,255,255,0.03);
-    transition:transform .18s cubic-bezier(.2,.9,.3,1), box-shadow .18s ease;
+  .role-image{
+    width:84px;height:84px;border-radius:10px;background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;font-weight:800;color:#071022;font-family:Montserrat;
+    font-size:14px;box-shadow:0 8px 30px rgba(0,0,0,0.5)
   }
-  .rank-card:hover{ transform:translateY(-8px); box-shadow:0 30px 60px rgba(2,6,23,0.6) }
+  .role-body{flex:1}
+  .role-title{font-weight:800;font-size:15px;margin:0}
+  .role-sub{color:var(--muted);font-size:13px;margin-top:6px}
+  .role-meta{margin-top:10px;color:var(--muted);font-size:13px}
 
-  .rank-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .rank-badge{
-    display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;font-weight:800;font-family:Montserrat;
-    color:#071022;font-size:13px;
+  /* Chat sample line */
+  .chat-line{margin-top:10px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.02);font-size:13px;color:var(--muted)}
+  .chat-author{color:var(--accent-2);font-weight:700;margin-right:8px}
+
+  /* Important notice */
+  .notice{
+    margin-top:16px;padding:14px;border-radius:12px;background:linear-gradient(90deg, rgba(77,166,255,0.06), rgba(123,228,149,0.03));border-left:4px solid var(--accent);color:#eaf2ff;font-weight:700;
   }
-  .badge-elite{background:linear-gradient(90deg,var(--gold),#ffd88a); box-shadow:0 8px 30px rgba(255,209,102,0.08)}
-  .badge-core{background:linear-gradient(90deg,var(--accent-1),#9ff3c9)}
-  .badge-regular{background:linear-gradient(90deg,var(--accent-2),#8fc9ff)}
+  .notice small{display:block;font-weight:400;color:var(--muted);margin-top:8px;font-size:13px}
 
-  .rank-name{font-weight:800;font-size:16px;margin-top:12px}
-  .rank-desc{color:var(--muted);font-size:13px;margin-top:8px}
+  /* Clan Ranks */
+  .ranks-panel{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));padding:18px;border-radius:var(--radius);border:1px solid rgba(255,255,255,0.03);box-shadow:0 12px 40px rgba(2,6,23,0.6)}
+  .ranks-grid{display:grid;grid-template-columns:1fr;gap:12px}
+  .rank-card{display:flex;gap:14px;align-items:center;padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border:1px solid rgba(255,255,255,0.02)}
+  .rank-image{width:96px;height:96px;border-radius:10px;background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;font-weight:800;color:#071022;font-family:Montserrat;font-size:14px}
+  .rank-body{flex:1}
+  .rank-name{font-weight:800;font-size:16px;margin:0}
+  .rank-desc{color:var(--muted);margin-top:6px;font-size:14px}
+  .rank-note{margin-top:10px;color:var(--muted);font-size:13px}
 
-  .features{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-  .feature{background:var(--glass);padding:8px 10px;border-radius:8px;font-size:13px;color:var(--muted);border:1px solid rgba(255,255,255,0.02)}
+  .tryout{margin-top:12px;padding:12px;border-radius:10px;background:linear-gradient(90deg, rgba(255,209,102,0.06), rgba(255,122,162,0.03));border-left:4px solid var(--gold);font-weight:800;color:#fff}
+  .tryout small{display:block;color:var(--muted);font-weight:400;margin-top:8px}
 
-  .progress{
-    height:8px;background:rgba(255,255,255,0.03);border-radius:999px;margin-top:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.02)
-  }
-  .progress > i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));box-shadow:0 6px 18px rgba(77,166,255,0.08)}
-
-  .rank-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
-  .cta { padding:8px 12px;border-radius:10px;background:linear-gradient(90deg,var(--accent-2),#6fb8ff);color:#071022;font-weight:800;text-decoration:none }
-  .muted{color:var(--muted);font-size:13px}
-
-  /* Accent visuals */
-  .glow-blob{
-    position:absolute;right:-30px;top:-30px;width:220px;height:220px;border-radius:50%;
-    filter:blur(36px);opacity:0.12;pointer-events:none;
-  }
-  .blob-1{background:linear-gradient(90deg,var(--accent-2),#6fb8ff)}
-  .blob-2{background:linear-gradient(90deg,var(--accent-1),#9ff3c9)}
-  .blob-3{background:linear-gradient(90deg,var(--accent-3),#ff9ccf)}
-
-  /* Responsive */
-  @media (max-width:1100px){ .ranks-grid{grid-template-columns:repeat(2,1fr)} .hero-right{display:none} }
-  @media (max-width:700px){ .ranks-grid{grid-template-columns:1fr} .logo{width:52px;height:52px;font-size:16px} header{flex-direction:column;align-items:flex-start} .controls{width:100%;justify-content:flex-end} }
+  footer{margin-top:22px;color:var(--muted);font-size:13px;text-align:center}
 </style>
 </head>
 <body>
@@ -108,194 +99,158 @@
       <div class="brand">
         <div class="logo">BV</div>
         <div>
-          <h1>Ranks — Black Velvet Clan</h1>
-          <div class="subtitle">A clear, stylish progression system. Look sharp, play sharp.</div>
+          <h1>Staff Directory & Clan Ranks</h1>
+          <div class="subtitle">Who runs Black Velvet and how ranks work — clear, concise, and official.</div>
         </div>
       </div>
 
-      <div class="controls" aria-hidden="false">
-        <a class="btn" href="index.html" title="Back to Home">Back to Home</a>
-        <a class="btn ghost" href="staffrules.html" title="Staff Rules" style="background:transparent;color:var(--muted);box-shadow:none;border:1px solid rgba(255,255,255,0.03)">Staff Rules</a>
+      <div class="controls">
+        <a class="btn ghost" href="rules.html">Community Rules</a>
+        <a class="btn" href="index.html">Back to Home</a>
       </div>
     </header>
 
-    <section class="hero" aria-labelledby="ranksHero">
-      <div class="hero-left">
-        <h2 id="ranksHero">Rank tiers designed to reward contribution and skill</h2>
-        <p>Each rank includes perks, responsibilities, and a clear path to the next tier. Earn your stripes through activity, conduct, and community leadership.</p>
-      </div>
-      <div class="hero-right">
-        <div style="font-weight:800;font-family:Montserrat;font-size:13px">Quick guide</div>
-        <div class="subtitle" style="margin-top:8px">Core ranks for members, elite ranks for leaders, and special tags for contributors.</div>
-      </div>
-    </section>
-
-    <section class="ranks-grid" aria-label="Ranks list">
-      <!-- Elite Rank -->
-      <article class="rank-card" aria-labelledby="rank-elite">
-        <div class="glow-blob blob-1" style="opacity:0.12"></div>
-        <div class="rank-top">
-          <div class="rank-badge badge-elite">ELITE</div>
-          <div class="muted">Top tier</div>
+    <div class="grid" role="main">
+      <!-- Left: Staff Directory -->
+      <section class="staff-panel" aria-labelledby="staffHeading">
+        <div class="intro">
+          <div class="text">
+            <strong id="staffHeading" style="font-size:16px">Welcome to the Black Velvet Clan Staff Directory</strong>
+            <p>This section explains the roles that keep the server organized, safe, and evolving. Each position carries responsibility — together they form the backbone of the community.</p>
+          </div>
         </div>
 
-        <div class="rank-name" id="rank-elite">Founder / Council</div>
-        <div class="rank-desc">Leadership tier. Full permissions, event oversight, and final decision authority on major matters.</div>
+        <div class="role-list" role="list">
+          <!-- Founders -->
+          <article class="role-card" role="listitem" aria-labelledby="foundersTitle">
+            <div class="role-image" aria-hidden="true">Image</div>
+            <div class="role-body">
+              <div id="foundersTitle" class="role-title">FOUNDERS</div>
+              <div class="role-sub">The creators and builders of the clan.</div>
+              <div class="role-meta">Founders focus on development, adding new features, fixing bugs, and improving the server’s systems. They are the architects behind everything that makes Black Velvet run smoothly.</div>
+            </div>
+          </article>
 
-        <div class="features" aria-hidden="false">
-          <div class="feature">Full staff access</div>
-          <div class="feature">Event scheduling</div>
-          <div class="feature">Policy control</div>
+          <!-- President -->
+          <article class="role-card" role="listitem" aria-labelledby="presTitle">
+            <div class="role-image" aria-hidden="true">Image</div>
+            <div class="role-body">
+              <div id="presTitle" class="role-title">PRESIDENT</div>
+              <div class="role-sub">Leaders in charge of the entire server.</div>
+              <div class="role-meta">Presidents oversee operations, make executive decisions, and ensure the clan’s vision stays strong. They handle major updates, partnerships, and community direction.</div>
+            </div>
+          </article>
+
+          <!-- Admin -->
+          <article class="role-card" role="listitem" aria-labelledby="adminTitle">
+            <div class="role-image" aria-hidden="true">Image</div>
+            <div class="role-body">
+              <div id="adminTitle" class="role-title">ADMIN</div>
+              <div class="role-sub">Managers who keep everything functioning correctly.</div>
+              <div class="role-meta">Admins supervise staff, handle issues, and make sure the server stays organized and active. They bridge leadership and moderation, maintaining balance and order.</div>
+            </div>
+          </article>
+
+          <!-- Mods -->
+          <article class="role-card" role="listitem" aria-labelledby="modsTitle">
+            <div class="role-image" aria-hidden="true">Image</div>
+            <div class="role-body">
+              <div id="modsTitle" class="role-title">MODS</div>
+              <div class="role-sub">The Moderators of the server.</div>
+              <div class="role-meta">Moderators enforce rules, manage tickets, and keep the community safe from troublemakers. Moderators are the watchers of Black Velvet — they make sure the server is safe.</div>
+              <div class="chat-line"><span class="chat-author">Rin</span> — Yesterday at 3:04 AM</div>
+            </div>
+          </article>
+
+          <!-- Helper -->
+          <article class="role-card" role="listitem" aria-labelledby="helperTitle">
+            <div class="role-image" aria-hidden="true">Image</div>
+            <div class="role-body">
+              <div id="helperTitle" class="role-title">HELPER</div>
+              <div class="role-sub">Friendly guides of the clan.</div>
+              <div class="role-meta">Helpers assist players with questions, direct them to the right channels, and help train newcomers. They can train or redirect players and explain what they need to know.</div>
+            </div>
+          </article>
         </div>
 
-        <div class="progress" aria-hidden="true" title="Rank weight">
-          <i style="width:100%"></i>
+        <div class="notice" role="note">
+          Staff members serve on a voluntary basis and agree to uphold all server rules, act with maturity, and maintain professionalism. By accepting any staff role you acknowledge these guidelines may change at leadership’s discretion and that violations may result in warnings, demotions, removal, or bans.
+          <small>All staff must be <strong>17 years or older</strong>. Anyone found to have <strong>lied about their age will be permanently banned</strong> from the server.</small>
         </div>
+      </section>
 
-        <div class="rank-footer">
-          <div class="muted">By appointment only</div>
-          <a class="cta" href="discord.html">Contact Leadership</a>
+      <!-- Right: Clan Ranks -->
+      <aside class="ranks-panel" aria-labelledby="ranksHeading">
+        <strong id="ranksHeading" style="font-size:16px">CLAN RANK INFORMATION</strong>
+        <p class="subtitle" style="margin-top:6px">Welcome to the official rank directory of the Black Velvet Clan. These ranks define skill, dedication, and your place within our community. Read carefully — your journey starts here.</p>
+
+        <div class="ranks-grid" role="list">
+          <!-- GOAT -->
+          <article class="rank-card" role="listitem" aria-labelledby="goatTitle">
+            <div class="rank-image" aria-hidden="true">Image</div>
+            <div class="rank-body">
+              <div id="goatTitle" class="rank-name">GOAT</div>
+              <div class="rank-desc">The highest rank in the entire clan. Only one player can ever hold this title. THE BEST OF THE BEST — the one who proved themselves above every other competitive player. If you want this rank, you’ll have to take it in a 1v1.</div>
+              <div class="rank-note">Exclusive. Competitive challenge required.</div>
+            </div>
+          </article>
+
+          <!-- ELITE -->
+          <article class="rank-card" role="listitem" aria-labelledby="eliteTitle">
+            <div class="rank-image" aria-hidden="true">Image</div>
+            <div class="rank-body">
+              <div id="eliteTitle" class="rank-name">ELITE</div>
+              <div class="rank-desc">Absolute beasts in the game. Insane mechanics, terrifying aim, unmatched movement — dominate lobbies without breaking a sweat.</div>
+            </div>
+          </article>
+
+          <!-- LEGEND -->
+          <article class="rank-card" role="listitem" aria-labelledby="legendTitle">
+            <div class="rank-image" aria-hidden="true">Image</div>
+            <div class="rank-body">
+              <div id="legendTitle" class="rank-name">LEGEND</div>
+              <div class="rank-desc">Strong, reliable, and respected. Not pro level, but consistently performs and stands out above average players.</div>
+            </div>
+          </article>
+
+          <!-- DECENT -->
+          <article class="rank-card" role="listitem" aria-labelledby="decentTitle">
+            <div class="rank-image" aria-hidden="true">Image</div>
+            <div class="rank-body">
+              <div id="decentTitle" class="rank-name">DECENT</div>
+              <div class="rank-desc">Solid players who can hold their own in public matches. Understand the game, make smart decisions, and survive without needing backup.</div>
+            </div>
+          </article>
+
+          <!-- Rookie -->
+          <article class="rank-card" role="listitem" aria-labelledby="rookieTitle">
+            <div class="rank-image" aria-hidden="true">Image</div>
+            <div class="rank-body">
+              <div id="rookieTitle" class="rank-name">ROOKIE</div>
+              <div class="rank-desc">New players or those still learning the basics. Struggles in solo matches and needs guidance — the beginning of your climb.</div>
+            </div>
+          </article>
+
+          <!-- Member -->
+          <article class="rank-card" role="listitem" aria-labelledby="memberTitle">
+            <div class="rank-image" aria-hidden="true">Image</div>
+            <div class="rank-body">
+              <div id="memberTitle" class="rank-name">MEMBER</div>
+              <div class="rank-desc">People who join the server to be part of the community. Chill, talk, play, and vibe — no pressure, no requirements.</div>
+              <div class="rank-note" style="margin-top:8px"><strong>TO TRYOUT YOU MUST OPEN A TICKET!</strong></div>
+            </div>
+          </article>
         </div>
-      </article>
+      </aside>
+    </div>
 
-      <!-- Core Rank -->
-      <article class="rank-card" aria-labelledby="rank-core">
-        <div class="glow-blob blob-2" style="opacity:0.10"></div>
-        <div class="rank-top">
-          <div class="rank-badge badge-core">CORE</div>
-          <div class="muted">Trusted staff</div>
+    <footer>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+        <div class="muted">Questions about roles or ranks? Reach out to leadership in the staff channel.</div>
+        <div>
+          <a class="btn ghost" href="staffrules.html" style="margin-right:10px">Staff Rules</a>
+          <a class="btn" href="staffapp.html">Apply to Staff</a>
         </div>
-
-        <div class="rank-name" id="rank-core">Senior Staff</div>
-        <div class="rank-desc">Experienced moderators and event leads. Responsible for training and incident reviews.</div>
-
-        <div class="features">
-          <div class="feature">Moderation tools</div>
-          <div class="feature">Event leadership</div>
-          <div class="feature">Mentorship</div>
-        </div>
-
-        <div class="progress" aria-hidden="true">
-          <i style="width:78%"></i>
-        </div>
-
-        <div class="rank-footer">
-          <div class="muted">Requires nomination</div>
-          <a class="cta" href="staffapp.html">Apply / Nominate</a>
-        </div>
-      </article>
-
-      <!-- Regular Rank -->
-      <article class="rank-card" aria-labelledby="rank-regular">
-        <div class="glow-blob blob-3" style="opacity:0.10"></div>
-        <div class="rank-top">
-          <div class="rank-badge badge-regular">REGULAR</div>
-          <div class="muted">Active members</div>
-        </div>
-
-        <div class="rank-name" id="rank-regular">Veteran</div>
-        <div class="rank-desc">Reliable contributors who help run events, welcome new members, and set a positive example.</div>
-
-        <div class="features">
-          <div class="feature">Event priority</div>
-          <div class="feature">Custom tag</div>
-          <div class="feature">Access to veteran channels</div>
-        </div>
-
-        <div class="progress" aria-hidden="true">
-          <i style="width:54%"></i>
-        </div>
-
-        <div class="rank-footer">
-          <div class="muted">Earned by activity</div>
-          <a class="cta" href="events.html">View Events</a>
-        </div>
-      </article>
-
-      <!-- Member Rank -->
-      <article class="rank-card" aria-labelledby="rank-member">
-        <div class="rank-top">
-          <div class="rank-badge" style="background:linear-gradient(90deg,#cbd5ff,#bfe9ff);color:#071022">MEMBER</div>
-          <div class="muted">Community</div>
-        </div>
-
-        <div class="rank-name" id="rank-member">Member</div>
-        <div class="rank-desc">Standard community access. Participate in chats, events, and casual play.</div>
-
-        <div class="features">
-          <div class="feature">Chat access</div>
-          <div class="feature">Event signups</div>
-          <div class="feature">Role progression</div>
-        </div>
-
-        <div class="progress" aria-hidden="true">
-          <i style="width:28%"></i>
-        </div>
-
-        <div class="rank-footer">
-          <div class="muted">Welcome aboard</div>
-          <a class="cta" href="join.html">Join Events</a>
-        </div>
-      </article>
-
-      <!-- Trial Rank -->
-      <article class="rank-card" aria-labelledby="rank-trial">
-        <div class="rank-top">
-          <div class="rank-badge" style="background:linear-gradient(90deg,#ffd6a5,#ffd88a);color:#071022">TRIAL</div>
-          <div class="muted">New</div>
-        </div>
-
-        <div class="rank-name" id="rank-trial">Trial Member</div>
-        <div class="rank-desc">New members in probation. Show activity and good conduct to progress quickly.</div>
-
-        <div class="features">
-          <div class="feature">Intro channels</div>
-          <div class="feature">Onboarding guide</div>
-          <div class="feature">Mentor pairing</div>
-        </div>
-
-        <div class="progress" aria-hidden="true">
-          <i style="width:12%"></i>
-        </div>
-
-        <div class="rank-footer">
-          <div class="muted">First 14 days</div>
-          <a class="cta" href="welcome.html">Get Started</a>
-        </div>
-      </article>
-
-      <!-- Contributor Rank -->
-      <article class="rank-card" aria-labelledby="rank-contrib">
-        <div class="rank-top">
-          <div class="rank-badge" style="background:linear-gradient(90deg,#ffd1f0,#ff9ccf);color:#071022">CONTRIB</div>
-          <div class="muted">Creators</div>
-        </div>
-
-        <div class="rank-name" id="rank-contrib">Contributor</div>
-        <div class="rank-desc">Recognizes creators, streamers, and community builders who add value to the clan.</div>
-
-        <div class="features">
-          <div class="feature">Creator channel</div>
-          <div class="feature">Promo support</div>
-          <div class="feature">Collab opportunities</div>
-        </div>
-
-        <div class="progress" aria-hidden="true">
-          <i style="width:66%"></i>
-        </div>
-
-        <div class="rank-footer">
-          <div class="muted">Invite-only / review</div>
-          <a class="cta" href="contact.html">Request Feature</a>
-        </div>
-      </article>
-    </section>
-
-    <footer style="margin-top:28px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
-      <div class="muted">Ranks are reviewed regularly. Questions? Reach out to leadership in the staff channel.</div>
-      <div>
-        <a class="btn ghost" href="rules.html" style="background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.03)">Community Rules</a>
-        <a class="btn" href="index.html" style="margin-left:10px">Back to Home</a>
       </div>
     </footer>
   </div>
