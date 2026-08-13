@@ -3,42 +3,44 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Black Velvet — Staffpanel + LMS</title>
+<title>Black Velvet — Staffpanel (Futuristic)</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
   :root{
-    --bg:#050506;
-    --card-bg: rgba(255,255,255,0.03);
-    --glass-border: rgba(255,255,255,0.06);
-    --accent: #cfe8ff;
-    --muted: #9a8fb8;
-    --success: #7be495;
-    --danger: #ff6b6b;
-    --glass-blur: 10px;
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    --bg:#05050a;
+    --glass: rgba(255,255,255,0.04);
+    --muted:#9a8fb8;
+    --accent:#bfe9ff;
+    --neon:#7ee7ff;
+    --danger:#ff6b6b;
+    --success:#7be495;
+    --glass-blur:10px;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
   }
 
   html,body{
     height:100%;
     margin:0;
-    background: linear-gradient(180deg, #040405 0%, #07070a 100%);
-    color: #e9e6ef;
+    background:
+      radial-gradient(1200px 600px at 10% 10%, rgba(30,40,60,0.06), transparent 6%),
+      radial-gradient(900px 400px at 90% 90%, rgba(80,30,60,0.04), transparent 6%),
+      linear-gradient(180deg,#030305 0%, #07070a 100%);
+    color:#e9e6ef;
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
     overflow:hidden;
   }
 
-  /* Outer container centers the login card initially */
+  /* Center stage */
   .viewport{
     position:fixed;
     inset:0;
     display:flex;
     align-items:center;
     justify-content:center;
-    pointer-events:none;
+    pointer-events:auto;
   }
 
-  /* The stage holds both login and panel; we animate login left and reveal panel */
   .stage{
     width:100%;
     max-width:1200px;
@@ -48,7 +50,6 @@
     gap:28px;
     padding:28px;
     box-sizing:border-box;
-    pointer-events:auto;
     position:relative;
   }
 
@@ -57,93 +58,133 @@
     width:420px;
     max-width:92vw;
     background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border:1px solid var(--glass-border);
-    border-radius:16px;
-    padding:22px;
+    border:1px solid rgba(255,255,255,0.04);
+    border-radius:14px;
+    padding:20px;
     backdrop-filter: blur(var(--glass-blur));
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
-    transition: transform .9s cubic-bezier(.2,.9,.2,1), box-shadow .28s, left .9s;
-    position:relative;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 40px rgba(0,0,0,0.25);
+    transition: transform 900ms cubic-bezier(.2,.9,.2,1), box-shadow 300ms, opacity 300ms;
     z-index:40;
     pointer-events:auto;
   }
 
-  /* When unlocked, move login left and shrink slightly */
-  .stage.unlocked .login-card{
-    transform: translateX(-360px) scale(0.96);
-    box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+  .brand{ display:flex; gap:12px; align-items:center; margin-bottom:12px; }
+  .logo{
+    width:48px;height:48px;border-radius:10px;
+    background:linear-gradient(135deg,#0b0b0b,#141418);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6), 0 0 18px rgba(120,200,240,0.03);
+    border:1px solid rgba(255,255,255,0.03);
   }
-
-  .brand{ display:flex; gap:12px; align-items:center; margin-bottom:14px; }
-  .brand .logo{ width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg,#0b0b0b,#1b1b1b); display:flex; align-items:center; justify-content:center; box-shadow: 0 6px 18px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.03); }
-  .brand h2{ margin:0; font-size:18px; letter-spacing:0.6px; color:var(--accent); }
+  .brand h2{ margin:0; font-size:18px; color:var(--accent); letter-spacing:0.6px; }
   .brand p{ margin:0; font-size:12px; color:var(--muted); }
 
-  .field{ margin-top:12px; }
   label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; }
   input[type="text"], input[type="password"]{
     width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.04);
-    background: rgba(0,0,0,0.45); color:var(--text); outline:none; transition: box-shadow .18s, border-color .18s, transform .12s;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); font-size:14px;
+    background: rgba(6,6,8,0.6); color:var(--accent); outline:none; font-size:14px;
+    transition: box-shadow .18s, border-color .18s, transform .12s;
   }
-  input:focus{ border-color: rgba(180,200,220,0.18); box-shadow: 0 6px 26px rgba(120,160,200,0.06), 0 0 18px rgba(180,200,220,0.04); transform: translateY(-1px); }
+  input:focus{
+    border-color: rgba(120,200,240,0.18);
+    box-shadow: 0 8px 30px rgba(120,200,240,0.06), 0 0 18px rgba(120,200,240,0.04);
+    transform: translateY(-1px);
+  }
 
-  .actions{ display:flex; gap:12px; margin-top:16px; align-items:center; }
-  .btn{ padding:10px 14px; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); border:1px solid rgba(255,255,255,0.06); color:var(--accent); font-weight:700; cursor:pointer; transition: transform .12s, box-shadow .12s, background .12s; }
-  .btn:hover{ transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
-  .btn.primary{ background: linear-gradient(180deg, rgba(120,180,220,0.12), rgba(80,140,200,0.08)); border:1px solid rgba(140,190,230,0.12); color: #eaf6ff; }
+  .actions{ display:flex; gap:12px; margin-top:14px; align-items:center; }
+  .btn{
+    padding:10px 14px; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.04); color:var(--accent); font-weight:700; cursor:pointer;
+    transition: transform .12s, box-shadow .12s, background .12s;
+  }
+  .btn.primary{
+    background: linear-gradient(180deg, rgba(120,200,240,0.12), rgba(80,140,200,0.06));
+    border:1px solid rgba(120,200,240,0.12);
+    color:#eaf6ff;
+    box-shadow: 0 8px 30px rgba(30,160,220,0.06);
+  }
+  .btn:hover{ transform: translateY(-3px); }
 
-  .small{ font-size:13px; color:var(--muted); }
-  .device-id{ margin-top:12px; font-size:13px; color:var(--muted); display:flex; align-items:center; gap:8px; }
-  .device-pill{ padding:6px 10px; border-radius:8px; background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); color:var(--accent); font-weight:700; letter-spacing:1px; font-size:13px; }
+  .device-id{ margin-top:12px; display:flex; gap:10px; align-items:center; color:var(--muted); font-size:13px; }
+  .device-pill{ padding:6px 10px; border-radius:8px; background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); color:var(--accent); font-weight:700; letter-spacing:1px; }
 
-  /* STAFF PANEL (hidden until unlocked) */
+  /* Panel (futuristic) */
   .panel-wrap{
     width:760px;
     max-width:calc(100vw - 64px);
-    border-radius:16px;
+    border-radius:14px;
     overflow:hidden;
     position:relative;
-    transition: opacity 1s ease, transform 1s ease;
     display:flex;
     gap:0;
     align-items:stretch;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    box-shadow: 0 30px 90px rgba(0,0,0,0.7);
     opacity:0;
     transform: translateY(18px) scale(0.98);
+    transition: opacity 900ms cubic-bezier(.2,.9,.2,1), transform 900ms cubic-bezier(.2,.9,.2,1);
     pointer-events:none;
     z-index:30;
   }
 
-  /* When unlocked, reveal panel with gentle fade/slide */
+  /* visible state */
   .stage.unlocked .panel-wrap{
     opacity:1;
     transform: translateY(0) scale(1);
     pointer-events:auto;
   }
 
-  .panel-left{ width:220px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-right:1px solid rgba(255,255,255,0.03); padding:18px; box-sizing:border-box; backdrop-filter: blur(6px); }
-  .panel-left .menu{ display:flex; flex-direction:column; gap:10px; }
-  .menu button{ display:flex; gap:10px; align-items:center; padding:10px 12px; border-radius:10px; background:transparent; border:1px solid transparent; color:var(--muted); cursor:pointer; text-align:left; transition: all .18s; font-weight:700; }
-  .menu button:hover{ color:var(--accent); transform: translateX(6px); }
-  .menu button.active{ color:var(--accent); background: linear-gradient(90deg, rgba(120,180,220,0.06), rgba(80,140,200,0.03)); border:1px solid rgba(140,190,230,0.06); box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); }
+  /* when unlocked, move login left */
+  .stage.unlocked .login-card{
+    transform: translateX(-420px) scale(0.96);
+    opacity:0.98;
+  }
 
-  .panel-main{ flex:1; padding:22px; background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.28)); color:var(--text); min-height:320px; box-sizing:border-box; }
+  .panel-left{
+    width:220px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-right:1px solid rgba(255,255,255,0.03);
+    padding:18px; box-sizing:border-box; backdrop-filter: blur(6px);
+  }
+
+  .menu{ display:flex; flex-direction:column; gap:10px; }
+  .menu button{
+    display:flex; gap:10px; align-items:center; padding:10px 12px; border-radius:10px; background:transparent;
+    border:1px solid transparent; color:var(--muted); cursor:pointer; text-align:left; transition: all .18s; font-weight:700;
+  }
+  .menu button:hover{ color:var(--neon); transform: translateX(6px); }
+  .menu button.active{ color:var(--neon); background: linear-gradient(90deg, rgba(120,200,240,0.06), rgba(80,140,200,0.03)); border:1px solid rgba(120,200,240,0.06); }
+
+  .panel-main{ flex:1; padding:22px; background:
+    linear-gradient(180deg, rgba(6,8,12,0.6), rgba(6,8,12,0.5));
+    color:var(--accent); min-height:320px; box-sizing:border-box; position:relative;
+  }
+
   .panel-header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
-  .panel-title{ display:flex; gap:12px; align-items:center; }
-  .panel-title h3{ margin:0; font-size:16px; color:var(--accent); }
+  .panel-title h3{ margin:0; font-size:18px; color:var(--neon); letter-spacing:0.6px; }
   .panel-title p{ margin:0; font-size:12px; color:var(--muted); }
+
   .relock{ padding:8px 10px; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.04); color:var(--danger); font-weight:800; cursor:pointer; }
 
-  .card{ margin-top:12px; padding:16px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); box-shadow: 0 8px 30px rgba(0,0,0,0.5); }
-  .muted{ color:var(--muted); font-size:13px; }
+  .card{ margin-top:12px; padding:16px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); box-shadow: 0 8px 30px rgba(0,0,0,0.5); color:var(--muted); }
 
-  /* LMS tools UI */
+  /* futuristic accent lines */
+  .panel-main::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+      linear-gradient(90deg, rgba(120,200,240,0.02), transparent 20%),
+      linear-gradient(180deg, rgba(120,200,240,0.01), transparent 30%);
+    mix-blend-mode:screen;
+  }
+
+  /* LMS UI */
   .lms-form{ display:flex; gap:8px; align-items:center; margin-top:12px; flex-wrap:wrap; }
-  .lms-form input{ padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:rgba(0,0,0,0.35); color:var(--text); }
-  .lms-list{ margin-top:12px; max-height:220px; overflow:auto; border-radius:8px; padding:8px; background:rgba(0,0,0,0.25); }
+  .lms-form input{ padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:rgba(0,0,0,0.35); color:var(--accent); }
+  .lms-list{ margin-top:12px; max-height:220px; overflow:auto; border-radius:8px; padding:8px; background:rgba(0,0,0,0.18); }
 
-  /* small responsive */
+  /* responsive */
   @media (max-width:980px){
     .viewport{ align-items:flex-start; padding-top:28px; }
     .stage{ flex-direction:column; align-items:center; gap:18px; }
@@ -154,7 +195,6 @@
 </head>
 <body>
 
-<!-- Centered viewport -->
 <div class="viewport">
   <div class="stage" id="stage">
 
@@ -164,14 +204,12 @@
         <div class="logo" aria-hidden="true">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" style="opacity:0.95">
             <circle cx="12" cy="12" r="5" fill="#0d0d0d"></circle>
-            <g fill="#111">
-              <path d="M12 2c1.2 2.8 4 4 4 4s-2.8 1.2-4 4c-1.2-2.8-4-4-4-4s2.8-1.2 4-4z"></path>
-            </g>
+            <g fill="#111"><path d="M12 2c1.2 2.8 4 4 4 4s-2.8 1.2-4 4c-1.2-2.8-4-4-4-4s2.8-1.2 4-4z"></path></g>
           </svg>
         </div>
         <div>
           <h2>Black Velvet Staff</h2>
-          <p>Secure staff access panel</p>
+          <p>Secure staff access — futuristic UI</p>
         </div>
       </div>
 
@@ -196,7 +234,7 @@
       </div>
     </div>
 
-    <!-- STAFF PANEL (hidden until unlocked) -->
+    <!-- STAFF PANEL -->
     <div class="panel-wrap" id="staffPanel" aria-hidden="true">
       <div class="panel-left">
         <div style="margin-bottom:12px; color:var(--muted); font-weight:700;">Panels</div>
@@ -216,8 +254,8 @@
       <div class="panel-main">
         <div class="panel-header">
           <div class="panel-title">
-            <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#0b0b0b,#141414);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,0.6);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" fill="#0d0d0d"></circle></svg>
+            <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#071018,#0b1220);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,0.6);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" fill="#071018"></circle></svg>
             </div>
             <div>
               <h3 id="panelTitle">Dashboard</h3>
@@ -230,10 +268,9 @@
           </div>
         </div>
 
-        <!-- Panel content -->
         <div id="panelContent">
           <div id="panel1" class="card">
-            <h4 style="margin:0 0 8px 0;">Welcome</h4>
+            <h4 style="margin:0 0 8px 0;color:var(--neon)">Welcome</h4>
             <p class="muted">This is the staff dashboard. Use the left menu to switch panels. All login attempts are logged to your webhook.</p>
             <div style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap;">
               <div style="min-width:160px; padding:12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03);">
@@ -248,16 +285,15 @@
           </div>
 
           <div id="panel2" class="card" style="display:none;">
-            <h4 style="margin:0 0 8px 0;">Staff Logs</h4>
+            <h4 style="margin:0 0 8px 0;color:var(--neon)">Staff Logs</h4>
             <p class="muted">Recent login attempts are sent to your webhook. This panel shows a local preview of the last attempts.</p>
             <div id="logPreview" style="margin-top:12px; max-height:220px; overflow:auto; border-radius:8px; padding:8px; background:rgba(0,0,0,0.25);"></div>
           </div>
 
           <div id="panel3" class="card" style="display:none;">
-            <h4 style="margin:0 0 8px 0;">Tools / LMS</h4>
+            <h4 style="margin:0 0 8px 0;color:var(--neon)">Tools / LMS</h4>
             <p class="muted">Manage staff accounts locally (LMS). Changes are stored in localStorage. You can optionally push changes to the webhook for audit.</p>
 
-            <!-- LMS form -->
             <div class="lms-form">
               <input id="lmsUser" placeholder="username" />
               <input id="lmsCode" placeholder="code" />
@@ -271,9 +307,9 @@
           </div>
 
           <div id="panel4" class="card" style="display:none;">
-            <h4 style="margin:0 0 8px 0;">Notes</h4>
+            <h4 style="margin:0 0 8px 0;color:var(--neon)">Notes</h4>
             <p class="muted">Quick notes for staff. This is local only.</p>
-            <textarea id="staffNotes" style="width:100%; min-height:120px; margin-top:8px; padding:10px; border-radius:8px; background:rgba(0,0,0,0.35); color:var(--text); border:1px solid rgba(255,255,255,0.03);"></textarea>
+            <textarea id="staffNotes" style="width:100%; min-height:120px; margin-top:8px; padding:10px; border-radius:8px; background:rgba(0,0,0,0.35); color:var(--accent); border:1px solid rgba(255,255,255,0.03);"></textarea>
           </div>
         </div>
       </div>
@@ -282,13 +318,10 @@
   </div>
 </div>
 
-<!-- Decorative visuals created by JS below -->
-
 <script>
 /* ============================
-   Configuration & defaults
+   Config (user-provided webhook)
    ============================ */
-/* User-provided webhook (inserted as requested) */
 const WEBHOOK_URL = 'https://discord.com/api/webhooks/1537233521410576546/qoHYqRmP1SbBfuuMCzvJBxWgTIGIlKpS3bhQ7xuj2MnbxNSoRGu0xUxCzkiXV6d43DIs';
 
 const DEFAULT_ACCOUNTS = {
@@ -314,7 +347,6 @@ const STORAGE_KEYS = {
    ============================ */
 function rand(min, max){ return Math.random() * (max - min) + min; }
 function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
-function nowISO(){ return new Date().toISOString(); }
 
 /* ============================
    Device hex
@@ -329,11 +361,11 @@ function getOrCreateDeviceHex(){
 const DEVICE_HEX = getOrCreateDeviceHex();
 
 /* ============================
-   Staff accounts (LMS) storage
+   Accounts (LMS)
    ============================ */
 function loadAccounts(){
   const raw = localStorage.getItem(STORAGE_KEYS.staffAccounts);
-  if(!raw) {
+  if(!raw){
     localStorage.setItem(STORAGE_KEYS.staffAccounts, JSON.stringify(DEFAULT_ACCOUNTS));
     return Object.assign({}, DEFAULT_ACCOUNTS);
   }
@@ -368,7 +400,6 @@ const loggedDevice = document.getElementById('loggedDevice');
 const panelDevice = document.getElementById('panelDevice');
 const logPreview = document.getElementById('logPreview');
 
-/* LMS elements */
 const lmsUser = document.getElementById('lmsUser');
 const lmsCode = document.getElementById('lmsCode');
 const lmsAdd = document.getElementById('lmsAdd');
@@ -377,11 +408,10 @@ const lmsImport = document.getElementById('lmsImport');
 const lmsPush = document.getElementById('lmsPush');
 const lmsList = document.getElementById('lmsList');
 
-/* Notes */
 const staffNotes = document.getElementById('staffNotes');
 
 /* ============================
-   Session persistence
+   Session helpers
    ============================ */
 function setUnlocked(username){
   sessionStorage.setItem(STORAGE_KEYS.session, JSON.stringify({user:username, time:Date.now()}));
@@ -394,7 +424,7 @@ function getUnlocked(){
 }
 
 /* ============================
-   Webhook logging (embed-like)
+   Webhook logging
    ============================ */
 async function sendWebhookAttempt({username, code, success, reason, extra}){
   const embed = {
@@ -412,7 +442,7 @@ async function sendWebhookAttempt({username, code, success, reason, extra}){
     timestamp: new Date().toISOString()
   };
 
-  // local preview entry
+  // local preview
   const entry = document.createElement('div');
   entry.style.padding = '8px';
   entry.style.borderBottom = '1px dashed rgba(255,255,255,0.03)';
@@ -420,21 +450,19 @@ async function sendWebhookAttempt({username, code, success, reason, extra}){
                      <div style="font-size:12px;color:var(--muted)">${new Date().toLocaleString()} • Device ${DEVICE_HEX} • ${reason || ''}</div>`;
   logPreview.prepend(entry);
 
-  // attempt to send to webhook if configured
   if(!WEBHOOK_URL || WEBHOOK_URL === 'YOUR_WEBHOOK_URL_HERE'){
     console.warn('Webhook not configured; skipping send.');
     return;
   }
 
   try{
-    const res = await fetch(WEBHOOK_URL, {
+    await fetch(WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ embeds: [embed] })
     });
-    console.log('Webhook status', res.status);
   }catch(err){
-    console.warn('Webhook send failed (likely CORS or network).', err);
+    console.warn('Webhook send failed (likely CORS).', err);
   }
 }
 
@@ -457,7 +485,6 @@ function attemptLogin(){
 
   if(success){
     statusText.textContent = 'Unlocked — welcome';
-    setUnlocked(user);
     animateUnlock(user);
   } else {
     statusText.textContent = 'Invalid credentials';
@@ -466,25 +493,25 @@ function attemptLogin(){
 }
 
 /* ============================
-   Unlock animation: center -> left, reveal panel
+   Unlock animation: center -> left, reveal futuristic panel centered
    ============================ */
 function animateUnlock(user){
-  // set logged info
+  // populate UI
   loggedUser.textContent = user;
   loggedDevice.textContent = DEVICE_HEX;
   devicePill.textContent = DEVICE_HEX;
   panelDevice.textContent = DEVICE_HEX;
 
-  // add unlocked class to stage to trigger CSS transitions
+  // add unlocked class to stage (CSS handles motion)
   stage.classList.add('unlocked');
 
-  // reveal panel after a short delay so motion feels natural
+  // reveal panel after a short delay
   setTimeout(()=>{
     staffPanel.setAttribute('aria-hidden','false');
-    // ensure panel is visible (CSS handles opacity/transform)
+    // ensure first panel active
+    activatePanel('panel1');
   }, 420);
 
-  // mark session
   setUnlocked(user);
 }
 
@@ -523,10 +550,7 @@ codeInput.addEventListener('keydown', (e)=> { if(e.key === 'Enter') attemptLogin
 usernameInput.addEventListener('keydown', (e)=> { if(e.key === 'Enter') attemptLogin(); });
 
 relockBtn.addEventListener('click', hideStaffPanel);
-
-menuButtons.forEach(btn=>{
-  btn.addEventListener('click', ()=> activatePanel(btn.dataset.panel));
-});
+menuButtons.forEach(btn=> btn.addEventListener('click', ()=> activatePanel(btn.dataset.panel)));
 
 /* ============================
    On load: restore session, UI init
@@ -538,7 +562,6 @@ window.addEventListener('load', ()=>{
     setTimeout(()=> animateUnlock(unlocked.user), 220);
     statusText.textContent = `Restored session for ${unlocked.user}`;
   } else {
-    // ensure panel hidden
     hideStaffPanel();
   }
 
@@ -559,12 +582,10 @@ window.addEventListener('load', ()=>{
 /* ============================
    Notes persistence
    ============================ */
-staffNotes.addEventListener('input', (e)=>{
-  localStorage.setItem(STORAGE_KEYS.notes, e.target.value);
-});
+staffNotes.addEventListener('input', (e)=> localStorage.setItem(STORAGE_KEYS.notes, e.target.value));
 
 /* ============================
-   LMS (Local Management System) functions
+   LMS functions (add/export/import/push)
    ============================ */
 function renderLmsList(){
   STAFF_ACCOUNTS = loadAccounts();
@@ -589,7 +610,6 @@ function renderLmsList(){
     lmsList.appendChild(row);
   });
 
-  // attach handlers
   Array.from(lmsList.querySelectorAll('.smallBtn')).forEach(b=>{
     b.addEventListener('click', (e)=>{
       const u = e.currentTarget.dataset.user;
@@ -641,7 +661,7 @@ lmsImport.addEventListener('click', ()=>{
     const file = ev.target.files[0];
     if(!file) return;
     const reader = new FileReader();
-    reader.onload = function(){ 
+    reader.onload = function(){
       try{
         const obj = JSON.parse(reader.result);
         if(typeof obj === 'object'){
@@ -669,29 +689,30 @@ lmsPush.addEventListener('click', async ()=>{
 });
 
 /* ============================
-   Visual extras: falling leaf-like petals
+   Visual extras (petals, water trail, ripples)
+   - kept lightweight and non-blocking
    ============================ */
 (function(){
-  const spawnInterval = 260;
-  const life = 6000;
+  // falling petals (light)
+  const spawnInterval = 300;
   function spawnPetal(){
     const p = document.createElement('div');
-    p.className = 'falling-petal';
     p.style.position = 'absolute';
-    p.style.width = (rand(28,44)) + 'px';
-    p.style.height = (rand(40,64)) + 'px';
+    p.style.width = (rand(22,40)) + 'px';
+    p.style.height = (rand(34,56)) + 'px';
     p.style.borderRadius = '50% 50% 40% 60%';
     p.style.background = 'linear-gradient(135deg, rgba(34,34,34,0.98), rgba(64,64,64,0.88))';
     p.style.left = rand(0, window.innerWidth) + 'px';
     p.style.top = '-80px';
     p.style.opacity = '0.95';
-    const sway = rand(20, 140);
-    const startRot = rand(-40,40);
-    const startScale = rand(0.85,1.15).toFixed(2);
-    const duration = rand(3.8, 6.2) * 1000;
-    const left0 = parseFloat(p.style.left);
+    p.style.zIndex = '5';
     document.body.appendChild(p);
 
+    const left0 = parseFloat(p.style.left);
+    const sway = rand(20, 140);
+    const startRot = rand(-40,40);
+    const startScale = rand(0.85,1.15);
+    const duration = rand(3800, 6200);
     const start = performance.now();
     function anim(now){
       const t = clamp((now - start) / duration, 0, 1);
@@ -707,13 +728,10 @@ lmsPush.addEventListener('click', async ()=>{
     requestAnimationFrame(anim);
   }
   setInterval(spawnPetal, spawnInterval);
-  for(let i=0;i<6;i++) setTimeout(spawnPetal, i*120);
 })();
 
-/* ============================
-   Cursor water trail (subtle)
-   ============================ */
 (function(){
+  // cursor water trail
   let last = {x: window.innerWidth/2, y: window.innerHeight/2};
   const spacing = 10;
   document.addEventListener('mousemove', e=>{
@@ -726,108 +744,81 @@ lmsPush.addEventListener('click', async ()=>{
         const t = (i+1)/steps;
         const bx = last.x + dx * t;
         const by = last.y + dy * t;
-        createWaterBlob(bx, by, dx, dy);
+        const blob = document.createElement('div');
+        blob.style.position = 'absolute';
+        const size = clamp(8 + Math.hypot(dx,dy) * 0.4, 8, 34);
+        blob.style.width = size + 'px';
+        blob.style.height = size + 'px';
+        blob.style.left = (bx - size/2) + 'px';
+        blob.style.top = (by - size/2) + 'px';
+        blob.style.borderRadius = '50%';
+        blob.style.background = 'radial-gradient(circle at 35% 30%, rgba(170,180,200,0.85), rgba(80,80,100,0.12))';
+        blob.style.filter = 'blur(4px)';
+        blob.style.opacity = '0.9';
+        blob.style.zIndex = '99998';
+        document.body.appendChild(blob);
+        requestAnimationFrame(()=>{ blob.style.transform = 'scale(1.8)'; blob.style.opacity = '0'; });
+        setTimeout(()=> { if(blob.parentNode) blob.parentNode.removeChild(blob); }, 700 + rand(0,200));
       }
-      last.x = e.clientX;
-      last.y = e.clientY;
+      last.x = e.clientX; last.y = e.clientY;
     }
   });
-
-  function createWaterBlob(x, y, dx, dy){
-    const blob = document.createElement('div');
-    blob.className = 'cursor-water';
-    blob.style.position = 'absolute';
-    const speed = Math.hypot(dx, dy);
-    const size = clamp(8 + speed * 0.4, 8, 34);
-    blob.style.width = size + 'px';
-    blob.style.height = size + 'px';
-    const offsetX = -dx * 0.02 + rand(-6,6);
-    const offsetY = -dy * 0.02 + rand(-6,6);
-    blob.style.left = (x + offsetX - size/2) + 'px';
-    blob.style.top = (y + offsetY - size/2) + 'px';
-    blob.style.borderRadius = '50%';
-    blob.style.background = 'radial-gradient(circle at 35% 30%, rgba(170,180,200,0.85), rgba(80,80,100,0.12))';
-    blob.style.filter = 'blur(4px)';
-    blob.style.opacity = '0.9';
-    blob.style.zIndex = '99998';
-    document.body.appendChild(blob);
-    requestAnimationFrame(()=>{ blob.style.transform = 'scale(1.8)'; blob.style.opacity = '0'; });
-    setTimeout(()=> { if(blob.parentNode) blob.parentNode.removeChild(blob); }, 700 + rand(0,200));
-  }
 })();
 
-/* ============================
-   Water ripple + droplets on background click
-   ============================ */
 (function(){
+  // water ripple on background click
   document.addEventListener('click', e=>{
-    if(e.target.closest('.btn') || e.target.closest('a') || e.target.closest('input') || e.target.closest('textarea')) return;
-    const cx = e.clientX;
-    const cy = e.clientY;
-
+    if(e.target.closest('.btn') || e.target.closest('input') || e.target.closest('textarea') || e.target.closest('a')) return;
+    const cx = e.clientX, cy = e.clientY;
     for(let i=0;i<3;i++){
       const ring = document.createElement('div');
-      ring.className = 'ripple-ring';
-      const baseSize = 60 + i*48;
-      ring.style.width = baseSize + 'px';
-      ring.style.height = baseSize + 'px';
-      ring.style.left = (cx - baseSize/2) + 'px';
-      ring.style.top = (cy - baseSize/2) + 'px';
-      ring.style.opacity = (0.9 - i*0.18).toString();
-      ring.style.transition = `transform ${0.9 + i*0.12}s cubic-bezier(.2,.8,.2,1), opacity ${0.9 + i*0.12}s ease-out`;
-      ring.style.position = 'absolute';
-      ring.style.zIndex = '99997';
-      ring.style.borderRadius = '50%';
-      ring.style.boxShadow = '0 0 18px rgba(160,170,190,0.12), inset 0 0 8px rgba(255,255,255,0.02)';
-      ring.style.border = '1px solid rgba(180,190,210,0.06)';
-      ring.style.background = 'radial-gradient(circle, rgba(200,210,230,0.06), rgba(80,80,100,0))';
+      ring.style.position='absolute';
+      ring.style.left=(cx-30 - i*12)+'px';
+      ring.style.top=(cy-30 - i*12)+'px';
+      ring.style.width=(60 + i*48)+'px';
+      ring.style.height=(60 + i*48)+'px';
+      ring.style.borderRadius='50%';
+      ring.style.border='1px solid rgba(180,190,210,0.06)';
+      ring.style.boxShadow='0 0 18px rgba(160,170,190,0.12), inset 0 0 8px rgba(255,255,255,0.02)';
+      ring.style.background='radial-gradient(circle, rgba(200,210,230,0.06), rgba(80,80,100,0))';
+      ring.style.opacity='0.9';
+      ring.style.zIndex='99997';
       document.body.appendChild(ring);
-
-      setTimeout(()=>{ ring.style.transform = 'scale(3.2)'; ring.style.opacity = '0'; }, 30 + i*90);
+      setTimeout(()=>{ ring.style.transform='scale(3.2)'; ring.style.opacity='0'; ring.style.transition='transform 0.9s cubic-bezier(.2,.8,.2,1), opacity 0.9s'; }, 20 + i*80);
       setTimeout(()=> { if(ring.parentNode) ring.parentNode.removeChild(ring); }, 1200 + i*200);
     }
-
     const drops = Math.round(rand(6,12));
-    for(let i=0;i<drops;i++) spawnWaterDrop(cx, cy);
-  });
-
-  function spawnWaterDrop(cx, cy){
-    const drop = document.createElement('div');
-    drop.className = 'water-drop';
-    const size = rand(6,10);
-    drop.style.width = size + 'px';
-    drop.style.height = size + 'px';
-    drop.style.position = 'absolute';
-    drop.style.zIndex = '99999';
-    const startX = cx + rand(-22,22);
-    const startY = cy + rand(-8,8);
-    drop.style.left = (startX - size/2) + 'px';
-    drop.style.top = (startY - size/2) + 'px';
-    drop.style.borderRadius = '50%';
-    drop.style.background = 'linear-gradient(180deg, rgba(220,230,250,0.95), rgba(120,130,160,0.6))';
-    document.body.appendChild(drop);
-
-    const rise = rand(28, 90);
-    const horiz = rand(-48, 48);
-    const duration = rand(700, 1200);
-    const start = performance.now();
-    function animate(now){
-      const t = clamp((now - start) / duration, 0, 1);
-      const easeUp = 1 - Math.pow(1 - t, 3);
-      const y = startY - rise * easeUp + (t * t * 18);
-      const x = startX + horiz * easeUp;
-      drop.style.left = (x - size/2) + 'px';
-      drop.style.top = (y - size/2) + 'px';
-      drop.style.opacity = String(1 - t);
-      if(t < 1) requestAnimationFrame(animate);
-      else if(drop.parentNode) drop.parentNode.removeChild(drop);
+    for(let i=0;i<drops;i++){
+      const drop = document.createElement('div');
+      const size = rand(6,10);
+      drop.style.position='absolute';
+      drop.style.width=size+'px';
+      drop.style.height=size+'px';
+      drop.style.left=(cx + rand(-22,22) - size/2)+'px';
+      drop.style.top=(cy + rand(-8,8) - size/2)+'px';
+      drop.style.borderRadius='50%';
+      drop.style.background='linear-gradient(180deg, rgba(220,230,250,0.95), rgba(120,130,160,0.6))';
+      drop.style.zIndex='99999';
+      document.body.appendChild(drop);
+      const start = performance.now();
+      const rise = rand(28,90), horiz = rand(-48,48), duration = rand(700,1200);
+      (function animate(now){
+        const t = clamp((now - start) / duration, 0, 1);
+        const easeUp = 1 - Math.pow(1 - t, 3);
+        const y = (cy + rand(-8,8)) - rise * easeUp + (t * t * 18);
+        const x = (cx + rand(-22,22)) + horiz * easeUp;
+        drop.style.left = (x - size/2) + 'px';
+        drop.style.top = (y - size/2) + 'px';
+        drop.style.opacity = String(1 - t);
+        if(t < 1) requestAnimationFrame(animate);
+        else if(drop.parentNode) drop.parentNode.removeChild(drop);
+      })(performance.now());
     }
-    requestAnimationFrame(animate);
-  }
+  });
 })();
 
 /* ============================
-   Final: small safety hint if webhook not set
+   Safety hint if webhook missing
    ============================ */
 if(!WEBHOOK_URL || WEBHOOK_URL === 'YOUR_WEBHOOK_URL_HERE'){
   statusText.textContent = 'Webhook not configured — replace WEBHOOK_URL in script';
