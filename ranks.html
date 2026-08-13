@@ -1,159 +1,303 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Black Velvet Clan — Ranks</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
 <style>
-    body {
-        background: #0d0d0d;
-        color: white;
-        font-family: Arial, sans-serif;
-        padding: 40px;
-        line-height: 1.6;
-        position: relative;
-    }
+  :root{
+    --bg-1: #07060a;
+    --bg-2: #0b0b12;
+    --card: rgba(255,255,255,0.03);
+    --glass: rgba(255,255,255,0.02);
+    --muted: #9aa4b2;
+    --accent-1: #7be495;
+    --accent-2: #4da6ff;
+    --accent-3: #ff7aa2;
+    --gold: #ffd166;
+    --radius: 14px;
+    --max-width:1200px;
+    --glow: 0 12px 40px rgba(77,166,255,0.08);
+  }
 
-    .signature {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        font-family: 'Press Start 2P', cursive;
-        font-size: 10px;
-        color: #888;
-        opacity: 0.8;
-        text-align: right;
-    }
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg-1) 0%, var(--bg-2) 100%);color:#eaf2ff;font-family:Inter,system-ui,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--max-width);margin:36px auto;padding:28px;box-sizing:border-box}
 
-    h1 {
-        text-align: center;
-        font-family: 'Press Start 2P', cursive;
-        font-size: 32px;
-        margin-bottom: 30px;
-        color: #ffffff;
-        letter-spacing: 2px;
-    }
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{
+    width:64px;height:64px;border-radius:12px;
+    background:linear-gradient(135deg,var(--accent-2),#6fb8ff);
+    display:flex;align-items:center;justify-content:center;font-weight:800;color:#071022;font-family:Montserrat,Inter;
+    font-size:20px;box-shadow:0 10px 30px rgba(77,166,255,0.08);
+  }
+  h1{margin:0;font-family:Montserrat,Inter;font-weight:700;letter-spacing:0.6px;font-size:20px}
+  .subtitle{color:var(--muted);font-size:13px}
 
-    .rank-box {
-        max-width: 900px;
-        margin: auto;
-        background: #1a1a1a;
-        padding: 25px;
-        border-radius: 10px;
-        border-left: 6px solid #ffffff;
-        margin-bottom: 25px;
-    }
+  .controls{display:flex;gap:10px;align-items:center}
+  .btn {
+    padding:10px 14px;border-radius:10px;font-weight:700;text-decoration:none;color:#071022;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));border:none;cursor:pointer;
+    box-shadow:var(--glow);transition:transform .14s ease, box-shadow .14s ease;
+  }
+  .btn.ghost { background:transparent;color:var(--muted);box-shadow:none;border:1px solid rgba(255,255,255,0.03) }
+  .btn:hover{transform:translateY(-4px)}
 
-    .rank-title {
-        font-family: 'Press Start 2P', cursive;
-        font-size: 18px;
-        margin-bottom: 10px;
-    }
+  /* Hero */
+  .hero{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:var(--radius); padding:22px; display:flex; gap:18px; align-items:center; box-shadow:0 12px 40px rgba(2,6,23,0.6); border:1px solid rgba(255,255,255,0.03);
+  }
+  .hero-left{flex:1}
+  .hero-right{width:220px;text-align:right}
+  .hero h2{margin:0;font-family:Montserrat;font-size:18px}
+  .hero p{margin:8px 0 0;color:var(--muted);font-size:13px}
 
-    .rank-desc {
-        font-size: 15px;
-        color: #d0d0d0;
-    }
+  /* Ranks grid */
+  .ranks-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}
+  .rank-card{
+    position:relative; overflow:hidden;
+    border-radius:14px;padding:18px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.03);
+    transition:transform .18s cubic-bezier(.2,.9,.3,1), box-shadow .18s ease;
+  }
+  .rank-card:hover{ transform:translateY(-8px); box-shadow:0 30px 60px rgba(2,6,23,0.6) }
 
-    .back-btn {
-        display: block;
-        width: 200px;
-        margin: 40px auto;
-        text-align: center;
-        padding: 15px;
-        background: #111;
-        border: 2px solid #444;
-        border-radius: 10px;
-        font-family: 'Press Start 2P', cursive;
-        color: white;
-        text-decoration: none;
-        transition: 0.2s;
-    }
+  .rank-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .rank-badge{
+    display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;font-weight:800;font-family:Montserrat;
+    color:#071022;font-size:13px;
+  }
+  .badge-elite{background:linear-gradient(90deg,var(--gold),#ffd88a); box-shadow:0 8px 30px rgba(255,209,102,0.08)}
+  .badge-core{background:linear-gradient(90deg,var(--accent-1),#9ff3c9)}
+  .badge-regular{background:linear-gradient(90deg,var(--accent-2),#8fc9ff)}
 
-    .back-btn:hover {
-        border-color: #ffffff;
-        background: #222;
-        transform: scale(1.03);
-    }
+  .rank-name{font-weight:800;font-size:16px;margin-top:12px}
+  .rank-desc{color:var(--muted);font-size:13px;margin-top:8px}
+
+  .features{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .feature{background:var(--glass);padding:8px 10px;border-radius:8px;font-size:13px;color:var(--muted);border:1px solid rgba(255,255,255,0.02)}
+
+  .progress{
+    height:8px;background:rgba(255,255,255,0.03);border-radius:999px;margin-top:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.02)
+  }
+  .progress > i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));box-shadow:0 6px 18px rgba(77,166,255,0.08)}
+
+  .rank-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+  .cta { padding:8px 12px;border-radius:10px;background:linear-gradient(90deg,var(--accent-2),#6fb8ff);color:#071022;font-weight:800;text-decoration:none }
+  .muted{color:var(--muted);font-size:13px}
+
+  /* Accent visuals */
+  .glow-blob{
+    position:absolute;right:-30px;top:-30px;width:220px;height:220px;border-radius:50%;
+    filter:blur(36px);opacity:0.12;pointer-events:none;
+  }
+  .blob-1{background:linear-gradient(90deg,var(--accent-2),#6fb8ff)}
+  .blob-2{background:linear-gradient(90deg,var(--accent-1),#9ff3c9)}
+  .blob-3{background:linear-gradient(90deg,var(--accent-3),#ff9ccf)}
+
+  /* Responsive */
+  @media (max-width:1100px){ .ranks-grid{grid-template-columns:repeat(2,1fr)} .hero-right{display:none} }
+  @media (max-width:700px){ .ranks-grid{grid-template-columns:1fr} .logo{width:52px;height:52px;font-size:16px} header{flex-direction:column;align-items:flex-start} .controls{width:100%;justify-content:flex-end} }
 </style>
 </head>
-
 <body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">BV</div>
+        <div>
+          <h1>Ranks — Black Velvet Clan</h1>
+          <div class="subtitle">A clear, stylish progression system. Look sharp, play sharp.</div>
+        </div>
+      </div>
 
-<div class="signature">
-    by someone formerly known as<br>luckyy / rin
-</div>
+      <div class="controls" aria-hidden="false">
+        <a class="btn" href="index.html" title="Back to Home">Back to Home</a>
+        <a class="btn ghost" href="staffrules.html" title="Staff Rules" style="background:transparent;color:var(--muted);box-shadow:none;border:1px solid rgba(255,255,255,0.03)">Staff Rules</a>
+      </div>
+    </header>
 
-<h1>CLAN RANK DIRECTORY</h1>
+    <section class="hero" aria-labelledby="ranksHero">
+      <div class="hero-left">
+        <h2 id="ranksHero">Rank tiers designed to reward contribution and skill</h2>
+        <p>Each rank includes perks, responsibilities, and a clear path to the next tier. Earn your stripes through activity, conduct, and community leadership.</p>
+      </div>
+      <div class="hero-right">
+        <div style="font-weight:800;font-family:Montserrat;font-size:13px">Quick guide</div>
+        <div class="subtitle" style="margin-top:8px">Core ranks for members, elite ranks for leaders, and special tags for contributors.</div>
+      </div>
+    </section>
 
-<!-- GOAT -->
-<div class="rank-box">
-    <div class="rank-title">🐐 GOAT</div>
-    <div class="rank-desc">
-        The highest honor in the clan. Only one player can hold this title at a time.
-        The strongest fighter, the unmatched champion. Must be earned and defended.
-    </div>
-</div>
+    <section class="ranks-grid" aria-label="Ranks list">
+      <!-- Elite Rank -->
+      <article class="rank-card" aria-labelledby="rank-elite">
+        <div class="glow-blob blob-1" style="opacity:0.12"></div>
+        <div class="rank-top">
+          <div class="rank-badge badge-elite">ELITE</div>
+          <div class="muted">Top tier</div>
+        </div>
 
-<!-- ELITE -->
-<div class="rank-box">
-    <div class="rank-title">🔴 ELITE</div>
-    <div class="rank-desc">
-        Insane mechanics, terrifying aim, unmatched movement. These players dominate lobbies effortlessly.
-    </div>
-</div>
+        <div class="rank-name" id="rank-elite">Founder / Council</div>
+        <div class="rank-desc">Leadership tier. Full permissions, event oversight, and final decision authority on major matters.</div>
 
-<!-- LEGEND -->
-<div class="rank-box">
-    <div class="rank-title">🔵 LEGEND</div>
-    <div class="rank-desc">
-        Respected, reliable, and skilled. Consistent performers who stand out in every match.
-    </div>
-</div>
+        <div class="features" aria-hidden="false">
+          <div class="feature">Full staff access</div>
+          <div class="feature">Event scheduling</div>
+          <div class="feature">Policy control</div>
+        </div>
 
-<!-- DECENT -->
-<div class="rank-box">
-    <div class="rank-title">🔷 DECENT</div>
-    <div class="rank-desc">
-        Solid players who understand the game and can hold their own. Not flashy, but capable.
-    </div>
-</div>
+        <div class="progress" aria-hidden="true" title="Rank weight">
+          <i style="width:100%"></i>
+        </div>
 
-<!-- NOOB -->
-<div class="rank-box">
-    <div class="rank-title">🟢 NOOB</div>
-    <div class="rank-desc">
-        New players still learning the basics. Everyone starts here — the beginning of the climb.
-    </div>
-</div>
+        <div class="rank-footer">
+          <div class="muted">By appointment only</div>
+          <a class="cta" href="discord.html">Contact Leadership</a>
+        </div>
+      </article>
 
-<!-- TRYOUT -->
-<div class="rank-box">
-    <div class="rank-title">⚪ TRYOUT</div>
-    <div class="rank-desc">
-        Players currently proving themselves. Skill, attitude, and consistency matter here.
-    </div>
-</div>
+      <!-- Core Rank -->
+      <article class="rank-card" aria-labelledby="rank-core">
+        <div class="glow-blob blob-2" style="opacity:0.10"></div>
+        <div class="rank-top">
+          <div class="rank-badge badge-core">CORE</div>
+          <div class="muted">Trusted staff</div>
+        </div>
 
-<!-- BLACK VELVET -->
-<div class="rank-box">
-    <div class="rank-title">⚫ BLACK VELVET</div>
-    <div class="rank-desc">
-        Official clan members. Part of the identity, part of the movement.
-    </div>
-</div>
+        <div class="rank-name" id="rank-core">Senior Staff</div>
+        <div class="rank-desc">Experienced moderators and event leads. Responsible for training and incident reviews.</div>
 
-<!-- MEMBER -->
-<div class="rank-box">
-    <div class="rank-title">⚪ MEMBER</div>
-    <div class="rank-desc">
-        Community members who join the server to chill, talk, and vibe. No requirements.
-    </div>
-</div>
+        <div class="features">
+          <div class="feature">Moderation tools</div>
+          <div class="feature">Event leadership</div>
+          <div class="feature">Mentorship</div>
+        </div>
 
-<a class="back-btn" href="index.html">BACK TO HOME</a>
+        <div class="progress" aria-hidden="true">
+          <i style="width:78%"></i>
+        </div>
 
+        <div class="rank-footer">
+          <div class="muted">Requires nomination</div>
+          <a class="cta" href="staffapp.html">Apply / Nominate</a>
+        </div>
+      </article>
+
+      <!-- Regular Rank -->
+      <article class="rank-card" aria-labelledby="rank-regular">
+        <div class="glow-blob blob-3" style="opacity:0.10"></div>
+        <div class="rank-top">
+          <div class="rank-badge badge-regular">REGULAR</div>
+          <div class="muted">Active members</div>
+        </div>
+
+        <div class="rank-name" id="rank-regular">Veteran</div>
+        <div class="rank-desc">Reliable contributors who help run events, welcome new members, and set a positive example.</div>
+
+        <div class="features">
+          <div class="feature">Event priority</div>
+          <div class="feature">Custom tag</div>
+          <div class="feature">Access to veteran channels</div>
+        </div>
+
+        <div class="progress" aria-hidden="true">
+          <i style="width:54%"></i>
+        </div>
+
+        <div class="rank-footer">
+          <div class="muted">Earned by activity</div>
+          <a class="cta" href="events.html">View Events</a>
+        </div>
+      </article>
+
+      <!-- Member Rank -->
+      <article class="rank-card" aria-labelledby="rank-member">
+        <div class="rank-top">
+          <div class="rank-badge" style="background:linear-gradient(90deg,#cbd5ff,#bfe9ff);color:#071022">MEMBER</div>
+          <div class="muted">Community</div>
+        </div>
+
+        <div class="rank-name" id="rank-member">Member</div>
+        <div class="rank-desc">Standard community access. Participate in chats, events, and casual play.</div>
+
+        <div class="features">
+          <div class="feature">Chat access</div>
+          <div class="feature">Event signups</div>
+          <div class="feature">Role progression</div>
+        </div>
+
+        <div class="progress" aria-hidden="true">
+          <i style="width:28%"></i>
+        </div>
+
+        <div class="rank-footer">
+          <div class="muted">Welcome aboard</div>
+          <a class="cta" href="join.html">Join Events</a>
+        </div>
+      </article>
+
+      <!-- Trial Rank -->
+      <article class="rank-card" aria-labelledby="rank-trial">
+        <div class="rank-top">
+          <div class="rank-badge" style="background:linear-gradient(90deg,#ffd6a5,#ffd88a);color:#071022">TRIAL</div>
+          <div class="muted">New</div>
+        </div>
+
+        <div class="rank-name" id="rank-trial">Trial Member</div>
+        <div class="rank-desc">New members in probation. Show activity and good conduct to progress quickly.</div>
+
+        <div class="features">
+          <div class="feature">Intro channels</div>
+          <div class="feature">Onboarding guide</div>
+          <div class="feature">Mentor pairing</div>
+        </div>
+
+        <div class="progress" aria-hidden="true">
+          <i style="width:12%"></i>
+        </div>
+
+        <div class="rank-footer">
+          <div class="muted">First 14 days</div>
+          <a class="cta" href="welcome.html">Get Started</a>
+        </div>
+      </article>
+
+      <!-- Contributor Rank -->
+      <article class="rank-card" aria-labelledby="rank-contrib">
+        <div class="rank-top">
+          <div class="rank-badge" style="background:linear-gradient(90deg,#ffd1f0,#ff9ccf);color:#071022">CONTRIB</div>
+          <div class="muted">Creators</div>
+        </div>
+
+        <div class="rank-name" id="rank-contrib">Contributor</div>
+        <div class="rank-desc">Recognizes creators, streamers, and community builders who add value to the clan.</div>
+
+        <div class="features">
+          <div class="feature">Creator channel</div>
+          <div class="feature">Promo support</div>
+          <div class="feature">Collab opportunities</div>
+        </div>
+
+        <div class="progress" aria-hidden="true">
+          <i style="width:66%"></i>
+        </div>
+
+        <div class="rank-footer">
+          <div class="muted">Invite-only / review</div>
+          <a class="cta" href="contact.html">Request Feature</a>
+        </div>
+      </article>
+    </section>
+
+    <footer style="margin-top:28px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+      <div class="muted">Ranks are reviewed regularly. Questions? Reach out to leadership in the staff channel.</div>
+      <div>
+        <a class="btn ghost" href="rules.html" style="background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.03)">Community Rules</a>
+        <a class="btn" href="index.html" style="margin-left:10px">Back to Home</a>
+      </div>
+    </footer>
+  </div>
 </body>
 </html>
