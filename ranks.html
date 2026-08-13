@@ -1,624 +1,499 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Black Velvet Clan — Full Staff & Rank Directory</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<title>Black Velvet — Staff Directory & Clan Ranks</title>
 
 <style>
   :root{
-    --dark-bg-top:#050506;
-    --dark-bg-bottom:#0b0b0d;
-    --light-bg-top:#f3f4f6;
-    --light-bg-bottom:#e6e7ea;
-
-    --panel-dark: rgba(6,6,8,0.92);
-    --panel-light: rgba(255,255,255,0.95);
-
-    --muted-dark:#9aa4b2;
-    --muted-light:#6f7782;
-
-    --accent-dark:#ffffff;
-    --accent-light:#0b0f14;
-
-    --glass-dark: rgba(255,255,255,0.03);
-    --glass-light: rgba(0,0,0,0.04);
-
-    --menu-w:320px;
-    --radius:14px;
-    --max-width:1200px;
+    --bg:#050506;
+    --card:#0f0f11;
+    --glass: rgba(255,255,255,0.03);
+    --accent:#bfa6ff;
+    --muted:#9a8fb8;
+    --text:#e9e6ef;
+    --panel-shadow: rgba(0,0,0,0.7);
+    --tile-radius:12px;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   }
 
-  :root[data-theme="light"]{
-    --bg-top: var(--light-bg-top);
-    --bg-bottom: var(--light-bg-bottom);
-    --panel-bg: var(--panel-light);
-    --muted: var(--muted-light);
-    --accent: var(--accent-light);
-    --glass: var(--glass-light);
-  }
-
-  :root:not([data-theme="light"]){
-    --bg-top: var(--dark-bg-top);
-    --bg-bottom: var(--dark-bg-bottom);
-    --panel-bg: var(--panel-dark);
-    --muted: var(--muted-dark);
-    --accent: var(--accent-dark);
-    --glass: var(--glass-dark);
-  }
-
-  html,body{
-    height:100%;
-    margin:0;
-    background:linear-gradient(180deg,var(--bg-top) 0%, var(--bg-bottom) 100%);
-    color:var(--accent);
-    font-family:Inter,system-ui,Arial,sans-serif;
-    -webkit-font-smoothing:antialiased;
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;}
+  .page{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:48px;
+    position:relative;
     overflow:hidden;
   }
 
-  .app{display:flex;height:100vh;align-items:stretch;min-height:0}
+  /* Outside petals */
+  .petal-layer{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    overflow:hidden;
+  }
+  .petal{
+    position:absolute;
+    width:36px;
+    height:54px;
+    border-radius:50% 50% 40% 60% / 60% 60% 40% 40%;
+    background:linear-gradient(135deg, rgba(18,18,18,0.98), rgba(36,36,36,0.9) 60%, rgba(70,70,70,0.6));
+    filter:drop-shadow(0 10px 30px rgba(0,0,0,0.7));
+    opacity:0.95;
+    transform-origin:center;
+    animation:petalFloat 3.6s forwards cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes petalFloat{
+    0%{ transform:translateY(0) rotate(0deg) scale(1); opacity:1; }
+    60%{ transform:translateY(-120px) rotate(40deg) scale(1.02); opacity:0.9; }
+    100%{ transform:translateY(-320px) rotate(120deg) scale(0.9); opacity:0; }
+  }
 
-  /* Left menu */
-  nav.menu{
-    width:var(--menu-w);
-    min-width:var(--menu-w);
-    background:var(--panel-bg);
-    border-right:1px solid var(--glass);
-    padding:28px 22px;
-    box-sizing:border-box;
+  /* Card */
+  .card{
+    width:1100px;
+    max-width:96%;
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.22));
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.04);
+    box-shadow:0 18px 60px var(--panel-shadow);
+    display:grid;
+    grid-template-columns:1fr 320px;
+    gap:0;
+    position:relative;
+    z-index:2;
+    overflow:hidden;
+  }
+
+  /* Left content */
+  .content{
+    padding:36px 40px;
     display:flex;
     flex-direction:column;
     gap:18px;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.45);
-    backdrop-filter: blur(6px);
   }
 
-  .brand{display:flex;align-items:center;gap:12px}
+  .header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
   .logo{
-    width:64px;height:64px;border-radius:12px;
-    background:linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-    display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--accent);font-family:'Press Start 2P',cursive;font-size:16px;
-    box-shadow:0 8px 24px rgba(0,0,0,0.12)
+    width:64px;
+    height:64px;
+    border-radius:12px;
+    background:linear-gradient(135deg, rgba(191,166,255,0.12), rgba(255,120,150,0.04));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--accent);
+    font-weight:800;
+    font-size:20px;
   }
-  .brand h1{font-family:'Press Start 2P',cursive;font-size:12px;margin:0;line-height:1;color:var(--accent)}
-  .brand p{margin:0;color:var(--muted);font-size:11px}
+  h1{ margin:0; font-size:20px; color:var(--text); }
+  p.lead{ margin:0; color:var(--muted); font-size:13px; }
 
-  .menu-list{display:flex;flex-direction:column;gap:10px;margin-top:6px}
-  .menu-item{
-    display:block;border-radius:12px;padding:12px 14px;border:1px solid var(--glass);
-    background:transparent;color:var(--accent);font-weight:800;font-size:14px;text-decoration:none;cursor:pointer;
+  .controls{ display:flex; gap:10px; align-items:center; }
+
+  .btn{
+    padding:10px 14px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.06);
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));
+    color:var(--text);
+    cursor:pointer;
+    font-weight:700;
+    box-shadow:0 8px 28px rgba(0,0,0,0.55);
+    transition:transform .18s, box-shadow .18s, background .18s;
+    font-size:13px;
   }
-  .menu-item:hover{ transform:translateX(6px); box-shadow:0 14px 30px rgba(0,0,0,0.12) }
-  .menu-item.active{background:linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));}
+  .btn:hover{ transform:translateY(-3px); box-shadow:0 18px 40px rgba(0,0,0,0.65); }
+  .btn.ghost{ background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--muted); box-shadow:none; }
 
-  .menu-desc-wrap{margin-top:6px;padding:12px;border-radius:12px;background:var(--panel-bg);border:1px solid var(--glass);color:var(--muted);font-size:13px}
-  .menu-desc-title{font-weight:800;color:var(--accent);margin-bottom:6px}
-
-  .menu-footer{margin-top:auto;font-size:11px;color:var(--muted);display:flex;flex-direction:column;gap:8px}
-  .small-cta{display:inline-block;padding:10px 12px;border-radius:10px;background:transparent;border:1px solid var(--glass);color:var(--muted);text-decoration:none;font-weight:700;font-size:12px;text-align:center}
-  .small-cta:hover{background:rgba(255,255,255,0.02);color:var(--accent)}
-
-  .theme-toggle{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;border:1px solid var(--glass);background:transparent;color:var(--muted);font-weight:700;font-size:13px;cursor:pointer}
-  .theme-toggle .label{min-width:120px;text-align:left}
-  .theme-toggle .mode-dot{width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 6px 18px rgba(0,0,0,0.2)}
-
-  /* Main content */
-  main.content{position:relative;flex:1;overflow:hidden;display:flex;flex-direction:column}
-  .bg-wrap{position:absolute;inset:0;z-index:0;pointer-events:none}
-  canvas#bgCanvas{width:100%;height:100%;display:block}
-
-  .wrap{position:relative;z-index:2;max-width:var(--max-width);margin:24px auto;padding:20px;box-sizing:border-box;height:calc(100vh - 48px)}
-  header.page-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px}
-  header.page-head .title{display:flex;gap:12px;align-items:center}
-  header.page-head h1{margin:0;font-family:Montserrat,Inter;font-weight:700;letter-spacing:0.6px;font-size:20px;color:var(--accent)}
-  header.page-head .subtitle{color:var(--muted);font-size:13px}
-
-  /* Scrollable content area */
-  .content-area{
-    display:flex;gap:22px;height:calc(100% - 64px);
+  /* Grid of ranks and staff */
+  .grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:18px;
+    margin-top:6px;
   }
 
-  .left-column{
-    flex:1;
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius:12px;padding:18px;border:1px solid var(--glass);
-    box-shadow:0 12px 40px rgba(0,0,0,0.45);
-    overflow:auto;
+  .panel{
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.04));
+    border-radius:12px;
+    padding:18px;
+    border:1px solid rgba(255,255,255,0.02);
   }
 
-  .right-column{
-    width:420px;
-    min-width:320px;
-    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
-    border-radius:12px;padding:18px;border:1px solid var(--glass);
-    box-shadow:0 12px 40px rgba(0,0,0,0.45);
-    overflow:auto;
+  .rank-row{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    margin-bottom:12px;
   }
 
-  /* Staff cards */
-  .section-title{font-weight:800;margin:0 0 12px 0;color:var(--accent)}
-  .role-card{display:flex;gap:16px;align-items:flex-start;padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border:1px solid rgba(255,255,255,0.02);margin-bottom:12px}
-  .role-initial{
-    width:84px;height:84px;border-radius:12px;display:flex;align-items:center;justify-content:center;
-    font-family:Montserrat, 'Press Start 2P', sans-serif;font-weight:900;font-size:44px;
-    box-shadow:0 8px 30px rgba(0,0,0,0.45);flex-shrink:0;
+  .rank-badge{
+    width:72px;
+    height:72px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    font-size:28px;
+    color:#fff;
+    flex-shrink:0;
+    box-shadow:0 8px 30px rgba(0,0,0,0.6);
   }
-  .role-body{flex:1}
-  .role-title{font-weight:800;font-size:15px;margin:0}
-  .role-sub{color:var(--muted);font-size:13px;margin-top:6px}
-  .role-meta{margin-top:10px;color:var(--muted);font-size:13px;line-height:1.45}
 
-  .chat-line{margin-top:10px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.02);font-size:13px;color:var(--muted)}
-  .chat-author{color:#7be495;font-weight:700;margin-right:8px}
+  /* specific colors */
+  .badge-found{ background:#0b0b0b; color:#fff; }   /* Founders - black */
+  .badge-pres{ background:#ffd54f; color:#0b0b0b; }  /* President - yellow */
+  .badge-admin{ background:#e74c3c; color:#fff; }    /* Admin - red */
+  .badge-mod{ background:#2ecc71; color:#fff; }      /* Mod - green */
+  .badge-help{ background:#3498db; color:#fff; }     /* Helper - blue */
 
-  .notice{margin-top:16px;padding:14px;border-radius:12px;background:linear-gradient(90deg, rgba(77,166,255,0.06), rgba(123,228,149,0.03));border-left:4px solid #4da6ff;color:#eaf2ff;font-weight:700}
-  .notice small{display:block;font-weight:400;color:var(--muted);margin-top:8px;font-size:13px}
+  .rank-info h3{ margin:0; font-size:16px; color:var(--text); }
+  .rank-info p{ margin:6px 0 0 0; color:var(--muted); font-size:13px; line-height:1.35; }
 
-  /* Rank cards */
-  .rank-card{display:flex;gap:14px;align-items:flex-start;padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border:1px solid rgba(255,255,255,0.02);margin-bottom:12px}
-  .rank-initial{
-    width:96px;height:96px;border-radius:12px;display:flex;align-items:center;justify-content:center;
-    font-family:Montserrat, 'Press Start 2P', sans-serif;font-weight:900;font-size:48px;
-    box-shadow:0 10px 36px rgba(0,0,0,0.45);flex-shrink:0;
+  .staff-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:8px;
   }
-  .rank-body{flex:1}
-  .rank-name{font-weight:800;font-size:16px;margin:0;color:var(--accent)}
-  .rank-desc{color:var(--muted);margin-top:6px;font-size:14px}
-  .rank-note{margin-top:10px;color:var(--muted);font-size:13px}
 
-  .tryout{margin-top:12px;padding:12px;border-radius:10px;background:linear-gradient(90deg, rgba(255,209,102,0.06), rgba(255,122,162,0.03));border-left:4px solid #ffd166;font-weight:800;color:var(--accent)}
-  .tryout small{display:block;color:var(--muted);font-weight:400;margin-top:8px}
+  .staff-item{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    padding:10px;
+    border-radius:10px;
+    background:rgba(255,255,255,0.01);
+    border:1px solid rgba(255,255,255,0.02);
+  }
+  .staff-avatar{
+    width:44px;
+    height:44px;
+    border-radius:8px;
+    background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--muted);
+    font-weight:700;
+  }
+  .staff-meta{ display:flex; flex-direction:column; gap:2px; }
+  .staff-meta .name{ font-weight:700; color:var(--text); }
+  .staff-meta .role{ font-size:13px; color:var(--muted); }
 
-  footer.page-foot{margin-top:12px;color:var(--muted);font-size:13px;text-align:center}
+  /* Clan ranks grid */
+  .ranks-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:12px;
+    margin-top:12px;
+  }
 
-  /* Back button */
-  .back-home{display:inline-block;padding:10px 12px;border-radius:10px;border:1px solid var(--glass);background:transparent;color:var(--accent);font-weight:800;text-decoration:none}
+  .rank-card{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    padding:12px;
+    border-radius:12px;
+    background:rgba(255,255,255,0.01);
+    border:1px solid rgba(255,255,255,0.02);
+  }
 
-  /* Initial color styles (staff) */
-  .role-initial.founder{ background:#000000; color:#ffffff; border:3px solid #7a7a7a; }
-  .role-initial.president{ background:linear-gradient(135deg,#ffd166,#ffb84d); color:#071022; border:2px solid rgba(0,0,0,0.08); }
-  .role-initial.admin{ background:#ff4d4d; color:#ffffff; border:2px solid rgba(0,0,0,0.06); }
-  .role-initial.mods{ background:#7be495; color:#071022; border:2px solid rgba(0,0,0,0.06); }
-  .role-initial.helper{ background:#4da6ff; color:#071022; border:2px solid rgba(0,0,0,0.06); }
+  .rank-square{
+    width:56px;
+    height:56px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    font-size:20px;
+    color:#fff;
+    flex-shrink:0;
+    box-shadow:0 8px 30px rgba(0,0,0,0.6);
+  }
 
-  /* Initial color styles (ranks) */
-  .rank-initial.goat{ background:linear-gradient(135deg,#ffd166,#ffb84d); color:#071022; border:3px solid rgba(0,0,0,0.08); }
-  .rank-initial.elite{ background:linear-gradient(135deg,#9b59b6,#7d3c98); color:#fff; border:2px solid rgba(0,0,0,0.06); }
-  .rank-initial.legend{ background:#4da6ff; color:#071022; border:2px solid rgba(0,0,0,0.06); }
-  .rank-initial.decent{ background:#9aa4b2; color:#071022; border:2px solid rgba(0,0,0,0.06); }
-  .rank-initial.rookie{ background:#7be495; color:#071022; border:2px solid rgba(0,0,0,0.06); }
-  .rank-initial.member{ background:transparent; color:var(--accent); border:2px dashed var(--glass); font-size:40px; }
+  .sq-goat{ background:#ffd54f; color:#0b0b0b; }   /* GOAT */
+  .sq-elite{ background:#8e44ad; }                 /* ELITE */
+  .sq-legend{ background:#3498db; }                /* LEGEND */
+  .sq-decent{ background:#95a5a6; }                /* DECENT */
+  .sq-rookie{ background:#2ecc71; }                /* ROOKIE */
+  .sq-member{ background:#0b0b0b; }                /* MEMBER */
 
-  @media (max-width:980px){
-    nav.menu{display:none}
-    .right-column{display:none}
+  .rank-desc h4{ margin:0; font-size:15px; color:var(--text); }
+  .rank-desc p{ margin:6px 0 0 0; color:var(--muted); font-size:13px; line-height:1.35; }
+
+  /* Sidebar */
+  .sidebar{
+    padding:28px;
+    background:var(--glass);
+    border-left:1px solid rgba(255,255,255,0.02);
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+  .sidebar h3{ margin:0; font-size:15px; color:var(--text); }
+  .sidebar p{ margin:0; color:var(--muted); font-size:13px; line-height:1.45; }
+
+  .links{ display:flex; flex-direction:column; gap:10px; margin-top:6px; }
+  .links a{ color:var(--accent); text-decoration:none; font-weight:700; font-size:13px; }
+
+  .footer-note{ color:var(--muted); font-size:13px; margin-top:6px; }
+
+  @media (max-width:1100px){
+    .card{ grid-template-columns:1fr; }
+    .sidebar{ order:2; }
+    .content{ order:1; padding:28px; }
+    .ranks-grid{ grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width:640px){
+    .ranks-grid{ grid-template-columns: 1fr; }
+    .grid{ grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
-  <div class="app" role="application" aria-label="Black Velvet Clan Staff & Ranks">
-    <nav class="menu" aria-label="Main menu">
-      <div class="brand">
-        <div class="logo">BV</div>
-        <div>
-          <h1>BLACK VELVET</h1>
-          <p>Clan • Community • Competition</p>
-        </div>
-      </div>
+  <div class="petal-layer" id="petalLayer"></div>
 
-      <div class="menu-list" role="menu" aria-label="Navigation">
-        <div class="menu-item" data-key="home" id="menuHome">Home</div>
-        <div class="menu-item active" data-key="directory">Staff & Ranks</div>
-        <div class="menu-item" data-key="staffapp">Staff Application</div>
-        <div class="menu-item" data-key="discord">Discord Links</div>
-        <div class="menu-item" data-key="info">More Info</div>
-      </div>
+  <div class="page">
+    <div class="card" role="main" aria-labelledby="title">
 
-      <div id="menuDescription" class="menu-desc-wrap" aria-live="polite">
-        <div class="menu-desc-title">Full Directory</div>
-        <div class="menu-desc-text">All staff roles and clan ranks in one scrollable page. Use the left menu to jump between pages.</div>
-      </div>
-
-      <div class="menu-footer">
-        <button id="themeToggle" class="theme-toggle" title="Toggle theme">
-          <div class="mode-dot" aria-hidden="true"></div>
-          <div class="label">Toggle Light / Dark</div>
-        </button>
-
-        <a class="small-cta" href="discord.html">Join Discord</a>
-        <a class="small-cta back-home" href="index.html">Back to Home</a>
-
-        <div style="margin-top:8px;color:var(--muted);font-size:11px">Built by Rin • Reborn in the flames</div>
-      </div>
-    </nav>
-
-    <main class="content" aria-live="polite">
-      <div class="bg-wrap" aria-hidden="true">
-        <canvas id="bgCanvas"></canvas>
-      </div>
-
-      <div class="wrap">
-        <header class="page-head">
-          <div class="title">
-            <div class="logo" style="width:48px;height:48px;border-radius:10px;font-size:14px">BV</div>
+      <div class="content">
+        <div class="header">
+          <div class="brand">
+            <div class="logo">BV</div>
             <div>
-              <h1>Staff Directory & Clan Ranks — Full</h1>
-              <div class="subtitle">Everything in one place — scroll to view every role and rank in full detail.</div>
+              <h1 id="title">Staff Directory & Clan Ranks — Full</h1>
+              <p class="lead">Managing the Black Velvet Clan and its members across all ranks.</p>
             </div>
           </div>
 
-          <div>
-            <a class="back-home" href="index.html">RETURN TO HOME</a>
+          <div class="controls">
+            <button class="btn" onclick="location.href='staffapply.html'">Apply for Staff</button>
+            <button class="btn ghost" onclick="location.href='index.html'">Return to Home</button>
           </div>
-        </header>
+        </div>
 
-        <div class="content-area">
-          <!-- Left: full scrollable staff + ranks -->
-          <div class="left-column" id="leftColumn" tabindex="0" aria-label="Staff and ranks content">
-            <!-- Staff Directory (full details) -->
-            <h2 class="section-title">Welcome to the Black Velvet Clan Staff Directory</h2>
-            <p style="color:var(--muted);margin-top:6px">This section explains the roles that keep the server organized, safe, and evolving. Each position carries responsibility — together they form the backbone of the community.</p>
+        <div class="grid">
 
-            <!-- FOUNDERS -->
-            <article class="role-card" aria-labelledby="foundersTitle">
-              <div class="role-initial founder" aria-hidden="true" title="Founders initial">F</div>
-              <div class="role-body">
-                <div id="foundersTitle" class="role-title">FOUNDERS</div>
-                <div class="role-sub">The creators and builders of the clan.</div>
-                <div class="role-meta">
-                  Founders focus on development, adding new features, fixing bugs, and improving the server’s systems. They design architecture, set long-term direction, and handle high-level partnerships and integrations. Founders are the architects behind everything that makes Black Velvet run smoothly.
-                </div>
+          <!-- Staff Roles Panel -->
+          <div class="panel" aria-labelledby="staffRoles">
+            <h2 id="staffRoles" style="margin:0 0 12px 0; font-size:16px;">Staff Roles</h2>
+
+            <div class="rank-row">
+              <div class="rank-badge badge-found">F</div>
+              <div class="rank-info">
+                <h3>Founders</h3>
+                <p>Original creators and vision keepers. Oversight of all operations and long-term direction.</p>
               </div>
-            </article>
-
-            <!-- PRESIDENT -->
-            <article class="role-card" aria-labelledby="presTitle">
-              <div class="role-initial president" aria-hidden="true" title="President initial">P</div>
-              <div class="role-body">
-                <div id="presTitle" class="role-title">PRESIDENT</div>
-                <div class="role-sub">Leaders in charge of the entire server.</div>
-                <div class="role-meta">
-                  Presidents oversee operations, make executive decisions, and ensure the clan’s vision stays strong. They handle major updates, partnerships, community direction, and final approvals on policy changes. Presidents coordinate with founders and admins to keep the server healthy and growing.
-                </div>
-              </div>
-            </article>
-
-            <!-- ADMIN -->
-            <article class="role-card" aria-labelledby="adminTitle">
-              <div class="role-initial admin" aria-hidden="true" title="Admin initial">A</div>
-              <div class="role-body">
-                <div id="adminTitle" class="role-title">ADMIN</div>
-                <div class="role-sub">Managers who keep everything functioning correctly.</div>
-                <div class="role-meta">
-                  Admins supervise staff, handle escalations, and ensure the server stays organized and active. They bridge leadership and moderation, manage server settings, coordinate events, and support moderators with complex cases.
-                </div>
-              </div>
-            </article>
-
-            <!-- MODS -->
-            <article class="role-card" aria-labelledby="modsTitle">
-              <div class="role-initial mods" aria-hidden="true" title="Mods initial">M</div>
-              <div class="role-body">
-                <div id="modsTitle" class="role-title">MODS</div>
-                <div class="role-sub">The Moderators of the server.</div>
-                <div class="role-meta">
-                  Moderators enforce rules, manage tickets, and keep the community safe from troublemakers. They monitor chat, resolve disputes, apply sanctions when necessary, and escalate incidents to admins. Moderators are the watchers of Black Velvet — they make sure the server is safe and welcoming.
-                </div>
-                <div class="chat-line"><span class="chat-author">Rin</span> — Yesterday at 3:04 AM</div>
-              </div>
-            </article>
-
-            <!-- HELPER -->
-            <article class="role-card" aria-labelledby="helperTitle">
-              <div class="role-initial helper" aria-hidden="true" title="Helper initial">H</div>
-              <div class="role-body">
-                <div id="helperTitle" class="role-title">HELPER</div>
-                <div class="role-sub">Friendly guides of the clan.</div>
-                <div class="role-meta">
-                  Helpers assist players with questions, direct them to the right channels, and help train newcomers. They provide onboarding, explain server systems, and support tryouts or practice sessions. Helpers are the first point of contact for new members.
-                </div>
-              </div>
-            </article>
-
-            <div class="notice" role="note" style="margin-bottom:18px">
-              Staff members of Black Velvet serve entirely on a voluntary basis and agree to uphold all server rules, act with maturity, and maintain professionalism. By accepting any staff role you acknowledge these guidelines may change at leadership’s discretion and that violations may result in warnings, demotions, removal, or bans.
-              <small>All staff must be <strong>17 years or older</strong>. Anyone found to have <strong>lied about their age will be permanently banned</strong> from the server.</small>
             </div>
 
-            <!-- Full Clan Ranks section -->
-            <h2 class="section-title" style="margin-top:6px">CLAN RANK INFORMATION</h2>
-            <p style="color:var(--muted);margin-top:6px">Welcome to the official rank directory of the Black Velvet Clan. Every member, visitor, and challenger fits somewhere in this structure. These ranks define skill, dedication, and your place within our community. Read carefully — your journey starts here.</p>
-
-            <!-- GOAT -->
-            <article class="rank-card" aria-labelledby="goatTitle">
-              <div class="rank-initial goat" aria-hidden="true" title="GOAT initial">G</div>
-              <div class="rank-body">
-                <div id="goatTitle" class="rank-name">GOAT</div>
-                <div class="rank-desc">
-                  The highest rank in the entire clan. Only one player can ever hold this title. THE BEST OF THE BEST — the player who proved themselves above every other competitive player. To earn this rank you must challenge and win a 1v1 against the current GOAT under leadership-supervised conditions.
-                </div>
-                <div class="rank-note">Exclusive. Formal challenge and verification required.</div>
+            <div class="rank-row">
+              <div class="rank-badge badge-pres">P</div>
+              <div class="rank-info">
+                <h3>President</h3>
+                <p>Manages administrative operations, staff coordination, and community engagement.</p>
               </div>
-            </article>
-
-            <!-- ELITE -->
-            <article class="rank-card" aria-labelledby="eliteTitle">
-              <div class="rank-initial elite" aria-hidden="true" title="ELITE initial">E</div>
-              <div class="rank-body">
-                <div id="eliteTitle" class="rank-name">ELITE</div>
-                <div class="rank-desc">
-                  Elite players are absolute beasts in the game. Insane mechanics, terrifying aim, unmatched movement — they dominate lobbies without breaking a sweat. Elites are often invited to competitive scrims and represent the clan in high-level matches.
-                </div>
-              </div>
-            </article>
-
-            <!-- LEGEND -->
-            <article class="rank-card" aria-labelledby="legendTitle">
-              <div class="rank-initial legend" aria-hidden="true" title="LEGEND initial">L</div>
-              <div class="rank-body">
-                <div id="legendTitle" class="rank-name">LEGEND</div>
-                <div class="rank-desc">
-                  Legends are strong, reliable, and respected. Not necessarily pro level, but consistently perform and stand out above average players. Legends are often leaders in casual squads and help newer players improve.
-                </div>
-              </div>
-            </article>
-
-            <!-- DECENT -->
-            <article class="rank-card" aria-labelledby="decentTitle">
-              <div class="rank-initial decent" aria-hidden="true" title="DECENT initial">D</div>
-              <div class="rank-body">
-                <div id="decentTitle" class="rank-name">DECENT</div>
-                <div class="rank-desc">
-                  Decent players are solid and can hold their own in public matches. Not flashy, but capable — they understand the game, make smart decisions, and survive without needing constant backup.
-                </div>
-              </div>
-            </article>
-
-            <!-- ROOKIE -->
-            <article class="rank-card" aria-labelledby="rookieTitle">
-              <div class="rank-initial rookie" aria-hidden="true" title="ROOKIE initial">R</div>
-              <div class="rank-body">
-                <div id="rookieTitle" class="rank-name">ROOKIE</div>
-                <div class="rank-desc">
-                  Rookies are new players or those still learning the basics. They struggle in solo matches and need guidance — this rank is the beginning of your climb. Training and mentorship are encouraged.
-                </div>
-              </div>
-            </article>
-
-            <!-- MEMBER -->
-            <article class="rank-card" aria-labelledby="memberTitle">
-              <div class="rank-initial member" aria-hidden="true" title="MEMBER initial">M</div>
-              <div class="rank-body">
-                <div id="memberTitle" class="rank-name">MEMBER</div>
-                <div class="rank-desc">
-                  Members are community participants who join to chill, talk, play, and vibe. No competitive requirements — just be part of the space. Members can try out for competitive ranks by opening a ticket.
-                </div>
-                <div class="rank-note"><strong>TO TRYOUT YOU MUST OPEN A TICKET!</strong></div>
-              </div>
-            </article>
-
-            <div class="tryout" role="note">
-              Want to climb the ranks? Open a tryout ticket in Discord and follow the instructions. Consistency, attitude, and performance matter.
-              <small>Tryouts are scheduled by leadership and may require recorded matches or live 1v1s.</small>
             </div>
 
-            <footer class="page-foot" style="margin-top:18px">
-              Questions about roles or ranks? Reach out to leadership in the staff channel.
-            </footer>
+            <div class="rank-row">
+              <div class="rank-badge badge-admin">A</div>
+              <div class="rank-info">
+                <h3>Admin</h3>
+                <p>Handles technical tasks, server maintenance, and enforcement of policies.</p>
+              </div>
+            </div>
+
+            <div class="rank-row">
+              <div class="rank-badge badge-mod">M</div>
+              <div class="rank-info">
+                <h3>Moderator</h3>
+                <p>Monitors chat, assists members, and enforces community guidelines.</p>
+              </div>
+            </div>
+
+            <div class="rank-row">
+              <div class="rank-badge badge-help">H</div>
+              <div class="rank-info">
+                <h3>Helper</h3>
+                <p>Assists new users, answers questions, and helps maintain a welcoming environment.</p>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;">
+              <h4 style="margin:0 0 8px 0; color:var(--muted); font-size:13px;">Staff Directory (sample)</h4>
+              <div class="staff-list">
+                <div class="staff-item"><div class="staff-avatar">F</div><div class="staff-meta"><div class="name">FounderOne</div><div class="role">Founder</div></div></div>
+                <div class="staff-item"><div class="staff-avatar">P</div><div class="staff-meta"><div class="name">PresidentX</div><div class="role">President</div></div></div>
+                <div class="staff-item"><div class="staff-avatar">A</div><div class="staff-meta"><div class="name">AdminJane</div><div class="role">Admin</div></div></div>
+                <div class="staff-item"><div class="staff-avatar">M</div><div class="staff-meta"><div class="name">ModSam</div><div class="role">Moderator</div></div></div>
+                <div class="staff-item"><div class="staff-avatar">H</div><div class="staff-meta"><div class="name">HelperLee</div><div class="role">Helper</div></div></div>
+              </div>
+            </div>
           </div>
 
-          <!-- Right column: quick reference, full staff list and quick links -->
-          <aside class="right-column" aria-label="Quick reference">
-            <h3 class="section-title">Quick Staff Reference</h3>
+          <!-- Clan Ranks Panel -->
+          <div class="panel" aria-labelledby="clanRanks">
+            <h2 id="clanRanks" style="margin:0 0 12px 0; font-size:16px;">Clan Ranks</h2>
 
-            <div style="margin-top:8px">
-              <strong style="font-size:13px">Founders</strong>
-              <div style="color:var(--muted);font-size:13px;margin-top:6px">jsfeelings • Suoaz</div>
-            </div>
+            <div class="ranks-grid">
+              <div class="rank-card">
+                <div class="rank-square sq-goat">G</div>
+                <div class="rank-desc">
+                  <h4>GOAT</h4>
+                  <p>Highest rank. Only one holder at a time. Requires Founder/Admin verification.</p>
+                </div>
+              </div>
 
-            <div style="margin-top:12px">
-              <strong style="font-size:13px">Leadership</strong>
-              <div style="color:var(--muted);font-size:13px;margin-top:6px">President • Admin</div>
-            </div>
+              <div class="rank-card">
+                <div class="rank-square sq-elite">E</div>
+                <div class="rank-desc">
+                  <h4>ELITE</h4>
+                  <p>Top-tier players known for skill and leadership; mentors to others.</p>
+                </div>
+              </div>
 
-            <div style="margin-top:12px">
-              <strong style="font-size:13px">Moderation</strong>
-              <div style="color:var(--muted);font-size:13px;margin-top:6px">Mods • Helpers</div>
-            </div>
+              <div class="rank-card">
+                <div class="rank-square sq-legend">L</div>
+                <div class="rank-desc">
+                  <h4>LEGEND</h4>
+                  <p>Respected veterans recognized for mastery and loyalty.</p>
+                </div>
+              </div>
 
-            <div style="margin-top:18px">
-              <h4 style="margin:0 0 8px 0;color:var(--accent)">Full Staff List</h4>
-              <div style="color:var(--muted);font-size:13px;line-height:1.6">
-                President: (listed leaders)<br>
-                Admin: (admins)<br>
-                Mods: (moderators list)<br>
-                Helpers: (helpers list)<br>
-                Founders: jsfeelings, Suoaz
+              <div class="rank-card">
+                <div class="rank-square sq-decent">D</div>
+                <div class="rank-desc">
+                  <h4>DECENT</h4>
+                  <p>Active contributors with a positive reputation in the community.</p>
+                </div>
+              </div>
+
+              <div class="rank-card">
+                <div class="rank-square sq-rookie">R</div>
+                <div class="rank-desc">
+                  <h4>ROOKIE</h4>
+                  <p>New recruits learning the ropes and growing within the clan.</p>
+                </div>
+              </div>
+
+              <div class="rank-card">
+                <div class="rank-square sq-member">M</div>
+                <div class="rank-desc">
+                  <h4>MEMBER</h4>
+                  <p>Everyday participants who form the foundation of the community.</p>
+                </div>
               </div>
             </div>
 
-            <div style="margin-top:18px">
-              <h4 style="margin:0 0 8px 0;color:var(--accent)">Quick Links</h4>
-              <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-                <a class="small-cta" href="staffapp.html">Apply to Staff</a>
-                <a class="small-cta" href="staffrules.html">Staff Rules</a>
-                <a class="small-cta" href="discord.html">Open Ticket (Discord)</a>
-                <a class="small-cta" href="index.html">Return Home</a>
-              </div>
+            <div style="margin-top:12px; color:var(--muted); font-size:13px;">
+              Want to climb the ranks? Open a formal ticket in Discord and follow the instructions provided.
             </div>
+          </div>
 
-            <div style="margin-top:18px">
-              <h4 style="margin:0 0 8px 0;color:var(--accent)">Notes</h4>
-              <div style="color:var(--muted);font-size:13px;line-height:1.5">
-                Staff serve voluntarily. All staff must be <strong>17+</strong>. Misrepresenting age results in permanent ban.
-              </div>
-            </div>
-          </aside>
+        </div>
+
+        <div class="footer-note">
+          Questions about roles or ranks? Reach out to Admins for clarification.
         </div>
       </div>
-    </main>
+
+      <!-- Sidebar -->
+      <aside class="sidebar" aria-label="Sidebar">
+        <div>
+          <h3>Quick Staff Reference</h3>
+          <p class="hint">Founders · Presidents · Admins · Mods · Helpers</p>
+        </div>
+
+        <div>
+          <h3>Staff Links</h3>
+          <div class="links">
+            <a href="#">Founder</a>
+            <a href="#">President</a>
+            <a href="#">Admin</a>
+            <a href="#">Mod</a>
+            <a href="#">Helper</a>
+          </div>
+        </div>
+
+        <div>
+          <h3>Quick Links</h3>
+          <div class="links">
+            <a href="staffapply.html">Apply for Staff</a>
+            <a href="#">Open Ticket</a>
+          </div>
+        </div>
+
+        <div>
+          <h3>Notes</h3>
+          <p class="hint">Misrepresenting rank or authority is prohibited. Staff must follow the BV Code.</p>
+        </div>
+      </aside>
+
+    </div>
   </div>
 
 <script>
-/* Background petals (subtle) */
-(() => {
-  const canvas = document.getElementById('bgCanvas');
-  if(!canvas) return;
-  const ctx = canvas.getContext('2d', { alpha: true });
-  let DPR = Math.max(1, window.devicePixelRatio || 1);
-  let w = canvas.width = innerWidth;
-  let h = canvas.height = innerHeight;
-  canvas.width = w * DPR; canvas.height = h * DPR;
-  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
-  ctx.scale(DPR, DPR);
-
-  function rand(a,b){ return Math.random()*(b-a)+a; }
-
-  let petals = [];
-  const pointer = { x:w/2, y:h/2, px:w/2, py:h/2 };
-  let BASE = Math.max(8, Math.round((w*h)/160000));
-
-  function create(colors){
-    return {
-      x: rand(0,w), y: rand(0,h),
-      vx: rand(-0.08,0.08), vy: rand(-0.02,0.06),
-      rot: rand(0,Math.PI*2), vr: rand(-0.006,0.006),
-      size: rand(6,16), color: colors[Math.floor(Math.random()*colors.length)],
-      life: rand(800,1600), age:0
-    };
+/* Petal system (outside the card) */
+(function(){
+  const layer = document.getElementById('petalLayer');
+  function rand(min,max){ return Math.random()*(max-min)+min; }
+  function spawnPetal(x,y){
+    const p = document.createElement('div');
+    p.className = 'petal';
+    const size = Math.round(rand(32,44));
+    p.style.width = size + 'px';
+    p.style.height = Math.round(size * 1.5) + 'px';
+    p.style.left = (x - size/2) + 'px';
+    p.style.top = (y - size/2) + 'px';
+    p.style.transform = `rotate(${rand(-30,30)}deg)`;
+    p.style.opacity = rand(0.7,1);
+    layer.appendChild(p);
+    setTimeout(()=> p.remove(), 4200 + Math.random()*400);
   }
 
-  function seed(){
-    petals.length = 0;
-    const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    const colors = theme === 'light' ? ['rgba(0,0,0,0.98)','rgba(30,30,30,0.88)','rgba(60,60,60,0.75)'] : ['rgba(255,255,255,0.98)','rgba(240,240,240,0.88)','rgba(210,210,210,0.75)'];
-    for(let i=0;i<BASE;i++) petals.push(create(colors));
-  }
-
-  function spawn(x,y){
-    const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    const colors = theme === 'light' ? ['rgba(0,0,0,0.98)','rgba(30,30,30,0.88)','rgba(60,60,60,0.75)'] : ['rgba(255,255,255,0.98)','rgba(240,240,240,0.88)','rgba(210,210,210,0.75)'];
-    const count = 12 + Math.floor(rand(0,10));
-    for(let i=0;i<count;i++){
-      const angle = Math.PI*2*Math.random();
-      const speed = rand(1.2,3.0);
-      petals.push({
-        x, y,
-        vx: Math.cos(angle)*speed + rand(-0.3,0.3),
-        vy: Math.sin(angle)*speed + rand(-0.3,0.3),
-        rot: rand(0,Math.PI*2), vr: rand(-0.06,0.06),
-        size: rand(6,12), color: colors[Math.floor(Math.random()*colors.length)],
-        life: rand(60,120), age:0
-      });
+  // ambient petals on load around card edges
+  window.addEventListener('load', ()=>{
+    const rect = document.querySelector('.card').getBoundingClientRect();
+    for(let i=0;i<10;i++){
+      const x = rand(rect.left - 100, rect.right + 100);
+      const y = rand(rect.bottom - 10, rect.bottom + 80);
+      setTimeout(()=> spawnPetal(x,y), i*140);
     }
-  }
-
-  function resize(){
-    w = canvas.width = innerWidth; h = canvas.height = innerHeight;
-    canvas.width = w * DPR; canvas.height = h * DPR;
-    canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
-    ctx.setTransform(DPR,0,0,DPR,0,0);
-    BASE = Math.max(8, Math.round((w*h)/160000));
-    seed();
-  }
-  window.addEventListener('resize', resize);
-
-  window.addEventListener('pointermove', (e) => {
-    const r = canvas.getBoundingClientRect();
-    pointer.x = (e.clientX || 0) - r.left;
-    pointer.y = (e.clientY || 0) - r.top;
-  });
-  window.addEventListener('pointerdown', (e) => {
-    const r = canvas.getBoundingClientRect();
-    const x = (e.clientX || 0) - r.left;
-    const y = (e.clientY || 0) - r.top;
-    spawn(x,y);
   });
 
-  let last = performance.now();
-  function loop(now){
-    const dt = Math.min(40, now - last) / 16.666; last = now;
-    pointer.px += (pointer.x - pointer.px) * 0.08;
-    pointer.py += (pointer.y - pointer.py) * 0.08;
-
-    ctx.clearRect(0,0,w,h);
-
-    const bgTop = getComputedStyle(document.documentElement).getPropertyValue('--bg-top').trim();
-    const bgBottom = getComputedStyle(document.documentElement).getPropertyValue('--bg-bottom').trim();
-    const g = ctx.createLinearGradient(0,0,0,h);
-    g.addColorStop(0, bgTop); g.addColorStop(1, bgBottom);
-    ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
-
-    for(let i=petals.length-1;i>=0;i--){
-      const p = petals[i];
-      const dx = pointer.px - p.x, dy = pointer.py - p.y;
-      const dist = Math.max(20, Math.hypot(dx,dy));
-      const force = 6 / (dist*dist);
-      p.vx += dx * force * 0.02 * dt; p.vy += dy * force * 0.02 * dt;
-      p.rot += p.vr * dt; p.vx *= 0.993; p.vy *= 0.993;
-      p.x += p.vx * dt; p.y += p.vy * dt; p.age += dt;
-
-      if(p.age > p.life || p.x < -60 || p.x > w+60 || p.y < -60 || p.y > h+60){
-        petals.splice(i,1);
-        continue;
-      }
-
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rot);
-      const grad = ctx.createLinearGradient(-p.size, -p.size*0.2, p.size, p.size*0.2);
-      grad.addColorStop(0, p.color); grad.addColorStop(1, 'rgba(0,0,0,0.02)');
-      ctx.fillStyle = grad;
-      ctx.globalAlpha = Math.max(0.06, 1 - (p.age / p.life));
-      ctx.beginPath(); ctx.ellipse(0,0,p.size,p.size*0.6,0,0,Math.PI*2); ctx.fill();
-      ctx.restore();
-      ctx.globalAlpha = 1;
-    }
-
-    if(petals.length < BASE) seed();
-    requestAnimationFrame(loop);
-  }
-
-  seed();
-  requestAnimationFrame(loop);
-
-  window.__reseedPetals = seed;
-})();
-
-/* Theme toggle + menu navigation + persistence */
-(() => {
-  const root = document.documentElement;
-  const storageKey = 'bv_theme';
-  const themeToggle = document.getElementById('themeToggle');
-
-  function applyTheme(theme){
-    if(theme === 'light') root.setAttribute('data-theme','light');
-    else root.removeAttribute('data-theme');
-    localStorage.setItem(storageKey, theme);
-    if(window.__reseedPetals) window.__reseedPetals();
-  }
-
-  const saved = localStorage.getItem(storageKey) || 'dark';
-  applyTheme(saved);
-
-  themeToggle.addEventListener('click', () => {
-    const current = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    const next = current === 'light' ? 'dark' : 'light';
-    applyTheme(next);
+  // spawn on click/tap
+  document.addEventListener('click', (e)=>{
+    const rect = layer.getBoundingClientRect();
+    spawnPetal(e.clientX - rect.left, e.clientY - rect.top);
+    setTimeout(()=> spawnPetal(e.clientX - rect.left + rand(-20,20), e.clientY - rect.top + rand(-10,10)), 90);
   });
 
-  // menu navigation
-  document.getElementById('menuHome').addEventListener('click', () => location.href = 'index.html');
-  Array.from(document.querySelectorAll('.menu-item')).forEach(btn => {
-    btn.addEventListener('click', () => {
-      const key = btn.getAttribute('data-key');
-      const map = { home: 'index.html', directory: 'directory.html', staffapp: 'staffapp.html', discord: 'discord.html', info: 'info.html' };
-      if(map[key]) location.href = map[key];
-    });
-  });
+  // periodic ambient petals
+  setInterval(()=>{
+    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+    const x = rand(vw*0.08, vw*0.92);
+    const y = rand(vh*0.82, vh*1.05);
+    spawnPetal(x,y);
+  }, 2400);
 })();
 </script>
 </body>
