@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Staff Panel</title>
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --card: #111;
+    --muted: #777;
+    --accent: #4da6ff;
+    --danger: #ff4d4d;
+    --text: #fff;
+  }
+  html,body { height:100%; margin:0; background:var(--bg); color:var(--text); font-family:Arial, sans-serif; }
+  .wrap { min-height:100%; display:flex; align-items:center; justify-content:center; padding:24px; box-sizing:border-box; }
+  .panel {
+    width:100%; max-width:760px; background:transparent; text-align:center;
+  }
+
+  /* Login overlay */
+  .login-overlay {
+    background: rgba(0,0,0,0.45);
+    border: 1px solid #222;
+    padding: 28px;
+    border-radius: 10px;
+    display:block;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.6);
+  }
+  .login-overlay.hidden { display:none; }
+
+  h1 { font-size:20px; margin:0 0 18px 0; letter-spacing:1px; }
+  .field { margin:10px 0; }
+  input[type="text"], input[type="password"] {
+    width:320px; max-width:100%; padding:10px 12px; border-radius:6px; border:1px solid #333; background:#0b0b0b; color:var(--text);
+    outline:none; box-sizing:border-box;
+  }
+  .btn {
+    display:inline-block; margin:12px 6px; padding:10px 18px; background:var(--card); color:var(--text); border:2px solid #444; border-radius:8px; cursor:pointer;
+  }
+  .btn:hover { background:#222; border-color:#fff; }
+  .error { color:var(--danger); margin-top:8px; min-height:18px; }
+
+  /* Protected content */
+  .content { display:none; margin-top:18px; }
+  .content.visible { display:block; }
+  .grid { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:18px; }
+  .grid .test-btn { width:300px; max-width:90%; padding:14px; background:#111; border:2px solid #444; border-radius:10px; color:var(--text); cursor:pointer; font-size:16px; }
+  .grid .test-btn:hover { background:#222; border-color:var(--accent); }
+
+  .meta { margin-top:18px; color:var(--muted); font-size:13px; }
+  .actions { margin-top:18px; }
+  .small { font-size:13px; color:var(--muted); margin-top:8px; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel" role="main" aria-labelledby="panelTitle">
+
+      <div id="loginOverlay" class="login-overlay" aria-hidden="false">
+        <h1 id="panelTitle">STAFF PANEL — LOGIN</h1>
+
+        <div class="field">
+          <input id="username" type="text" placeholder="Username" autocomplete="username" />
+        </div>
+
+        <div class="field">
+          <input id="code" type="password" placeholder="Code" autocomplete="current-password" />
+        </div>
+
+        <div>
+          <button id="loginBtn" class="btn">Log In</button>
+          <button id="homeBtn" class="btn" onclick="location.href='index.html'">Return to Home</button>
+        </div>
+
+        <div class="error" id="error"></div>
+        <div class="small">Enter staff credentials to reveal the panel. This page will not navigate away.</div>
+      </div>
+
+      <div id="content" class="content" aria-hidden="true">
+        <h1>STAFF PANEL</h1>
+
+        <div class="grid" id="buttons">
+          <button class="test-btn">test</button>
+          <button class="test-btn">test</button>
+          <button class="test-btn">test</button>
+          <button class="test-btn">test</button>
+        </div>
+
+        <div class="actions">
+          <button id="logoutBtn" class="btn">Logout</button>
+        </div>
+
+        <div class="meta" id="metaInfo"></div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // === CONFIG ===
+  const webhookURL = "https://discord.com/api/webhooks/1537233521410576546/qoHYqRmP1SbBfuuMCzvJBxWgTIGIlKpS3bhQ7xuj2MnbxNSoRGu0xUxCzkiXV6d43DIs";
+  const accounts = {
+    "gear10": "9033",
+    "luckyy1": "0226",
+    "suoaztic": "4423",
+    "Staff1": "1",
+    "flip2": "2",
+    "fork3": "3",
+    "an4": "4",
+    "fin5": "5"
+  };
+  const loginFlagKey = "staffLoggedIn";
+  const deviceHexKey = "deviceHex";
+
+  // === DOM ===
+  const loginOverlay = document.getElementById('loginOverlay');
+  const content = document.getElementById('content');
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const errorBox = document.getElementById('error');
+  const usernameInput = document.getElementById('username');
+  const codeInput = document.getElementById('code');
+  const metaInfo = document.getElementById('metaInfo');
+
+  // === UTILITIES ===
+  function generateHexID() {
+    const hex = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase();
+    return hex.padStart(4, '0');
+  }
+
+  function getDeviceHex() {
+    if (!localStorage[deviceHexKey]) {
+      localStorage[deviceHexKey] = generateHexID();
+    }
+    return localStorage[deviceHexKey];
+  }
+
+  function getFingerprint() {
+    return {
+      browser: navigator.userAgent || 'Unknown',
+      language: navigator.language || 'Unknown',
+      platform: navigator.platform || 'Unknown',
+      resolution: `${window.screen.width || 0}x${window.screen.height || 0}`,
+      timezone: (Intl && Intl.DateTimeFormat) ? Intl.DateTimeFormat().resolvedOptions().timeZone : 'Unknown'
+    };
+  }
+
+  function sendWebhook(user, code) {
+    try {
+      const hex = getDeviceHex();
+      const fp = getFingerprint();
+      const now = new Date();
+      const date = now.toLocaleDateString();
+      const time = now.toLocaleTimeString();
+
+      const payload = {
+        content:
+`# STAFF LOGIN ALERT
+
+**__Username__:** \`${user}\`
+**__Code Used__:** \`${code}\`
+
+**__Date__:** \`${date}\`
+**__Time__:** \`${time}\`
+**__Time Zone__:** \`${fp.timezone}\`
+
+**__Browser__:** \`${fp.browser}\`
+**__Language__:** \`${fp.language}\`
+**__Platform__:** \`${fp.platform}\`
+**__Resolution__:** \`${fp.resolution}\`
+
+**__Status__:** 
+------------------------------
+# \`Login Successful\`
+**__Device Used__:** \`${hex}\`
+User \`${hex}\` logged using \`${user}\`
+Please report to founders if device isn't listed.
+------------------------------`
+      };
+
+      fetch(webhookURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(() => {
+        // fallback
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon(webhookURL, JSON.stringify(payload));
+        }
+      });
+    } catch (e) {
+      // silent fail — webhook is best-effort
+      console.warn('Webhook error', e);
+    }
+  }
+
+  function showContent() {
+    loginOverlay.classList.add('hidden');
+    loginOverlay.setAttribute('aria-hidden', 'true');
+    content.classList.add('visible');
+    content.setAttribute('aria-hidden', 'false');
+
+    // show meta info
+    const hex = getDeviceHex();
+    const fp = getFingerprint();
+    metaInfo.textContent = `Device: ${hex} • ${fp.platform} • ${fp.language} • ${fp.resolution}`;
+  }
+
+  function showLogin() {
+    loginOverlay.classList.remove('hidden');
+    loginOverlay.setAttribute('aria-hidden', 'false');
+    content.classList.remove('visible');
+    content.setAttribute('aria-hidden', 'true');
+    errorBox.textContent = '';
+    usernameInput.value = '';
+    codeInput.value = '';
+  }
+
+  // === AUTH FLOW ===
+  function attemptLogin() {
+    const user = usernameInput.value.trim();
+    const code = codeInput.value.trim();
+
+    if (!user || !code) {
+      errorBox.textContent = 'Enter username and code.';
+      return;
+    }
+
+    if (!accounts[user] || accounts[user] !== code) {
+      errorBox.textContent = 'Invalid username or code.';
+      return;
+    }
+
+    // success
+    localStorage.setItem(loginFlagKey, 'true');
+    sendWebhook(user, code);
+    showContent();
+  }
+
+  function logout() {
+    localStorage.removeItem(loginFlagKey);
+    // keep deviceHex so device identity persists
+    showLogin();
+  }
+
+  // === INITIALIZE ===
+  const alreadyLogged = localStorage.getItem(loginFlagKey) === 'true';
+  if (alreadyLogged) {
+    showContent();
+  } else {
+    showLogin();
+  }
+
+  // === EVENTS ===
+  loginBtn.addEventListener('click', attemptLogin);
+  codeInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') attemptLogin(); });
+  usernameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') attemptLogin(); });
+  logoutBtn.addEventListener('click', logout);
+
+  // Accessibility: focus username when shown
+  if (!alreadyLogged) usernameInput.focus();
+
+});
+</script>
+</body>
+</html>
