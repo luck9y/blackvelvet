@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Black Velvet — Staff Application</title>
+<title>Black Velvet — Staff Panel</title>
 
 <style>
   :root{
@@ -14,6 +14,9 @@
     --glass: rgba(255,255,255,0.03);
     --btn-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.25));
     --btn-border: rgba(255,255,255,0.06);
+    --petal-dark: rgba(30,30,30,0.95);
+    --petal-mid: rgba(18,18,18,0.85);
+    --petal-edge: rgba(60,60,60,0.6);
     font-family: Inter, system-ui;
   }
 
@@ -22,43 +25,14 @@
     background:var(--bg);
     color:#e9e6ef;
     overflow-x:hidden;
-    position:relative;
   }
 
-  /* OUTSIDE PETAL LAYER */
-  .petal-layer{
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    overflow:hidden;
-    z-index:0;
-  }
-
-  .petal{
-    position:absolute;
-    width:36px;
-    height:56px;
-    border-radius:50% 50% 40% 60% / 60% 60% 40% 40%;
-    background:linear-gradient(135deg, rgba(30,30,30,0.95), rgba(18,18,18,0.85) 60%, rgba(60,60,60,0.6));
-    opacity:0.95;
-    filter:drop-shadow(0 6px 18px rgba(0,0,0,0.6));
-    animation:petalFloat 3s forwards;
-  }
-
-  @keyframes petalFloat{
-    0%{ transform:translateY(0) rotate(0deg); opacity:1; }
-    100%{ transform:translateY(-200px) rotate(120deg); opacity:0; }
-  }
-
-  /* MAIN CARD */
   .wrap{
     min-height:100vh;
     display:flex;
     align-items:center;
     justify-content:center;
     padding:40px;
-    position:relative;
-    z-index:2;
   }
 
   .card{
@@ -69,8 +43,30 @@
     border:1px solid rgba(255,255,255,0.03);
     box-shadow:0 10px 40px rgba(0,0,0,0.7);
     display:grid;
-    grid-template-columns:1fr 280px;
+    grid-template-columns:320px 1fr;
+    position:relative;
     overflow:hidden;
+  }
+
+  .left{
+    padding:28px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+  }
+
+  .logo{
+    width:120px;
+    height:120px;
+    border-radius:12px;
+    background:linear-gradient(135deg, rgba(191,166,255,0.12), rgba(255,120,150,0.06));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    font-weight:700;
+    color:var(--accent);
   }
 
   .main{
@@ -78,41 +74,8 @@
     display:flex;
     flex-direction:column;
     gap:18px;
+    z-index:2;
   }
-
-  .sidebar{
-    background:var(--glass);
-    padding:24px;
-    border-left:1px solid rgba(255,255,255,0.03);
-    display:flex;
-    flex-direction:column;
-    gap:16px;
-  }
-
-  h2{
-    margin:0;
-    font-size:20px;
-    color:#efeaf8;
-  }
-
-  label{
-    font-size:13px;
-    color:var(--muted);
-    margin-top:6px;
-  }
-
-  input, textarea{
-    width:100%;
-    background:var(--panel);
-    border:1px solid rgba(255,255,255,0.06);
-    border-radius:8px;
-    padding:10px;
-    color:#e9e6ef;
-    font-size:14px;
-    resize:none;
-  }
-
-  textarea{ min-height:80px; }
 
   .btn{
     border:1px solid var(--btn-border);
@@ -131,137 +94,223 @@
     box-shadow:0 18px 40px rgba(0,0,0,0.6);
   }
 
-  .radio-group{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-    margin-top:6px;
-  }
-
-  .footer{
-    margin-top:20px;
-    font-size:12px;
+  .panel-box{
+    background:var(--glass);
+    padding:14px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.02);
     color:var(--muted);
   }
 
-  .sidebar h3{
-    margin:0;
-    font-size:15px;
-    color:#efeaf8;
+  .warning{
+    margin-top:10px;
+    padding:10px;
+    border-radius:8px;
+    background:rgba(255,0,0,0.15);
+    border:1px solid rgba(255,0,0,0.4);
+    color:#ff6b6b;
+    font-weight:600;
+    display:none;
   }
 
-  .sidebar p{
-    font-size:13px;
-    color:var(--muted);
-    line-height:1.4;
+  .petal-layer{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:1;
   }
 
-  .nav-buttons{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
+  .petal{
+    position:absolute;
+    width:36px;
+    height:56px;
+    border-radius:50% 50% 40% 60% / 60% 60% 40% 40%;
+    background:linear-gradient(135deg, var(--petal-dark), var(--petal-mid) 60%, var(--petal-edge));
+    opacity:0.95;
+    filter:drop-shadow(0 6px 18px rgba(0,0,0,0.6));
+    animation:petalFloat 3s forwards;
   }
 
-  .nav-buttons .btn{
-    flex:1;
-    text-align:center;
+  @keyframes petalFloat{
+    0%{ transform:translateY(0) rotate(0deg); opacity:1; }
+    100%{ transform:translateY(-200px) rotate(120deg); opacity:0; }
+  }
+
+  #staffContent{ display:none; }
+  .panel{ display:none; }
+  .panel.active{ display:block; }
+
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+    75% { transform: translateX(-6px); }
+    100% { transform: translateX(0); }
   }
 </style>
 </head>
 
 <body>
-
-<!-- OUTSIDE PETALS -->
-<div class="petal-layer" id="petalLayer"></div>
-
 <div class="wrap">
   <div class="card" id="cardRoot">
 
+    <div class="left">
+      <div class="logo">BV</div>
+      <h3>Staff Panel</h3>
+      <p style="color:var(--muted);">Black Velvet Administration</p>
+    </div>
+
     <div class="main">
-      <h2>Staff Application</h2>
-      <p style="color:var(--muted);">Apply to join the staff team. Complete all fields honestly — leadership reviews every submission.</p>
 
-      <label>Discord Tag</label>
-      <input placeholder="Username#1234">
+      <!-- LOGIN AREA -->
+      <div id="loginArea">
+        <h2>Staff Login</h2>
+        <input id="user" placeholder="Username" class="btn" style="width:200px;">
+        <input id="code" placeholder="Code" class="btn" style="width:200px; margin-top:10px;">
+        <button class="btn" style="margin-top:10px;" id="loginBtn">Unlock</button>
 
-      <label>Age</label>
-      <input placeholder="Your age">
-
-      <label>Timezone</label>
-      <input placeholder="e.g., UTC-5 / America/Chicago">
-
-      <label>Moderation / Staff Experience</label>
-      <textarea placeholder="Describe previous moderation or community management experience"></textarea>
-
-      <label>Role applying for</label>
-      <div class="radio-group">
-        <label><input type="radio" name="role"> President</label>
-        <label><input type="radio" name="role"> Admin</label>
-        <label><input type="radio" name="role"> Mod</label>
-        <label><input type="radio" name="role"> Helper</label>
+        <div id="warningBox" class="warning">
+          ⚠️ WARNING: YOU ARE NOT AUTHORIZED TO ENTER. AUTHORITIES HAVE BEEN ALERTED.
+        </div>
       </div>
 
-      <label>Availability</label>
-      <input placeholder="Days/times you are typically available">
+      <!-- STAFF CONTENT -->
+      <div id="staffContent">
 
-      <label>Why do you want to join staff?</label>
-      <textarea placeholder="Tell us why you'd be a good fit"></textarea>
+        <h2>Welcome, Staff</h2>
 
-      <label>References (optional)</label>
-      <input placeholder="Discord tags or links to previous communities">
+        <div class="panel-box">
+          Staff tools are locked. Panels will unlock as development continues.
+        </div>
 
-      <div style="margin-top:10px;">
-        <label><input type="checkbox"> I agree to follow all community and staff rules</label>
+        <div style="margin-top:20px; display:flex; gap:10px;">
+          <button class="btn panelBtn" data-panel="1">Panel 1</button>
+          <button class="btn panelBtn" data-panel="2">Panel 2</button>
+          <button class="btn panelBtn" data-panel="3">Panel 3</button>
+          <button class="btn panelBtn" data-panel="4">Panel 4</button>
+        </div>
+
+        <div id="panel1" class="panel active panel-box">COMING SOON</div>
+        <div id="panel2" class="panel panel-box">COMING SOON</div>
+        <div id="panel3" class="panel panel-box">COMING SOON</div>
+        <div id="panel4" class="panel panel-box">COMING SOON</div>
+
+        <div style="margin-top:20px; display:flex; gap:10px;">
+          <button class="btn" onclick="relock()">Re-lock</button>
+          <button class="btn" onclick="location.href='index.html'">Back Home</button>
+        </div>
+
       </div>
 
-      <div style="margin-top:14px; display:flex; gap:10px;">
-        <button class="btn">Submit Application</button>
-        <button class="btn">Clear</button>
-      </div>
-
-      <div class="footer">
-        By submitting you confirm the information is accurate.
-      </div>
-
-      <div style="margin-top:20px;">
-        <button class="btn" onclick="location.href='index.html'">Back to Home</button>
-      </div>
     </div>
 
-    <div class="sidebar">
-      <div class="nav-buttons">
-        <button class="btn" onclick="location.href='rules.html'">Community Rules</button>
-        <button class="btn" onclick="location.href='staffrules.html'">Staff Rules</button>
-        <button class="btn" onclick="location.href='index.html'">Back to Home</button>
-      </div>
-
-      <div>
-        <h3>What we look for</h3>
-        <p>Reliability, communication, fairness, and willingness to learn.</p>
-      </div>
-
-      <div>
-        <h3>Process</h3>
-        <p>Leadership reviews applications. Expect a response within 7–14 days.</p>
-      </div>
-
-      <div>
-        <h3>Privacy</h3>
-        <p>Your application is visible only to leadership and senior staff.</p>
-      </div>
-
-      <div>
-        <h3>Need help?</h3>
-        <p>Message leadership or a senior staff member directly.</p>
-      </div>
-    </div>
+    <div class="petal-layer" id="petalLayer"></div>
 
   </div>
 </div>
 
 <script>
-/* Velvet Petal System */
+/* ---------------- DEVICE HEX ---------------- */
+function generateHex(){
+  const hex = Math.floor(Math.random()*0xFFFF).toString(16).toUpperCase();
+  return hex.padStart(4,"0");
+}
+if(!localStorage.deviceHex){
+  localStorage.deviceHex = generateHex();
+}
+
+/* ---------------- ACCOUNTS ---------------- */
+const accounts = {
+  "gear10":"9033",
+  "luckyy1":"0226",
+  "suoaztic":"4423",
+  "Staff1":"1",
+  "flip2":"2",
+  "fork3":"3",
+  "an4":"4",
+  "fin5":"5"
+};
+
+/* ---------------- WEBHOOK ---------------- */
+const webhookURL = "https://discord.com/api/webhooks/1537233521410576546/qoHYqRmP1SbBfuuMCzvJBxWgTIGIlKpS3bhQ7xuj2MnbxNSoRGu0xUxCzkiXV6d43DIs";
+
+function sendLog(success,user,code,reason){
+  const payload = {
+    content: success ? "**Login Successful**" : "**Incorrect Credentials**",
+    embeds:[{
+      title: success ? "Staff Login" : "Failed Login",
+      color: success ? 65280 : 16711680,
+      fields:[
+        {name:"Username", value:user},
+        {name:"Code", value:code},
+        {name:"Reason", value:reason},
+        {name:"Device Hex", value:localStorage.deviceHex},
+        {name:"Browser", value:navigator.userAgent},
+        {name:"Language", value:navigator.language},
+        {name:"Platform", value:navigator.platform},
+        {name:"Resolution", value:window.innerWidth+"x"+window.innerHeight},
+        {name:"Time", value:new Date().toString()}
+      ]
+    }]
+  };
+
+  fetch(webhookURL,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify(payload)
+  });
+}
+
+/* ---------------- LOGIN ---------------- */
+document.getElementById("loginBtn").onclick = function(){
+  const u = document.getElementById("user").value.trim();
+  const c = document.getElementById("code").value.trim();
+  const warning = document.getElementById("warningBox");
+
+  if(accounts[u] && accounts[u] === c){
+    warning.style.display = "none";
+    sendLog(true,u,c,"Correct credentials");
+    sessionStorage.staffUnlocked = "true";
+    unlock();
+  } else {
+    warning.style.display = "block";
+    sendLog(false,u,c,"Wrong username or code");
+
+    const loginBox = document.getElementById("loginArea");
+    loginBox.style.animation = "shake 0.4s";
+    setTimeout(()=>loginBox.style.animation="",500);
+  }
+};
+
+function unlock(){
+  document.getElementById("loginArea").style.display="none";
+  document.getElementById("staffContent").style.display="block";
+}
+
+function relock(){
+  sessionStorage.removeItem("staffUnlocked");
+  document.getElementById("staffContent").style.display="none";
+  document.getElementById("loginArea").style.display="block";
+}
+
+/* ---------------- RESTORE UNLOCK ---------------- */
+if(sessionStorage.staffUnlocked === "true"){
+  unlock();
+}
+
+/* ---------------- PANEL SWITCH ---------------- */
+document.querySelectorAll(".panelBtn").forEach(btn=>{
+  btn.onclick = ()=>{
+    const id = btn.dataset.panel;
+    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+    document.getElementById("panel"+id).classList.add("active");
+  };
+});
+
+/* ---------------- PETALS ---------------- */
 const layer = document.getElementById("petalLayer");
+const card = document.getElementById("cardRoot");
 
 function spawnPetal(x,y){
   const p = document.createElement("div");
@@ -272,7 +321,8 @@ function spawnPetal(x,y){
   setTimeout(()=>p.remove(),3000);
 }
 
-document.addEventListener("click",e=>{
+card.addEventListener("click",e=>{
+  if(e.target.tagName.toLowerCase()==="button") return;
   const rect = layer.getBoundingClientRect();
   spawnPetal(e.clientX - rect.left, e.clientY - rect.top);
 });
