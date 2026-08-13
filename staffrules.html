@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Black Velvet Clan — Staff Rules & Enforcement</title>
+<title>Black Velvet Clan — Staff Rules</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#07070a;
+    --bg:#06060a;
     --card:#0f1720;
     --muted:#9aa4b2;
     --accent:#4da6ff;
@@ -18,7 +18,7 @@
     --max-width:1100px;
   }
 
-  html,body{height:100%;margin:0;background:linear-gradient(180deg,#05050a 0%, #0b0b0b 100%);color:#e6eef8;font-family:Inter,system-ui,Arial,sans-serif}
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#04050a 0%, #07070a 100%);color:#e6eef8;font-family:Inter,system-ui,Arial,sans-serif}
   .container{max-width:var(--max-width);margin:36px auto;padding:28px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:var(--radius);box-shadow:0 10px 40px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
   header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
   .brand{display:flex;align-items:center;gap:14px}
@@ -26,40 +26,54 @@
   h1{margin:0;font-size:20px;letter-spacing:0.6px}
   .subtitle{color:var(--muted);font-size:13px}
 
-  main{margin-top:22px;display:grid;grid-template-columns:1fr 340px;gap:20px}
-  .panel{background:var(--card);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
-  .section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-  .badge{padding:8px 12px;border-radius:999px;font-weight:700;color:#071022;background:linear-gradient(90deg,var(--accent-2),var(--accent));font-size:13px}
-  .subhead{color:var(--muted);font-size:13px;margin-bottom:12px}
+  .controls { display:flex; gap:12px; align-items:center; }
+  .btn {
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 14px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:700;
+    cursor:pointer;
+    border:1px solid rgba(255,255,255,0.04);
+  }
+  .btn-primary { background:linear-gradient(90deg,var(--accent),#6fb8ff); color:#071022; box-shadow:0 8px 24px rgba(77,166,255,0.08); }
+  .btn-ghost { background:transparent; color:var(--muted); }
+  .btn-ghost:hover { background:rgba(255,255,255,0.02); color:#fff; transform:translateY(-2px); }
 
-  .grid-levels{display:grid;grid-template-columns:1fr;gap:12px}
-  .level-card{padding:14px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border:1px solid rgba(255,255,255,0.02)}
+  main{margin-top:22px;display:grid;grid-template-columns:1fr 360px;gap:20px}
+  .panel{background:var(--card);padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
+  .section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .lead{color:var(--muted);font-size:14px;margin-bottom:18px}
+
+  .levels { display:grid; gap:14px; }
+  .level-card{padding:16px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border:1px solid rgba(255,255,255,0.02)}
   .level-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-  .level-pill{padding:6px 10px;border-radius:8px;font-weight:700;font-size:13px}
-  .l1{background:rgba(123,228,149,0.12);color:var(--accent-2);border:1px solid rgba(123,228,149,0.08)}
-  .l2{background:rgba(77,166,255,0.08);color:var(--accent);border:1px solid rgba(77,166,255,0.06)}
-  .l3{background:rgba(255,107,107,0.08);color:var(--danger);border:1px solid rgba(255,107,107,0.06)}
+  .pill{padding:8px 12px;border-radius:999px;font-weight:700;font-size:13px}
+  .pill.l1{background:rgba(123,228,149,0.12);color:var(--accent-2);border:1px solid rgba(123,228,149,0.08)}
+  .pill.l2{background:rgba(77,166,255,0.08);color:var(--accent);border:1px solid rgba(77,166,255,0.06)}
+  .pill.l3{background:rgba(255,107,107,0.08);color:var(--danger);border:1px solid rgba(255,107,107,0.06)}
 
   ol{margin:0;padding-left:18px;color:#dbe9ff}
   li{margin:10px 0;font-size:14px;line-height:1.45}
-  .rule-title{font-weight:600;color:#fff}
+  .rule-title{font-weight:700;color:#fff}
   .consequence{display:block;color:var(--muted);font-size:13px;margin-top:6px}
 
-  aside{position:relative}
+  .aside { position:relative; }
   .aside-card{padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border:1px solid rgba(255,255,255,0.02)}
   .important{background:linear-gradient(90deg,#0f1720,#0b1220);padding:12px;border-radius:10px;border-left:4px solid var(--accent);margin-bottom:12px}
-  .important h3{margin:0;font-size:13px}
+  .important h3{margin:0;font-size:14px}
   .important p{margin:8px 0 0;color:var(--muted);font-size:13px}
   .note{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;color:var(--muted);font-size:13px;margin-top:12px}
 
   .table{width:100%;border-collapse:collapse;margin-top:12px}
   .table th, .table td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.02);text-align:left;font-size:13px}
   .table th{color:var(--muted);font-weight:600}
-  .muted{color:var(--muted);font-size:13px}
 
   footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
 
-  @media (max-width:980px){ main{grid-template-columns:1fr} .logo{width:48px;height:48px} }
+  @media (max-width:980px){ main{grid-template-columns:1fr} .logo{width:48px;height:48px} .controls{flex-direction:column;align-items:flex-end} }
 </style>
 </head>
 <body>
@@ -68,37 +82,41 @@
       <div class="brand">
         <div class="logo">BV</div>
         <div>
-          <h1>Staff Rules and Enforcement</h1>
-          <div class="subtitle">Clear expectations for staff conduct and consistent consequences</div>
+          <h1>Staff Rules & Enforcement</h1>
+          <div class="subtitle">Standards for staff conduct, and the consequences that follow</div>
         </div>
       </div>
-      <div class="badge">Policy • Staff Only</div>
+
+      <div class="controls">
+        <a class="btn btn-primary" href="rules.html" title="Community Rules">Community Rules</a>
+        <a class="btn btn-ghost" href="index.html" title="Back to Home">Back to Home</a>
+      </div>
     </header>
 
     <main>
-      <section class="panel" aria-labelledby="mainTitle">
+      <section class="panel" aria-labelledby="staffTitle">
         <div class="section-title">
           <div>
-            <strong id="mainTitle">Overview</strong>
-            <div class="subhead">This page defines staff-specific rules and the enforcement framework. Level one results in warnings. Level two results in demotion and timeout. Level three results in permanent removal.</div>
+            <strong id="staffTitle">Enforcement Framework</strong>
+            <div class="lead">This document explains staff expectations and the three-tiered enforcement model: Level 1 — Warnings; Level 2 — Demotion & timeout; Level 3 — Permanent removal.</div>
           </div>
         </div>
 
-        <div class="grid-levels" role="list">
+        <div class="levels" role="list">
           <!-- Level 1 -->
-          <div class="level-card" role="listitem" aria-labelledby="l1Title">
+          <div class="level-card" role="listitem" aria-labelledby="l1">
             <div class="level-header">
-              <div class="level-pill l1">Level 1 — Warning</div>
+              <div class="pill l1">Level 1 — Warning</div>
               <div>
-                <div id="l1Title" style="font-weight:700">Behavior that warrants a formal warning</div>
-                <div class="muted">Warnings are recorded. Repeated warnings escalate to Level 2.</div>
+                <div id="l1" style="font-weight:700">Behaviors that receive a formal warning</div>
+                <div class="lead" style="margin-top:6px">Warnings are recorded. Multiple warnings lead to Level 2 review.</div>
               </div>
             </div>
 
             <ol>
               <li>
                 <span class="rule-title">Failure to follow staff guidance during events</span>
-                <span class="consequence">Documented warning and coaching. Repeat occurrences escalate to demotion review.</span>
+                <span class="consequence">Documented warning and coaching. Repeated incidents escalate to demotion review.</span>
               </li>
               <li>
                 <span class="rule-title">Unprofessional language toward members</span>
@@ -109,12 +127,12 @@
                 <span class="consequence">Warning and instruction on proper use; monitoring for recurrence.</span>
               </li>
               <li>
-                <span class="rule-title">Neglecting assigned staff duties without notice</span>
-                <span class="consequence">Warning and requirement to provide explanation; repeated neglect triggers demotion review.</span>
+                <span class="rule-title">Neglecting assigned duties without notice</span>
+                <span class="consequence">Warning and requirement to provide explanation; habitual neglect escalates.</span>
               </li>
               <li>
                 <span class="rule-title">Poor conflict handling with members</span>
-                <span class="consequence">Mediation and warning; training recommended for improvement.</span>
+                <span class="consequence">Mediation and a formal warning; training recommended.</span>
               </li>
               <li>
                 <span class="rule-title">Sharing non-sensitive internal notes publicly</span>
@@ -122,7 +140,7 @@
               </li>
               <li>
                 <span class="rule-title">Late arrival to scheduled staff responsibilities</span>
-                <span class="consequence">Warning and scheduling review; habitual lateness escalates.</span>
+                <span class="consequence">Warning and scheduling review; repeated lateness escalates.</span>
               </li>
               <li>
                 <span class="rule-title">Inadequate moderation decisions (first instance)</span>
@@ -134,18 +152,18 @@
               </li>
               <li>
                 <span class="rule-title">Minor policy misunderstandings</span>
-                <span class="consequence">Clarification and warning; staff training provided.</span>
+                <span class="consequence">Clarification and a formal warning; staff training provided.</span>
               </li>
             </ol>
           </div>
 
           <!-- Level 2 -->
-          <div class="level-card" role="listitem" aria-labelledby="l2Title">
+          <div class="level-card" role="listitem" aria-labelledby="l2">
             <div class="level-header">
-              <div class="level-pill l2">Level 2 — Demotion and Timeout</div>
+              <div class="pill l2">Level 2 — Demotion & Timeout</div>
               <div>
-                <div id="l2Title" style="font-weight:700">Behavior that leads to demotion and temporary removal</div>
-                <div class="muted">Demotion removes staff privileges. Timeouts are temporary suspensions from staff duties.</div>
+                <div id="l2" style="font-weight:700">Behaviors that lead to demotion and temporary removal</div>
+                <div class="lead" style="margin-top:6px">Demotion removes staff privileges. Timeouts are temporary suspensions from staff duties while corrective steps are taken.</div>
               </div>
             </div>
 
@@ -194,12 +212,12 @@
           </div>
 
           <!-- Level 3 -->
-          <div class="level-card" role="listitem" aria-labelledby="l3Title">
+          <div class="level-card" role="listitem" aria-labelledby="l3">
             <div class="level-header">
-              <div class="level-pill l3">Level 3 — Permanent Removal</div>
+              <div class="pill l3">Level 3 — Permanent Removal</div>
               <div>
-                <div id="l3Title" style="font-weight:700">Behavior that results in permanent removal from staff</div>
-                <div class="muted">Level 3 incidents are severe and typically result in immediate termination of staff privileges.</div>
+                <div id="l3" style="font-weight:700">Behaviors that result in permanent removal from staff</div>
+                <div class="lead" style="margin-top:6px">Level 3 incidents are severe and typically result in immediate termination of staff privileges and possible reporting to authorities.</div>
               </div>
             </div>
 
@@ -248,35 +266,31 @@
           </div>
         </div>
 
-        <div style="margin-top:16px" class="note">
-          All enforcement decisions are documented. Staff members under review will be notified and given an opportunity to respond. Leadership will retain final authority on demotions and removals.
+        <div class="note" style="margin-top:16px">
+          All enforcement decisions are documented. Staff under review will be notified and given an opportunity to respond. Leadership retains final authority on demotions and removals. For Level 2 and Level 3 actions, at least two senior leaders must approve the outcome.
         </div>
       </section>
 
-      <aside>
+      <aside class="aside">
         <div class="aside-card">
           <div class="important" role="note">
-            <h3>Enforcement process</h3>
-            <p>Investigations follow a consistent workflow: report intake, evidence collection, staff review, decision, and documentation. For Level 2 and Level 3 actions, at least two senior leaders must approve the outcome.</p>
+            <h3>Investigation workflow</h3>
+            <p>Reports are handled consistently: intake, evidence collection, staff review, decision, and documentation. Preserve logs and screenshots. Leadership will coordinate interviews and collect statements when needed.</p>
           </div>
 
-          <div>
+          <div style="margin-top:12px">
             <h4 style="margin:0 0 8px 0">Reporting expectations</h4>
-            <p class="muted">When reporting a staff incident, include timestamps, screenshots, chat logs, and a concise summary. Submit reports to the private staff incident channel or contact leadership directly for urgent matters.</p>
+            <p class="muted">When filing a report, include timestamps, screenshots, chat logs, and a concise summary. Submit reports to the private staff incident channel or contact leadership directly for urgent matters.</p>
           </div>
 
           <div style="margin-top:12px">
             <h4 style="margin:0 0 8px 0">Demotion and timeout details</h4>
-            <p class="muted">Demotion removes staff permissions and access to staff channels. Timeouts are temporary and include a clear reinstatement plan with training or probation conditions.</p>
+            <p class="muted">Demotion removes staff permissions and access to staff channels. Timeouts include a clear reinstatement plan with training or probation conditions. Reinstatement requires documented completion of corrective steps.</p>
           </div>
 
           <div style="margin-top:12px">
             <h4 style="margin:0 0 8px 0">Appeals</h4>
-            <p class="muted">Appeals must be submitted in writing to leadership within seven days of the action. Appeals should include new evidence or context. Leadership will respond within a reasonable timeframe and document the outcome.</p>
-          </div>
-
-          <div style="margin-top:12px" class="note">
-            Leadership contact: use the private staff channel for non-urgent matters. For incidents involving legal risk or minors, contact leadership immediately and preserve all evidence.
+            <p class="muted">Appeals must be submitted in writing to leadership within seven days of the action and should include new evidence or context. Leadership will respond and document the outcome.</p>
           </div>
 
           <table class="table" aria-label="Quick reference">
@@ -289,12 +303,21 @@
               <tr><td>Level 3</td><td>Permanent removal; possible reporting</td></tr>
             </tbody>
           </table>
+
+          <div class="note" style="margin-top:12px">
+            Leadership contact: use the private staff channel for non-urgent matters. For incidents involving legal risk or minors, contact leadership immediately and preserve all evidence.
+          </div>
         </div>
       </aside>
     </main>
 
     <footer>
-      These staff rules are effective immediately. Leadership reserves the right to update policy as needed; changes will be communicated to staff in the private channel.
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+        <div style="color:var(--muted)">These staff rules are effective immediately. Leadership may update policy as needed; changes will be communicated to staff.</div>
+        <div>
+          <a class="btn btn-ghost" href="index.html" title="Back to Home">Back to Home</a>
+        </div>
+      </div>
     </footer>
   </div>
 </body>
