@@ -129,6 +129,15 @@
   #staffContent{ display:none; }
   .panel{ display:none; }
   .panel.active{ display:block; }
+
+  /* Shake animation for wrong login */
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+    75% { transform: translateX(-6px); }
+    100% { transform: translateX(0); }
+  }
 </style>
 </head>
 
@@ -250,6 +259,12 @@ document.getElementById("loginBtn").onclick = function(){
     unlock();
   } else {
     sendLog(false,u,c,"Wrong username or code");
+
+    alert("⚠️ WARNING: YOU ARE NOT AUTHORIZED TO ENTER.\nAuthorities have been alerted.");
+
+    const loginBox = document.getElementById("loginArea");
+    loginBox.style.animation = "shake 0.4s";
+    setTimeout(()=>loginBox.style.animation="",500);
   }
 };
 
