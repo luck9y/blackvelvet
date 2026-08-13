@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Black Velvet Clan — Staff Rules & Enforcement</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07070a;
+    --card:#0f1720;
+    --muted:#9aa4b2;
+    --accent:#4da6ff;
+    --accent-2:#7be495;
+    --danger:#ff6b6b;
+    --glass: rgba(255,255,255,0.03);
+    --radius:12px;
+    --max-width:1100px;
+  }
+
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#05050a 0%, #0b0b0b 100%);color:#e6eef8;font-family:Inter,system-ui,Arial,sans-serif}
+  .container{max-width:var(--max-width);margin:36px auto;padding:28px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:var(--radius);box-shadow:0 10px 40px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#6fb8ff);display:flex;align-items:center;justify-content:center;font-weight:700;color:#071022;font-size:18px;box-shadow:0 6px 18px rgba(77,166,255,0.12)}
+  h1{margin:0;font-size:20px;letter-spacing:0.6px}
+  .subtitle{color:var(--muted);font-size:13px}
+
+  main{margin-top:22px;display:grid;grid-template-columns:1fr 340px;gap:20px}
+  .panel{background:var(--card);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
+  .section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .badge{padding:8px 12px;border-radius:999px;font-weight:700;color:#071022;background:linear-gradient(90deg,var(--accent-2),var(--accent));font-size:13px}
+  .subhead{color:var(--muted);font-size:13px;margin-bottom:12px}
+
+  .grid-levels{display:grid;grid-template-columns:1fr;gap:12px}
+  .level-card{padding:14px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border:1px solid rgba(255,255,255,0.02)}
+  .level-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .level-pill{padding:6px 10px;border-radius:8px;font-weight:700;font-size:13px}
+  .l1{background:rgba(123,228,149,0.12);color:var(--accent-2);border:1px solid rgba(123,228,149,0.08)}
+  .l2{background:rgba(77,166,255,0.08);color:var(--accent);border:1px solid rgba(77,166,255,0.06)}
+  .l3{background:rgba(255,107,107,0.08);color:var(--danger);border:1px solid rgba(255,107,107,0.06)}
+
+  ol{margin:0;padding-left:18px;color:#dbe9ff}
+  li{margin:10px 0;font-size:14px;line-height:1.45}
+  .rule-title{font-weight:600;color:#fff}
+  .consequence{display:block;color:var(--muted);font-size:13px;margin-top:6px}
+
+  aside{position:relative}
+  .aside-card{padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border:1px solid rgba(255,255,255,0.02)}
+  .important{background:linear-gradient(90deg,#0f1720,#0b1220);padding:12px;border-radius:10px;border-left:4px solid var(--accent);margin-bottom:12px}
+  .important h3{margin:0;font-size:13px}
+  .important p{margin:8px 0 0;color:var(--muted);font-size:13px}
+  .note{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;color:var(--muted);font-size:13px;margin-top:12px}
+
+  .table{width:100%;border-collapse:collapse;margin-top:12px}
+  .table th, .table td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.02);text-align:left;font-size:13px}
+  .table th{color:var(--muted);font-weight:600}
+  .muted{color:var(--muted);font-size:13px}
+
+  footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
+
+  @media (max-width:980px){ main{grid-template-columns:1fr} .logo{width:48px;height:48px} }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">BV</div>
+        <div>
+          <h1>Staff Rules and Enforcement</h1>
+          <div class="subtitle">Clear expectations for staff conduct and consistent consequences</div>
+        </div>
+      </div>
+      <div class="badge">Policy • Staff Only</div>
+    </header>
+
+    <main>
+      <section class="panel" aria-labelledby="mainTitle">
+        <div class="section-title">
+          <div>
+            <strong id="mainTitle">Overview</strong>
+            <div class="subhead">This page defines staff-specific rules and the enforcement framework. Level one results in warnings. Level two results in demotion and timeout. Level three results in permanent removal.</div>
+          </div>
+        </div>
+
+        <div class="grid-levels" role="list">
+          <!-- Level 1 -->
+          <div class="level-card" role="listitem" aria-labelledby="l1Title">
+            <div class="level-header">
+              <div class="level-pill l1">Level 1 — Warning</div>
+              <div>
+                <div id="l1Title" style="font-weight:700">Behavior that warrants a formal warning</div>
+                <div class="muted">Warnings are recorded. Repeated warnings escalate to Level 2.</div>
+              </div>
+            </div>
+
+            <ol>
+              <li>
+                <span class="rule-title">Failure to follow staff guidance during events</span>
+                <span class="consequence">Documented warning and coaching. Repeat occurrences escalate to demotion review.</span>
+              </li>
+              <li>
+                <span class="rule-title">Unprofessional language toward members</span>
+                <span class="consequence">Verbal correction and written warning. Continued behavior leads to Level 2 action.</span>
+              </li>
+              <li>
+                <span class="rule-title">Minor misuse of staff channels or resources</span>
+                <span class="consequence">Warning and instruction on proper use; monitoring for recurrence.</span>
+              </li>
+              <li>
+                <span class="rule-title">Neglecting assigned staff duties without notice</span>
+                <span class="consequence">Warning and requirement to provide explanation; repeated neglect triggers demotion review.</span>
+              </li>
+              <li>
+                <span class="rule-title">Poor conflict handling with members</span>
+                <span class="consequence">Mediation and warning; training recommended for improvement.</span>
+              </li>
+              <li>
+                <span class="rule-title">Sharing non-sensitive internal notes publicly</span>
+                <span class="consequence">Warning and reminder of confidentiality expectations.</span>
+              </li>
+              <li>
+                <span class="rule-title">Late arrival to scheduled staff responsibilities</span>
+                <span class="consequence">Warning and scheduling review; habitual lateness escalates.</span>
+              </li>
+              <li>
+                <span class="rule-title">Inadequate moderation decisions (first instance)</span>
+                <span class="consequence">Review and coaching; written warning if decision caused harm.</span>
+              </li>
+              <li>
+                <span class="rule-title">Failure to log incidents properly</span>
+                <span class="consequence">Warning and retraining on reporting procedures.</span>
+              </li>
+              <li>
+                <span class="rule-title">Minor policy misunderstandings</span>
+                <span class="consequence">Clarification and warning; staff training provided.</span>
+              </li>
+            </ol>
+          </div>
+
+          <!-- Level 2 -->
+          <div class="level-card" role="listitem" aria-labelledby="l2Title">
+            <div class="level-header">
+              <div class="level-pill l2">Level 2 — Demotion and Timeout</div>
+              <div>
+                <div id="l2Title" style="font-weight:700">Behavior that leads to demotion and temporary removal</div>
+                <div class="muted">Demotion removes staff privileges. Timeouts are temporary suspensions from staff duties.</div>
+              </div>
+            </div>
+
+            <ol>
+              <li>
+                <span class="rule-title">Repeated Level 1 violations</span>
+                <span class="consequence">Demotion to a lower role and a timeout period for review and retraining.</span>
+              </li>
+              <li>
+                <span class="rule-title">Abuse of staff powers (moderation overreach)</span>
+                <span class="consequence">Immediate demotion, incident review, and temporary suspension from duties.</span>
+              </li>
+              <li>
+                <span class="rule-title">Deliberate favoritism or nepotism</span>
+                <span class="consequence">Demotion and timeout while leadership investigates and documents corrective steps.</span>
+              </li>
+              <li>
+                <span class="rule-title">Sharing sensitive staff-only information publicly</span>
+                <span class="consequence">Demotion and temporary removal pending investigation; possible further action.</span>
+              </li>
+              <li>
+                <span class="rule-title">Repeated failure to follow event protocols</span>
+                <span class="consequence">Demotion and timeout from event duties; retraining required before reinstatement.</span>
+              </li>
+              <li>
+                <span class="rule-title">Moderate harassment of members or staff</span>
+                <span class="consequence">Demotion and temporary suspension; mediation and documented corrective plan.</span>
+              </li>
+              <li>
+                <span class="rule-title">Using staff channels for personal gain</span>
+                <span class="consequence">Demotion and timeout; restitution or corrective measures may be required.</span>
+              </li>
+              <li>
+                <span class="rule-title">Repeated poor moderation decisions causing community harm</span>
+                <span class="consequence">Demotion and temporary removal from moderation duties; review of decision-making process.</span>
+              </li>
+              <li>
+                <span class="rule-title">Evading accountability or obstructing investigations</span>
+                <span class="consequence">Demotion and timeout while leadership completes a formal review.</span>
+              </li>
+              <li>
+                <span class="rule-title">Unauthorized use of staff accounts or credentials</span>
+                <span class="consequence">Demotion, temporary suspension, and security review; credentials revoked until cleared.</span>
+              </li>
+            </ol>
+          </div>
+
+          <!-- Level 3 -->
+          <div class="level-card" role="listitem" aria-labelledby="l3Title">
+            <div class="level-header">
+              <div class="level-pill l3">Level 3 — Permanent Removal</div>
+              <div>
+                <div id="l3Title" style="font-weight:700">Behavior that results in permanent removal from staff</div>
+                <div class="muted">Level 3 incidents are severe and typically result in immediate termination of staff privileges.</div>
+              </div>
+            </div>
+
+            <ol>
+              <li>
+                <span class="rule-title">Deliberate doxxing or publishing private information</span>
+                <span class="consequence">Immediate permanent removal and incident report to platform or authorities as required.</span>
+              </li>
+              <li>
+                <span class="rule-title">Sharing explicit content involving others without consent</span>
+                <span class="consequence">Immediate permanent removal and mandatory reporting where applicable.</span>
+              </li>
+              <li>
+                <span class="rule-title">Theft of accounts, credentials, or funds</span>
+                <span class="consequence">Immediate permanent removal and notification to affected parties and platforms.</span>
+              </li>
+              <li>
+                <span class="rule-title">Coordinated harassment or brigading organized by staff</span>
+                <span class="consequence">Immediate permanent removal and cross-community notification if necessary.</span>
+              </li>
+              <li>
+                <span class="rule-title">Extortion, blackmail, or coercion of members</span>
+                <span class="consequence">Immediate permanent removal and escalation to law enforcement when warranted.</span>
+              </li>
+              <li>
+                <span class="rule-title">Distribution of malware or facilitating illegal activity</span>
+                <span class="consequence">Immediate permanent removal and reporting to platform security teams.</span>
+              </li>
+              <li>
+                <span class="rule-title">Sexual exploitation or abuse involving minors</span>
+                <span class="consequence">Immediate permanent removal and mandatory reporting to authorities.</span>
+              </li>
+              <li>
+                <span class="rule-title">Repeated evasion of sanctions combined with malicious behavior</span>
+                <span class="consequence">Permanent removal of all accounts and network-wide enforcement where possible.</span>
+              </li>
+              <li>
+                <span class="rule-title">Severe, targeted hate campaigns led by staff</span>
+                <span class="consequence">Immediate permanent removal and public notice to affected communities when appropriate.</span>
+              </li>
+              <li>
+                <span class="rule-title">Any action that creates legal liability for the clan</span>
+                <span class="consequence">Immediate permanent removal and legal escalation as required.</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+
+        <div style="margin-top:16px" class="note">
+          All enforcement decisions are documented. Staff members under review will be notified and given an opportunity to respond. Leadership will retain final authority on demotions and removals.
+        </div>
+      </section>
+
+      <aside>
+        <div class="aside-card">
+          <div class="important" role="note">
+            <h3>Enforcement process</h3>
+            <p>Investigations follow a consistent workflow: report intake, evidence collection, staff review, decision, and documentation. For Level 2 and Level 3 actions, at least two senior leaders must approve the outcome.</p>
+          </div>
+
+          <div>
+            <h4 style="margin:0 0 8px 0">Reporting expectations</h4>
+            <p class="muted">When reporting a staff incident, include timestamps, screenshots, chat logs, and a concise summary. Submit reports to the private staff incident channel or contact leadership directly for urgent matters.</p>
+          </div>
+
+          <div style="margin-top:12px">
+            <h4 style="margin:0 0 8px 0">Demotion and timeout details</h4>
+            <p class="muted">Demotion removes staff permissions and access to staff channels. Timeouts are temporary and include a clear reinstatement plan with training or probation conditions.</p>
+          </div>
+
+          <div style="margin-top:12px">
+            <h4 style="margin:0 0 8px 0">Appeals</h4>
+            <p class="muted">Appeals must be submitted in writing to leadership within seven days of the action. Appeals should include new evidence or context. Leadership will respond within a reasonable timeframe and document the outcome.</p>
+          </div>
+
+          <div style="margin-top:12px" class="note">
+            Leadership contact: use the private staff channel for non-urgent matters. For incidents involving legal risk or minors, contact leadership immediately and preserve all evidence.
+          </div>
+
+          <table class="table" aria-label="Quick reference">
+            <thead>
+              <tr><th>Level</th><th>Primary consequence</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Level 1</td><td>Warning; coaching; record kept</td></tr>
+              <tr><td>Level 2</td><td>Demotion; temporary removal from duties</td></tr>
+              <tr><td>Level 3</td><td>Permanent removal; possible reporting</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      These staff rules are effective immediately. Leadership reserves the right to update policy as needed; changes will be communicated to staff in the private channel.
+    </footer>
+  </div>
+</body>
+</html>
