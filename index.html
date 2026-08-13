@@ -1,442 +1,210 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Black Velvet — Home</title>
-  <style>
-    :root{
-      --bg:#050506;
-      --panel:#0f0f11;
-      --accent:#bfa6ff;
-      --muted:#9a8fb8;
-      --glass: rgba(255,255,255,0.03);
-      --btn-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.25));
-      --btn-border: rgba(255,255,255,0.06);
-      --petal-dark: rgba(30,30,30,0.95);
-      --petal-mid: rgba(18,18,18,0.85);
-      --petal-edge: rgba(60,60,60,0.6);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Black Velvet — Home</title>
 
-    html,body{
-      height:100%;
-      margin:0;
-      background:
-        radial-gradient(1200px 600px at 10% 10%, rgba(191,166,255,0.02), transparent 8%),
-        radial-gradient(900px 500px at 90% 90%, rgba(255,120,150,0.01), transparent 6%),
-        var(--bg);
-      color:#e9e6ef;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      overflow-x:hidden;
-    }
+<style>
+  :root{
+    --bg:#050506;
+    --text:#e9e6ef;
+    --muted:#9a8fb8;
+    --accent:#ffffff;
+    --glass:rgba(255,255,255,0.03);
+    font-family:Inter,system-ui;
+  }
 
-    /* Layout */
-    .wrap{
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:48px 24px;
-      box-sizing:border-box;
-    }
+  html,body{
+    margin:0;
+    height:100%;
+    background:var(--bg);
+    color:var(--text);
+    overflow:hidden;
+  }
 
-    .card{
-      width:980px;
-      max-width:96%;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.18));
-      border-radius:18px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
-      display:grid;
-      grid-template-columns: 320px 1fr;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,0.03);
-      position:relative;
-    }
+  /* Water droplet background */
+  .droplet{
+    position:absolute;
+    width:6px;
+    height:6px;
+    background:rgba(180,180,180,0.25);
+    border-radius:50%;
+    filter:blur(2px);
+    pointer-events:none;
+    animation:dropFall 4s linear forwards;
+  }
 
-    /* Left panel */
-    .left{
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.12));
-      padding:28px;
-      display:flex;
-      flex-direction:column;
-      gap:18px;
-      align-items:center;
-      justify-content:flex-start;
-      position:relative;
-    }
+  @keyframes dropFall{
+    0%{ transform:translateY(-20px) scale(1); opacity:0.8; }
+    100%{ transform:translateY(120vh) scale(0.4); opacity:0; }
+  }
 
-    .logo{
-      width:120px;
-      height:120px;
-      border-radius:12px;
-      background:linear-gradient(135deg, rgba(191,166,255,0.12), rgba(255,120,150,0.06));
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:700;
-      letter-spacing:1px;
-      color:var(--accent);
-      font-size:20px;
-      border:1px solid rgba(255,255,255,0.04);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
-    }
+  .page{
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    text-align:center;
+    position:relative;
+    z-index:2;
+  }
 
-    .title{
-      text-align:center;
-      font-size:18px;
-      color:#efeaf8;
-      margin-top:6px;
-    }
+  h1{
+    font-size:42px;
+    margin:0;
+    color:var(--accent);
+    letter-spacing:1px;
+    text-shadow:0 0 12px rgba(255,255,255,0.8);
+  }
 
-    .subtitle{
-      font-size:12px;
-      color:var(--muted);
-      text-align:center;
-    }
+  p{
+    margin-top:10px;
+    font-size:16px;
+    color:var(--muted);
+  }
 
-    /* Center content */
-    .main{
-      padding:34px 36px;
-      display:flex;
-      flex-direction:column;
-      gap:18px;
-      position:relative;
-      z-index:2; /* keep above petals */
-    }
+  /* Water glow buttons */
+  .btn{
+    margin-top:24px;
+    padding:12px 20px;
+    border-radius:12px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.25);
+    color:#fff;
+    font-weight:700;
+    text-decoration:none;
+    box-shadow:
+      0 0 12px rgba(255,255,255,0.6),
+      0 0 22px rgba(255,255,255,0.4),
+      inset 0 0 12px rgba(255,255,255,0.3);
+    transition:0.25s;
+  }
 
-    .button-group{
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      align-items:center;
-    }
+  .btn:hover{
+    transform:translateY(-3px);
+    box-shadow:
+      0 0 18px rgba(255,255,255,0.9),
+      0 0 32px rgba(255,255,255,0.7),
+      inset 0 0 18px rgba(255,255,255,0.5);
+  }
 
-    .btn{
-      -webkit-appearance:none;
-      appearance:none;
-      border:1px solid var(--btn-border);
-      background:var(--btn-bg);
-      color:#efeaf8;
-      padding:12px 16px;
-      border-radius:10px;
-      font-size:14px;
-      cursor:pointer;
-      transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
-      backdrop-filter: blur(6px) saturate(120%);
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-    }
+  /* Ambient petals */
+  .petal{
+    position:absolute;
+    width:34px;
+    height:52px;
+    border-radius:50% 50% 40% 60% / 60% 60% 40% 40%;
+    background:linear-gradient(135deg,rgba(18,18,18,0.98),rgba(36,36,36,0.9) 60%);
+    filter:drop-shadow(0 10px 30px rgba(0,0,0,0.7));
+    pointer-events:none;
+    opacity:0.95;
+    transform-origin:center;
+    animation:floatUp 3.8s forwards cubic-bezier(.2,.8,.2,1);
+  }
 
-    .btn:active{ transform:translateY(1px) scale(.998); }
+  @keyframes floatUp{
+    0%{ transform:translateY(0) rotate(0deg) scale(1); opacity:1; }
+    60%{ transform:translateY(-120px) rotate(40deg) scale(1.02); opacity:0.9; }
+    100%{ transform:translateY(-300px) rotate(120deg) scale(0.9); opacity:0; }
+  }
 
-    .btn:hover{
-      transform:translateY(-4px);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.6);
-    }
-
-    /* Staff Login special styling */
-    .btn.staff{
-      border:1px solid rgba(191,166,255,0.18);
-      background: linear-gradient(180deg, rgba(191,166,255,0.06), rgba(191,166,255,0.02));
-      color:#fff;
-      position:relative;
-      overflow:visible;
-    }
-
-    .btn.staff::after{
-      content:"";
-      position:absolute;
-      inset:-6px;
-      border-radius:12px;
-      background: radial-gradient(circle at 30% 20%, rgba(191,166,255,0.06), transparent 20%),
-                  radial-gradient(circle at 70% 80%, rgba(255,120,150,0.03), transparent 18%);
-      opacity:0;
-      transition:opacity .28s ease, transform .28s ease;
-      transform:scale(.96);
-      pointer-events:none;
-    }
-
-    .btn.staff:hover::after{
-      opacity:1;
-      transform:scale(1.02);
-    }
-
-    .icon{
-      width:18px;
-      height:18px;
-      display:inline-block;
-      border-radius:4px;
-      background:linear-gradient(180deg, var(--accent), #ff78a0);
-      box-shadow: 0 4px 10px rgba(191,166,255,0.18);
-    }
-
-    .panel{
-      margin-top:8px;
-      background:var(--glass);
-      border-radius:12px;
-      padding:14px;
-      color:var(--muted);
-      font-size:13px;
-      border:1px solid rgba(255,255,255,0.02);
-    }
-
-    .footer{
-      margin-top:auto;
-      font-size:12px;
-      color:var(--muted);
-      display:flex;
-      gap:12px;
-      align-items:center;
-      justify-content:center;
-      padding-bottom:6px;
-    }
-
-    /* Petal container sits behind content */
-    .petal-layer{
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      overflow:hidden;
-      z-index:1;
-    }
-
-    /* Petal base style */
-    .petal{
-      position:absolute;
-      width:36px;
-      height:56px;
-      border-radius:50% 50% 40% 60% / 60% 60% 40% 40%;
-      background: linear-gradient(135deg, var(--petal-dark), var(--petal-mid) 60%, var(--petal-edge));
-      transform-origin:center;
-      opacity:0.95;
-      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.6));
-      will-change: transform, opacity;
-      mix-blend-mode: multiply;
-    }
-
-    /* animation: float up, rotate, fade */
-    @keyframes petalFloat {
-      0%{
-        transform: translateY(0) rotate(0deg) scale(1);
-        opacity:1;
-      }
-      30%{
-        transform: translateY(-18px) rotate(15deg) scale(1.02);
-      }
-      60%{
-        transform: translateY(-60px) rotate(45deg) scale(.98);
-        opacity:0.9;
-      }
-      100%{
-        transform: translateY(-220px) rotate(120deg) scale(.86);
-        opacity:0;
-      }
-    }
-
-    /* reduced motion preference */
-    @media (prefers-reduced-motion: reduce){
-      .petal{ animation: none !important; opacity:0; }
-    }
-
-    /* Responsive */
-    @media (max-width:880px){
-      .card{ grid-template-columns: 1fr; }
-      .left{ flex-direction:row; gap:12px; padding:18px; align-items:center; justify-content:flex-start; }
-      .logo{ width:84px; height:84px; font-size:16px; }
-      .main{ padding:20px; }
-    }
-  </style>
+  /* Cursor-follow petals */
+  .cursor-petal{
+    position:absolute;
+    width:28px;
+    height:42px;
+    border-radius:50% 50% 40% 60%;
+    background:linear-gradient(135deg,rgba(20,20,20,0.95),rgba(40,40,40,0.85));
+    filter:drop-shadow(0 8px 24px rgba(0,0,0,0.7));
+    pointer-events:none;
+    opacity:0.9;
+    transition:transform 0.25s ease-out, opacity 0.4s ease-out;
+  }
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card" role="main" aria-label="Black Velvet Home" id="cardRoot">
-      <aside class="left" aria-hidden="false">
-        <div class="logo" aria-hidden="true">BV</div>
-        <div style="text-align:center;">
-          <div class="title">Black Velvet</div>
-          <div class="subtitle">A refined community experience</div>
-        </div>
-      </aside>
 
-      <section class="main" aria-label="Main navigation">
-        <h2 style="margin:0;font-size:16px;color:#efeaf8;">Welcome</h2>
+<div id="petalLayer"></div>
+<div id="cursorLayer"></div>
+<div id="dropletLayer"></div>
 
-        <div class="button-group" role="navigation" aria-label="Primary actions">
-          <button class="btn" onclick="navigate('rules.html')" aria-label="Read Rules">
-            <span class="icon" style="background:linear-gradient(180deg,#9f8bff,#cdb8ff);"></span>
-            Read Rules
-          </button>
+<div class="page">
+  <h1>Black Velvet</h1>
+  <p>Welcome to the official clan hub.</p>
 
-          <button class="btn" onclick="navigate('ranks.html')" aria-label="View Ranks">
-            <span class="icon" style="background:linear-gradient(180deg,#7fd3ff,#a6e7ff);"></span>
-            View Ranks
-          </button>
-
-          <button class="btn" onclick="navigate('staffapply.html')" aria-label="Apply to Staff">
-            <span class="icon" style="background:linear-gradient(180deg,#ffd38a,#ffb86b);"></span>
-            Apply to Staff
-          </button>
-
-          <button class="btn" onclick="navigate('staffpolicies.html')" aria-label="Staff Policies">
-            <span class="icon" style="background:linear-gradient(180deg,#c7f7c7,#9fe6a6);"></span>
-            Staff Policies
-          </button>
-
-          <!-- Staff Login now points to staffpanel.html -->
-          <button class="btn staff" id="staffLoginBtn" onclick="navigate('staffpanel.html')" aria-label="Staff Login">
-            <span class="icon" style="background:linear-gradient(180deg,#bfa6ff,#ff78a0);"></span>
-            Staff Login
-          </button>
-        </div>
-
-        <div class="panel" role="region" aria-label="Quick info">
-          <strong style="color:#efeaf8;">Quick tips</strong>
-          <div style="margin-top:6px;">
-            Keep your credentials secure. Staff access is restricted to approved members.
-          </div>
-        </div>
-
-        <div class="footer" aria-hidden="false">
-          <div>© <span id="year"></span> Black Velvet</div>
-          <div style="opacity:.6;">•</div>
-          <div style="opacity:.7;">Privacy</div>
-        </div>
-      </section>
-
-      <!-- Petal layer sits behind the main content -->
-      <div class="petal-layer" id="petalLayer" aria-hidden="true"></div>
-    </div>
+  <div style="display:flex; flex-direction:column; gap:14px; margin-top:24px;">
+    <a href="ranks.html" class="btn">View Clan Ranks</a>
+    <a href="information.html" class="btn">Information</a>
   </div>
+</div>
 
-  <script>
-    // Basic navigation helper
-    function navigate(path){
-      window.location.href = path;
-    }
+<script>
+/* -----------------------------
+   Ambient Petals
+------------------------------*/
+(function(){
+  const layer = document.getElementById('petalLayer');
+  function rand(min,max){ return Math.random()*(max-min)+min; }
 
-    // Accessibility: Enter key activates focused buttons
-    document.addEventListener('keydown', function(e){
-      if(e.key === 'Enter' && document.activeElement && document.activeElement.classList.contains('btn')){
-        document.activeElement.click();
-      }
-    });
+  function spawnPetal(){
+    const p = document.createElement('div');
+    p.className = 'petal';
+    const size = rand(30,44);
+    p.style.width = size + 'px';
+    p.style.height = (size * 1.45) + 'px';
+    p.style.left = rand(0, window.innerWidth) + 'px';
+    p.style.top = (window.innerHeight + 40) + 'px';
+    layer.appendChild(p);
+    setTimeout(()=> p.remove(), 4200);
+  }
 
-    // Small runtime polish
-    document.getElementById('year').textContent = new Date().getFullYear();
+  setInterval(spawnPetal, 350);
+})();
 
-    // Focus ring for keyboard users
-    document.addEventListener('focusin', (e) => {
-      if(e.target.classList && e.target.classList.contains('btn')){
-        e.target.style.outline = '2px solid rgba(191,166,255,0.18)';
-        e.target.style.outlineOffset = '3px';
-      }
-    });
-    document.addEventListener('focusout', (e) => {
-      if(e.target.classList && e.target.classList.contains('btn')){
-        e.target.style.outline = 'none';
-      }
-    });
+/* -----------------------------
+   Cursor-following petals
+------------------------------*/
+(function(){
+  const cursorLayer = document.getElementById('cursorLayer');
 
-    /* Petal spawn logic
-       - Greish-black petals appear when clicking inside the card.
-       - Limited number of petals to avoid performance issues.
-       - Respects prefers-reduced-motion.
-    */
-    (function(){
-      const layer = document.getElementById('petalLayer');
-      const card = document.getElementById('cardRoot');
-      const MAX_PETALS = 28; // cap total petals on screen
-      let activePetals = 0;
+  document.addEventListener('mousemove', e=>{
+    const p = document.createElement('div');
+    p.className = 'cursor-petal';
+    p.style.left = (e.clientX - 14) + 'px';
+    p.style.top = (e.clientY - 21) + 'px';
 
-      // Utility: random in range
-      function rand(min, max){ return Math.random() * (max - min) + min; }
+    cursorLayer.appendChild(p);
 
-      // Create a single petal at (x,y) relative to layer
-      function createPetal(x, y){
-        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        if (activePetals >= MAX_PETALS) return;
+    setTimeout(()=>{
+      p.style.opacity = 0;
+      p.style.transform = 'scale(0.6) translateY(-20px)';
+    }, 50);
 
-        const petal = document.createElement('div');
-        petal.className = 'petal';
+    setTimeout(()=> p.remove(), 600);
+  });
+})();
 
-        // randomize size and rotation
-        const w = Math.round(rand(18, 48));
-        const h = Math.round(rand(28, 84));
-        petal.style.width = w + 'px';
-        petal.style.height = h + 'px';
+/* -----------------------------
+   Water Droplet Background
+------------------------------*/
+(function(){
+  const layer = document.getElementById('dropletLayer');
+  function rand(min,max){ return Math.random()*(max-min)+min; }
 
-        // position centered on click
-        petal.style.left = (x - w/2) + 'px';
-        petal.style.top = (y - h/2) + 'px';
+  function spawnDroplet(){
+    const d = document.createElement('div');
+    d.className = 'droplet';
+    d.style.left = rand(0, window.innerWidth) + 'px';
+    d.style.top = rand(-40, -10) + 'px';
+    layer.appendChild(d);
+    setTimeout(()=> d.remove(), 4000);
+  }
 
-        // random initial rotation
-        const rot = rand(-40, 40);
-        petal.style.transform = `rotate(${rot}deg)`;
+  setInterval(spawnDroplet, 120);
+})();
+</script>
 
-        // subtle color variation using inline gradient
-        const dark = `rgba(${Math.round(rand(18,40))},${Math.round(rand(18,40))},${Math.round(rand(18,40))},${rand(0.85,0.98)})`;
-        const mid = `rgba(${Math.round(rand(12,28))},${Math.round(rand(12,28))},${Math.round(rand(12,28))},${rand(0.7,0.9)})`;
-        const edge = `rgba(${Math.round(rand(40,80))},${Math.round(rand(40,80))},${Math.round(rand(40,80))},${rand(0.45,0.7)})`;
-        petal.style.background = `linear-gradient(135deg, ${dark}, ${mid} 60%, ${edge})`;
-
-        // random animation duration and delay
-        const duration = rand(2200, 4200);
-        const delay = rand(0, 160);
-        petal.style.animation = `petalFloat ${duration}ms cubic-bezier(.22,.9,.35,1) ${delay}ms forwards`;
-
-        // slight horizontal drift using CSS transform animation via inline style (random)
-        const driftX = rand(-80, 80);
-        petal.style.setProperty('--drift-x', driftX + 'px');
-
-        activePetals++;
-        layer.appendChild(petal);
-
-        // remove after animation completes
-        setTimeout(() => {
-          if (petal && petal.parentNode) petal.parentNode.removeChild(petal);
-          activePetals = Math.max(0, activePetals - 1);
-        }, duration + delay + 200);
-      }
-
-      // Spawn a small burst of petals at click location
-      function spawnBurst(clientX, clientY){
-        const rect = layer.getBoundingClientRect();
-        const x = clientX - rect.left;
-        const y = clientY - rect.top;
-
-        // number of petals per burst
-        const count = Math.floor(rand(3, 8));
-        for(let i=0;i<count;i++){
-          // slight offset for each petal so they don't overlap exactly
-          const ox = rand(-18, 18);
-          const oy = rand(-18, 18);
-          setTimeout(() => createPetal(x + ox, y + oy), Math.round(rand(0, 120)));
-        }
-      }
-
-      // Click handler: spawn petals when clicking inside the card but not when clicking interactive controls
-      card.addEventListener('click', function(e){
-        // ignore clicks on buttons/links to avoid interfering with navigation
-        const tag = e.target.tagName.toLowerCase();
-        if (tag === 'button' || tag === 'a' || e.target.closest('button') || e.target.closest('a')) return;
-
-        spawnBurst(e.clientX, e.clientY);
-      });
-
-      // Optional: spawn a tiny pulse when focusing via keyboard (Enter/Space) on the card background
-      card.addEventListener('keydown', function(e){
-        if (e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter'){
-          // center of card
-          const rect = layer.getBoundingClientRect();
-          spawnBurst(rect.left + rect.width/2, rect.top + rect.height/2);
-        }
-      });
-    })();
-  </script>
 </body>
 </html>
