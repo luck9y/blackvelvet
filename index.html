@@ -23,6 +23,59 @@
     overflow:hidden;
   }
 
+  /* Floating Black Velvet Flower */
+  .velvet-flower{
+    position:absolute;
+    width:180px;
+    height:180px;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    pointer-events:none;
+    z-index:0;
+    animation:flowerFloat 18s ease-in-out infinite alternate,
+             flowerRotate 22s linear infinite;
+    opacity:0.35;
+  }
+
+  @keyframes flowerFloat{
+    0%{ transform:translate(-50%,-50%) translateY(-40px); }
+    50%{ transform:translate(-50%,-50%) translateY(40px); }
+    100%{ transform:translate(-50%,-50%) translateY(-40px); }
+  }
+
+  @keyframes flowerRotate{
+    0%{ transform:translate(-50%,-50%) rotate(0deg); }
+    100%{ transform:translate(-50%,-50%) rotate(360deg); }
+  }
+
+  .petal-shape{
+    position:absolute;
+    width:80px;
+    height:120px;
+    background:linear-gradient(135deg,#0a0a0a,#1c1c1c);
+    border-radius:50% 50% 40% 60%;
+    filter:drop-shadow(0 0 18px rgba(0,0,0,0.8));
+  }
+
+  .petal1{ transform:rotate(0deg) translateY(-60px); }
+  .petal2{ transform:rotate(72deg) translateY(-60px); }
+  .petal3{ transform:rotate(144deg) translateY(-60px); }
+  .petal4{ transform:rotate(216deg) translateY(-60px); }
+  .petal5{ transform:rotate(288deg) translateY(-60px); }
+
+  .flower-center{
+    position:absolute;
+    width:60px;
+    height:60px;
+    background:#0d0d0d;
+    border-radius:50%;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 22px rgba(255,255,255,0.15);
+  }
+
   /* Water droplet background */
   .droplet{
     position:absolute;
@@ -125,6 +178,16 @@
 </head>
 <body>
 
+<!-- Floating Black Velvet Flower -->
+<div class="velvet-flower">
+  <div class="petal-shape petal1"></div>
+  <div class="petal-shape petal2"></div>
+  <div class="petal-shape petal3"></div>
+  <div class="petal-shape petal4"></div>
+  <div class="petal-shape petal5"></div>
+  <div class="flower-center"></div>
+</div>
+
 <div id="petalLayer"></div>
 <div id="cursorLayer"></div>
 <div id="dropletLayer"></div>
@@ -143,9 +206,7 @@
 </div>
 
 <script>
-/* -----------------------------
-   Ambient Petals
-------------------------------*/
+/* Ambient Petals */
 (function(){
   const layer = document.getElementById('petalLayer');
   function rand(min,max){ return Math.random()*(max-min)+min; }
@@ -165,9 +226,7 @@
   setInterval(spawnPetal, 350);
 })();
 
-/* -----------------------------
-   Cursor-following petals
-------------------------------*/
+/* Cursor-follow petals */
 (function(){
   const cursorLayer = document.getElementById('cursorLayer');
 
@@ -188,9 +247,7 @@
   });
 })();
 
-/* -----------------------------
-   Water Droplet Background
-------------------------------*/
+/* Water Droplet Background */
 (function(){
   const layer = document.getElementById('dropletLayer');
   function rand(min,max){ return Math.random()*(max-min)+min; }
