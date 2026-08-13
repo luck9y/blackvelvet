@@ -80,12 +80,12 @@
     position: fixed;
     left: 20px;
     bottom: 40px;
-    width: 260px;
+    width: 320px;
     text-align: left;
     font-family: 'Press Start 2P', cursive;
     font-size: 9px;
     color: #777;
-    opacity: 0.7;
+    opacity: 0.9;
     line-height: 1.6;
   }
 
@@ -104,38 +104,15 @@
     text-decoration: underline;
   }
 
-  /* Staff-only button + warning */
+  /* STAFF LOGIN button styling */
   .staff-cta {
-    margin-top: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-
-  .warning-wrap {
+    margin-top: 8px;
     display: flex;
     align-items: center;
     gap: 8px;
-    pointer-events: none;
-  }
-
-  .warning-text {
-    color: #ff4d4d;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 10px;
-    font-weight: bold;
-    letter-spacing: 1px;
-  }
-
-  .warning-arrow {
-    color: #ff4d4d;
-    font-size: 18px;
-    transform: translateY(2px);
   }
 
   .staff-button {
-    margin-top: 4px;
     padding: 8px 12px;
     background: #111;
     border: 2px solid #444;
@@ -152,11 +129,9 @@
     border-color: #fff;
   }
 
-  /* Ensure the warning sits visually above the button */
-  .warning-stack {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  @media (max-width: 420px) {
+    .credits-left { width: 90%; left: 10px; bottom: 20px; }
+    .staff-button { font-size: 10px; padding: 6px 10px; }
   }
 </style>
 </head>
@@ -175,19 +150,13 @@
   <a href="password.html">staff only</a>
 </div>
 
-<!-- LEFT-SIDE CREDIT + STAFF BUTTON -->
+<!-- LEFT-SIDE CREDIT + STAFF LOGIN BUTTON -->
 <div class="credits-left">
   From the founders of 
   <a href="https://discord.gg/Fn2ref2uMz" class="blue">Azul Clan</a>
 
   <div class="staff-cta" aria-hidden="false">
-    <div class="warning-stack">
-      <div class="warning-wrap" aria-hidden="true">
-        <div class="warning-text">WARNING: STAFF ONLY BUTTON</div>
-        <div class="warning-arrow">⬇</div>
-      </div>
-      <a class="staff-button" href="staffpanel.html" title="Staff Panel">STAFF PANEL</a>
-    </div>
+    <a class="staff-button" href="staffpanel.html" title="Staff Login">STAFF LOGIN</a>
   </div>
 </div>
 
