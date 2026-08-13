@@ -3,155 +3,363 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Staff Panel</title>
+<title>Black Velvet Clan — Staff Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
 <style>
   :root{
-    --bg:#0d0d0d; --card:#111; --muted:#777; --accent:#4da6ff; --danger:#ff4d4d; --text:#fff;
+    --bg-top:#050506;
+    --bg-bottom:#0b0b0d;
+    --panel-bg:rgba(6,6,8,0.92);
+    --muted:#9aa4b2;
+    --accent:#ffffff;
+    --glass:rgba(255,255,255,0.03);
+    --menu-w:320px;
+    --radius:14px;
   }
-  html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
-  .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box}
-  .panel{width:100%;max-width:820px;text-align:center}
-  .alert {
-    display:none;
-    background: rgba(255,77,77,0.12);
-    border: 1px solid rgba(255,77,77,0.35);
-    color: var(--danger);
-    padding: 10px 14px;
-    border-radius: 8px;
-    margin-bottom: 12px;
-    font-weight:700;
-    letter-spacing:0.6px;
+  :root[data-theme="light"]{
+    --bg-top:#f3f4f6;
+    --bg-bottom:#e6e7ea;
+    --panel-bg:rgba(255,255,255,0.95);
+    --muted:#6f7782;
+    --accent:#0b0f14;
+    --glass:rgba(0,0,0,0.04);
   }
-  .alert.visible { display:block; }
-  .login-overlay{background:rgba(0,0,0,0.45);border:1px solid #222;padding:28px;border-radius:10px;box-shadow:0 6px 30px rgba(0,0,0,0.6)}
-  .login-overlay.hidden{display:none}
-  h1{font-size:20px;margin:0 0 18px 0;letter-spacing:1px}
-  .field{margin:10px 0}
-  input[type="text"],input[type="password"]{width:320px;max-width:100%;padding:10px 12px;border-radius:6px;border:1px solid #333;background:#0b0b0b;color:var(--text);outline:none;box-sizing:border-box}
-  .btn{display:inline-block;margin:12px 6px;padding:10px 18px;background:var(--card);color:var(--text);border:2px solid #444;border-radius:8px;cursor:pointer}
-  .btn:hover{background:#222}
-  .error{color:var(--danger);margin-top:8px;min-height:18px}
-  .content{display:none;margin-top:18px}
-  .content.visible{display:block}
-  .grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:18px}
-  .grid .test-btn{width:300px;max-width:90%;padding:14px;background:#111;border:2px solid #444;border-radius:10px;color:var(--text);cursor:pointer;font-size:16px}
-  .grid .test-btn:hover{background:#222;border-color:var(--accent)}
-  .meta{margin-top:18px;color:var(--muted);font-size:13px}
-  .actions{margin-top:18px}
-  .small{font-size:13px;color:var(--muted);margin-top:8px}
-  .top-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
-  .title-left{font-family:'Press Start 2P',cursive;font-size:12px;color:#fff}
-  @media (max-width:480px){ input[type="text"],input[type="password"]{width:100%} .grid .test-btn{width:100%} }
+
+  html,body{height:100%;margin:0;overflow:hidden;background:linear-gradient(180deg,var(--bg-top),var(--bg-bottom));color:var(--accent);font-family:Inter,system-ui,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .app{display:flex;height:100vh;align-items:stretch;min-height:0}
+
+  /* Left menu */
+  nav.menu{
+    width:var(--menu-w);min-width:var(--menu-w);background:var(--panel-bg);border-right:1px solid var(--glass);
+    padding:28px 22px;box-sizing:border-box;display:flex;flex-direction:column;gap:18px;backdrop-filter:blur(6px)
+  }
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--accent);font-family:'Press Start 2P',cursive;font-size:16px}
+  .brand h1{font-family:'Press Start 2P',cursive;font-size:12px;margin:0;color:var(--accent)}
+  .brand p{margin:0;color:var(--muted);font-size:11px}
+
+  .menu-list{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+  .menu-item{padding:12px 14px;border-radius:12px;background:transparent;border:1px solid var(--glass);color:var(--accent);font-weight:800;cursor:pointer}
+  .menu-item.active{background:linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))}
+
+  .menu-desc-wrap{margin-top:6px;padding:12px;border-radius:12px;background:var(--panel-bg);border:1px solid var(--glass);color:var(--muted);font-size:13px}
+  .menu-desc-title{font-weight:800;color:var(--accent);margin-bottom:6px}
+
+  .menu-footer{margin-top:auto;display:flex;flex-direction:column;gap:8px;color:var(--muted);font-size:12px}
+  .small-cta{padding:10px 12px;border-radius:10px;border:1px solid var(--glass);background:transparent;color:var(--muted);text-decoration:none;font-weight:700;text-align:center;display:inline-block}
+  .back-home{margin-top:6px;padding:10px 12px;border-radius:10px;border:1px solid var(--glass);background:transparent;color:var(--accent);font-weight:800;text-decoration:none;text-align:center;display:inline-block}
+
+  /* Main content */
+  main.content{position:relative;flex:1;overflow:hidden;display:flex;flex-direction:column}
+  .bg-wrap{position:absolute;inset:0;z-index:0;pointer-events:none}
+  canvas#bgCanvas{width:100%;height:100%;display:block}
+
+  .foreground{position:relative;z-index:2;padding:40px;display:flex;gap:28px;align-items:flex-start;height:100%;box-sizing:border-box;overflow:auto}
+  .card{flex:1;max-width:980px;background:var(--panel-bg);border-radius:14px;padding:28px;border:1px solid var(--glass);box-shadow:0 18px 60px rgba(0,0,0,0.45)}
+  .card h2{font-family:'Press Start 2P',cursive;font-size:18px;margin:0 0 12px 0;color:var(--accent)}
+  .card p{color:var(--muted);margin:0 0 18px 0;line-height:1.5}
+
+  .login {display:flex;flex-direction:column;gap:12px;max-width:520px;margin-top:12px}
+  label{font-size:13px;color:var(--muted);font-weight:700}
+  input[type="text"], input[type="password"]{width:100%;padding:12px;border-radius:10px;border:1px solid var(--glass);background:transparent;color:var(--accent);box-sizing:border-box;font-size:14px}
+  .btn-row{display:flex;gap:10px;align-items:center;margin-top:8px}
+  .btn {padding:10px 14px;border-radius:10px;border:1px solid var(--glass);background:transparent;color:var(--accent);font-weight:800;cursor:pointer}
+  .btn.primary{background:linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));}
+
+  .hint{font-size:12px;color:var(--muted)}
+  .error{color:#ff6b6b;font-weight:700;margin-top:6px}
+
+  .panel{width:360px;min-width:260px;background:var(--panel-bg);border-radius:12px;padding:18px;border:1px solid var(--glass);box-shadow:0 12px 40px rgba(0,0,0,0.45)}
+  .panel h3{margin:0 0 8px 0;font-size:14px;color:var(--accent)}
+  .panel p{color:var(--muted);font-size:13px;margin:0 0 12px 0}
+
+  .site-footer{padding:18px;color:var(--muted);font-size:12px;text-align:center}
+
+  @media (max-width:980px){
+    nav.menu{display:none}
+    .foreground{padding:18px}
+    .panel{display:none}
+  }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="panel" role="main" aria-labelledby="panelTitle">
-
-      <!-- ALERT BANNER (for WRONG attempts) -->
-      <div id="alertBanner" class="alert" role="alert" aria-live="assertive"></div>
-
-      <div id="loginOverlay" class="login-overlay" aria-hidden="false">
-        <div class="top-row">
-          <div class="title-left" id="panelTitle">STAFF PANEL — LOGIN</div>
-        </div>
-
-        <div class="field">
-          <input id="username" type="text" placeholder="Username" autocomplete="username" />
-        </div>
-
-        <div class="field">
-          <input id="code" type="password" placeholder="Code" autocomplete="current-password" />
-        </div>
-
+  <div class="app" role="application" aria-label="Black Velvet Clan Staff Login">
+    <nav class="menu" aria-label="Main menu">
+      <div class="brand">
+        <div class="logo">BV</div>
         <div>
-          <button id="loginBtn" class="btn">Log In</button>
-          <button id="homeBtn" class="btn" onclick="location.href='index.html'">Return to Home</button>
+          <h1>BLACK VELVET</h1>
+          <p>Clan • Community • Competition</p>
         </div>
-
-        <div class="error" id="error"></div>
-        <div class="small">Enter staff credentials to reveal the panel. This page will not navigate away.</div>
       </div>
 
-      <div id="content" class="content" aria-hidden="true">
-        <h1>STAFF PANEL</h1>
-
-        <div class="grid" id="buttons">
-          <button class="test-btn" id="test1">test</button>
-          <button class="test-btn" id="test2">test</button>
-          <button class="test-btn" id="test3">test</button>
-          <button class="test-btn" id="test4">test</button>
-        </div>
-
-        <div class="actions">
-          <button id="logoutBtn" class="btn">Logout</button>
-        </div>
-
-        <div class="meta" id="metaInfo"></div>
+      <div class="menu-list" role="menu">
+        <div class="menu-item" data-key="home" id="menuHome">Home</div>
+        <div class="menu-item active" data-key="staff">Staff Login</div>
+        <div class="menu-item" data-key="ranks">Ranks</div>
+        <div class="menu-item" data-key="staffapp">Staff Application</div>
+        <div class="menu-item" data-key="info">More Info</div>
       </div>
 
-    </div>
+      <div id="menuDescription" class="menu-desc-wrap" aria-live="polite">
+        <div class="menu-desc-title">Staff Login</div>
+        <div class="menu-desc-text">Enter your staff username and code. Correct credentials reveal staff UI right here — no navigation, no overlay.</div>
+      </div>
+
+      <div class="menu-footer">
+        <button id="themeToggle" class="small-cta" title="Toggle theme">Toggle Light / Dark</button>
+        <a class="small-cta" href="contact.html">Contact Leadership</a>
+        <a class="back-home" href="index.html">Back to Home</a>
+        <div style="margin-top:8px;color:var(--muted);font-size:11px">Built by Rin • Reborn in the flames</div>
+      </div>
+    </nav>
+
+    <main class="content" aria-live="polite">
+      <div class="bg-wrap" aria-hidden="true">
+        <canvas id="bgCanvas"></canvas>
+      </div>
+
+      <div class="foreground">
+        <section class="card" aria-labelledby="cardTitle">
+          <h2 id="cardTitle">Staff Login</h2>
+          <p>Use your staff username and code to unlock the staff area below. This unlock happens in-place and stays on the same page.</p>
+
+          <form id="loginForm" class="login" onsubmit="return false;">
+            <div>
+              <label for="username">Discord Username</label>
+              <input id="username" name="username" type="text" placeholder="e.g., gear10" autocomplete="username" />
+            </div>
+
+            <div>
+              <label for="code">Staff Code</label>
+              <input id="code" name="code" type="password" placeholder="Enter code" autocomplete="current-password" />
+            </div>
+
+            <div class="btn-row">
+              <button id="loginBtn" class="btn primary" type="button">LOGIN</button>
+              <button id="clearBtn" class="btn" type="button">CLEAR</button>
+              <div id="error" class="error" role="status" aria-live="polite"></div>
+            </div>
+
+            <div class="hint">Successful unlock reveals staff-only controls below. No new page will open.</div>
+          </form>
+
+          <!-- Staff-only content (hidden until unlocked) -->
+          <div id="staffContent" style="display:none;margin-top:18px">
+            <div style="padding:14px;border-radius:12px;background:linear-gradient(90deg, rgba(77,166,255,0.06), rgba(123,228,149,0.03));border-left:4px solid #4da6ff;color:#eaf2ff;font-weight:700">
+              STAFF AREA — Access granted. Use the controls below.
+            </div>
+
+            <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn" id="relockBtn">RE-LOCK</button>
+              <a class="btn" href="stafflog.html" id="staffLogLink">Open Staff Log</a>
+              <a class="btn" href="staffpanel.html">Staff Panel</a>
+            </div>
+
+            <div style="margin-top:12px;color:var(--muted);font-size:13px">
+              Note: This area is unlocked in-place. To re-lock, click Re-lock or refresh the page.
+            </div>
+          </div>
+        </section>
+
+        <aside class="panel" aria-labelledby="panelTitle">
+          <h3 id="panelTitle">Latest</h3>
+          <p>Server updates, events, and announcements appear here. Check Discord for live scheduling and event signups.</p>
+
+          <div style="margin-top:12px">
+            <strong style="font-size:13px">Founders</strong>
+            <div style="color:var(--muted);font-size:13px;margin-top:6px">jsfeelings • Suoaz</div>
+          </div>
+
+          <div style="margin-top:12px">
+            <strong style="font-size:13px">Credits</strong>
+            <div style="color:var(--muted);font-size:13px;margin-top:6px">Design & site by Rin</div>
+          </div>
+
+          <a class="back-home" href="index.html">RETURN TO HOME</a>
+        </aside>
+      </div>
+
+      <div class="site-footer">© Black Velvet Clan — Respect the rules. Questions? Reach leadership in the staff channel.</div>
+    </main>
   </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+/* Background canvas: subtle velvet petals (same behavior as index) */
+(() => {
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d', { alpha: true });
+  let DPR = Math.max(1, window.devicePixelRatio || 1);
+  let w = canvas.width = innerWidth;
+  let h = canvas.height = innerHeight;
+  canvas.width = w * DPR; canvas.height = h * DPR;
+  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+  ctx.scale(DPR, DPR);
 
-  // CONFIG
-  const webhookURL = "https://discord.com/api/webhooks/1537233521410576546/qoHYqRmP1SbBfuuMCzvJBxWgTIGIlKpS3bhQ7xuj2MnbxNSoRGu0xUxCzkiXV6d43DIs";
-  const accounts = {
-    "gear10":"9033","luckyy1":"0226","suoaztic":"4423","Staff1":"1","flip2":"2","fork3":"3","an4":"4","fin5":"5"
-  };
-  const loginFlagKey = "staffLoggedIn";
-  const deviceHexKey = "deviceHex";
+  function rand(a,b){ return Math.random()*(b-a)+a; }
 
-  // DOM
-  const alertBanner = document.getElementById('alertBanner');
-  const loginOverlay = document.getElementById('loginOverlay');
-  const content = document.getElementById('content');
-  const loginBtn = document.getElementById('loginBtn');
-  const logoutBtn = document.getElementById('logoutBtn');
-  const errorBox = document.getElementById('error');
-  const usernameInput = document.getElementById('username');
-  const codeInput = document.getElementById('code');
-  const metaInfo = document.getElementById('metaInfo');
+  let petals = [];
+  const pointer = { x:w/2, y:h/2, px:w/2, py:h/2 };
+  let BASE = Math.max(8, Math.round((w*h)/160000));
 
-  // UTILITIES
-  function generateHexID(){
-    const hex = Math.floor(Math.random()*0xFFFF).toString(16).toUpperCase();
-    return hex.padStart(4,'0');
-  }
-  function getDeviceHex(){
-    if(!localStorage[deviceHexKey]) localStorage[deviceHexKey]=generateHexID();
-    return localStorage[deviceHexKey];
-  }
-  function getFingerprint(){
+  function create(colors){
     return {
-      browser: navigator.userAgent || 'Unknown',
-      language: navigator.language || 'Unknown',
-      platform: navigator.platform || 'Unknown',
-      resolution: `${window.screen.width||0}x${window.screen.height||0}`,
-      timezone: (Intl && Intl.DateTimeFormat) ? Intl.DateTimeFormat().resolvedOptions().timeZone : 'Unknown'
+      x: rand(0,w), y: rand(0,h),
+      vx: rand(-0.08,0.08), vy: rand(-0.02,0.06),
+      rot: rand(0,Math.PI*2), vr: rand(-0.006,0.006),
+      size: rand(6,16), color: colors[Math.floor(Math.random()*colors.length)],
+      life: rand(800,1600), age:0
     };
   }
 
-  // WEBHOOK: successful login (unchanged)
-  function sendSuccessWebhook(user, code){
-    try{
-      const hex = getDeviceHex();
-      const fp = getFingerprint();
-      const now = new Date();
-      const date = now.toLocaleDateString();
-      const time = now.toLocaleTimeString();
+  function seed(){
+    petals.length = 0;
+    const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    const colors = theme === 'light' ? ['rgba(0,0,0,0.98)','rgba(30,30,30,0.88)','rgba(60,60,60,0.75)'] : ['rgba(255,255,255,0.98)','rgba(240,240,240,0.88)','rgba(210,210,210,0.75)'];
+    for(let i=0;i<BASE;i++) petals.push(create(colors));
+  }
 
-      const payload = {
-        content:
+  function spawn(x,y){
+    const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    const colors = theme === 'light' ? ['rgba(0,0,0,0.98)','rgba(30,30,30,0.88)','rgba(60,60,60,0.75)'] : ['rgba(255,255,255,0.98)','rgba(240,240,240,0.88)','rgba(210,210,210,0.75)'];
+    const count = 12 + Math.floor(rand(0,10));
+    for(let i=0;i<count;i++){
+      const angle = Math.PI*2*Math.random();
+      const speed = rand(1.2,3.0);
+      petals.push({
+        x, y,
+        vx: Math.cos(angle)*speed + rand(-0.3,0.3),
+        vy: Math.sin(angle)*speed + rand(-0.3,0.3),
+        rot: rand(0,Math.PI*2), vr: rand(-0.06,0.06),
+        size: rand(6,12), color: colors[Math.floor(Math.random()*colors.length)],
+        life: rand(60,120), age:0
+      });
+    }
+  }
+
+  function resize(){
+    w = canvas.width = innerWidth; h = canvas.height = innerHeight;
+    canvas.width = w * DPR; canvas.height = h * DPR;
+    canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    BASE = Math.max(8, Math.round((w*h)/160000));
+    seed();
+  }
+  window.addEventListener('resize', resize);
+
+  window.addEventListener('pointermove', (e) => {
+    const r = canvas.getBoundingClientRect();
+    pointer.x = (e.clientX || 0) - r.left;
+    pointer.y = (e.clientY || 0) - r.top;
+  });
+  window.addEventListener('pointerdown', (e) => {
+    const r = canvas.getBoundingClientRect();
+    const x = (e.clientX || 0) - r.left;
+    const y = (e.clientY || 0) - r.top;
+    spawn(x,y);
+  });
+
+  let last = performance.now();
+  function loop(now){
+    const dt = Math.min(40, now - last) / 16.666; last = now;
+    pointer.px += (pointer.x - pointer.px) * 0.08;
+    pointer.py += (pointer.y - pointer.py) * 0.08;
+
+    ctx.clearRect(0,0,w,h);
+
+    const bgTop = getComputedStyle(document.documentElement).getPropertyValue('--bg-top').trim();
+    const bgBottom = getComputedStyle(document.documentElement).getPropertyValue('--bg-bottom').trim();
+    const g = ctx.createLinearGradient(0,0,0,h);
+    g.addColorStop(0, bgTop); g.addColorStop(1, bgBottom);
+    ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
+
+    for(let i=petals.length-1;i>=0;i--){
+      const p = petals[i];
+      const dx = pointer.px - p.x, dy = pointer.py - p.y;
+      const dist = Math.max(20, Math.hypot(dx,dy));
+      const force = 6 / (dist*dist);
+      p.vx += dx * force * 0.02 * dt; p.vy += dy * force * 0.02 * dt;
+      p.rot += p.vr * dt; p.vx *= 0.993; p.vy *= 0.993;
+      p.x += p.vx * dt; p.y += p.vy * dt; p.age += dt;
+
+      if(p.age > p.life || p.x < -60 || p.x > w+60 || p.y < -60 || p.y > h+60){
+        petals.splice(i,1);
+        continue;
+      }
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      const grad = ctx.createLinearGradient(-p.size, -p.size*0.2, p.size, p.size*0.2);
+      grad.addColorStop(0, p.color); grad.addColorStop(1, 'rgba(0,0,0,0.02)');
+      ctx.fillStyle = grad;
+      ctx.globalAlpha = Math.max(0.06, 1 - (p.age / p.life));
+      ctx.beginPath(); ctx.ellipse(0,0,p.size,p.size*0.6,0,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+      ctx.globalAlpha = 1;
+    }
+
+    if(petals.length < BASE) seed();
+    requestAnimationFrame(loop);
+  }
+
+  seed();
+  requestAnimationFrame(loop);
+
+  window.__reseedPetals = seed;
+})();
+
+/* ---------- Staff login + webhook logging (in-place unlock, no white overlay) ---------- */
+document.addEventListener("DOMContentLoaded", () => {
+  const webhookURL = "https://discord.com/api/webhooks/1537233521410576546/qoHYqRmP1SbBfuuMCzvJBxWgTIGIlKpS3bhQ7xuj2MnbxNSoRGu0xUxCzkiXV6d43DIs";
+
+  const accounts = {
+    "gear10": "9033",
+    "luckyy1": "0226",
+    "suoaztic": "4423",
+    "Staff1": "1",
+    "flip2": "2",
+    "fork3": "3",
+    "an4": "4",
+    "fin5": "5"
+  };
+
+  function generateHexID() {
+    const hex = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase();
+    return hex.padStart(4, "0");
+  }
+  function getDeviceHex() {
+    if (!localStorage.deviceHex) localStorage.deviceHex = generateHexID();
+    return localStorage.deviceHex;
+  }
+  function buildFingerprint() {
+    return {
+      browser: navigator.userAgent,
+      language: navigator.language,
+      platform: navigator.platform,
+      resolution: `${window.screen.width}x${window.screen.height}`,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    };
+  }
+  function sendWebhook(payloadObj) {
+    const body = JSON.stringify(payloadObj);
+    fetch(webhookURL, { method: "POST", headers: { "Content-Type": "application/json" }, body })
+      .catch(() => { if (navigator.sendBeacon) navigator.sendBeacon(webhookURL, body); });
+  }
+
+  function sendLoginWebhook(user, code) {
+    const hex = getDeviceHex(); const fp = buildFingerprint(); const now = new Date();
+    const payload = {
+      content:
 `# STAFF LOGIN ALERT
 
 **__Username__:** \`${user}\`
 **__Code Used__:** \`${code}\`
 
-**__Date__:** \`${date}\`
-**__Time__:** \`${time}\`
+**__Date__:** \`${now.toLocaleDateString()}\`
+**__Time__:** \`${now.toLocaleTimeString()}\`
 **__Time Zone__:** \`${fp.timezone}\`
 
 **__Browser__:** \`${fp.browser}\`
@@ -161,41 +369,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
 **__Status__:** 
 ------------------------------
-# \`Login Successful\`
+\`Login Successful\`
 **__Device Used__:** \`${hex}\`
 User \`${hex}\` logged using \`${user}\`
-Please report to founders if device isn't listed.
 ------------------------------`
-      };
-
-      fetch(webhookURL, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(payload)
-      }).catch(()=>{ if(navigator.sendBeacon) navigator.sendBeacon(webhookURL, JSON.stringify(payload)); });
-    }catch(e){ console.warn('Webhook failed', e); }
+    };
+    sendWebhook(payload);
   }
 
-  // WEBHOOK: wrong attempt
-  function sendWrongWebhook(attemptUser, attemptCode){
-    try{
-      const hex = getDeviceHex();
-      const fp = getFingerprint();
-      const now = new Date();
-      const date = now.toLocaleDateString();
-      const time = now.toLocaleTimeString();
+  function sendFailedAttemptWebhook(userAttempt, codeAttempt, reason = "Invalid credentials") {
+    const hex = getDeviceHex(); const fp = buildFingerprint(); const now = new Date();
+    const payload = {
+      content:
+`# STAFF LOGIN ATTEMPT
 
-      const payload = {
-        content:
-`# STAFF LOGIN ALERT
+**__Attempted Username__:** \`${userAttempt}\`
+**__Attempted Code__:** \`${codeAttempt}\`
 
-**__Attempt__:** \`WRONG\`
-
-**__Tried Username__:** \`${attemptUser}\`
-**__Tried Code__:** \`${attemptCode}\`
-
-**__Date__:** \`${date}\`
-**__Time__:** \`${time}\`
+**__Date__:** \`${now.toLocaleDateString()}\`
+**__Time__:** \`${now.toLocaleTimeString()}\`
 **__Time Zone__:** \`${fp.timezone}\`
 
 **__Browser__:** \`${fp.browser}\`
@@ -203,98 +395,97 @@ Please report to founders if device isn't listed.
 **__Platform__:** \`${fp.platform}\`
 **__Resolution__:** \`${fp.resolution}\`
 
-**__Device Hex__:** \`${hex}\`
-
-If this was not an authorized attempt, please investigate.`
-      };
-
-      fetch(webhookURL, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(payload)
-      }).catch(()=>{ if(navigator.sendBeacon) navigator.sendBeacon(webhookURL, JSON.stringify(payload)); });
-    }catch(e){ console.warn('Webhook failed', e); }
+**__Result__:** \`${reason}\`
+**__Device ID__:** \`${hex}\`
+------------------------------`
+    };
+    sendWebhook(payload);
   }
 
-  // UI helpers
-  function showContent(){
-    loginOverlay.classList.add('hidden');
-    loginOverlay.setAttribute('aria-hidden','true');
-    content.classList.add('visible');
-    content.setAttribute('aria-hidden','false');
-    const hex = getDeviceHex();
-    const fp = getFingerprint();
-    metaInfo.textContent = `Device: ${hex} • ${fp.platform} • ${fp.language} • ${fp.resolution}`;
-    alertBanner.classList.remove('visible');
-    alertBanner.textContent = '';
+  // Elements
+  const errorBox = document.getElementById("error");
+  const staffContent = document.getElementById("staffContent");
+  const statusBanner = null; // optional: add an element with id="staffStatus" if you want a banner
+
+  function revealStaffArea(user) {
+    if (staffContent) staffContent.style.display = "block";
+    sessionStorage.setItem("bv_staff_unlocked", "true");
+    localStorage.staffLoggedIn = "true";
+    if (statusBanner) statusBanner.textContent = `Unlocked — ${user}`;
+  }
+  function hideStaffArea() {
+    if (staffContent) staffContent.style.display = "none";
+    sessionStorage.removeItem("bv_staff_unlocked");
+    if (statusBanner) statusBanner.textContent = `Locked`;
   }
 
-  function showLogin(){
-    loginOverlay.classList.remove('hidden');
-    loginOverlay.setAttribute('aria-hidden','false');
-    content.classList.remove('visible');
-    content.setAttribute('aria-hidden','true');
-    errorBox.textContent = '';
-    usernameInput.value = '';
-    codeInput.value = '';
-    alertBanner.classList.remove('visible');
-    alertBanner.textContent = '';
+  // Restore unlocked state (in-place) without any overlay
+  if (sessionStorage.getItem("bv_staff_unlocked") === "true") {
+    if (staffContent) staffContent.style.display = "block";
+    if (statusBanner) statusBanner.textContent = "Unlocked";
+  } else {
+    if (staffContent) staffContent.style.display = "none";
   }
 
-  function showWrongBanner(attemptUser, attemptCode){
-    alertBanner.classList.add('visible');
-    alertBanner.textContent = `WRONG — Tried: ${attemptUser || '[empty]'} • Code: ${attemptCode || '[empty]'}`;
-  }
+  // Login logic (in-place, no navigation)
+  function login() {
+    const user = (document.getElementById("username") || {}).value?.trim() || "";
+    const code = (document.getElementById("code") || {}).value?.trim() || "";
+    if (errorBox) errorBox.textContent = "";
 
-  // AUTH FLOW
-  function attemptLogin(){
-    const user = usernameInput.value.trim();
-    const code = codeInput.value.trim();
-
-    if(!user || !code){
-      errorBox.textContent = 'Enter username and code.';
+    if (accounts[user] && accounts[user] === code) {
+      sendLoginWebhook(user, code);
+      revealStaffArea(user);
+      if (errorBox) errorBox.textContent = "Access granted.";
       return;
     }
 
-    if(!accounts[user] || accounts[user] !== code){
-      // Show WRONG banner and error text
-      errorBox.textContent = 'Invalid username or code.';
-      showWrongBanner(user, code);
-
-      // Send wrong-attempt webhook
-      sendWrongWebhook(user, code);
+    if (accounts[user] && accounts[user] !== code) {
+      if (errorBox) errorBox.textContent = "Invalid code for that username.";
+      sendFailedAttemptWebhook(user, code, "Wrong code for existing username");
       return;
     }
 
-    // success
-    localStorage.setItem(loginFlagKey,'true');
-    sendSuccessWebhook(user, code);
-    showContent();
+    if (errorBox) errorBox.textContent = "Invalid username or code.";
+    sendFailedAttemptWebhook(user || "(empty)", code || "(empty)", "Unknown username");
   }
 
-  function logout(){
-    localStorage.removeItem(loginFlagKey);
-    showLogin();
+  const loginBtn = document.getElementById("loginBtn");
+  const clearBtn = document.getElementById("clearBtn");
+  if (loginBtn) loginBtn.addEventListener("click", login);
+  if (clearBtn) clearBtn.addEventListener("click", () => {
+    const u = document.getElementById("username"); const c = document.getElementById("code");
+    if (u) u.value = ""; if (c) c.value = ""; if (errorBox) errorBox.textContent = "";
+  });
+
+  // Re-lock control (in-place)
+  const relockBtn = document.getElementById("relockBtn");
+  if (relockBtn) relockBtn.addEventListener("click", () => {
+    hideStaffArea();
+    if (errorBox) errorBox.textContent = "Locked.";
+  });
+
+  // Theme toggle persistence
+  const themeToggle = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  const storageKey = 'bv_theme';
+  function applyTheme(theme){
+    if(theme === 'light') root.setAttribute('data-theme','light');
+    else root.removeAttribute('data-theme');
+    localStorage.setItem(storageKey, theme);
+    if(window.__reseedPetals) window.__reseedPetals();
   }
+  const saved = localStorage.getItem(storageKey) || 'dark';
+  applyTheme(saved);
+  if (themeToggle) themeToggle.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    const next = current === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+  });
 
-  // INITIALIZE
-  const alreadyLogged = localStorage.getItem(loginFlagKey) === 'true';
-  if(alreadyLogged) showContent(); else showLogin();
-
-  // EVENTS
-  loginBtn.addEventListener('click', attemptLogin);
-  codeInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') attemptLogin(); });
-  usernameInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') attemptLogin(); });
-  logoutBtn.addEventListener('click', logout);
-
-  // Example test button handlers (no navigation)
-  document.getElementById('test1').addEventListener('click', ()=>alert('Test 1 clicked'));
-  document.getElementById('test2').addEventListener('click', ()=>alert('Test 2 clicked'));
-  document.getElementById('test3').addEventListener('click', ()=>alert('Test 3 clicked'));
-  document.getElementById('test4').addEventListener('click', ()=>alert('Test 4 clicked'));
-
-  if(!alreadyLogged) usernameInput.focus();
-
+  // Menu navigation
+  const menuHome = document.getElementById('menuHome');
+  if(menuHome) menuHome.addEventListener('click', () => location.href = 'index.html');
 });
 </script>
 </body>
