@@ -22,14 +22,43 @@
     background:var(--bg);
     color:#e9e6ef;
     overflow-x:hidden;
+    position:relative;
   }
 
+  /* OUTSIDE PETAL LAYER */
+  .petal-layer{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:0;
+  }
+
+  .petal{
+    position:absolute;
+    width:36px;
+    height:56px;
+    border-radius:50% 50% 40% 60% / 60% 60% 40% 40%;
+    background:linear-gradient(135deg, rgba(30,30,30,0.95), rgba(18,18,18,0.85) 60%, rgba(60,60,60,0.6));
+    opacity:0.95;
+    filter:drop-shadow(0 6px 18px rgba(0,0,0,0.6));
+    animation:petalFloat 3s forwards;
+  }
+
+  @keyframes petalFloat{
+    0%{ transform:translateY(0) rotate(0deg); opacity:1; }
+    100%{ transform:translateY(-200px) rotate(120deg); opacity:0; }
+  }
+
+  /* MAIN CARD */
   .wrap{
     min-height:100vh;
     display:flex;
     align-items:center;
     justify-content:center;
     padding:40px;
+    position:relative;
+    z-index:2;
   }
 
   .card{
@@ -41,7 +70,6 @@
     box-shadow:0 10px 40px rgba(0,0,0,0.7);
     display:grid;
     grid-template-columns:1fr 280px;
-    position:relative;
     overflow:hidden;
   }
 
@@ -50,7 +78,6 @@
     display:flex;
     flex-direction:column;
     gap:18px;
-    z-index:2;
   }
 
   .sidebar{
@@ -139,55 +166,32 @@
     flex:1;
     text-align:center;
   }
-
-  /* Petal system */
-  .petal-layer{
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    overflow:hidden;
-    z-index:1;
-  }
-
-  .petal{
-    position:absolute;
-    width:36px;
-    height:56px;
-    border-radius:50% 50% 40% 60% / 60% 60% 40% 40%;
-    background:linear-gradient(135deg, rgba(30,30,30,0.95), rgba(18,18,18,0.85) 60%, rgba(60,60,60,0.6));
-    opacity:0.95;
-    filter:drop-shadow(0 6px 18px rgba(0,0,0,0.6));
-    animation:petalFloat 3s forwards;
-  }
-
-  @keyframes petalFloat{
-    0%{ transform:translateY(0) rotate(0deg); opacity:1; }
-    100%{ transform:translateY(-200px) rotate(120deg); opacity:0; }
-  }
 </style>
 </head>
 
 <body>
+
+<!-- OUTSIDE PETALS -->
+<div class="petal-layer" id="petalLayer"></div>
+
 <div class="wrap">
   <div class="card" id="cardRoot">
 
     <div class="main">
       <h2>Staff Application</h2>
-      <p style="color:var(--muted);">Apply to join the staff team. Complete all fields and be honest — leadership reviews every submission.</p>
+      <p style="color:var(--muted);">Apply to join the staff team. Complete all fields honestly — leadership reviews every submission.</p>
 
       <label>Discord Tag</label>
       <input placeholder="Username#1234">
-      <small style="color:var(--muted);">Provide the exact tag so we can verify your account.</small>
 
       <label>Age</label>
       <input placeholder="Your age">
-      <small style="color:var(--muted);">Applicants must meet the minimum age requirement for staff roles.</small>
 
       <label>Timezone</label>
       <input placeholder="e.g., UTC-5 / America/Chicago">
 
       <label>Moderation / Staff Experience</label>
-      <textarea placeholder="Describe previous moderation, community management, or relevant experience"></textarea>
+      <textarea placeholder="Describe previous moderation or community management experience"></textarea>
 
       <label>Role applying for</label>
       <div class="radio-group">
@@ -207,7 +211,7 @@
       <input placeholder="Discord tags or links to previous communities">
 
       <div style="margin-top:10px;">
-        <label><input type="checkbox"> I have read and agree to follow the community and staff rules</label>
+        <label><input type="checkbox"> I agree to follow all community and staff rules</label>
       </div>
 
       <div style="margin-top:14px; display:flex; gap:10px;">
@@ -216,7 +220,7 @@
       </div>
 
       <div class="footer">
-        By submitting you confirm the information is accurate to the best of your knowledge.
+        By submitting you confirm the information is accurate.
       </div>
 
       <div style="margin-top:20px;">
@@ -233,30 +237,46 @@
 
       <div>
         <h3>What we look for</h3>
-        <p>Reliability, clear communication, fair judgment, and a willingness to learn. Experience is valued but not required for every role.</p>
+        <p>Reliability, communication, fairness, and willingness to learn.</p>
       </div>
 
       <div>
         <h3>Process</h3>
-        <p>Applications are reviewed by leadership. If selected, you'll be invited to an interview and a short probation period. Expect a response within 7–14 days.</p>
+        <p>Leadership reviews applications. Expect a response within 7–14 days.</p>
       </div>
 
       <div>
         <h3>Privacy</h3>
-        <p>Application details are visible only to leadership and senior staff. Sensitive incidents are handled through private channels.</p>
+        <p>Your application is visible only to leadership and senior staff.</p>
       </div>
 
       <div>
         <h3>Need help?</h3>
-        <p>Contact leadership in the staff channel or message a senior staff member directly.</p>
+        <p>Message leadership or a senior staff member directly.</p>
       </div>
     </div>
-
-    <div class="petal-layer" id="petalLayer"></div>
 
   </div>
 </div>
 
 <script>
 /* Velvet Petal System */
-const layer = document.getElementById("petalLayer
+const layer = document.getElementById("petalLayer");
+
+function spawnPetal(x,y){
+  const p = document.createElement("div");
+  p.className="petal";
+  p.style.left = x+"px";
+  p.style.top = y+"px";
+  layer.appendChild(p);
+  setTimeout(()=>p.remove(),3000);
+}
+
+document.addEventListener("click",e=>{
+  const rect = layer.getBoundingClientRect();
+  spawnPetal(e.clientX - rect.left, e.clientY - rect.top);
+});
+</script>
+
+</body>
+</html>
