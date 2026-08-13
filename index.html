@@ -9,36 +9,34 @@
 
 <style>
   :root{
-    /* Light (default) palette - black & white focused */
-    --bg-top: #f3f4f6;        /* soft light grey top */
-    --bg-bottom: #e6e7ea;     /* soft light grey bottom */
-    --panel-bg: rgba(255,255,255,0.95);
-    --muted: #6f7782;
-    --accent: #111111;        /* primary text / accent in B/W mode */
-    --velvet-black: #050406;  /* black velvet petals */
+    /* DARK (default) */
+    --bg-top: #050506;
+    --bg-bottom: #0b0b0d;
+    --panel-bg: rgba(6,6,8,0.92);
+    --muted: #9aa4b2;
+    --accent: #ffffff;
+    --glass: rgba(255,255,255,0.03);
+    --shadow: rgba(0,0,0,0.6);
     --menu-w:320px;
     --radius:14px;
+  }
+
+  /* LIGHT overrides */
+  :root[data-theme="light"]{
+    --bg-top: #f3f4f6;
+    --bg-bottom: #e6e7ea;
+    --panel-bg: rgba(255,255,255,0.95);
+    --muted: #6f7782;
+    --accent: #0b0f14;
     --glass: rgba(0,0,0,0.04);
     --shadow: rgba(11,15,20,0.06);
   }
 
-  /* Dark mode overrides */
-  :root[data-theme="dark"]{
-    --bg-top: #0b0b0c;
-    --bg-bottom: #060607;
-    --panel-bg: rgba(6,6,8,0.85);
-    --muted: #9aa4b2;
-    --accent: #ffffff;
-    --velvet-black: #000000;
-    --glass: rgba(255,255,255,0.03);
-    --shadow: rgba(0,0,0,0.45);
-  }
-
-  /* Prevent page scrollbars */
+  /* Page basics */
   html,body{
     height:100%;
     margin:0;
-    overflow:hidden; /* page-level scroll prevented */
+    overflow:hidden; /* prevent page scrollbars */
     background:linear-gradient(180deg,var(--bg-top) 0%, var(--bg-bottom) 100%);
     color:var(--accent);
     font-family:Inter,system-ui,Arial,sans-serif;
@@ -47,7 +45,7 @@
 
   .app{display:flex;height:100vh;align-items:stretch;min-height:0}
 
-  /* Left menu (clean, bright buttons) */
+  /* Left menu */
   nav.menu{
     width:var(--menu-w);
     min-width:var(--menu-w);
@@ -65,66 +63,60 @@
   .brand{display:flex;align-items:center;gap:12px;margin-bottom:6px}
   .logo{
     width:68px;height:68px;border-radius:12px;
-    background:linear-gradient(135deg, #dcdcdc, #bfbfbf);
+    background:linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
     display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--accent);font-family:'Press Start 2P',cursive;font-size:16px;
-    box-shadow:0 8px 24px rgba(0,0,0,0.06)
+    box-shadow:0 8px 24px rgba(0,0,0,0.12)
   }
   .brand h1{font-family:'Press Start 2P',cursive;font-size:12px;margin:0;line-height:1;color:var(--accent)}
   .brand p{margin:0;color:var(--muted);font-size:11px}
 
-  /* Buttons: bright, single-line, with description underneath */
+  /* Menu buttons (bright, single-line) */
   .menu-list{display:flex;flex-direction:column;gap:10px;margin-top:6px}
   .menu-item{
-    display:block;border-radius:12px;padding:12px 14px;border:1px solid var(--glass);
-    background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.96));
+    display:block;border-radius:12px;padding:14px 16px;border:1px solid var(--glass);
+    background:transparent;
     cursor:pointer;user-select:none;transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
     color:var(--accent);font-weight:800;font-size:14px;text-decoration:none;
   }
-  :root[data-theme="dark"] .menu-item{
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  }
   .menu-item:hover{ transform:translateX(6px); box-shadow:0 14px 30px var(--shadow) }
   .menu-item.active{
-    background:linear-gradient(90deg, rgba(0,0,0,0.06), rgba(0,0,0,0.02));
-    color:var(--accent);
-    box-shadow:0 18px 60px rgba(0,0,0,0.06);
+    background:linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    box-shadow:0 18px 60px rgba(0,0,0,0.12);
     transform:none;
   }
 
   .menu-label{display:block}
   .menu-sub{color:var(--muted);font-size:12px;margin-top:8px;padding-left:6px}
 
-  /* Description area under active button (large, decorative) */
+  /* Description area under active button */
   .menu-desc-wrap{margin-top:6px;padding:14px;border-radius:12px;background:var(--panel-bg);border:1px solid var(--glass);color:var(--muted);font-size:13px;line-height:1.45}
   .menu-desc-title{font-weight:800;color:var(--accent);margin-bottom:6px}
   .menu-desc-text{color:var(--muted)}
 
   .menu-footer{margin-top:auto;font-size:11px;color:var(--muted);display:flex;flex-direction:column;gap:8px}
   .small-cta{display:inline-block;padding:10px 12px;border-radius:10px;background:transparent;border:1px solid var(--glass);color:var(--muted);text-decoration:none;font-weight:700;font-size:12px}
-  .small-cta:hover{background:rgba(0,0,0,0.02);color:var(--accent)}
+  .small-cta:hover{background:rgba(255,255,255,0.02);color:var(--accent)}
 
   /* Theme toggle */
   .theme-toggle{
     display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;border:1px solid var(--glass);background:transparent;color:var(--muted);font-weight:700;font-size:13px;cursor:pointer;
   }
-  .theme-toggle .switch{
-    width:44px;height:24px;border-radius:999px;background:linear-gradient(90deg,#fff,#eee);border:1px solid rgba(0,0,0,0.06);position:relative;
+  .theme-toggle .label{min-width:120px;text-align:left}
+  .theme-toggle .mode-dot{
+    width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 6px 18px rgba(0,0,0,0.2)
   }
-  .theme-toggle .knob{
-    position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#111;transition:left .18s ease, background .18s ease;
-  }
-  :root[data-theme="dark"] .theme-toggle .knob{ left:22px; background:#fff; }
+  :root[data-theme="light"] .theme-toggle .mode-dot{ background:var(--accent) }
 
   /* Main content */
   main.content{
     position:relative;flex:1;overflow:hidden;display:flex;flex-direction:column;
   }
 
-  /* Canvas background container (fills main area) */
+  /* Canvas background container */
   .bg-wrap{position:absolute;inset:0;z-index:0;pointer-events:none}
   canvas#bgCanvas{width:100%;height:100%;display:block}
 
-  /* Foreground content area scrolls internally (prevents page scroll) */
+  /* Foreground content area scrolls internally */
   .foreground{position:relative;z-index:2;padding:40px;display:flex;gap:28px;align-items:flex-start;height:100%;box-sizing:border-box;overflow:auto}
   .hero{
     flex:1;max-width:980px;background:var(--panel-bg);border-radius:14px;padding:28px;border:1px solid var(--glass);box-shadow:0 18px 60px var(--shadow)
@@ -193,18 +185,16 @@
         </div>
       </div>
 
-      <!-- Description area: shows the active button's short description -->
+      <!-- Description area -->
       <div id="menuDescription" class="menu-desc-wrap" aria-live="polite">
         <div class="menu-desc-title">Rules</div>
         <div class="menu-desc-text">Clear, fair, and enforced. Read the server rules and enforcement tiers. Follow them to keep the community safe and fun.</div>
       </div>
 
       <div class="menu-footer" aria-hidden="false">
-        <button id="themeToggle" class="theme-toggle" aria-pressed="false" title="Toggle dark / light">
-          <div style="display:flex;align-items:center;gap:8px">
-            <div class="switch" aria-hidden="true"><div class="knob"></div></div>
-            <div style="min-width:120px;text-align:left">Dark mode</div>
-          </div>
+        <button id="themeToggle" class="theme-toggle" aria-pressed="false" title="Toggle theme">
+          <div class="mode-dot" aria-hidden="true"></div>
+          <div class="label">Toggle Light / Dark</div>
         </button>
 
         <a class="small-cta" href="discord.html">Join Discord</a>
@@ -222,7 +212,7 @@
       <div class="foreground">
         <section class="hero" aria-labelledby="heroTitle">
           <h2 id="heroTitle">Welcome to Black Velvet Clan</h2>
-          <p>Black & white theme with a velvet-flower background. Use the menu on the left to navigate. Click anywhere on the background to create a black-velvet bloom — petals unfurl in a soft warm pulse.</p>
+          <p>Black-first aesthetic with a velvet-flower background. Use the menu on the left to navigate. Click anywhere on the background to create a black-velvet bloom — petals unfurl in a soft pulse.</p>
 
           <div class="quick-links" role="navigation" aria-label="Quick links">
             <a class="quick" href="rules.html">Read Rules</a>
@@ -259,16 +249,10 @@
   </div>
 
 <script>
-/* Canvas: black velvet flower theme on a pretty grey background
-   - drifting black petals
-   - on pointerdown: bloom of black petals + soft warm pulse
-   - pointermove creates subtle parallax attraction
-*/
-
+/* Canvas: black velvet petals on dark background (or inverted in light mode) */
 (() => {
   const canvas = document.getElementById('bgCanvas');
   const ctx = canvas.getContext('2d', { alpha: true });
-
   let DPR = Math.max(1, window.devicePixelRatio || 1);
   let w = canvas.width = innerWidth;
   let h = canvas.height = innerHeight;
@@ -280,15 +264,11 @@
 
   function rand(min, max){ return Math.random() * (max - min) + min; }
 
-  // Petal particles (black velvet)
   const petals = [];
-  const PETAL_COLORS = [
-    'rgba(5,4,6,0.98)',   // deep black velvet
-    'rgba(18,10,12,0.88)',// near-black maroon tint
-    'rgba(36,18,20,0.75)' // subtle highlight
-  ];
+  const PETAL_COLORS_DARK = ['rgba(0,0,0,0.98)','rgba(18,12,12,0.88)','rgba(36,20,20,0.75)'];
+  const PETAL_COLORS_LIGHT = ['rgba(20,20,20,0.98)','rgba(60,60,60,0.88)','rgba(90,90,90,0.75)'];
 
-  function createPetal(x = rand(0,w), y = rand(0,h)){
+  function createPetal(x = rand(0,w), y = rand(0,h), colors = PETAL_COLORS_DARK){
     return {
       x, y,
       vx: rand(-0.12,0.12),
@@ -296,21 +276,20 @@
       rot: rand(0,Math.PI*2),
       vr: rand(-0.008,0.008),
       size: rand(6,18),
-      color: PETAL_COLORS[Math.floor(Math.random()*PETAL_COLORS.length)],
+      color: colors[Math.floor(Math.random()*colors.length)],
       life: rand(700,1600),
       age: 0
     };
   }
 
-  const BASE_COUNT = Math.round((w*h)/140000);
+  let BASE_COUNT = Math.round((w*h)/140000);
   for(let i=0;i<BASE_COUNT;i++) petals.push(createPetal());
 
-  // Blooms (soft warm pulse + petal burst)
   const blooms = [];
+  const pointer = { x: w/2, y: h/2, px: w/2, py: h/2 };
 
-  function spawnBloom(x,y){
+  function spawnBloom(x,y, colors){
     blooms.push({ x, y, t:0, max: Math.max(w,h) * 0.45 });
-
     const count = 18 + Math.floor(rand(0,12));
     for(let i=0;i<count;i++){
       const angle = Math.PI*2 * Math.random();
@@ -322,16 +301,13 @@
         rot: rand(0,Math.PI*2),
         vr: rand(-0.06,0.06),
         size: rand(6,14),
-        color: PETAL_COLORS[Math.floor(Math.random()*PETAL_COLORS.length)],
+        color: colors[Math.floor(Math.random()*colors.length)],
         life: rand(60,120),
         age: 0
       };
       petals.push(p);
     }
   }
-
-  // pointer
-  const pointer = { x: w/2, y: h/2, px: w/2, py: h/2 };
 
   function resize(){
     w = canvas.width = innerWidth;
@@ -353,7 +329,9 @@
 
   function onPointer(e){
     const pos = getPointerPos(e);
-    spawnBloom(pos.x, pos.y);
+    const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    const colors = theme === 'light' ? PETAL_COLORS_LIGHT : PETAL_COLORS_DARK;
+    spawnBloom(pos.x, pos.y, colors);
   }
   window.addEventListener('pointerdown', onPointer);
   window.addEventListener('touchstart', onPointer, {passive:true});
@@ -364,7 +342,6 @@
     pointer.y = pos.y;
   });
 
-  // animation
   let last = performance.now();
   function tick(now){
     const dt = Math.min(40, now - last) / 16.666;
@@ -375,21 +352,16 @@
 
     ctx.clearRect(0,0,w,h);
 
-    // soft grey background (pretty)
+    // background gradient depends on theme via CSS variables; draw subtle overlay
+    const bgTop = getComputedStyle(document.documentElement).getPropertyValue('--bg-top').trim();
+    const bgBottom = getComputedStyle(document.documentElement).getPropertyValue('--bg-bottom').trim();
     const g = ctx.createLinearGradient(0,0,0,h);
-    g.addColorStop(0, 'rgba(243,244,246,1)');
-    g.addColorStop(1, 'rgba(230,231,234,1)');
+    g.addColorStop(0, bgTop || '#050506');
+    g.addColorStop(1, bgBottom || '#0b0b0d');
     ctx.fillStyle = g;
     ctx.fillRect(0,0,w,h);
 
-    // subtle radial depth
-    const rg = ctx.createRadialGradient(w*0.5, h*0.45, Math.min(w,h)*0.12, w*0.5, h*0.45, Math.max(w,h)*0.9);
-    rg.addColorStop(0, 'rgba(255,255,255,0)');
-    rg.addColorStop(1, 'rgba(0,0,0,0.06)');
-    ctx.fillStyle = rg;
-    ctx.fillRect(0,0,w,h);
-
-    // blooms (warm soft pulse)
+    // blooms
     for(let i=blooms.length-1;i>=0;i--){
       const b = blooms[i];
       b.t += dt;
@@ -398,14 +370,12 @@
       const alpha = Math.max(0, 0.9 * (1 - progress));
       if(alpha <= 0.01){ blooms.splice(i,1); continue; }
 
-      // outer warm ring (very soft)
       ctx.beginPath();
       ctx.arc(b.x, b.y, radius, 0, Math.PI*2);
       ctx.strokeStyle = `rgba(0,0,0,${alpha*0.06})`;
       ctx.lineWidth = 2 + (1 - progress) * 6;
       ctx.stroke();
 
-      // soft center glow (very subtle)
       ctx.beginPath();
       ctx.arc(b.x, b.y, radius * 0.28, 0, Math.PI*2);
       ctx.fillStyle = `rgba(0,0,0,${alpha*0.02})`;
@@ -415,7 +385,6 @@
     // petals
     for(let i=petals.length-1;i>=0;i--){
       const p = petals[i];
-      // subtle attraction to pointer for parallax
       const dx = pointer.px - p.x;
       const dy = pointer.py - p.y;
       const dist = Math.max(20, Math.hypot(dx,dy));
@@ -437,7 +406,6 @@
         continue;
       }
 
-      // draw petal as rotated ellipse with velvet shading
       ctx.save();
       ctx.translate(p.x, p.y);
       ctx.rotate(p.rot);
@@ -450,7 +418,6 @@
       ctx.ellipse(0, 0, p.size, p.size * 0.6, 0, 0, Math.PI*2);
       ctx.fill();
 
-      // tiny sheen
       ctx.beginPath();
       ctx.fillStyle = 'rgba(255,255,255,0.02)';
       ctx.ellipse(-p.size*0.18, -p.size*0.12, p.size*0.22, p.size*0.1, 0, 0, Math.PI*2);
@@ -460,18 +427,46 @@
       ctx.globalAlpha = 1;
     }
 
-    // faint texture lines for subtle elegance
-    ctx.fillStyle = 'rgba(11,15,20,0.02)';
+    // faint texture lines
+    ctx.fillStyle = 'rgba(0,0,0,0.03)';
     for(let y=0;y<h;y+=36) ctx.fillRect(0,y,w,0.6);
 
     requestAnimationFrame(tick);
   }
 
   requestAnimationFrame(tick);
+
+  // helper to create petals with current theme colors
+  function createPetal(){
+    const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    const colors = theme === 'light' ? ['rgba(20,20,20,0.98)','rgba(60,60,60,0.88)','rgba(90,90,90,0.75)'] : ['rgba(0,0,0,0.98)','rgba(18,12,12,0.88)','rgba(36,20,20,0.75)'];
+    return createPetalFromColors(colors);
+  }
+  function createPetalFromColors(colors){
+    return {
+      x: rand(0,w),
+      y: rand(0,h),
+      vx: rand(-0.12,0.12),
+      vy: rand(-0.03,0.08),
+      rot: rand(0,Math.PI*2),
+      vr: rand(-0.008,0.008),
+      size: rand(6,18),
+      color: colors[Math.floor(Math.random()*colors.length)],
+      life: rand(700,1600),
+      age: 0
+    };
+  }
+
+  // initialize petals properly after theme changes
+  window.__reseedPetals = function(){
+    petals.length = 0;
+    const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    const colors = theme === 'light' ? ['rgba(20,20,20,0.98)','rgba(60,60,60,0.88)','rgba(90,90,90,0.75)'] : ['rgba(0,0,0,0.98)','rgba(18,12,12,0.88)','rgba(36,20,20,0.75)'];
+    for(let i=0;i<BASE_COUNT;i++) petals.push(createPetalFromColors(colors));
+  };
 })();
 
-/* Menu interactions: show a short description under the active button and navigate,
-   plus theme toggle with persistence */
+/* Menu interactions + theme toggle with persistence and cross-page effect */
 (() => {
   const descriptions = {
     rules: { title: "Rules", text: "Clear, fair, and enforced. Read the server rules and enforcement tiers. Follow them to keep the community safe and fun." },
@@ -513,30 +508,32 @@
     });
   });
 
-  // Theme toggle
+  // Theme toggle logic
   const themeToggle = document.getElementById('themeToggle');
   const root = document.documentElement;
   const storageKey = 'bv_theme';
 
   function applyTheme(theme){
-    if(theme === 'dark') root.setAttribute('data-theme','dark');
+    if(theme === 'light') root.setAttribute('data-theme','light');
     else root.removeAttribute('data-theme');
-    themeToggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
-    themeToggle.querySelector('div > div').textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
+    themeToggle.setAttribute('aria-pressed', theme === 'dark' ? 'false' : 'true');
+    // store for other pages to read
+    localStorage.setItem(storageKey, theme);
+    // reseed petals to match new theme
+    if(window.__reseedPetals) window.__reseedPetals();
   }
 
-  // load saved theme
-  const saved = localStorage.getItem(storageKey) || 'light';
+  // load saved theme (default dark)
+  const saved = localStorage.getItem(storageKey) || 'dark';
   applyTheme(saved);
 
   themeToggle.addEventListener('click', () => {
-    const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-    const next = current === 'dark' ? 'light' : 'dark';
+    const current = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    const next = current === 'light' ? 'dark' : 'light';
     applyTheme(next);
-    localStorage.setItem(storageKey, next);
   });
 
-  // initial
+  // initial active
   setActive('rules');
 })();
 </script>
