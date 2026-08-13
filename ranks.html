@@ -252,8 +252,16 @@
   .sidebar h3{ margin:0; font-size:15px; color:var(--text); }
   .sidebar p{ margin:0; color:var(--muted); font-size:13px; line-height:1.45; }
 
-  .links{ display:flex; flex-direction:column; gap:10px; margin-top:6px; }
-  .links a{ color:var(--accent); text-decoration:none; font-weight:700; font-size:13px; }
+  .staff-block{
+    background:rgba(255,255,255,0.01);
+    border-radius:10px;
+    padding:12px;
+    border:1px solid rgba(255,255,255,0.02);
+  }
+
+  .staff-block h4{ margin:0 0 8px 0; font-size:14px; color:var(--accent); }
+  .staff-block ul{ margin:0; padding-left:18px; color:var(--muted); font-size:13px; }
+  .staff-block li{ margin-bottom:6px; }
 
   .footer-note{ color:var(--muted); font-size:13px; margin-top:6px; }
 
@@ -415,35 +423,51 @@
         </div>
       </div>
 
-      <!-- Sidebar -->
+      <!-- Sidebar: replaced links with actual staff members -->
       <aside class="sidebar" aria-label="Sidebar">
-        <div>
-          <h3>Quick Staff Reference</h3>
-          <p class="hint">Founders · Presidents · Admins · Mods · Helpers</p>
+        <div class="staff-block">
+          <h3>Founders</h3>
+          <ul>
+            <li><strong>Rin</strong></li>
+            <li><strong>suoaz</strong></li>
+          </ul>
         </div>
 
-        <div>
-          <h3>Staff Links</h3>
-          <div class="links">
-            <a href="#">Founder</a>
-            <a href="#">President</a>
-            <a href="#">Admin</a>
-            <a href="#">Mod</a>
-            <a href="#">Helper</a>
-          </div>
+        <div class="staff-block">
+          <h3>Presidents</h3>
+          <ul>
+            <li><strong>Gears</strong></li>
+            <li>N/A</li>
+          </ul>
         </div>
 
-        <div>
-          <h3>Quick Links</h3>
-          <div class="links">
-            <a href="staffapply.html">Apply for Staff</a>
-            <a href="#">Open Ticket</a>
-          </div>
+        <div class="staff-block">
+          <h3>Admins</h3>
+          <ul>
+            <li>N/A</li>
+            <li>N/A</li>
+          </ul>
+        </div>
+
+        <div class="staff-block">
+          <h3>Moderators</h3>
+          <ul>
+            <li>N/A</li>
+            <li>N/A</li>
+          </ul>
+        </div>
+
+        <div class="staff-block">
+          <h3>Helpers</h3>
+          <ul>
+            <li>N/A</li>
+            <li>N/A</li>
+          </ul>
         </div>
 
         <div>
           <h3>Notes</h3>
-          <p class="hint">Misrepresenting rank or authority is prohibited. Staff must follow the BV Code.</p>
+          <p class="hint">If you want avatars, titles, or contact links added for each staff member, tell me which ones and I’ll update the sidebar to include them.</p>
         </div>
       </aside>
 
