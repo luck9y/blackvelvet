@@ -9,13 +9,12 @@
 
 <style>
   :root{
-    --bg-1:#030308;
-    --bg-2:#0b0b10;
-    --muted:#aab6c4;
-    --accent:#6fc3ff;
-    --accent-2:#9ff3c9;
-    --rose:#ff6b6b;
-    --gold:#ffd166;
+    --bg-top:#e9eaec;        /* soft grey top */
+    --bg-bottom:#d6d7da;     /* soft grey bottom */
+    --muted:#6f7782;
+    --accent:#2f9cff;
+    --accent-2:#7be495;
+    --velvet-black: #050406; /* black velvet petals */
     --menu-w:320px;
     --radius:14px;
   }
@@ -25,68 +24,66 @@
     height:100%;
     margin:0;
     overflow:hidden; /* page-level scroll prevented */
-    background:linear-gradient(180deg,var(--bg-1) 0%, var(--bg-2) 100%);
-    color:#eaf2ff;
+    background:linear-gradient(180deg,var(--bg-top) 0%, var(--bg-bottom) 100%);
+    color:#0b0f14;
     font-family:Inter,system-ui,Arial,sans-serif;
     -webkit-font-smoothing:antialiased;
   }
 
   .app{display:flex;height:100vh;align-items:stretch;min-height:0}
 
-  /* Left menu (video-game style) */
+  /* Left menu (clean, bright buttons) */
   nav.menu{
     width:var(--menu-w);
     min-width:var(--menu-w);
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-right:1px solid rgba(255,255,255,0.03);
+    background:rgba(255,255,255,0.85);
+    border-right:1px solid rgba(11,15,20,0.06);
     padding:28px 22px;
     box-sizing:border-box;
     display:flex;
     flex-direction:column;
     gap:18px;
-    box-shadow: 0 12px 40px rgba(2,6,23,0.6);
+    box-shadow: 0 12px 40px rgba(2,6,23,0.06);
+    backdrop-filter: blur(6px);
   }
 
   .brand{display:flex;align-items:center;gap:12px;margin-bottom:6px}
   .logo{
     width:68px;height:68px;border-radius:12px;
     background:linear-gradient(135deg,var(--accent),#6fb8ff);
-    display:flex;align-items:center;justify-content:center;font-weight:800;color:#071022;font-family:'Press Start 2P',cursive;font-size:16px;box-shadow:0 10px 30px rgba(77,166,255,0.08)
+    display:flex;align-items:center;justify-content:center;font-weight:800;color:#071022;font-family:'Press Start 2P',cursive;font-size:16px;
+    box-shadow:0 8px 24px rgba(47,156,255,0.08)
   }
-  .brand h1{font-family:'Press Start 2P',cursive;font-size:12px;margin:0;line-height:1;color:#fff}
+  .brand h1{font-family:'Press Start 2P',cursive;font-size:12px;margin:0;line-height:1;color:#071022}
   .brand p{margin:0;color:var(--muted);font-size:11px}
 
-  /* Big, bright buttons (one-line) with description area underneath */
-  .menu-list{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+  /* Buttons: bright, single-line, with description underneath */
+  .menu-list{display:flex;flex-direction:column;gap:10px;margin-top:6px}
   .menu-item{
-    display:block;border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.04);
-    background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    display:block;border-radius:12px;padding:12px 14px;border:1px solid rgba(11,15,20,0.04);
+    background:linear-gradient(180deg, #ffffff, #f6f7f8);
     cursor:pointer;user-select:none;transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+    color:#071022;font-weight:800;font-size:14px;text-decoration:none;
   }
-  .menu-item:hover{ transform:translateX(6px); box-shadow:0 18px 40px rgba(0,0,0,0.6) }
+  .menu-item:hover{ transform:translateX(6px); box-shadow:0 14px 30px rgba(11,15,20,0.06) }
   .menu-item.active{
     background:linear-gradient(90deg,var(--accent),var(--accent-2));
     color:#071022;
-    box-shadow:0 18px 60px rgba(77,166,255,0.12);
+    box-shadow:0 18px 60px rgba(47,156,255,0.10);
     transform:none;
   }
 
-  .menu-row{display:flex;align-items:center;gap:12px}
-  .menu-icon{
-    width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
-    display:flex;align-items:center;justify-content:center;font-weight:800;color:#071022;font-family:Montserrat;font-size:14px;box-shadow:0 8px 30px rgba(0,0,0,0.45)
-  }
-  .menu-label{font-weight:800;font-size:14px}
-  .menu-sub{color:var(--muted);font-size:12px;margin-top:8px;padding-left:68px}
+  .menu-label{display:block}
+  .menu-sub{color:var(--muted);font-size:12px;margin-top:8px;padding-left:6px}
 
   /* Description area under active button (large, decorative) */
-  .menu-desc-wrap{margin-top:6px;padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.02);color:var(--muted);font-size:13px;line-height:1.45}
-  .menu-desc-title{font-weight:800;color:#fff;margin-bottom:6px}
+  .menu-desc-wrap{margin-top:6px;padding:14px;border-radius:12px;background:linear-gradient(180deg,#ffffff,#fbfbfc);border:1px solid rgba(11,15,20,0.04);color:var(--muted);font-size:13px;line-height:1.45}
+  .menu-desc-title{font-weight:800;color:#071022;margin-bottom:6px}
   .menu-desc-text{color:var(--muted)}
 
   .menu-footer{margin-top:auto;font-size:11px;color:var(--muted);display:flex;flex-direction:column;gap:8px}
-  .small-cta{display:inline-block;padding:10px 12px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted);text-decoration:none;font-weight:700;font-size:12px}
-  .small-cta:hover{background:rgba(255,255,255,0.02);color:#fff}
+  .small-cta{display:inline-block;padding:10px 12px;border-radius:10px;background:transparent;border:1px solid rgba(11,15,20,0.04);color:var(--muted);text-decoration:none;font-weight:700;font-size:12px}
+  .small-cta:hover{background:rgba(11,15,20,0.02);color:#071022}
 
   /* Main content */
   main.content{
@@ -100,20 +97,20 @@
   /* Foreground content area scrolls internally (prevents page scroll) */
   .foreground{position:relative;z-index:2;padding:40px;display:flex;gap:28px;align-items:flex-start;height:100%;box-sizing:border-box;overflow:auto}
   .hero{
-    flex:1;max-width:980px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:28px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 18px 60px rgba(2,6,23,0.6)
+    flex:1;max-width:980px;background:linear-gradient(180deg,#ffffff,#fbfbfc);border-radius:14px;padding:28px;border:1px solid rgba(11,15,20,0.04);box-shadow:0 18px 60px rgba(2,6,23,0.06)
   }
-  .hero h2{font-family:'Press Start 2P',cursive;font-size:18px;margin:0 0 12px 0}
+  .hero h2{font-family:'Press Start 2P',cursive;font-size:18px;margin:0 0 12px 0;color:#071022}
   .hero p{color:var(--muted);margin:0 0 18px 0;line-height:1.5}
 
   .quick-links{display:flex;flex-wrap:wrap;gap:12px}
   .quick{
-    padding:10px 14px;border-radius:10px;background:linear-gradient(90deg, rgba(77,166,255,0.08), rgba(123,228,149,0.06));color:#071022;font-weight:800;text-decoration:none;font-size:13px;border:1px solid rgba(255,255,255,0.02)
+    padding:10px 14px;border-radius:10px;background:linear-gradient(90deg, rgba(47,156,255,0.08), rgba(123,228,149,0.06));color:#071022;font-weight:800;text-decoration:none;font-size:13px;border:1px solid rgba(11,15,20,0.02)
   }
 
   .panel{
-    width:360px;min-width:260px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 12px 40px rgba(2,6,23,0.45)
+    width:360px;min-width:260px;background:linear-gradient(180deg,#ffffff,#fbfbfc);border-radius:12px;padding:18px;border:1px solid rgba(11,15,20,0.04);box-shadow:0 12px 40px rgba(2,6,23,0.05)
   }
-  .panel h3{margin:0 0 8px 0;font-size:14px}
+  .panel h3{margin:0 0 8px 0;font-size:14px;color:#071022}
   .panel p{color:var(--muted);font-size:13px;margin:0 0 12px 0}
 
   /* Footer small */
@@ -141,53 +138,28 @@
 
       <div class="menu-list" role="menu" aria-label="Navigation">
         <div class="menu-item active" data-key="rules" role="menuitem" tabindex="0">
-          <div class="menu-row">
-            <div class="menu-icon">R</div>
-            <div>
-              <div class="menu-label">Rules</div>
-              <div class="menu-sub">Server rules, enforcement tiers, and reporting.</div>
-            </div>
-          </div>
+          <div class="menu-label">Rules</div>
+          <div class="menu-sub">Server rules, enforcement tiers, and reporting.</div>
         </div>
 
         <div class="menu-item" data-key="ranks" role="menuitem" tabindex="0">
-          <div class="menu-row">
-            <div class="menu-icon">RK</div>
-            <div>
-              <div class="menu-label">Ranks</div>
-              <div class="menu-sub">Clan rank directory and tryout info.</div>
-            </div>
-          </div>
+          <div class="menu-label">Ranks</div>
+          <div class="menu-sub">Clan rank directory and tryout info.</div>
         </div>
 
         <div class="menu-item" data-key="staffapp" role="menuitem" tabindex="0">
-          <div class="menu-row">
-            <div class="menu-icon">AP</div>
-            <div>
-              <div class="menu-label">Staff Application</div>
-              <div class="menu-sub">Apply to join staff — leadership reviews submissions.</div>
-            </div>
-          </div>
+          <div class="menu-label">Staff Application</div>
+          <div class="menu-sub">Apply to join staff — leadership reviews submissions.</div>
         </div>
 
         <div class="menu-item" data-key="staffrules" role="menuitem" tabindex="0">
-          <div class="menu-row">
-            <div class="menu-icon">SR</div>
-            <div>
-              <div class="menu-label">Staff Rules</div>
-              <div class="menu-sub">Staff conduct, demotion, and removal policies.</div>
-            </div>
-          </div>
+          <div class="menu-label">Staff Rules</div>
+          <div class="menu-sub">Staff conduct, demotion, and removal policies.</div>
         </div>
 
         <div class="menu-item" data-key="info" role="menuitem" tabindex="0">
-          <div class="menu-row">
-            <div class="menu-icon">i</div>
-            <div>
-              <div class="menu-label">More Info</div>
-              <div class="menu-sub">Events, links, and community resources.</div>
-            </div>
-          </div>
+          <div class="menu-label">More Info</div>
+          <div class="menu-sub">Events, links, and community resources.</div>
         </div>
       </div>
 
@@ -213,7 +185,7 @@
       <div class="foreground">
         <section class="hero" aria-labelledby="heroTitle">
           <h2 id="heroTitle">Welcome to Black Velvet Clan</h2>
-          <p>Competitive, creative, and community-first. Use the menu on the left to navigate. Tap anywhere on the background to create a black-velvet flower bloom — petals and a warm red pulse will appear where you click.</p>
+          <p>Competitive, creative, and community-first. Use the menu on the left to navigate. Click anywhere on the background to create a black-velvet flower bloom — petals will unfurl in a soft warm pulse.</p>
 
           <div class="quick-links" role="navigation" aria-label="Quick links">
             <a class="quick" href="rules.html">Read Rules</a>
@@ -250,9 +222,9 @@
   </div>
 
 <script>
-/* Canvas: black velvet flower theme
-   - drifting dark petals
-   - on pointerdown: bloom of petals + warm red pulse
+/* Canvas: black velvet flower theme on a pretty grey background
+   - drifting black petals
+   - on pointerdown: bloom of black petals + warm soft pulse
    - pointermove creates subtle parallax attraction
 */
 
@@ -271,55 +243,51 @@
 
   function rand(min, max){ return Math.random() * (max - min) + min; }
 
-  // Petal particles
+  // Petal particles (black velvet)
   const petals = [];
   const PETAL_COLORS = [
-    'rgba(12,8,12,0.85)',   // deep black velvet
-    'rgba(28,8,18,0.75)',   // dark maroon tint
-    'rgba(60,12,30,0.6)'    // subtle highlight
+    'rgba(5,4,6,0.98)',   // deep black velvet
+    'rgba(18,10,12,0.88)',// near-black maroon tint
+    'rgba(36,18,20,0.75)' // subtle highlight
   ];
 
   function createPetal(x = rand(0,w), y = rand(0,h)){
     return {
       x, y,
-      vx: rand(-0.15,0.15),
-      vy: rand(-0.05,0.12),
+      vx: rand(-0.12,0.12),
+      vy: rand(-0.03,0.08),
       rot: rand(0,Math.PI*2),
-      vr: rand(-0.01,0.01),
+      vr: rand(-0.008,0.008),
       size: rand(6,18),
       color: PETAL_COLORS[Math.floor(Math.random()*PETAL_COLORS.length)],
-      life: rand(600,1400),
-      age: 0,
-      sway: rand(0.002,0.01)
+      life: rand(700,1600),
+      age: 0
     };
   }
 
-  const BASE_COUNT = Math.round((w*h)/120000);
+  const BASE_COUNT = Math.round((w*h)/140000);
   for(let i=0;i<BASE_COUNT;i++) petals.push(createPetal());
 
-  // Blooms (flower pulses)
+  // Blooms (soft warm pulse + petal burst)
   const blooms = [];
 
   function spawnBloom(x,y){
-    // central warm pulse
     blooms.push({ x, y, t:0, max: Math.max(w,h) * 0.45 });
 
-    // burst petals
     const count = 18 + Math.floor(rand(0,12));
     for(let i=0;i<count;i++){
-      const angle = Math.PI*2 * (i/count) + rand(-0.3,0.3);
-      const speed = rand(1.6,3.6);
+      const angle = Math.PI*2 * Math.random();
+      const speed = rand(1.2,3.2);
       const p = {
         x, y,
-        vx: Math.cos(angle) * speed + rand(-0.6,0.6),
-        vy: Math.sin(angle) * speed + rand(-0.6,0.6),
+        vx: Math.cos(angle) * speed + rand(-0.4,0.4),
+        vy: Math.sin(angle) * speed + rand(-0.4,0.4),
         rot: rand(0,Math.PI*2),
         vr: rand(-0.06,0.06),
         size: rand(6,14),
-        color: `rgba(255,${80+Math.floor(rand(0,80))},${80+Math.floor(rand(0,40))},0.98)`,
+        color: PETAL_COLORS[Math.floor(Math.random()*PETAL_COLORS.length)],
         life: rand(60,120),
-        age: 0,
-        sway: rand(0.01,0.04)
+        age: 0
       };
       petals.push(p);
     }
@@ -370,47 +338,47 @@
 
     ctx.clearRect(0,0,w,h);
 
-    // soft velvet background gradient
+    // soft grey background (pretty)
     const g = ctx.createLinearGradient(0,0,0,h);
-    g.addColorStop(0, 'rgba(6,6,10,0.45)');
-    g.addColorStop(1, 'rgba(3,3,6,0.75)');
+    g.addColorStop(0, 'rgba(233,234,236,1)');
+    g.addColorStop(1, 'rgba(214,215,218,1)');
     ctx.fillStyle = g;
     ctx.fillRect(0,0,w,h);
 
-    // subtle vignette radial
-    const rg = ctx.createRadialGradient(w*0.5, h*0.45, Math.min(w,h)*0.15, w*0.5, h*0.45, Math.max(w,h)*0.9);
-    rg.addColorStop(0, 'rgba(0,0,0,0)');
-    rg.addColorStop(1, 'rgba(0,0,0,0.45)');
+    // subtle radial depth
+    const rg = ctx.createRadialGradient(w*0.5, h*0.45, Math.min(w,h)*0.12, w*0.5, h*0.45, Math.max(w,h)*0.9);
+    rg.addColorStop(0, 'rgba(255,255,255,0)');
+    rg.addColorStop(1, 'rgba(0,0,0,0.06)');
     ctx.fillStyle = rg;
     ctx.fillRect(0,0,w,h);
 
-    // blooms (pulses)
+    // blooms (warm soft pulse)
     for(let i=blooms.length-1;i>=0;i--){
       const b = blooms[i];
       b.t += dt;
       const progress = b.t / 30;
       const radius = Math.min(b.max, progress * b.max);
-      const alpha = Math.max(0, 0.95 * (1 - progress));
+      const alpha = Math.max(0, 0.9 * (1 - progress));
       if(alpha <= 0.01){ blooms.splice(i,1); continue; }
 
-      // outer warm ring
+      // outer warm ring (very soft)
       ctx.beginPath();
       ctx.arc(b.x, b.y, radius, 0, Math.PI*2);
-      ctx.strokeStyle = `rgba(255,80,80,${alpha*0.9})`;
-      ctx.lineWidth = 2 + (1 - progress) * 8;
+      ctx.strokeStyle = `rgba(255,120,100,${alpha*0.12})`;
+      ctx.lineWidth = 2 + (1 - progress) * 6;
       ctx.stroke();
 
       // soft center glow
       ctx.beginPath();
-      ctx.arc(b.x, b.y, radius * 0.35, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(255,60,60,${alpha*0.06})`;
+      ctx.arc(b.x, b.y, radius * 0.28, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(255,90,80,${alpha*0.06})`;
       ctx.fill();
     }
 
     // petals
     for(let i=petals.length-1;i>=0;i--){
       const p = petals[i];
-      // attraction to pointer for subtle parallax
+      // subtle attraction to pointer for parallax
       const dx = pointer.px - p.x;
       const dy = pointer.py - p.y;
       const dist = Math.max(20, Math.hypot(dx,dy));
@@ -418,10 +386,9 @@
       p.vx += dx * force * 0.02 * dt;
       p.vy += dy * force * 0.02 * dt;
 
-      // sway rotation
       p.rot += p.vr * dt;
-      p.vx *= 0.992;
-      p.vy *= 0.992;
+      p.vx *= 0.993;
+      p.vy *= 0.993;
 
       p.x += p.vx * dt;
       p.y += p.vy * dt;
@@ -433,31 +400,31 @@
         continue;
       }
 
-      // draw petal as rotated ellipse with subtle sheen
+      // draw petal as rotated ellipse with velvet shading
       ctx.save();
       ctx.translate(p.x, p.y);
       ctx.rotate(p.rot);
       const grad = ctx.createLinearGradient(-p.size, -p.size*0.2, p.size, p.size*0.2);
       grad.addColorStop(0, p.color);
-      grad.addColorStop(1, 'rgba(20,10,20,0.02)');
+      grad.addColorStop(1, 'rgba(10,6,8,0.02)');
       ctx.fillStyle = grad;
       ctx.globalAlpha = Math.max(0.06, 1 - (p.age / p.life));
       ctx.beginPath();
       ctx.ellipse(0, 0, p.size, p.size * 0.6, 0, 0, Math.PI*2);
       ctx.fill();
 
-      // tiny highlight
+      // tiny sheen
       ctx.beginPath();
-      ctx.fillStyle = 'rgba(255,255,255,0.03)';
-      ctx.ellipse(-p.size*0.2, -p.size*0.15, p.size*0.25, p.size*0.12, 0, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(255,255,255,0.02)';
+      ctx.ellipse(-p.size*0.18, -p.size*0.12, p.size*0.22, p.size*0.1, 0, 0, Math.PI*2);
       ctx.fill();
 
       ctx.restore();
       ctx.globalAlpha = 1;
     }
 
-    // faint velvet texture lines
-    ctx.fillStyle = 'rgba(255,255,255,0.01)';
+    // faint texture lines for subtle elegance
+    ctx.fillStyle = 'rgba(11,15,20,0.02)';
     for(let y=0;y<h;y+=36) ctx.fillRect(0,y,w,0.6);
 
     requestAnimationFrame(tick);
@@ -493,7 +460,6 @@
   buttons.forEach(btn => {
     btn.addEventListener('click', () => {
       setActive(btn.dataset.key);
-      // navigate after a short delay for UX (or remove to navigate instantly)
       const map = {
         rules: 'rules.html',
         ranks: 'ranks.html',
