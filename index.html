@@ -4,14 +4,13 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Black Velvet — Home</title>
-
 <style>
   :root{
     --bg:#050506;
     --text:#e9e6ef;
     --muted:#9a8fb8;
     --accent:#ffffff;
-    font-family:Inter,system-ui;
+    font-family:Inter,system-ui,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
   }
 
   html,body{
@@ -20,96 +19,10 @@
     background:var(--bg);
     color:var(--text);
     overflow:hidden;
-    cursor:none; /* hide default cursor */
+    cursor:none; /* custom water cursor implemented in JS */
   }
 
-  /* Water after-aura cursor trail */
-  .cursor-water{
-    position:absolute;
-    width:20px;
-    height:20px;
-    border-radius:50%;
-    background:radial-gradient(circle, rgba(150,150,180,0.6), rgba(60,60,80,0));
-    pointer-events:none;
-    filter:blur(4px);
-    opacity:0.9;
-    transform:scale(0.8);
-    transition:opacity 0.5s ease-out, transform 0.5s ease-out;
-    z-index:9999;
-  }
-
-  /* Water ripple on click */
-  .water-ripple{
-    position:absolute;
-    width:70px;
-    height:70px;
-    border-radius:50%;
-    background:radial-gradient(circle, rgba(180,180,200,0.5), rgba(80,80,100,0));
-    pointer-events:none;
-    filter:blur(4px);
-    opacity:0.8;
-    transform:scale(0.2);
-    transition:transform 0.6s ease-out, opacity 0.6s ease-out;
-    z-index:9998;
-  }
-
-  /* Falling Black Velvet Petals */
-  .falling-petal{
-    position:absolute;
-    width:34px;
-    height:52px;
-    border-radius:50% 50% 40% 60%;
-    background:linear-gradient(135deg, rgba(30,30,30,0.95), rgba(60,60,60,0.85));
-    filter:drop-shadow(0 10px 30px rgba(0,0,0,0.7));
-    pointer-events:none;
-    animation:petalFall 4.5s linear forwards;
-    opacity:0.9;
-  }
-
-  @keyframes petalFall{
-    0%{ transform:translateY(-60px) rotate(0deg); opacity:1; }
-    100%{ transform:translateY(110vh) rotate(120deg); opacity:0; }
-  }
-
-  /* Black Velvet Flower */
-  .velvet-flower{
-    position:absolute;
-    width:320px;
-    height:320px;
-    pointer-events:none;
-    z-index:0;
-    opacity:0.35;
-    transition:opacity 0.6s ease-out, transform 0.6s ease-out;
-  }
-
-  .petal-shape{
-    position:absolute;
-    width:140px;
-    height:210px;
-    background:linear-gradient(135deg,#0a0a0a,#1c1c1c);
-    border-radius:50% 50% 40% 60%;
-    filter:drop-shadow(0 0 22px rgba(0,0,0,0.8));
-  }
-
-  .petal1{ transform:rotate(0deg) translateY(-110px); }
-  .petal2{ transform:rotate(72deg) translateY(-110px); }
-  .petal3{ transform:rotate(144deg) translateY(-110px); }
-  .petal4{ transform:rotate(216deg) translateY(-110px); }
-  .petal5{ transform:rotate(288deg) translateY(-110px); }
-
-  .flower-center{
-    position:absolute;
-    width:110px;
-    height:110px;
-    background:#0d0d0d;
-    border-radius:50%;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    box-shadow:0 0 32px rgba(255,255,255,0.15);
-  }
-
-  /* Page content */
+  /* Page layout */
   .page{
     height:100vh;
     display:flex;
@@ -118,51 +31,139 @@
     flex-direction:column;
     text-align:center;
     position:relative;
-    z-index:2;
+    z-index:20;
     transform:translateX(-30px);
+    pointer-events:auto;
   }
 
-  h1{
-    font-size:42px;
-    margin:0;
-    color:var(--accent);
-    text-shadow:0 0 12px rgba(255,255,255,0.8);
-  }
-
-  p{
-    margin-top:10px;
-    font-size:16px;
-    color:var(--muted);
-  }
+  h1{ font-size:42px; margin:0; color:var(--accent); text-shadow:0 0 12px rgba(255,255,255,0.08); }
+  p{ margin-top:10px; font-size:16px; color:var(--muted); }
 
   .btn{
     padding:12px 20px;
     border-radius:12px;
-    background:rgba(255,255,255,0.08);
-    border:1px solid rgba(255,255,255,0.25);
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.06);
     color:#fff;
     font-weight:700;
     text-decoration:none;
-    box-shadow:
-      0 0 12px rgba(255,255,255,0.6),
-      0 0 22px rgba(255,255,255,0.4),
-      inset 0 0 12px rgba(255,255,255,0.3);
-    transition:0.25s;
+    box-shadow:0 6px 18px rgba(0,0,0,0.6);
+    transition:transform .18s ease, box-shadow .18s ease;
+    display:inline-block;
+  }
+  .btn:hover{ transform:translateY(-4px); box-shadow:0 12px 30px rgba(0,0,0,0.7); }
+
+  /* Black Velvet Flower (unchanged visual) */
+  .velvet-flower{
+    position:absolute;
+    width:320px;
+    height:320px;
+    pointer-events:none;
+    z-index:10;
+    opacity:0.35;
+    transition:opacity .6s ease, transform .6s ease, left 1s ease, top 1s ease;
+  }
+  .petal-shape{
+    position:absolute;
+    width:140px;
+    height:210px;
+    background:linear-gradient(135deg,#0a0a0a,#1c1c1c);
+    border-radius:50% 50% 40% 60%;
+    filter:drop-shadow(0 0 22px rgba(0,0,0,0.8));
+  }
+  .petal1{ transform:rotate(0deg) translateY(-110px); }
+  .petal2{ transform:rotate(72deg) translateY(-110px); }
+  .petal3{ transform:rotate(144deg) translateY(-110px); }
+  .petal4{ transform:rotate(216deg) translateY(-110px); }
+  .petal5{ transform:rotate(288deg) translateY(-110px); }
+  .flower-center{
+    position:absolute; width:110px; height:110px; background:#0d0d0d; border-radius:50%;
+    top:50%; left:50%; transform:translate(-50%,-50%); box-shadow:0 0 32px rgba(255,255,255,0.08);
   }
 
-  .btn:hover{
-    transform:translateY(-3px);
-    box-shadow:
-      0 0 18px rgba(255,255,255,0.9),
-      0 0 32px rgba(255,255,255,0.7),
-      inset 0 0 18px rgba(255,255,255,0.5);
+  /* Falling petal (leaf-like) base */
+  .falling-petal{
+    position:absolute;
+    width:36px;
+    height:54px;
+    border-radius:50% 50% 40% 60%;
+    background:linear-gradient(135deg, rgba(34,34,34,0.98), rgba(64,64,64,0.88));
+    filter:drop-shadow(0 10px 30px rgba(0,0,0,0.6));
+    pointer-events:none;
+    opacity:0.95;
+    will-change: transform, opacity;
+  }
+
+  /* Keyframes for leaf-like falling: vertical drop + horizontal sway + rotation */
+  @keyframes leafFall {
+    0%{
+      transform: translate3d(var(--start-x,0), -80px, 0) rotate(var(--start-rot,0deg)) scale(var(--start-scale,1));
+      opacity:1;
+    }
+    20%{
+      transform: translate3d(calc(var(--start-x,0) + var(--sway,20px)), 10vh, 0) rotate(calc(var(--start-rot,0deg) + 15deg)) scale(calc(var(--start-scale,1) * 0.98));
+    }
+    50%{
+      transform: translate3d(calc(var(--start-x,0) - var(--sway,12px)), 45vh, 0) rotate(calc(var(--start-rot,0deg) - 10deg)) scale(calc(var(--start-scale,1) * 1.02));
+    }
+    80%{
+      transform: translate3d(calc(var(--start-x,0) + var(--sway,8px)), 80vh, 0) rotate(calc(var(--start-rot,0deg) + 25deg)) scale(calc(var(--start-scale,1) * 0.96));
+      opacity:0.9;
+    }
+    100%{
+      transform: translate3d(calc(var(--start-x,0) + var(--sway,0px)), 110vh, 0) rotate(calc(var(--start-rot,0deg) + 40deg)) scale(calc(var(--start-scale,1) * 0.94));
+      opacity:0;
+    }
+  }
+
+  /* Cursor water trail blob */
+  .cursor-water{
+    position:absolute;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, rgba(170,180,200,0.85), rgba(80,80,100,0.12));
+    pointer-events:none;
+    filter:blur(4px) saturate(0.9);
+    opacity:0.95;
+    transform:scale(0.8);
+    will-change: transform, opacity;
+    z-index:9999;
+  }
+
+  /* Water ripple rings (concentric shockwaves) */
+  .ripple-ring{
+    position:absolute;
+    border-radius:50%;
+    pointer-events:none;
+    box-shadow: 0 0 18px rgba(160,170,190,0.12), inset 0 0 8px rgba(255,255,255,0.02);
+    border:1px solid rgba(180,190,210,0.06);
+    background: radial-gradient(circle, rgba(200,210,230,0.06), rgba(80,80,100,0));
+    opacity:0.9;
+    transform:scale(0.2);
+    will-change: transform, opacity;
+    z-index:9998;
+  }
+
+  /* small water droplet particle */
+  .water-drop{
+    position:absolute;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:linear-gradient(180deg, rgba(220,230,250,0.95), rgba(120,130,160,0.6));
+    pointer-events:none;
+    filter:blur(0.6px) drop-shadow(0 6px 12px rgba(0,0,0,0.45));
+    opacity:0.95;
+    z-index:9999;
+    will-change: transform, opacity;
   }
 </style>
 </head>
 <body>
 
-<!-- Black Velvet Flower -->
-<div id="velvetFlower" class="velvet-flower">
+<!-- Flower -->
+<div id="velvetFlower" class="velvet-flower" aria-hidden="true">
   <div class="petal-shape petal1"></div>
   <div class="petal-shape petal2"></div>
   <div class="petal-shape petal3"></div>
@@ -171,7 +172,8 @@
   <div class="flower-center"></div>
 </div>
 
-<div class="page">
+<!-- Page content -->
+<div class="page" id="pageContent">
   <h1>Black Velvet</h1>
   <p>Welcome to the official clan hub.</p>
 
@@ -185,80 +187,250 @@
 </div>
 
 <script>
-/* Cursor water after-aura */
-document.addEventListener("mousemove", e=>{
-  const blob = document.createElement("div");
-  blob.className = "cursor-water";
-  blob.style.left = (e.clientX - 10) + "px";
-  blob.style.top = (e.clientY - 10) + "px";
-  document.body.appendChild(blob);
+/* ---------------------------
+   Utilities
+----------------------------*/
+function rand(min, max){ return Math.random() * (max - min) + min; }
+function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
 
-  setTimeout(()=>{
-    blob.style.opacity = "0";
-    blob.style.transform = "scale(1.6)";
-  }, 20);
-
-  setTimeout(()=> blob.remove(), 600);
-});
-
-/* Water ripple on background click */
-document.addEventListener("click", e=>{
-  if(e.target.closest(".btn")) return;
-
-  const ripple = document.createElement("div");
-  ripple.className = "water-ripple";
-  ripple.style.left = (e.clientX - 35) + "px";
-  ripple.style.top = (e.clientY - 35) + "px";
-  document.body.appendChild(ripple);
-
-  setTimeout(()=>{
-    ripple.style.transform = "scale(2)";
-    ripple.style.opacity = "0";
-  }, 20);
-
-  setTimeout(()=> ripple.remove(), 700);
-});
-
-/* Falling petals */
+/* ---------------------------
+   Flower cycle (5s visible, 5s hidden)
+----------------------------*/
 (function(){
-  function spawnFallingPetal(){
-    const p = document.createElement("div");
-    p.className = "falling-petal";
-    p.style.left = Math.random() * window.innerWidth + "px";
-    p.style.top = "-60px";
-    document.body.appendChild(p);
-    setTimeout(()=> p.remove(), 5000);
-  }
-  setInterval(spawnFallingPetal, 250);
-})();
-
-/* Flower: 5s visible → disappear → 5s later respawn */
-(function(){
-  const flower = document.getElementById("velvetFlower");
+  const flower = document.getElementById('velvetFlower');
 
   function spawnFlower(){
-    const maxX = window.innerWidth - 320;
-    const maxY = window.innerHeight - 320;
-    flower.style.left = Math.random() * maxX + "px";
-    flower.style.top = Math.random() * maxY + "px";
+    const maxX = Math.max(window.innerWidth - 320, 0);
+    const maxY = Math.max(window.innerHeight - 320, 0);
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+    flower.style.left = x + 'px';
+    flower.style.top = y + 'px';
   }
 
-  function cycleFlower(){
+  function cycle(){
     spawnFlower();
-    flower.style.opacity = "0.35";
-    flower.style.transform = "scale(1)";
-
+    flower.style.opacity = '0.35';
+    flower.style.transform = 'scale(1)';
+    // visible for 5s
     setTimeout(()=>{
-      flower.style.opacity = "0";
-      flower.style.transform = "scale(0.6)";
+      flower.style.opacity = '0';
+      flower.style.transform = 'scale(0.6)';
     }, 5000);
-
-    setTimeout(cycleFlower, 10000);
+    // respawn after total 10s
+    setTimeout(cycle, 10000);
   }
 
-  cycleFlower();
+  cycle();
+  window.addEventListener('resize', spawnFlower);
+})();
+
+/* ---------------------------
+   Leaf-like falling petals
+   - spawn with randomized CSS variables
+   - each petal uses the leafFall keyframes with unique duration/delay/sway/rotation
+----------------------------*/
+(function(){
+  const spawnInterval = 220; // ms between spawns
+  const life = 5000; // remove after 5s
+
+  function spawnPetal(){
+    const p = document.createElement('div');
+    p.className = 'falling-petal';
+
+    // random horizontal start offset so they don't all align
+    const startX = rand(-40, 40) + 'px';
+    const sway = rand(20, 120) + 'px'; // how much it sways horizontally
+    const startRot = rand(-30, 30) + 'deg';
+    const startScale = rand(0.85, 1.15).toFixed(2);
+
+    // random left spawn across the screen
+    const left = rand(0, window.innerWidth) + 'px';
+    p.style.left = left;
+    p.style.top = '-80px';
+
+    // set CSS variables used by keyframes
+    p.style.setProperty('--start-x', startX);
+    p.style.setProperty('--sway', sway);
+    p.style.setProperty('--start-rot', startRot);
+    p.style.setProperty('--start-scale', startScale);
+
+    // random duration and easing to feel natural
+    const duration = rand(3.8, 6.2).toFixed(2) + 's';
+    p.style.animation = `leafFall ${duration} linear forwards`;
+
+    // slight horizontal jitter via transform translateX on creation for variety
+    p.style.transform = `translateX(${rand(-8,8)}px)`;
+
+    document.body.appendChild(p);
+
+    // remove after life
+    setTimeout(()=> {
+      if(p && p.parentNode) p.parentNode.removeChild(p);
+    }, life + 600);
+  }
+
+  // spawn continuously, but slightly randomized
+  setInterval(spawnPetal, spawnInterval);
+  // also spawn a few immediately for density
+  for(let i=0;i<6;i++) setTimeout(spawnPetal, i*120);
+})();
+
+/* ---------------------------
+   Cursor water trail (realistic water path)
+   - creates small blurred blobs that follow pointer
+   - each blob expands and fades, creating a flowing path
+----------------------------*/
+(function(){
+  let last = {x: window.innerWidth/2, y: window.innerHeight/2};
+  const spacing = 8; // minimum px movement to spawn a new blob
+
+  document.addEventListener('mousemove', e=>{
+    const dx = e.clientX - last.x;
+    const dy = e.clientY - last.y;
+    const dist = Math.hypot(dx, dy);
+
+    // spawn multiple small blobs along the path for smoother trail
+    if(dist > spacing){
+      const steps = Math.ceil(dist / spacing);
+      for(let i=0;i<steps;i++){
+        const t = (i+1)/steps;
+        const bx = last.x + dx * t;
+        const by = last.y + dy * t;
+        createWaterBlob(bx, by, dx, dy);
+      }
+      last.x = e.clientX;
+      last.y = e.clientY;
+    }
+  });
+
+  function createWaterBlob(x, y, dx, dy){
+    const blob = document.createElement('div');
+    blob.className = 'cursor-water';
+
+    // size varies with speed (faster -> longer blobs)
+    const speed = Math.hypot(dx, dy);
+    const size = clamp(12 + speed * 0.6, 12, 36);
+    blob.style.width = size + 'px';
+    blob.style.height = size + 'px';
+
+    // slight offset so blobs trail behind cursor direction
+    const offsetX = -dx * 0.02 + rand(-6,6);
+    const offsetY = -dy * 0.02 + rand(-6,6);
+
+    blob.style.left = (x + offsetX - size/2) + 'px';
+    blob.style.top = (y + offsetY - size/2) + 'px';
+    document.body.appendChild(blob);
+
+    // animate: expand and fade like water droplets merging into path
+    requestAnimationFrame(()=>{
+      blob.style.transform = 'scale(1.8)';
+      blob.style.opacity = '0';
+    });
+
+    // cleanup
+    setTimeout(()=> {
+      if(blob && blob.parentNode) blob.parentNode.removeChild(blob);
+    }, 700 + rand(0,200));
+  }
+
+  // hide native cursor on touch devices fallback
+  document.addEventListener('touchstart', ()=>{ document.body.style.cursor = 'default'; }, {passive:true});
+})();
+
+/* ---------------------------
+   Water ripple + droplets on background click
+   - creates multiple expanding rings (shockwaves)
+   - spawns small droplets that arc up then fall
+----------------------------*/
+(function(){
+  document.addEventListener('click', e=>{
+    // ignore clicks on UI elements (buttons, links, flower)
+    if(e.target.closest('.btn') || e.target.closest('#velvetFlower') || e.target.closest('a')) return;
+
+    const cx = e.clientX;
+    const cy = e.clientY;
+
+    // create 3 concentric rings with staggered timing
+    for(let i=0;i<3;i++){
+      const ring = document.createElement('div');
+      ring.className = 'ripple-ring';
+      const baseSize = 60 + i*40;
+      ring.style.width = baseSize + 'px';
+      ring.style.height = baseSize + 'px';
+      ring.style.left = (cx - baseSize/2) + 'px';
+      ring.style.top = (cy - baseSize/2) + 'px';
+      ring.style.opacity = (0.9 - i*0.18).toString();
+      ring.style.transition = `transform ${0.9 + i*0.12}s cubic-bezier(.2,.8,.2,1), opacity ${0.9 + i*0.12}s ease-out`;
+      document.body.appendChild(ring);
+
+      // animate slightly staggered
+      setTimeout(()=>{
+        ring.style.transform = 'scale(3.2)';
+        ring.style.opacity = '0';
+      }, 30 + i*90);
+
+      // remove after animation
+      setTimeout(()=> { if(ring.parentNode) ring.parentNode.removeChild(ring); }, 1200 + i*200);
+    }
+
+    // spawn several small droplets that pop up and fall back
+    const drops = Math.round(rand(6,12));
+    for(let i=0;i<drops;i++){
+      spawnWaterDrop(cx, cy);
+    }
+  });
+
+  function spawnWaterDrop(cx, cy){
+    const drop = document.createElement('div');
+    drop.className = 'water-drop';
+    const size = rand(6,10);
+    drop.style.width = size + 'px';
+    drop.style.height = size + 'px';
+
+    // initial position near click
+    const startX = cx + rand(-18,18);
+    const startY = cy + rand(-6,6);
+    drop.style.left = (startX - size/2) + 'px';
+    drop.style.top = (startY - size/2) + 'px';
+    document.body.appendChild(drop);
+
+    // animate: small upward arc then fall (using CSS transforms via JS)
+    const rise = rand(28, 80); // how high it rises
+    const horiz = rand(-40, 40); // horizontal drift
+    const duration = rand(700, 1200);
+
+    // use requestAnimationFrame for smoother transform
+    const start = performance.now();
+    function animate(now){
+      const t = clamp((now - start) / duration, 0, 1);
+      // ease out cubic for rise and ease in for fall feel
+      const easeUp = 1 - Math.pow(1 - t, 3);
+      // vertical position: startY - rise * easeUp + small gravity effect
+      const y = startY - rise * easeUp + (t * t * 18);
+      const x = startX + horiz * easeUp;
+      drop.style.left = (x - size/2) + 'px';
+      drop.style.top = (y - size/2) + 'px';
+      drop.style.opacity = String(1 - t);
+
+      if(t < 1) requestAnimationFrame(animate);
+      else if(drop.parentNode) drop.parentNode.removeChild(drop);
+    }
+    requestAnimationFrame(animate);
+  }
+})();
+
+/* ---------------------------
+   Optional: clicking the flower plays click sound (kept subtle)
+----------------------------*/
+(function(){
+  const flower = document.getElementById('velvetFlower');
+  const clickSound = new Audio('sounds/click.mp3');
+  // only play if user interacts (browsers require gesture to allow audio)
+  flower.addEventListener('click', ()=>{
+    try{ clickSound.currentTime = 0; clickSound.play(); }catch(e){}
+  });
 })();
 </script>
-
 </body>
 </html>
