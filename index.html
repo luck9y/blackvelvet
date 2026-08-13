@@ -103,6 +103,61 @@
     color: #ff4d4d;
     text-decoration: underline;
   }
+
+  /* Staff-only button + warning */
+  .staff-cta {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .warning-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+  }
+
+  .warning-text {
+    color: #ff4d4d;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  .warning-arrow {
+    color: #ff4d4d;
+    font-size: 18px;
+    transform: translateY(2px);
+  }
+
+  .staff-button {
+    margin-top: 4px;
+    padding: 8px 12px;
+    background: #111;
+    border: 2px solid #444;
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 11px;
+    text-decoration: none;
+    opacity: 0.95;
+  }
+
+  .staff-button:hover {
+    background: #222;
+    border-color: #fff;
+  }
+
+  /* Ensure the warning sits visually above the button */
+  .warning-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
 </style>
 </head>
 
@@ -117,14 +172,26 @@
 <a class="nav-btn" href="staffapp.html">STAFF APPLICATION</a>
 
 <div class="staff-hidden">
-  <a href="staffpanel.html">staff only</a>
+  <a href="password.html">staff only</a>
 </div>
 
+<!-- LEFT-SIDE CREDIT + STAFF BUTTON -->
 <div class="credits-left">
   From the founders of 
   <a href="https://discord.gg/Fn2ref2uMz" class="blue">Azul Clan</a>
+
+  <div class="staff-cta" aria-hidden="false">
+    <div class="warning-stack">
+      <div class="warning-wrap" aria-hidden="true">
+        <div class="warning-text">WARNING: STAFF ONLY BUTTON</div>
+        <div class="warning-arrow">⬇</div>
+      </div>
+      <a class="staff-button" href="staffpanel.html" title="Staff Panel">STAFF PANEL</a>
+    </div>
+  </div>
 </div>
 
+<!-- RIGHT-SIDE CREDITS -->
 <div class="credits-right">
   This clan is operated by 
   <a href="discord.html" class="blue">Fond</a> & 
