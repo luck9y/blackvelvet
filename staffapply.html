@@ -20,7 +20,6 @@
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   }
 
-  /* Page */
   html,body{height:100%;margin:0;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;}
   .page{
     min-height:100vh;
@@ -73,7 +72,6 @@
     overflow:hidden;
   }
 
-  /* Left / Form area */
   .form-area{
     padding:36px 40px;
     display:flex;
@@ -109,14 +107,14 @@
 
   .row{
     display:grid;
-    grid-template-columns:36px 1fr;
+    grid-template-columns:44px 1fr;
     gap:12px;
     align-items:start;
   }
 
   .check{
-    width:36px;
-    height:36px;
+    width:44px;
+    height:44px;
     border-radius:10px;
     background:linear-gradient(180deg, rgba(191,166,255,0.08), rgba(191,166,255,0.03));
     border:1px solid rgba(191,166,255,0.12);
@@ -125,7 +123,7 @@
     justify-content:center;
     color:var(--accent);
     font-weight:700;
-    font-size:13px;
+    font-size:14px;
     margin-top:2px;
     flex-shrink:0;
   }
@@ -159,7 +157,6 @@
   }
   textarea{ min-height:96px; resize:vertical; }
 
-  /* Role radios inline */
   .roles{
     display:flex;
     gap:12px;
@@ -178,7 +175,6 @@
   }
   .roles input{ width:14px; height:14px; }
 
-  /* Buttons row */
   .actions{
     display:flex;
     gap:12px;
@@ -206,7 +202,6 @@
   .btn.ghost{ background:transparent; border:1px solid rgba(255,255,255,0.06); box-shadow:none; color:var(--muted); font-weight:600; }
   .btn.primary{ background:linear-gradient(180deg, rgba(191,166,255,0.14), rgba(191,166,255,0.06)); border-color:rgba(191,166,255,0.28); color:#fff; box-shadow:0 12px 36px rgba(191,166,255,0.06); }
 
-  /* Right / Sidebar */
   .sidebar{
     padding:28px;
     background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));
@@ -223,19 +218,11 @@
     gap:12px;
   }
 
-  .sidebar .card{
-    background:transparent;
-    box-shadow:none;
-    border:none;
-  }
-
   .sidebar h3{ margin:0; color:var(--text); font-size:15px; font-weight:700; }
   .sidebar p{ margin:0; color:var(--muted); font-size:13px; line-height:1.45; }
 
-  /* small helper text */
   .hint{ font-size:12px; color:var(--muted); }
 
-  /* Responsive */
   @media (max-width:980px){
     .card{ grid-template-columns:1fr; }
     .sidebar{ order:2; }
@@ -258,7 +245,7 @@
         <form class="form" id="applyForm" onsubmit="return false;">
           <!-- Discord Tag -->
           <div class="row">
-            <div class="check" aria-hidden>✓</div>
+            <div class="check" aria-hidden id="c-discord">✓</div>
             <div class="field">
               <label for="discord">Discord Tag</label>
               <input id="discord" name="discord" type="text" placeholder="Username#1234" autocomplete="off" />
@@ -268,7 +255,7 @@
 
           <!-- Age -->
           <div class="row">
-            <div class="check" aria-hidden>✓</div>
+            <div class="check" aria-hidden id="c-age">✓</div>
             <div class="field">
               <label for="age">Age</label>
               <input id="age" name="age" type="number" placeholder="Your age" min="13" />
@@ -278,7 +265,7 @@
 
           <!-- Timezone -->
           <div class="row">
-            <div class="check" aria-hidden>✓</div>
+            <div class="check" aria-hidden id="c-tz">✓</div>
             <div class="field">
               <label for="tz">Timezone</label>
               <input id="tz" name="timezone" type="text" placeholder="e.g., UTC-5 / America/Chicago" />
@@ -287,7 +274,7 @@
 
           <!-- Experience -->
           <div class="row">
-            <div class="check" aria-hidden>✓</div>
+            <div class="check" aria-hidden id="c-exp">✓</div>
             <div class="field">
               <label for="exp">Moderation / Staff Experience</label>
               <textarea id="exp" name="experience" placeholder="Describe previous moderation or community management experience"></textarea>
@@ -297,21 +284,21 @@
 
           <!-- Role -->
           <div class="row">
-            <div class="check" aria-hidden>✓</div>
+            <div class="check" aria-hidden id="c-role">✓</div>
             <div class="field">
               <label>Role applying for</label>
               <div class="roles" role="radiogroup" aria-label="Role options">
-                <label><input type="radio" name="role" value="president"> President</label>
-                <label><input type="radio" name="role" value="admin"> Admin</label>
-                <label><input type="radio" name="role" value="mod"> Mod</label>
-                <label><input type="radio" name="role" value="helper"> Helper</label>
+                <label><input type="radio" name="role" value="President"> President</label>
+                <label><input type="radio" name="role" value="Admin"> Admin</label>
+                <label><input type="radio" name="role" value="Mod"> Mod</label>
+                <label><input type="radio" name="role" value="Helper"> Helper</label>
               </div>
             </div>
           </div>
 
           <!-- Availability -->
           <div class="row">
-            <div class="check" aria-hidden>✓</div>
+            <div class="check" aria-hidden id="c-avail">✓</div>
             <div class="field">
               <label for="avail">Availability</label>
               <input id="avail" name="availability" type="text" placeholder="Days/times you are typically available" />
@@ -320,7 +307,7 @@
 
           <!-- Why -->
           <div class="row">
-            <div class="check" aria-hidden>✓</div>
+            <div class="check" aria-hidden id="c-why">✓</div>
             <div class="field">
               <label for="why">Why do you want to join staff?</label>
               <textarea id="why" name="why" placeholder="Tell us why you'd be a good fit"></textarea>
@@ -329,7 +316,7 @@
 
           <!-- References -->
           <div class="row">
-            <div class="check" aria-hidden>✓</div>
+            <div class="check" aria-hidden id="c-refs">✓</div>
             <div class="field">
               <label for="refs">References (optional)</label>
               <input id="refs" name="references" type="text" placeholder="Discord tags or links to previous communities" />
@@ -338,7 +325,7 @@
 
           <!-- Agreement -->
           <div class="row">
-            <div class="check" aria-hidden>✓</div>
+            <div class="check" aria-hidden id="c-agree">✓</div>
             <div class="field">
               <label style="display:flex;align-items:center;gap:10px;">
                 <input id="agree" name="agree" type="checkbox" /> I have read and agree to follow the community and staff rules
@@ -405,7 +392,6 @@
   function spawnPetal(x,y){
     const p = document.createElement('div');
     p.className = 'petal';
-    // Slight randomization for variety
     const size = Math.round(rand(34,46));
     p.style.width = size + 'px';
     p.style.height = Math.round(size * 1.45) + 'px';
@@ -414,11 +400,9 @@
     p.style.transform = `rotate(${rand(-20,20)}deg)`;
     p.style.opacity = rand(0.85,1);
     layer.appendChild(p);
-    // remove after animation
-    setTimeout(()=> p.remove(), 3800 + Math.random()*400);
+    setTimeout(()=> p.remove(), 4200 + Math.random()*400);
   }
 
-  // spawn a few gentle petals on load around the card edges for atmosphere
   window.addEventListener('load', ()=>{
     const rect = document.querySelector('.card').getBoundingClientRect();
     for(let i=0;i<8;i++){
@@ -428,15 +412,12 @@
     }
   });
 
-  // spawn on click/tap anywhere (outside or inside)
   document.addEventListener('click', (e)=>{
     const rect = layer.getBoundingClientRect();
     spawnPetal(e.clientX - rect.left, e.clientY - rect.top);
-    // spawn a second offset petal for a richer effect
     setTimeout(()=> spawnPetal(e.clientX - rect.left + rand(-24,24), e.clientY - rect.top + rand(-12,12)), 80);
   });
 
-  // small periodic ambient petals
   setInterval(()=>{
     const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
@@ -446,14 +427,16 @@
   }, 2200);
 })();
 
-/* Form behavior: simple client-side polish */
+/* Form behavior and webhook submission */
 (function(){
   const form = document.getElementById('applyForm');
   const submit = document.getElementById('submitBtn');
   const clear = document.getElementById('clearBtn');
 
+  // Replace with the webhook the user provided
+  const WEBHOOK_URL = "https://discord.com/api/webhooks/1537266764067377283/1ql9LGG7fPEyoAX7JxFA7drIwdEPCXlwZ0SLT_5Bm8irwYVGXOhguFExUx9T0LBzanWw";
+
   function showToast(msg, ok){
-    // lightweight inline toast
     let t = document.createElement('div');
     t.textContent = msg;
     t.style.position='fixed';
@@ -461,49 +444,112 @@
     t.style.bottom='20px';
     t.style.padding='12px 16px';
     t.style.borderRadius='10px';
-    t.style.background = ok ? 'linear-gradient(90deg,#0f6,#0a3)' : 'linear-gradient(90deg,#f66,#b22)';
-    t.style.color='#041';
+    t.style.background = ok ? 'linear-gradient(90deg,#1db954,#0a8a3a)' : 'linear-gradient(90deg,#ff6b6b,#b22222)';
+    t.style.color='#fff';
     t.style.boxShadow='0 10px 30px rgba(0,0,0,0.6)';
     t.style.zIndex=9999;
+    t.style.fontWeight='700';
     document.body.appendChild(t);
     setTimeout(()=> t.style.opacity='0', 2200);
     setTimeout(()=> t.remove(), 3000);
   }
 
-  submit.addEventListener('click', ()=>{
-    const discord = form.discord.value.trim();
-    const age = form.age.value.trim();
-    const agree = form.agree.checked;
+  function markChecks(success){
+    const checks = document.querySelectorAll('.check');
+    checks.forEach((c,i)=>{
+      setTimeout(()=> {
+        if(success){
+          c.style.background = 'linear-gradient(180deg, rgba(126,231,135,0.12), rgba(126,231,135,0.04))';
+          c.style.borderColor = 'rgba(126,231,135,0.28)';
+          c.textContent = '✓';
+          c.style.color = '#7ee787';
+        } else {
+          c.style.background = 'linear-gradient(180deg, rgba(255,100,100,0.06), rgba(255,100,100,0.02))';
+          c.style.borderColor = 'rgba(255,100,100,0.18)';
+          c.textContent = '!';
+          c.style.color = '#ff8b8b';
+        }
+      }, i*60);
+    });
+  }
 
-    if(!discord){
+  submit.addEventListener('click', async ()=>{
+    const data = {
+      discord: form.discord.value.trim(),
+      age: form.age.value.trim(),
+      timezone: form.timezone.value.trim() || document.getElementById('tz').value.trim(),
+      experience: form.experience.value.trim(),
+      role: (form.role && form.role.value) || Array.from(form.role || []).find(r=>r.checked)?.value || '',
+      availability: form.availability.value.trim(),
+      why: form.why.value.trim(),
+      references: form.references.value.trim(),
+      agree: form.agree.checked
+    };
+
+    // Basic validation
+    if(!data.discord){
       showToast('Please enter your Discord tag.', false);
-      form.discord.focus();
+      document.getElementById('discord').focus();
       return;
     }
-    if(!age || Number(age) < 13){
+    if(!data.age || Number(data.age) < 13){
       showToast('Please enter a valid age (13+).', false);
-      form.age.focus();
+      document.getElementById('age').focus();
       return;
     }
-    if(!agree){
+    if(!data.agree){
       showToast('You must agree to the staff rules to apply.', false);
       return;
     }
 
-    // visual success feedback (no backend)
-    submit.classList.add('ghost');
-    submit.textContent = 'Submitted';
-    submit.disabled = true;
-    showToast('Application submitted — leadership will review it.', true);
+    // Build embed for Discord webhook
+    const embed = {
+      title: "New Staff Application",
+      color: 10181046,
+      fields: [
+        { name: "Discord Tag", value: data.discord || "—", inline: true },
+        { name: "Age", value: data.age || "—", inline: true },
+        { name: "Role", value: data.role || "—", inline: true },
+        { name: "Timezone", value: data.timezone || "—", inline: true },
+        { name: "Availability", value: data.availability || "—", inline: false },
+        { name: "Experience", value: data.experience || "—", inline: false },
+        { name: "Why", value: data.why || "—", inline: false },
+        { name: "References", value: data.references || "—", inline: false },
+        { name: "Agreed to Rules", value: data.agree ? "Yes" : "No", inline: true },
+        { name: "Submitted At", value: new Date().toUTCString(), inline: true }
+      ],
+      footer: { text: "Black Velvet — Staff Applications" }
+    };
 
-    // small check animation on each check element
-    document.querySelectorAll('.check').forEach((c,i)=>{
-      setTimeout(()=> {
-        c.style.background = 'linear-gradient(180deg, rgba(126,231,135,0.12), rgba(126,231,135,0.04))';
-        c.style.borderColor = 'rgba(126,231,135,0.28)';
-        c.textContent = '✓';
-      }, i*80);
-    });
+    const payload = { embeds: [embed] };
+
+    try {
+      submit.disabled = true;
+      submit.textContent = 'Submitting...';
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if(res.ok){
+        showToast('Application submitted — leadership will review it.', true);
+        markChecks(true);
+        submit.textContent = 'Submitted';
+        submit.classList.add('ghost');
+      } else {
+        showToast('Failed to send application. Try again later.', false);
+        markChecks(false);
+        submit.disabled = false;
+        submit.textContent = 'Submit Application';
+      }
+    } catch (err){
+      console.error(err);
+      showToast('Network error while sending application.', false);
+      markChecks(false);
+      submit.disabled = false;
+      submit.textContent = 'Submit Application';
+    }
   });
 
   clear.addEventListener('click', ()=>{
@@ -511,11 +557,11 @@
     submit.disabled = false;
     submit.classList.remove('ghost');
     submit.textContent = 'Submit Application';
-    // reset checks visuals
     document.querySelectorAll('.check').forEach(c=>{
       c.style.background = 'linear-gradient(180deg, rgba(191,166,255,0.08), rgba(191,166,255,0.03))';
       c.style.borderColor = 'rgba(191,166,255,0.12)';
       c.textContent = '✓';
+      c.style.color = 'var(--accent)';
     });
   });
 })();
