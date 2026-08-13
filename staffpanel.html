@@ -1,557 +1,317 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Black Velvet Clan — Staff Login</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Black Velvet — Staff Panel</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#050506;
+      --panel:#0f0f11;
+      --accent:#bfa6ff;
+      --muted:#9a8fb8;
+      --glass: rgba(255,255,255,0.03);
+      --btn-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.25));
+      --btn-border: rgba(255,255,255,0.06);
+      --petal-dark: rgba(30,30,30,0.95);
+      --petal-mid: rgba(18,18,18,0.85);
+      --petal-edge: rgba(60,60,60,0.6);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
 
-<style>
-  :root{
-    --bg-top:#050506;
-    --bg-bottom:#0b0b0d;
-    --panel-bg:rgba(6,6,8,0.92);
-    --muted:#9aa4b2;
-    --accent:#ffffff;
-    --glass:rgba(255,255,255,0.03);
-    --menu-w:320px;
-    --radius:14px;
-    --accent-cta:#4da6ff;
-  }
-  :root[data-theme="light"]{
-    --bg-top:#f3f4f6;
-    --bg-bottom:#e6e7ea;
-    --panel-bg:rgba(255,255,255,0.95);
-    --muted:#6f7782;
-    --accent:#0b0f14;
-    --glass:rgba(0,0,0,0.04);
-    --accent-cta:#0b6bff;
-  }
+    html,body{
+      height:100%;
+      margin:0;
+      background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(191,166,255,0.02), transparent 8%),
+        radial-gradient(900px 500px at 90% 90%, rgba(255,120,150,0.01), transparent 6%),
+        var(--bg);
+      color:#e9e6ef;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
+    }
 
-  html,body{height:100%;margin:0;overflow:hidden;background:linear-gradient(180deg,var(--bg-top),var(--bg-bottom));color:var(--accent);font-family:Inter,system-ui,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-  .app{display:flex;height:100vh;align-items:stretch;min-height:0}
+    .wrap{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:48px 24px;
+      box-sizing:border-box;
+    }
 
-  nav.menu{
-    width:var(--menu-w);min-width:var(--menu-w);background:var(--panel-bg);border-right:1px solid var(--glass);
-    padding:28px 22px;box-sizing:border-box;display:flex;flex-direction:column;gap:18px;backdrop-filter:blur(6px)
-  }
-  .brand{display:flex;align-items:center;gap:12px}
-  .logo{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--accent);font-family:'Press Start 2P',cursive;font-size:16px}
-  .brand h1{font-family:'Press Start 2P',cursive;font-size:12px;margin:0;color:var(--accent)}
-  .brand p{margin:0;color:var(--muted);font-size:11px}
+    .card{
+      width:980px;
+      max-width:96%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.18));
+      border-radius:18px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.03);
+      position:relative;
+    }
 
-  .menu-list{display:flex;flex-direction:column;gap:10px;margin-top:6px}
-  .menu-item{padding:12px 14px;border-radius:12px;background:transparent;border:1px solid var(--glass);color:var(--accent);font-weight:800;cursor:pointer}
-  .menu-item.active{background:linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))}
+    .left{
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.12));
+      padding:28px;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      align-items:center;
+      justify-content:flex-start;
+    }
 
-  .menu-desc-wrap{margin-top:6px;padding:12px;border-radius:12px;background:var(--panel-bg);border:1px solid var(--glass);color:var(--muted);font-size:13px}
-  .menu-desc-title{font-weight:800;color:var(--accent);margin-bottom:6px}
+    .logo{
+      width:120px;
+      height:120px;
+      border-radius:12px;
+      background:linear-gradient(135deg, rgba(191,166,255,0.12), rgba(255,120,150,0.06));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      letter-spacing:1px;
+      color:var(--accent);
+      font-size:20px;
+      border:1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+    }
 
-  .menu-footer{margin-top:auto;display:flex;flex-direction:column;gap:8px;color:var(--muted);font-size:12px}
-  .small-cta{padding:10px 12px;border-radius:10px;border:1px solid var(--glass);background:transparent;color:var(--muted);text-decoration:none;font-weight:700;text-align:center;display:inline-block}
-  .back-home{margin-top:6px;padding:10px 12px;border-radius:10px;border:1px solid var(--glass);background:transparent;color:var(--accent);font-weight:800;text-decoration:none;text-align:center;display:inline-block}
+    .title{
+      text-align:center;
+      font-size:18px;
+      color:#efeaf8;
+      margin-top:6px;
+    }
 
-  main.content{position:relative;flex:1;overflow:hidden;display:flex;flex-direction:column}
-  .bg-wrap{position:absolute;inset:0;z-index:0;pointer-events:none}
-  canvas#bgCanvas{width:100%;height:100%;display:block}
+    .subtitle{
+      font-size:12px;
+      color:var(--muted);
+      text-align:center;
+    }
 
-  .foreground{position:relative;z-index:2;padding:40px;display:flex;gap:28px;align-items:flex-start;height:100%;box-sizing:border-box;overflow:auto}
-  .card{flex:1;max-width:980px;background:var(--panel-bg);border-radius:14px;padding:28px;border:1px solid var(--glass);box-shadow:0 18px 60px rgba(0,0,0,0.45)}
-  .card h2{font-family:'Press Start 2P',cursive;font-size:18px;margin:0 0 12px 0;color:var(--accent)}
-  .card p{color:var(--muted);margin:0 0 18px 0;line-height:1.5}
+    .main{
+      padding:34px 36px;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      position:relative;
+      z-index:2;
+    }
 
-  .login {display:flex;flex-direction:column;gap:12px;max-width:520px;margin-top:12px}
-  label{font-size:13px;color:var(--muted);font-weight:700}
-  input[type="text"], input[type="password"]{width:100%;padding:12px;border-radius:10px;border:1px solid var(--glass);background:transparent;color:var(--accent);box-sizing:border-box;font-size:14px}
-  .btn-row{display:flex;gap:10px;align-items:center;margin-top:8px}
-  .btn {padding:10px 14px;border-radius:10px;border:1px solid var(--glass);background:transparent;color:var(--accent);font-weight:800;cursor:pointer}
-  .btn.primary{background:linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));}
-  .btn.ghost{background:transparent;border:1px dashed var(--glass)}
+    .button-group{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:center;
+    }
 
-  .hint{font-size:12px;color:var(--muted)}
-  .error{color:#ff6b6b;font-weight:700;margin-top:6px}
+    .btn{
+      appearance:none;
+      border:1px solid var(--btn-border);
+      background:var(--btn-bg);
+      color:#efeaf8;
+      padding:12px 16px;
+      border-radius:10px;
+      font-size:14px;
+      cursor:pointer;
+      transition:transform .18s ease, box-shadow .18s ease;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+      backdrop-filter: blur(6px) saturate(120%);
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+    }
 
-  .panel{width:360px;min-width:260px;background:var(--panel-bg);border-radius:12px;padding:18px;border:1px solid var(--glass);box-shadow:0 12px 40px rgba(0,0,0,0.45)}
-  .panel h3{margin:0 0 8px 0;font-size:14px;color:var(--accent)}
-  .panel p{color:var(--muted);font-size:13px;margin:0 0 12px 0}
+    .btn:hover{
+      transform:translateY(-4px);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+    }
 
-  /* Staff area panels */
-  .staff-area { margin-top:18px; }
-  .tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
-  .tab-btn {
-    padding:10px 12px; border-radius:10px; border:1px solid var(--glass); background:transparent; color:var(--muted); font-weight:800; cursor:pointer;
-  }
-  .tab-btn.active { background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); color:var(--accent); border-color:var(--accent-cta); box-shadow:0 8px 24px rgba(0,0,0,0.18); }
-  .panel-wrap { border-radius:10px; padding:14px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); border:1px solid var(--glass); color:var(--muted); min-height:120px; display:none; }
-  .panel-wrap.active { display:block; color:var(--accent); }
+    .icon{
+      width:18px;
+      height:18px;
+      border-radius:4px;
+      background:linear-gradient(180deg, var(--accent), #ff78a0);
+      box-shadow: 0 4px 10px rgba(191,166,255,0.18);
+    }
 
-  .coming-soon { font-weight:900; font-size:18px; text-align:center; padding:18px 8px; color:var(--accent); }
+    .panel{
+      margin-top:8px;
+      background:var(--glass);
+      border-radius:12px;
+      padding:14px;
+      color:var(--muted);
+      font-size:13px;
+      border:1px solid rgba(255,255,255,0.02);
+    }
 
-  .site-footer{padding:18px;color:var(--muted);font-size:12px;text-align:center}
+    .footer{
+      margin-top:auto;
+      font-size:12px;
+      color:var(--muted);
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:center;
+      padding-bottom:6px;
+    }
 
-  @media (max-width:980px){
-    nav.menu{display:none}
-    .foreground{padding:18px}
-    .panel{display:none}
-  }
-</style>
+    .petal-layer{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:1;
+    }
+
+    .petal{
+      position:absolute;
+      width:36px;
+      height:56px;
+      border-radius:50% 50% 40% 60% / 60% 60% 40% 40%;
+      background: linear-gradient(135deg, var(--petal-dark), var(--petal-mid) 60%, var(--petal-edge));
+      transform-origin:center;
+      opacity:0.95;
+      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.6));
+      mix-blend-mode:multiply;
+      will-change: transform, opacity;
+    }
+
+    @keyframes petalFloat {
+      0%{ transform: translateY(0) rotate(0deg) scale(1); opacity:1; }
+      30%{ transform: translateY(-18px) rotate(15deg) scale(1.02); }
+      60%{ transform: translateY(-60px) rotate(45deg) scale(.98); opacity:0.9; }
+      100%{ transform: translateY(-220px) rotate(120deg) scale(.86); opacity:0; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .petal{ animation:none !important; opacity:0; }
+    }
+
+    @media (max-width:880px){
+      .card{ grid-template-columns:1fr; }
+      .left{ flex-direction:row; gap:12px; padding:18px; }
+      .logo{ width:84px; height:84px; font-size:16px; }
+      .main{ padding:20px; }
+    }
+  </style>
 </head>
+
 <body>
-  <div class="app" role="application" aria-label="Black Velvet Clan Staff Login">
-    <nav class="menu" aria-label="Main menu">
-      <div class="brand">
+  <div class="wrap">
+    <div class="card" id="cardRoot">
+
+      <aside class="left">
         <div class="logo">BV</div>
-        <div>
-          <h1>BLACK VELVET</h1>
-          <p>Clan • Community • Competition</p>
+        <div class="title">Staff Panel</div>
+        <div class="subtitle">Black Velvet Administration</div>
+      </aside>
+
+      <section class="main">
+        <h2 style="margin:0;font-size:16px;color:#efeaf8;">Staff Controls</h2>
+
+        <div class="button-group">
+          <button class="btn">
+            <span class="icon"></span>
+            Panel 1 — Coming Soon
+          </button>
+
+          <button class="btn">
+            <span class="icon"></span>
+            Panel 2 — Coming Soon
+          </button>
+
+          <button class="btn">
+            <span class="icon"></span>
+            Panel 3 — Coming Soon
+          </button>
+
+          <button class="btn">
+            <span class="icon"></span>
+            Panel 4 — Coming Soon
+          </button>
         </div>
-      </div>
 
-      <div class="menu-list" role="menu">
-        <div class="menu-item" data-key="home" id="menuHome">Home</div>
-        <div class="menu-item active" data-key="staff">Staff Login</div>
-        <div class="menu-item" data-key="ranks">Ranks</div>
-        <div class="menu-item" data-key="staffapp">Staff Application</div>
-        <div class="menu-item" data-key="info">More Info</div>
-      </div>
-
-      <div id="menuDescription" class="menu-desc-wrap" aria-live="polite">
-        <div class="menu-desc-title">Staff Login</div>
-        <div class="menu-desc-text">Enter your staff username and code. Correct credentials reveal staff UI right here — no navigation, no overlay.</div>
-      </div>
-
-      <div class="menu-footer">
-        <button id="themeToggle" class="small-cta" title="Toggle theme">Toggle Light / Dark</button>
-        <a class="small-cta" href="contact.html">Contact Leadership</a>
-        <a class="back-home" href="index.html">Back to Home</a>
-        <div style="margin-top:8px;color:var(--muted);font-size:11px">Built by Rin • Reborn in the flames</div>
-      </div>
-    </nav>
-
-    <main class="content" aria-live="polite">
-      <div class="bg-wrap" aria-hidden="true">
-        <canvas id="bgCanvas"></canvas>
-      </div>
-
-      <div class="foreground">
-        <section class="card" aria-labelledby="cardTitle">
-          <h2 id="cardTitle">Staff Login</h2>
-          <p>Use your staff username and code to unlock the staff area below. This unlock happens in-place and stays on the same page.</p>
-
-          <form id="loginForm" class="login" onsubmit="return false;">
-            <div>
-              <label for="username">Discord Username</label>
-              <input id="username" name="username" type="text" placeholder="e.g., gear10" autocomplete="username" />
-            </div>
-
-            <div>
-              <label for="code">Staff Code</label>
-              <input id="code" name="code" type="password" placeholder="Enter code" autocomplete="current-password" />
-            </div>
-
-            <div class="btn-row">
-              <button id="loginBtn" class="btn primary" type="button">LOGIN</button>
-              <button id="clearBtn" class="btn" type="button">CLEAR</button>
-              <div id="error" class="error" role="status" aria-live="polite"></div>
-            </div>
-
-            <div class="hint">Successful unlock reveals staff-only controls below. No new page will open.</div>
-          </form>
-
-          <!-- Staff-only content (hidden until unlocked) -->
-          <div id="staffContent" class="staff-area" style="display:none;">
-            <div style="padding:14px;border-radius:12px;background:linear-gradient(90deg, rgba(77,166,255,0.06), rgba(123,228,149,0.03));border-left:4px solid var(--accent-cta);color:#eaf2ff;font-weight:700">
-              STAFF AREA — Access granted. Use the controls below.
-            </div>
-
-            <!-- Four tab buttons -->
-            <div class="tabs" role="tablist" aria-label="Staff panels">
-              <button class="tab-btn active" data-panel="panel1" role="tab" aria-selected="true">PANEL 1</button>
-              <button class="tab-btn" data-panel="panel2" role="tab" aria-selected="false">PANEL 2</button>
-              <button class="tab-btn" data-panel="panel3" role="tab" aria-selected="false">PANEL 3</button>
-              <button class="tab-btn" data-panel="panel4" role="tab" aria-selected="false">PANEL 4</button>
-            </div>
-
-            <!-- Panels (all stay on same page; each currently shows COMING SOON) -->
-            <div id="panel1" class="panel-wrap active" role="tabpanel" aria-hidden="false">
-              <div class="coming-soon">COMING SOON</div>
-            </div>
-
-            <div id="panel2" class="panel-wrap" role="tabpanel" aria-hidden="true">
-              <div class="coming-soon">COMING SOON</div>
-            </div>
-
-            <div id="panel3" class="panel-wrap" role="tabpanel" aria-hidden="true">
-              <div class="coming-soon">COMING SOON</div>
-            </div>
-
-            <div id="panel4" class="panel-wrap" role="tabpanel" aria-hidden="true">
-              <div class="coming-soon">COMING SOON</div>
-            </div>
-
-            <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-              <button class="btn" id="relockBtn">RE-LOCK</button>
-              <button class="btn ghost" id="dummyBtn">COMING SOON</button>
-            </div>
-
-            <div style="margin-top:12px;color:var(--muted);font-size:13px">
-              Note: This area is unlocked in-place. To re-lock, click Re-lock or refresh the page.
-            </div>
+        <div class="panel">
+          <strong style="color:#efeaf8;">Staff Notice</strong>
+          <div style="margin-top:6px;">
+            All staff tools are currently locked. Panels will unlock as development continues.
           </div>
-        </section>
+        </div>
 
-        <aside class="panel" aria-labelledby="panelTitle">
-          <h3 id="panelTitle">Latest</h3>
-          <p>Server updates, events, and announcements appear here. Check Discord for live scheduling and event signups.</p>
+        <div class="footer">
+          <div>© <span id="year"></span> Black Velvet</div>
+          <div style="opacity:.6;">•</div>
+          <div style="opacity:.7;">Staff Access</div>
+        </div>
+      </section>
 
-          <div style="margin-top:12px">
-            <strong style="font-size:13px">Founders</strong>
-            <div style="color:var(--muted);font-size:13px;margin-top:6px">jsfeelings • Suoaz</div>
-          </div>
-
-          <div style="margin-top:12px">
-            <strong style="font-size:13px">Credits</strong>
-            <div style="color:var(--muted);font-size:13px;margin-top:6px">Design & site by Rin</div>
-          </div>
-
-          <a class="back-home" href="index.html">RETURN TO HOME</a>
-        </aside>
-      </div>
-
-      <div class="site-footer">© Black Velvet Clan — Respect the rules. Questions? Reach leadership in the staff channel.</div>
-    </main>
+      <div class="petal-layer" id="petalLayer"></div>
+    </div>
   </div>
 
-<script>
-/* Background canvas: subtle velvet petals (same behavior as index) */
-(() => {
-  const canvas = document.getElementById('bgCanvas');
-  const ctx = canvas.getContext('2d', { alpha: true });
-  let DPR = Math.max(1, window.devicePixelRatio || 1);
-  let w = canvas.width = innerWidth;
-  let h = canvas.height = innerHeight;
-  canvas.width = w * DPR; canvas.height = h * DPR;
-  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
-  ctx.scale(DPR, DPR);
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
 
-  function rand(a,b){ return Math.random()*(b-a)+a; }
+    const layer = document.getElementById('petalLayer');
+    const card = document.getElementById('cardRoot');
+    const MAX_PETALS = 28;
+    let activePetals = 0;
 
-  let petals = [];
-  const pointer = { x:w/2, y:h/2, px:w/2, py:h/2 };
-  let BASE = Math.max(8, Math.round((w*h)/160000));
+    function rand(min,max){ return Math.random()*(max-min)+min; }
 
-  function create(colors){
-    return {
-      x: rand(0,w), y: rand(0,h),
-      vx: rand(-0.08,0.08), vy: rand(-0.02,0.06),
-      rot: rand(0,Math.PI*2), vr: rand(-0.006,0.006),
-      size: rand(6,16), color: colors[Math.floor(Math.random()*colors.length)],
-      life: rand(800,1600), age:0
-    };
-  }
+    function createPetal(x,y){
+      if(activePetals >= MAX_PETALS) return;
 
-  function seed(){
-    petals.length = 0;
-    const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    const colors = theme === 'light' ? ['rgba(0,0,0,0.98)','rgba(30,30,30,0.88)','rgba(60,60,60,0.75)'] : ['rgba(255,255,255,0.98)','rgba(240,240,240,0.88)','rgba(210,210,210,0.75)'];
-    for(let i=0;i<BASE;i++) petals.push(create(colors));
-  }
+      const petal = document.createElement('div');
+      petal.className = 'petal';
 
-  function spawn(x,y){
-    const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    const colors = theme === 'light' ? ['rgba(0,0,0,0.98)','rgba(30,30,30,0.88)','rgba(60,60,60,0.75)'] : ['rgba(255,255,255,0.98)','rgba(240,240,240,0.88)','rgba(210,210,210,0.75)'];
-    const count = 12 + Math.floor(rand(0,10));
-    for(let i=0;i<count;i++){
-      const angle = Math.PI*2*Math.random();
-      const speed = rand(1.2,3.0);
-      petals.push({
-        x, y,
-        vx: Math.cos(angle)*speed + rand(-0.3,0.3),
-        vy: Math.sin(angle)*speed + rand(-0.3,0.3),
-        rot: rand(0,Math.PI*2), vr: rand(-0.06,0.06),
-        size: rand(6,12), color: colors[Math.floor(Math.random()*colors.length)],
-        life: rand(60,120), age:0
-      });
+      const w = Math.round(rand(18,48));
+      const h = Math.round(rand(28,84));
+      petal.style.width = w+'px';
+      petal.style.height = h+'px';
+
+      petal.style.left = (x-w/2)+'px';
+      petal.style.top = (y-h/2)+'px';
+
+      petal.style.transform = `rotate(${rand(-40,40)}deg)`;
+
+      const duration = rand(2200,4200);
+      const delay = rand(0,160);
+      petal.style.animation = `petalFloat ${duration}ms cubic-bezier(.22,.9,.35,1) ${delay}ms forwards`;
+
+      activePetals++;
+      layer.appendChild(petal);
+
+      setTimeout(()=>{
+        if(petal.parentNode) petal.parentNode.removeChild(petal);
+        activePetals = Math.max(0,activePetals-1);
+      }, duration+delay+200);
     }
-  }
 
-  function resize(){
-    w = canvas.width = innerWidth; h = canvas.height = innerHeight;
-    canvas.width = w * DPR; canvas.height = h * DPR;
-    canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
-    ctx.setTransform(DPR,0,0,DPR,0,0);
-    BASE = Math.max(8, Math.round((w*h)/160000));
-    seed();
-  }
-  window.addEventListener('resize', resize);
+    function spawnBurst(clientX,clientY){
+      const rect = layer.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
 
-  window.addEventListener('pointermove', (e) => {
-    const r = canvas.getBoundingClientRect();
-    pointer.x = (e.clientX || 0) - r.left;
-    pointer.y = (e.clientY || 0) - r.top;
-  });
-  window.addEventListener('pointerdown', (e) => {
-    const r = canvas.getBoundingClientRect();
-    const x = (e.clientX || 0) - r.left;
-    const y = (e.clientY || 0) - r.top;
-    spawn(x,y);
-  });
-
-  let last = performance.now();
-  function loop(now){
-    const dt = Math.min(40, now - last) / 16.666; last = now;
-    pointer.px += (pointer.x - pointer.px) * 0.08;
-    pointer.py += (pointer.y - pointer.py) * 0.08;
-
-    ctx.clearRect(0,0,w,h);
-
-    const bgTop = getComputedStyle(document.documentElement).getPropertyValue('--bg-top').trim();
-    const bgBottom = getComputedStyle(document.documentElement).getPropertyValue('--bg-bottom').trim();
-    const g = ctx.createLinearGradient(0,0,0,h);
-    g.addColorStop(0, bgTop); g.addColorStop(1, bgBottom);
-    ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
-
-    for(let i=petals.length-1;i>=0;i--){
-      const p = petals[i];
-      const dx = pointer.px - p.x, dy = pointer.py - p.y;
-      const dist = Math.max(20, Math.hypot(dx,dy));
-      const force = 6 / (dist*dist);
-      p.vx += dx * force * 0.02 * dt; p.vy += dy * force * 0.02 * dt;
-      p.rot += p.vr * dt; p.vx *= 0.993; p.vy *= 0.993;
-      p.x += p.vx * dt; p.y += p.vy * dt; p.age += dt;
-
-      if(p.age > p.life || p.x < -60 || p.x > w+60 || p.y < -60 || p.y > h+60){
-        petals.splice(i,1);
-        continue;
+      const count = Math.floor(rand(3,8));
+      for(let i=0;i<count;i++){
+        const ox = rand(-18,18);
+        const oy = rand(-18,18);
+        setTimeout(()=>createPetal(x+ox,y+oy), Math.round(rand(0,120)));
       }
-
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rot);
-      const grad = ctx.createLinearGradient(-p.size, -p.size*0.2, p.size, p.size*0.2);
-      grad.addColorStop(0, p.color); grad.addColorStop(1, 'rgba(0,0,0,0.02)');
-      ctx.fillStyle = grad;
-      ctx.globalAlpha = Math.max(0.06, 1 - (p.age / p.life));
-      ctx.beginPath(); ctx.ellipse(0,0,p.size,p.size*0.6,0,0,Math.PI*2); ctx.fill();
-      ctx.restore();
-      ctx.globalAlpha = 1;
     }
 
-    if(petals.length < BASE) seed();
-    requestAnimationFrame(loop);
-  }
-
-  seed();
-  requestAnimationFrame(loop);
-
-  window.__reseedPetals = seed;
-})();
-
-/* ---------- Staff login + panels (in-place unlock, no overlay) ---------- */
-document.addEventListener("DOMContentLoaded", () => {
-  // Webhook for logging (replace if needed)
-  const webhookURL = "https://discord.com/api/webhooks/1537233521410576546/qoHYqRmP1SbBfuuMCzvJBxWgTIGIlKpS3bhQ7xuj2MnbxNSoRGu0xUxCzkiXV6d43DIs";
-
-  const accounts = {
-    "gear10": "9033",
-    "luckyy1": "0226",
-    "suoaztic": "4423",
-    "Staff1": "1",
-    "flip2": "2",
-    "fork3": "3",
-    "an4": "4",
-    "fin5": "5"
-  };
-
-  function generateHexID() {
-    const hex = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase();
-    return hex.padStart(4, "0");
-  }
-  function getDeviceHex() {
-    if (!localStorage.deviceHex) localStorage.deviceHex = generateHexID();
-    return localStorage.deviceHex;
-  }
-  function buildFingerprint() {
-    return {
-      browser: navigator.userAgent,
-      language: navigator.language,
-      platform: navigator.platform,
-      resolution: `${window.screen.width}x${window.screen.height}`,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-    };
-  }
-  function sendWebhook(payloadObj) {
-    const body = JSON.stringify(payloadObj);
-    fetch(webhookURL, { method: "POST", headers: { "Content-Type": "application/json" }, body })
-      .catch(() => { if (navigator.sendBeacon) navigator.sendBeacon(webhookURL, body); });
-  }
-
-  function sendLoginWebhook(user, code) {
-    const hex = getDeviceHex(); const fp = buildFingerprint(); const now = new Date();
-    const payload = {
-      content:
-`# STAFF LOGIN ALERT
-
-**__Username__:** \`${user}\`
-**__Code Used__:** \`${code}\`
-
-**__Date__:** \`${now.toLocaleDateString()}\`
-**__Time__:** \`${now.toLocaleTimeString()}\`
-**__Time Zone__:** \`${fp.timezone}\`
-
-**__Browser__:** \`${fp.browser}\`
-**__Language__:** \`${fp.language}\`
-**__Platform__:** \`${fp.platform}\`
-**__Resolution__:** \`${fp.resolution}\`
-
-**__Status__:** 
-------------------------------
-\`Login Successful\`
-**__Device Used__:** \`${hex}\`
-User \`${hex}\` logged using \`${user}\`
-------------------------------`
-    };
-    sendWebhook(payload);
-  }
-
-  function sendFailedAttemptWebhook(userAttempt, codeAttempt, reason = "Invalid credentials") {
-    const hex = getDeviceHex(); const fp = buildFingerprint(); const now = new Date();
-    const payload = {
-      content:
-`# STAFF LOGIN ATTEMPT
-
-**__Attempted Username__:** \`${userAttempt}\`
-**__Attempted Code__:** \`${codeAttempt}\`
-
-**__Date__:** \`${now.toLocaleDateString()}\`
-**__Time__:** \`${now.toLocaleTimeString()}\`
-**__Time Zone__:** \`${fp.timezone}\`
-
-**__Browser__:** \`${fp.browser}\`
-**__Language__:** \`${fp.language}\`
-**__Platform__:** \`${fp.platform}\`
-**__Resolution__:** \`${fp.resolution}\`
-
-**__Result__:** \`${reason}\`
-**__Device ID__:** \`${hex}\`
-------------------------------`
-    };
-    sendWebhook(payload);
-  }
-
-  // Elements
-  const errorBox = document.getElementById("error");
-  const staffContent = document.getElementById("staffContent");
-
-  function revealStaffArea(user) {
-    if (staffContent) staffContent.style.display = "block";
-    sessionStorage.setItem("bv_staff_unlocked", "true");
-    localStorage.staffLoggedIn = "true";
-  }
-  function hideStaffArea() {
-    if (staffContent) staffContent.style.display = "none";
-    sessionStorage.removeItem("bv_staff_unlocked");
-  }
-
-  // Restore unlocked state (in-place)
-  if (sessionStorage.getItem("bv_staff_unlocked") === "true") {
-    if (staffContent) staffContent.style.display = "block";
-  } else {
-    if (staffContent) staffContent.style.display = "none";
-  }
-
-  // Login logic (in-place, no navigation)
-  function login() {
-    const user = (document.getElementById("username") || {}).value?.trim() || "";
-    const code = (document.getElementById("code") || {}).value?.trim() || "";
-    if (errorBox) errorBox.textContent = "";
-
-    if (accounts[user] && accounts[user] === code) {
-      sendLoginWebhook(user, code);
-      revealStaffArea(user);
-      if (errorBox) errorBox.textContent = "Access granted.";
-      return;
-    }
-
-    if (accounts[user] && accounts[user] !== code) {
-      if (errorBox) errorBox.textContent = "Invalid code for that username.";
-      sendFailedAttemptWebhook(user, code, "Wrong code for existing username");
-      return;
-    }
-
-    if (errorBox) errorBox.textContent = "Invalid username or code.";
-    sendFailedAttemptWebhook(user || "(empty)", code || "(empty)", "Unknown username");
-  }
-
-  const loginBtn = document.getElementById("loginBtn");
-  const clearBtn = document.getElementById("clearBtn");
-  if (loginBtn) loginBtn.addEventListener("click", login);
-  if (clearBtn) clearBtn.addEventListener("click", () => {
-    const u = document.getElementById("username"); const c = document.getElementById("code");
-    if (u) u.value = ""; if (c) c.value = ""; if (errorBox) errorBox.textContent = "";
-  });
-
-  // Re-lock control
-  const relockBtn = document.getElementById("relockBtn");
-  if (relockBtn) relockBtn.addEventListener("click", () => {
-    hideStaffArea();
-    if (errorBox) errorBox.textContent = "Locked.";
-  });
-
-  // Tabs behavior: switch between 4 panels, all on same page
-  const tabButtons = Array.from(document.querySelectorAll('.tab-btn'));
-  const panels = Array.from(document.querySelectorAll('.panel-wrap'));
-
-  function setActivePanel(id) {
-    tabButtons.forEach(btn => {
-      const panelId = btn.dataset.panel;
-      const active = panelId === id;
-      btn.classList.toggle('active', active);
-      btn.setAttribute('aria-selected', active ? 'true' : 'false');
+    card.addEventListener('click', e=>{
+      const tag = e.target.tagName.toLowerCase();
+      if(tag === 'button' || e.target.closest('button')) return;
+      spawnBurst(e.clientX,e.clientY);
     });
-    panels.forEach(p => {
-      const active = p.id === id;
-      p.classList.toggle('active', active);
-      p.setAttribute('aria-hidden', active ? 'false' : 'true');
-    });
-  }
-
-  tabButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const panelId = btn.dataset.panel;
-      setActivePanel(panelId);
-    });
-    btn.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
-    });
-  });
-
-  // Default active panel
-  setActivePanel('panel1');
-
-  // Theme toggle persistence
-  const themeToggle = document.getElementById('themeToggle');
-  const root = document.documentElement;
-  const storageKey = 'bv_theme';
-  function applyTheme(theme){
-    if(theme === 'light') root.setAttribute('data-theme','light');
-    else root.removeAttribute('data-theme');
-    localStorage.setItem(storageKey, theme);
-    if(window.__reseedPetals) window.__reseedPetals();
-  }
-  const saved = localStorage.getItem(storageKey) || 'dark';
-  applyTheme(saved);
-  if (themeToggle) themeToggle.addEventListener('click', () => {
-    const current = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    const next = current === 'light' ? 'dark' : 'light';
-    applyTheme(next);
-  });
-
-  // Menu navigation
-  const menuHome = document.getElementById('menuHome');
-  if(menuHome) menuHome.addEventListener('click', () => location.href = 'index.html');
-});
-</script>
+  </script>
 </body>
 </html>
