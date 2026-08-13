@@ -53,6 +53,23 @@
 
   footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
 
+  /* Staff rules button */
+  .staff-link {
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 14px;
+    background:linear-gradient(90deg,var(--accent),#6fb8ff);
+    color:#071022;
+    font-weight:700;
+    border-radius:10px;
+    text-decoration:none;
+    border:1px solid rgba(255,255,255,0.06);
+    box-shadow:0 6px 18px rgba(77,166,255,0.08);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .staff-link:hover { transform:translateY(-3px); box-shadow:0 12px 30px rgba(77,166,255,0.12); }
+
   /* Responsive */
   @media (max-width:980px){ main{grid-template-columns:1fr; } .levels{grid-template-columns:1fr} .logo{width:48px;height:48px} }
 </style>
@@ -67,7 +84,11 @@
           <div class="subtitle">Clear, fair, and enforced. Read before joining events or discussions.</div>
         </div>
       </div>
-      <div class="pill">Effective enforcement • Consistent application</div>
+
+      <!-- Staff rules button added here -->
+      <div>
+        <a class="staff-link" href="staffrules.html" title="Staff Rules and Enforcement">Staff Rules</a>
+      </div>
     </header>
 
     <main>
