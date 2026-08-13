@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Black Velvet Clan Rules</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0b0b;
+    --card:#0f1720;
+    --muted:#9aa4b2;
+    --accent:#4da6ff;
+    --accent-2:#7be495;
+    --danger:#ff6b6b;
+    --glass: rgba(255,255,255,0.03);
+    --radius:12px;
+    --max-width:1100px;
+  }
+
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#07070a 0%, #0b0b0b 100%);color:#e6eef8;font-family:Inter,system-ui,Arial,sans-serif}
+  .container{max-width:var(--max-width);margin:36px auto;padding:28px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:var(--radius);box-shadow:0 8px 40px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#6fb8ff);display:flex;align-items:center;justify-content:center;font-weight:700;color:#071022;font-size:18px;box-shadow:0 6px 18px rgba(77,166,255,0.12)}
+  h1{margin:0;font-size:20px;letter-spacing:0.6px}
+  .subtitle{color:var(--muted);font-size:13px}
+
+  main{margin-top:22px;display:grid;grid-template-columns:1fr 320px;gap:20px}
+  .rules-panel{background:var(--card);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
+  .summary{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .pill{background:var(--glass);padding:8px 12px;border-radius:999px;font-weight:600;color:var(--accent);font-size:13px;border:1px solid rgba(77,166,255,0.06)}
+  .levels{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+
+  .level-card{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.02)}
+  .level-title{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .level-title .badge{padding:6px 8px;border-radius:8px;font-weight:700;font-size:12px}
+  .l1{background:rgba(123,228,149,0.12);color:var(--accent-2);border:1px solid rgba(123,228,149,0.08)}
+  .l2{background:rgba(77,166,255,0.08);color:var(--accent);border:1px solid rgba(77,166,255,0.06)}
+  .l3{background:rgba(255,107,107,0.08);color:var(--danger);border:1px solid rgba(255,107,107,0.06)}
+
+  ol{margin:0;padding-left:18px;color:#dbe9ff}
+  li{margin:10px 0;font-size:14px;line-height:1.35}
+  .rule-title{font-weight:600;color:#fff}
+  .consequence{display:block;color:var(--muted);font-size:13px;margin-top:6px}
+
+  aside{position:relative}
+  .panel-aside{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
+  .important{background:linear-gradient(90deg,#0f1720,#0b1220);padding:12px;border-radius:10px;border-left:4px solid var(--accent);margin-bottom:12px}
+  .important h3{margin:0;font-size:13px}
+  .important p{margin:8px 0 0;color:var(--muted);font-size:13px}
+  .note{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;color:var(--muted);font-size:13px;margin-top:12px}
+
+  footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
+
+  /* Responsive */
+  @media (max-width:980px){ main{grid-template-columns:1fr; } .levels{grid-template-columns:1fr} .logo{width:48px;height:48px} }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">BV</div>
+        <div>
+          <h1>Black Velvet Clan Rules</h1>
+          <div class="subtitle">Clear, fair, and enforced. Read before joining events or discussions.</div>
+        </div>
+      </div>
+      <div class="pill">Effective enforcement • Consistent application</div>
+    </header>
+
+    <main>
+      <section class="rules-panel" aria-labelledby="rulesHeading">
+        <div class="summary">
+          <div>
+            <strong id="rulesHeading">Community Standards</strong>
+            <div class="subtitle">Thirty rules organized by severity. Follow them to keep the community safe and fun.</div>
+          </div>
+        </div>
+
+        <div class="levels" role="list">
+          <!-- Level 1 -->
+          <div class="level-card" role="listitem" aria-labelledby="level1Title">
+            <div class="level-title">
+              <div class="badge l1">Level 1</div>
+              <div>
+                <div id="level1Title" style="font-weight:700">Minor Infractions</div>
+                <div class="subtitle">Warnings and short mutes for first-time or low-impact issues</div>
+              </div>
+            </div>
+
+            <ol>
+              <li>
+                <span class="rule-title">Trolling or light provocation</span>
+                <span class="consequence">First response: verbal warning. Repeats: short mute.</span>
+              </li>
+              <li>
+                <span class="rule-title">Spamming chat or emoji floods</span>
+                <span class="consequence">Remove content and issue a warning; temporary mute if repeated.</span>
+              </li>
+              <li>
+                <span class="rule-title">Posting off-topic content in focused channels</span>
+                <span class="consequence">Content moved or removed; reminder about channel purpose.</span>
+              </li>
+              <li>
+                <span class="rule-title">Mild harassment or rude remarks</span>
+                <span class="consequence">Warning and request to apologize; short mute for escalation.</span>
+              </li>
+              <li>
+                <span class="rule-title">Excessive profanity in general chat</span>
+                <span class="consequence">Tone-down request; repeated use may lead to a temporary mute.</span>
+              </li>
+              <li>
+                <span class="rule-title">Ignoring staff instructions (first instance)</span>
+                <span class="consequence">Warning and clarification of expectations.</span>
+              </li>
+              <li>
+                <span class="rule-title">Minor cheating or exploiting (low impact)</span>
+                <span class="consequence">Warning and temporary restrictions; review for repeat behavior.</span>
+              </li>
+              <li>
+                <span class="rule-title">Poor sportsmanship during matches</span>
+                <span class="consequence">Warning and possible short suspension from events.</span>
+              </li>
+              <li>
+                <span class="rule-title">Unauthorized advertising once</span>
+                <span class="consequence">Link removed and a warning issued.</span>
+              </li>
+              <li>
+                <span class="rule-title">Confusing impersonation</span>
+                <span class="consequence">Request to change display name; warning if intentional.</span>
+              </li>
+            </ol>
+          </div>
+
+          <!-- Level 2 -->
+          <div class="level-card" role="listitem" aria-labelledby="level2Title">
+            <div class="level-title">
+              <div class="badge l2">Level 2</div>
+              <div>
+                <div id="level2Title" style="font-weight:700">Moderate Infractions</div>
+                <div class="subtitle">Stronger action for repeated or more harmful behavior</div>
+              </div>
+            </div>
+
+            <ol>
+              <li>
+                <span class="rule-title">Repeated targeted harassment</span>
+                <span class="consequence">Multi-day mute or temporary suspension; staff review.</span>
+              </li>
+              <li>
+                <span class="rule-title">Sharing partial personal information</span>
+                <span class="consequence">Immediate suspension pending investigation; escalate if malicious.</span>
+              </li>
+              <li>
+                <span class="rule-title">Posting explicit content in public channels</span>
+                <span class="consequence">Content removed and temporary ban depending on severity.</span>
+              </li>
+              <li>
+                <span class="rule-title">Cheating that affects matches</span>
+                <span class="consequence">Temporary ban from events and review of account status.</span>
+              </li>
+              <li>
+                <span class="rule-title">Threatening language or intimidation</span>
+                <span class="consequence">Temporary suspension and staff mediation.</span>
+              </li>
+              <li>
+                <span class="rule-title">Repeated advertising after warnings</span>
+                <span class="consequence">Temporary ban and link removal.</span>
+              </li>
+              <li>
+                <span class="rule-title">Evading punishments with alternate accounts</span>
+                <span class="consequence">Account suspension and possible permanent ban.</span>
+              </li>
+              <li>
+                <span class="rule-title">Persistent identity-based harassment</span>
+                <span class="consequence">Temporary suspension and mandatory mediation.</span>
+              </li>
+              <li>
+                <span class="rule-title">Large-scale copyright infringement</span>
+                <span class="consequence">Content removal and temporary suspension.</span>
+              </li>
+              <li>
+                <span class="rule-title">Deliberate disruption of events</span>
+                <span class="consequence">Event disqualification and temporary ban.</span>
+              </li>
+            </ol>
+          </div>
+
+          <!-- Level 3 -->
+          <div class="level-card" role="listitem" aria-labelledby="level3Title">
+            <div class="level-title">
+              <div class="badge l3">Level 3</div>
+              <div>
+                <div id="level3Title" style="font-weight:700">Severe Infractions</div>
+                <div class="subtitle">Immediate and decisive action; possible reporting to authorities</div>
+              </div>
+            </div>
+
+            <ol>
+              <li>
+                <span class="rule-title">Publishing private personal information</span>
+                <span class="consequence">Immediate permanent ban and incident report to platform or authorities.</span>
+              </li>
+              <li>
+                <span class="rule-title">Sharing explicit images without consent</span>
+                <span class="consequence">Immediate permanent ban and mandatory reporting where required.</span>
+              </li>
+              <li>
+                <span class="rule-title">Credible threats of violence</span>
+                <span class="consequence">Immediate permanent ban and escalation to law enforcement if necessary.</span>
+              </li>
+              <li>
+                <span class="rule-title">Hate speech targeting protected groups</span>
+                <span class="consequence">Immediate permanent ban and removal of content.</span>
+              </li>
+              <li>
+                <span class="rule-title">Account theft or credential harvesting</span>
+                <span class="consequence">Immediate permanent ban and notification to affected users.</span>
+              </li>
+              <li>
+                <span class="rule-title">Coordinated harassment campaigns</span>
+                <span class="consequence">Network-wide bans and reporting to other communities.</span>
+              </li>
+              <li>
+                <span class="rule-title">Distribution of malware or illegal content</span>
+                <span class="consequence">Immediate permanent ban and report to platform security teams.</span>
+              </li>
+              <li>
+                <span class="rule-title">Sexual exploitation of minors</span>
+                <span class="consequence">Immediate permanent ban and mandatory reporting to authorities.</span>
+              </li>
+              <li>
+                <span class="rule-title">Extortion or blackmail</span>
+                <span class="consequence">Immediate permanent ban and escalation to law enforcement.</span>
+              </li>
+              <li>
+                <span class="rule-title">Persistent evasion combined with malicious behavior</span>
+                <span class="consequence">Network-wide enforcement and permanent removal from community.</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+
+        <div style="margin-top:18px" class="note">
+          Enforcement is guided by evidence and context. Staff will review reports, request supporting material, and apply penalties consistently. Appeals are accepted through the official appeals channel.
+        </div>
+      </section>
+
+      <aside>
+        <div class="panel-aside">
+          <div class="important" role="note">
+            <h3>Key points to remember</h3>
+            <p>Respect other members. Staff decisions are final during active incidents. Preserve screenshots and report issues to the staff channel.</p>
+          </div>
+
+          <div>
+            <h4 style="margin:0 0 8px 0">Reporting and appeals</h4>
+            <p style="color:var(--muted);font-size:13px;margin:0">
+              To report a violation, include timestamps, screenshots, and a short description. For bans or suspensions, submit an appeal with evidence and a clear explanation. Appeals are reviewed within a reasonable timeframe.
+            </p>
+          </div>
+
+          <div style="margin-top:12px">
+            <h4 style="margin:0 0 8px 0">Event conduct</h4>
+            <p style="color:var(--muted);font-size:13px;margin:0">
+              Players must follow event rules and staff directions. Match disputes should be reported immediately with evidence. Unsportsmanlike conduct may result in removal from events.
+            </p>
+          </div>
+
+          <div class="note">
+            Staff contact: use the staff channel for urgent issues. For privacy-sensitive incidents, message a staff member directly.
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      Enforcement policy updated for clarity. Questions about these rules can be directed to the leadership team.
+    </footer>
+  </div>
+</body>
+</html>
