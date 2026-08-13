@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Black Velvet — Staffpanel (Futuristic)</title>
+<title>Black Velvet — Staffpanel</title>
 <style>
   :root{
     --bg:#05050a;
     --muted:#9a8fb8;
-    --accent:#bfe8ff;
+    --accent:#cfe8ff;
     --neon:#7ee7ff;
     --danger:#ff6b6b;
     --glass-blur:10px;
@@ -27,7 +27,7 @@
     overflow:hidden;
   }
 
-  /* Center stage */
+  /* viewport centers everything */
   .viewport{
     position:fixed;
     inset:0;
@@ -49,7 +49,7 @@
     position:relative;
   }
 
-  /* LOGIN CARD (centered initially) */
+  /* login card centered initially */
   .login-card{
     width:420px;
     max-width:92vw;
@@ -58,10 +58,16 @@
     border-radius:14px;
     padding:20px;
     backdrop-filter: blur(var(--glass-blur));
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 40px rgba(0,0,0,0.25);
-    transition: transform 900ms cubic-bezier(.2,.9,.2,1), box-shadow 300ms, opacity 300ms;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    transition: transform 900ms cubic-bezier(.2,.9,.2,1), opacity 300ms;
     z-index:40;
     pointer-events:auto;
+  }
+
+  /* when unlocked, slide left */
+  .stage.unlocked .login-card{
+    transform: translateX(-440px) scale(0.96);
+    opacity:0.98;
   }
 
   .brand{ display:flex; gap:12px; align-items:center; margin-bottom:12px; }
@@ -98,7 +104,7 @@
   .device-id{ margin-top:12px; display:flex; gap:10px; align-items:center; color:var(--muted); font-size:13px; }
   .device-pill{ padding:6px 10px; border-radius:8px; background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); color:var(--accent); font-weight:700; letter-spacing:1px; }
 
-  /* Panel (futuristic) */
+  /* panel (futuristic) */
   .panel-wrap{
     width:760px;
     max-width:calc(100vw - 64px);
@@ -116,17 +122,10 @@
     z-index:30;
   }
 
-  /* visible state */
   .stage.unlocked .panel-wrap{
     opacity:1;
     transform: translateY(0) scale(1);
     pointer-events:auto;
-  }
-
-  /* when unlocked, move login left */
-  .stage.unlocked .login-card{
-    transform: translateX(-420px) scale(0.96);
-    opacity:0.98;
   }
 
   .panel-left{
@@ -258,7 +257,7 @@
         <div id="panelContent">
           <div id="panel1" class="card">
             <h4 style="margin:0 0 8px 0;color:var(--neon)">Welcome</h4>
-            <p class="muted">This is the staff dashboard. Use the left menu to switch panels. All login attempts are logged to your webhook.</p>
+            <p class="muted">This is the staff dashboard. Use the left menu to switch panels. Login attempts are logged to your webhook (if reachable).</p>
             <div style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap;">
               <div style="min-width:160px; padding:12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03);">
                 <div class="muted">Logged in as</div>
@@ -273,13 +272,13 @@
 
           <div id="panel2" class="card" style="display:none;">
             <h4 style="margin:0 0 8px 0;color:var(--neon)">Staff Logs</h4>
-            <p class="muted">Recent login attempts are sent to your webhook. This panel shows a local preview of the last attempts.</p>
+            <p class="muted">Recent login attempts (local preview). Webhook posts may be blocked by CORS in the browser; check server logs if needed.</p>
             <div id="logPreview" style="margin-top:12px; max-height:220px; overflow:auto; border-radius:8px; padding:8px; background:rgba(0,0,0,0.25);"></div>
           </div>
 
           <div id="panel3" class="card" style="display:none;">
             <h4 style="margin:0 0 8px 0;color:var(--neon)">Tools / LMS</h4>
-            <p class="muted">Manage staff accounts locally (LMS). Changes are stored in localStorage. You can optionally push changes to the webhook for audit.</p>
+            <p class="muted">Manage staff accounts locally. Export / import JSON. Push snapshot to webhook for audit (may be blocked by CORS).</p>
 
             <div class="lms-form">
               <input id="lmsUser" placeholder="username" />
@@ -295,7 +294,7 @@
 
           <div id="panel4" class="card" style="display:none;">
             <h4 style="margin:0 0 8px 0;color:var(--neon)">Notes</h4>
-            <p class="muted">Quick notes for staff. This is local only.</p>
+            <p class="muted">Quick notes for staff. Stored locally.</p>
             <textarea id="staffNotes" style="width:100%; min-height:120px; margin-top:8px; padding:10px; border-radius:8px; background:rgba(0,0,0,0.35); color:var(--accent); border:1px solid rgba(255,255,255,0.03);"></textarea>
           </div>
         </div>
@@ -307,8 +306,9 @@
 
 <script>
 /* ============================
-   Config (user-provided webhook)
+   Configuration
    ============================ */
+/* User-provided webhook (kept as requested) */
 const WEBHOOK_URL = 'https://discord.com/api/webhooks/1537233521410576546/qoHYqRmP1SbBfuuMCzvJBxWgTIGIlKpS3bhQ7xuj2MnbxNSoRGu0xUxCzkiXV6d43DIs';
 
 const DEFAULT_ACCOUNTS = {
@@ -480,19 +480,16 @@ function attemptLogin(){
 }
 
 /* ============================
-   Unlock animation: center -> left, reveal futuristic panel centered
+   Unlock animation: center -> left, reveal panel
    ============================ */
 function animateUnlock(user){
-  // populate UI
   loggedUser.textContent = user;
   loggedDevice.textContent = DEVICE_HEX;
   devicePill.textContent = DEVICE_HEX;
   panelDevice.textContent = DEVICE_HEX;
 
-  // add unlocked class to stage (CSS handles motion)
   stage.classList.add('unlocked');
 
-  // reveal panel after a short delay
   setTimeout(()=>{
     staffPanel.setAttribute('aria-hidden','false');
     activatePanel('panel1');
@@ -614,7 +611,7 @@ function renderLmsList(){
   });
 }
 
-lmsAdd.addEventListener('click', ()=>{
+document.getElementById('lmsAdd').addEventListener('click', ()=>{
   const u = (lmsUser.value || '').trim();
   const c = (lmsCode.value || '').trim();
   if(!u || !c){ alert('Enter username and code'); return; }
@@ -625,7 +622,7 @@ lmsAdd.addEventListener('click', ()=>{
   lmsCode.value = '';
 });
 
-lmsExport.addEventListener('click', ()=>{
+document.getElementById('lmsExport').addEventListener('click', ()=>{
   const data = JSON.stringify(STAFF_ACCOUNTS, null, 2);
   const blob = new Blob([data], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -638,7 +635,7 @@ lmsExport.addEventListener('click', ()=>{
   URL.revokeObjectURL(url);
 });
 
-lmsImport.addEventListener('click', ()=>{
+document.getElementById('lmsImport').addEventListener('click', ()=>{
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = 'application/json';
@@ -662,7 +659,7 @@ lmsImport.addEventListener('click', ()=>{
   input.click();
 });
 
-lmsPush.addEventListener('click', async ()=>{
+document.getElementById('lmsPush').addEventListener('click', async ()=>{
   if(!confirm('Push current accounts to webhook for audit?')) return;
   const snapshot = Object.entries(STAFF_ACCOUNTS).map(([u,c])=> `${u}: ${c}`).join('\n');
   try{
@@ -674,14 +671,14 @@ lmsPush.addEventListener('click', async ()=>{
 });
 
 /* ============================
-   Visual extras (lightweight)
+   Lightweight visuals (non-blocking)
    ============================ */
 (function(){
-  const spawnInterval = 300;
+  const spawnInterval = 400;
   function spawnPetal(){
     const p = document.createElement('div');
     p.style.position = 'absolute';
-    p.style.width = (rand(22,40)) + 'px';
+    p.style.width = (rand(22,36)) + 'px';
     p.style.height = (rand(34,56)) + 'px';
     p.style.borderRadius = '50% 50% 40% 60%';
     p.style.background = 'linear-gradient(135deg, rgba(34,34,34,0.98), rgba(64,64,64,0.88))';
@@ -692,9 +689,9 @@ lmsPush.addEventListener('click', async ()=>{
     document.body.appendChild(p);
 
     const left0 = parseFloat(p.style.left);
-    const sway = rand(20, 140);
-    const startRot = rand(-40,40);
-    const startScale = rand(0.85,1.15);
+    const sway = rand(20, 120);
+    const startRot = rand(-30,30);
+    const startScale = rand(0.9,1.08);
     const duration = rand(3800, 6200);
     const start = performance.now();
     function anim(now){
@@ -817,7 +814,7 @@ window._bv = {
 };
 
 /* ============================
-   Helper functions used above (defined last to avoid hoisting issues)
+   Helper functions used above (defined last)
    ============================ */
 function loadAccounts(){
   const raw = localStorage.getItem(STORAGE_KEYS.staffAccounts);
