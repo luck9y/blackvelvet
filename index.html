@@ -1,568 +1,309 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Black Velvet Clan — Home</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Black Velvet — Home</title>
+  <style>
+    :root{
+      --bg:#0b0b0d;
+      --panel:#0f0f11;
+      --accent:#bfa6ff;
+      --muted:#9a8fb8;
+      --glass: rgba(255,255,255,0.03);
+      --glass-2: rgba(255,255,255,0.02);
+      --btn-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.25));
+      --btn-border: rgba(255,255,255,0.06);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
 
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    html,body{
+      height:100%;
+      margin:0;
+      background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(191,166,255,0.06), transparent 8%),
+        radial-gradient(900px 500px at 90% 90%, rgba(255,120,150,0.03), transparent 6%),
+        var(--bg);
+      color:#e9e6ef;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
 
-<style>
-  :root{
-    /* DARK (default) */
-    --bg-top: #050506;
-    --bg-bottom: #0b0b0d;
-    --panel-bg: rgba(6,6,8,0.92);
-    --muted: #9aa4b2;
-    --accent: #ffffff;
-    --glass: rgba(255,255,255,0.03);
-    --shadow: rgba(0,0,0,0.6);
-    --menu-w:320px;
-    --radius:14px;
-  }
+    /* Layout */
+    .wrap{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:48px 24px;
+      box-sizing:border-box;
+    }
 
-  /* LIGHT overrides */
-  :root[data-theme="light"]{
-    --bg-top: #f3f4f6;
-    --bg-bottom: #e6e7ea;
-    --panel-bg: rgba(255,255,255,0.95);
-    --muted: #6f7782;
-    --accent: #0b0f14;
-    --glass: rgba(0,0,0,0.04);
-    --shadow: rgba(11,15,20,0.06);
-  }
+    .card{
+      width:980px;
+      max-width:96%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.18));
+      border-radius:18px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.03);
+    }
 
-  /* Page basics */
-  html,body{
-    height:100%;
-    margin:0;
-    overflow:hidden; /* prevent page scrollbars */
-    background:linear-gradient(180deg,var(--bg-top) 0%, var(--bg-bottom) 100%);
-    color:var(--accent);
-    font-family:Inter,system-ui,Arial,sans-serif;
-    -webkit-font-smoothing:antialiased;
-  }
+    /* Left panel */
+    .left{
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.12)),
+        url('') center/cover no-repeat;
+      padding:28px;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      align-items:center;
+      justify-content:flex-start;
+      position:relative;
+    }
 
-  .app{display:flex;height:100vh;align-items:stretch;min-height:0}
+    .logo{
+      width:120px;
+      height:120px;
+      border-radius:12px;
+      background:linear-gradient(135deg, rgba(191,166,255,0.12), rgba(255,120,150,0.06));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      letter-spacing:1px;
+      color:var(--accent);
+      font-size:20px;
+      border:1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+    }
 
-  /* Left menu */
-  nav.menu{
-    width:var(--menu-w);
-    min-width:var(--menu-w);
-    background:var(--panel-bg);
-    border-right:1px solid var(--glass);
-    padding:28px 22px;
-    box-sizing:border-box;
-    display:flex;
-    flex-direction:column;
-    gap:18px;
-    box-shadow: 0 12px 40px var(--shadow);
-    backdrop-filter: blur(6px);
-  }
+    .title{
+      text-align:center;
+      font-size:18px;
+      color:#efeaf8;
+      margin-top:6px;
+    }
 
-  .brand{display:flex;align-items:center;gap:12px;margin-bottom:6px}
-  .logo{
-    width:68px;height:68px;border-radius:12px;
-    background:linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-    display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--accent);font-family:'Press Start 2P',cursive;font-size:16px;
-    box-shadow:0 8px 24px rgba(0,0,0,0.12)
-  }
-  .brand h1{font-family:'Press Start 2P',cursive;font-size:12px;margin:0;line-height:1;color:var(--accent)}
-  .brand p{margin:0;color:var(--muted);font-size:11px}
+    .subtitle{
+      font-size:12px;
+      color:var(--muted);
+      text-align:center;
+    }
 
-  /* Menu buttons (bright, single-line) */
-  .menu-list{display:flex;flex-direction:column;gap:10px;margin-top:6px}
-  .menu-item{
-    display:block;border-radius:12px;padding:14px 16px;border:1px solid var(--glass);
-    background:transparent;
-    cursor:pointer;user-select:none;transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
-    color:var(--accent);font-weight:800;font-size:14px;text-decoration:none;
-  }
-  .menu-item:hover{ transform:translateX(6px); box-shadow:0 14px 30px var(--shadow) }
-  .menu-item.active{
-    background:linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-    box-shadow:0 18px 60px rgba(0,0,0,0.12);
-    transform:none;
-  }
+    /* Center content */
+    .main{
+      padding:34px 36px;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      position:relative;
+    }
 
-  .menu-label{display:block}
-  .menu-sub{color:var(--muted);font-size:12px;margin-top:8px;padding-left:6px}
+    .button-group{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:center;
+    }
 
-  /* Description area under active button */
-  .menu-desc-wrap{margin-top:6px;padding:14px;border-radius:12px;background:var(--panel-bg);border:1px solid var(--glass);color:var(--muted);font-size:13px;line-height:1.45}
-  .menu-desc-title{font-weight:800;color:var(--accent);margin-bottom:6px}
-  .menu-desc-text{color:var(--muted)}
+    .btn{
+      -webkit-appearance:none;
+      appearance:none;
+      border:1px solid var(--btn-border);
+      background:var(--btn-bg);
+      color:#efeaf8;
+      padding:12px 16px;
+      border-radius:10px;
+      font-size:14px;
+      cursor:pointer;
+      transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+      backdrop-filter: blur(6px) saturate(120%);
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+    }
 
-  .menu-footer{margin-top:auto;font-size:11px;color:var(--muted);display:flex;flex-direction:column;gap:8px}
-  .small-cta{display:inline-block;padding:10px 12px;border-radius:10px;background:transparent;border:1px solid var(--glass);color:var(--muted);text-decoration:none;font-weight:700;font-size:12px}
-  .small-cta:hover{background:rgba(255,255,255,0.02);color:var(--accent)}
+    .btn:active{ transform:translateY(1px) scale(.998); }
 
-  /* Theme toggle */
-  .theme-toggle{
-    display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;border:1px solid var(--glass);background:transparent;color:var(--muted);font-weight:700;font-size:13px;cursor:pointer;
-  }
-  .theme-toggle .label{min-width:120px;text-align:left}
-  .theme-toggle .mode-dot{
-    width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 6px 18px rgba(0,0,0,0.2)
-  }
+    .btn:hover{
+      transform:translateY(-4px);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+    }
 
-  /* Main content */
-  main.content{
-    position:relative;flex:1;overflow:hidden;display:flex;flex-direction:column;
-  }
+    /* Staff Login special styling */
+    .btn.staff{
+      border:1px solid rgba(191,166,255,0.18);
+      background: linear-gradient(180deg, rgba(191,166,255,0.06), rgba(191,166,255,0.02));
+      color:#fff;
+      position:relative;
+      overflow:visible;
+    }
 
-  /* Canvas background container */
-  .bg-wrap{position:absolute;inset:0;z-index:0;pointer-events:none}
-  canvas#bgCanvas{width:100%;height:100%;display:block}
+    /* subtle pulse on hover to match petals */
+    .btn.staff::after{
+      content:"";
+      position:absolute;
+      inset:-6px;
+      border-radius:12px;
+      background: radial-gradient(circle at 30% 20%, rgba(191,166,255,0.06), transparent 20%),
+                  radial-gradient(circle at 70% 80%, rgba(255,120,150,0.03), transparent 18%);
+      opacity:0;
+      transition:opacity .28s ease, transform .28s ease;
+      transform:scale(.96);
+      pointer-events:none;
+    }
 
-  /* Foreground content area scrolls internally */
-  .foreground{position:relative;z-index:2;padding:40px;display:flex;gap:28px;align-items:flex-start;height:100%;box-sizing:border-box;overflow:auto}
-  .hero{
-    flex:1;max-width:980px;background:var(--panel-bg);border-radius:14px;padding:28px;border:1px solid var(--glass);box-shadow:0 18px 60px var(--shadow)
-  }
-  .hero h2{font-family:'Press Start 2P',cursive;font-size:18px;margin:0 0 12px 0;color:var(--accent)}
-  .hero p{color:var(--muted);margin:0 0 18px 0;line-height:1.5}
+    .btn.staff:hover::after{
+      opacity:1;
+      transform:scale(1.02);
+    }
 
-  .quick-links{display:flex;flex-wrap:wrap;gap:12px}
-  .quick{
-    padding:10px 14px;border-radius:10px;background:transparent;color:var(--accent);font-weight:800;text-decoration:none;font-size:13px;border:1px solid var(--glass)
-  }
+    /* small icon */
+    .icon{
+      width:18px;
+      height:18px;
+      display:inline-block;
+      border-radius:4px;
+      background:linear-gradient(180deg, var(--accent), #ff78a0);
+      box-shadow: 0 4px 10px rgba(191,166,255,0.18);
+    }
 
-  .panel{
-    width:360px;min-width:260px;background:var(--panel-bg);border-radius:12px;padding:18px;border:1px solid var(--glass);box-shadow:0 12px 40px var(--shadow)
-  }
-  .panel h3{margin:0 0 8px 0;font-size:14px;color:var(--accent)}
-  .panel p{color:var(--muted);font-size:13px;margin:0 0 12px 0}
+    /* Info / rules box */
+    .panel{
+      margin-top:8px;
+      background:var(--glass);
+      border-radius:12px;
+      padding:14px;
+      color:var(--muted);
+      font-size:13px;
+      border:1px solid rgba(255,255,255,0.02);
+    }
 
-  /* Footer small */
-  .site-footer{padding:18px;color:var(--muted);font-size:12px;text-align:center}
+    /* Footer */
+    .footer{
+      margin-top:auto;
+      font-size:12px;
+      color:var(--muted);
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:center;
+      padding-bottom:6px;
+    }
 
-  /* Mobile adjustments */
-  @media (max-width:980px){
-    nav.menu{display:none}
-    .foreground{padding:18px}
-    .panel{display:none}
-  }
-</style>
+    /* Responsive */
+    @media (max-width:880px){
+      .card{ grid-template-columns: 1fr; }
+      .left{ flex-direction:row; gap:12px; padding:18px; align-items:center; justify-content:flex-start; }
+      .logo{ width:84px; height:84px; font-size:16px; }
+      .main{ padding:20px; }
+    }
+  </style>
 </head>
 <body>
-  <div class="app" role="application" aria-label="Black Velvet Clan Home">
-    <!-- Left menu -->
-    <nav class="menu" aria-label="Main menu">
-      <div class="brand" aria-hidden="false">
-        <div class="logo">BV</div>
-        <div>
-          <h1>BLACK VELVET</h1>
-          <p>Clan • Community • Competition</p>
+  <div class="wrap">
+    <div class="card" role="main" aria-label="Black Velvet Home">
+      <aside class="left" aria-hidden="false">
+        <div class="logo" aria-hidden="true">BV</div>
+        <div style="text-align:center;">
+          <div class="title">Black Velvet</div>
+          <div class="subtitle">A refined community experience</div>
         </div>
-      </div>
+      </aside>
 
-      <div class="menu-list" role="menu" aria-label="Navigation">
-        <div class="menu-item active" data-key="rules" role="menuitem" tabindex="0">
-          <div class="menu-label">Rules</div>
-          <div class="menu-sub">Server rules, enforcement tiers, and reporting.</div>
+      <section class="main" aria-label="Main navigation">
+        <h2 style="margin:0;font-size:16px;color:#efeaf8;">Welcome</h2>
+
+        <div class="button-group" role="navigation" aria-label="Primary actions">
+          <button class="btn" onclick="navigate('rules.html')" aria-label="Read Rules">
+            <span class="icon" style="background:linear-gradient(180deg,#9f8bff,#cdb8ff);"></span>
+            Read Rules
+          </button>
+
+          <button class="btn" onclick="navigate('ranks.html')" aria-label="View Ranks">
+            <span class="icon" style="background:linear-gradient(180deg,#7fd3ff,#a6e7ff);"></span>
+            View Ranks
+          </button>
+
+          <button class="btn" onclick="navigate('staffapply.html')" aria-label="Apply to Staff">
+            <span class="icon" style="background:linear-gradient(180deg,#ffd38a,#ffb86b);"></span>
+            Apply to Staff
+          </button>
+
+          <button class="btn" onclick="navigate('staffpolicies.html')" aria-label="Staff Policies">
+            <span class="icon" style="background:linear-gradient(180deg,#c7f7c7,#9fe6a6);"></span>
+            Staff Policies
+          </button>
+
+          <!-- Staff Login button added inline with the other nav buttons -->
+          <button class="btn staff" id="staffLoginBtn" onclick="navigate('stafflogin.html')" aria-label="Staff Login">
+            <span class="icon" style="background:linear-gradient(180deg,#bfa6ff,#ff78a0);"></span>
+            Staff Login
+          </button>
         </div>
 
-        <div class="menu-item" data-key="ranks" role="menuitem" tabindex="0">
-          <div class="menu-label">Ranks</div>
-          <div class="menu-sub">Clan rank directory and tryout info.</div>
-        </div>
-
-        <div class="menu-item" data-key="staffapp" role="menuitem" tabindex="0">
-          <div class="menu-label">Staff Application</div>
-          <div class="menu-sub">Apply to join staff — leadership reviews submissions.</div>
-        </div>
-
-        <div class="menu-item" data-key="staffrules" role="menuitem" tabindex="0">
-          <div class="menu-label">Staff Rules</div>
-          <div class="menu-sub">Staff conduct, demotion, and removal policies.</div>
-        </div>
-
-        <div class="menu-item" data-key="info" role="menuitem" tabindex="0">
-          <div class="menu-label">More Info</div>
-          <div class="menu-sub">Events, links, and community resources.</div>
-        </div>
-      </div>
-
-      <!-- Description area -->
-      <div id="menuDescription" class="menu-desc-wrap" aria-live="polite">
-        <div class="menu-desc-title">Rules</div>
-        <div class="menu-desc-text">Clear, fair, and enforced. Read the server rules and enforcement tiers. Follow them to keep the community safe and fun.</div>
-      </div>
-
-      <div class="menu-footer" aria-hidden="false">
-        <button id="themeToggle" class="theme-toggle" aria-pressed="false" title="Toggle theme">
-          <div class="mode-dot" aria-hidden="true"></div>
-          <div class="label">Toggle Light / Dark</div>
-        </button>
-
-        <a class="small-cta" href="discord.html">Join Discord</a>
-        <a class="small-cta" href="contact.html">Contact Leadership</a>
-        <div style="margin-top:8px;color:var(--muted);font-size:11px">Built by Rin • Reborn in the flames</div>
-      </div>
-    </nav>
-
-    <!-- Main content + animated background -->
-    <main class="content" aria-live="polite">
-      <div class="bg-wrap" aria-hidden="true">
-        <canvas id="bgCanvas"></canvas>
-      </div>
-
-      <div class="foreground">
-        <section class="hero" aria-labelledby="heroTitle">
-          <h2 id="heroTitle">Welcome to Black Velvet Clan</h2>
-          <p>Black-first aesthetic with a velvet-flower background. Use the menu on the left to navigate. Click anywhere on the background to create a velvet bloom — petals unfurl in a soft pulse. In dark mode petals are white; in light mode petals are dark.</p>
-
-          <div class="quick-links" role="navigation" aria-label="Quick links">
-            <a class="quick" href="rules.html">Read Rules</a>
-            <a class="quick" href="ranks.html">View Ranks</a>
-            <a class="quick" href="staffapp.html">Apply to Staff</a>
-            <a class="quick" href="staffrules.html">Staff Policies</a>
+        <div class="panel" role="region" aria-label="Quick info">
+          <strong style="color:#efeaf8;">Quick tips</strong>
+          <div style="margin-top:6px;">
+            Keep your credentials secure. Staff login is restricted to approved members.
           </div>
+        </div>
 
-          <div style="margin-top:18px;color:var(--muted);font-size:13px">
-            <strong>Tip</strong>: Open a tryout ticket to be considered for competitive ranks. Be respectful — staff decisions are final during active incidents.
-          </div>
-        </section>
-
-        <aside class="panel" aria-labelledby="panelTitle">
-          <h3 id="panelTitle">Latest</h3>
-          <p>Server updates, events, and announcements appear here. Check Discord for live scheduling and event signups.</p>
-
-          <div style="margin-top:12px">
-            <strong style="font-size:13px">Founders</strong>
-            <div style="color:var(--muted);font-size:13px;margin-top:6px">jsfeelings • Suoaz</div>
-          </div>
-
-          <div style="margin-top:12px">
-            <strong style="font-size:13px">Credits</strong>
-            <div style="color:var(--muted);font-size:13px;margin-top:6px">Design & site by Rin</div>
-          </div>
-        </aside>
-      </div>
-
-      <div class="site-footer" role="contentinfo">
-        © Black Velvet Clan — Respect the rules. Questions? Reach leadership in the staff channel.
-      </div>
-    </main>
+        <div class="footer" aria-hidden="false">
+          <div>© <span id="year"></span> Black Velvet</div>
+          <div style="opacity:.6;">•</div>
+          <div style="opacity:.7;">Privacy</div>
+        </div>
+      </section>
+    </div>
   </div>
 
-<script>
-/* Canvas: black velvet petals on dark background (white petals in dark mode,
-   dark petals in light mode). Theme toggle persists and reseeds petals. */
-
-(() => {
-  const canvas = document.getElementById('bgCanvas');
-  const ctx = canvas.getContext('2d', { alpha: true });
-
-  let DPR = Math.max(1, window.devicePixelRatio || 1);
-  let w = canvas.width = innerWidth;
-  let h = canvas.height = innerHeight;
-  canvas.width = w * DPR;
-  canvas.height = h * DPR;
-  canvas.style.width = w + 'px';
-  canvas.style.height = h + 'px';
-  ctx.scale(DPR, DPR);
-
-  function rand(min, max){ return Math.random() * (max - min) + min; }
-
-  // Petal storage
-  let petals = [];
-  let blooms = [];
-  const pointer = { x: w/2, y: h/2, px: w/2, py: h/2 };
-
-  // Base count depends on size
-  let BASE_COUNT = Math.max(8, Math.round((w*h)/140000));
-
-  // Color sets
-  const PETAL_COLORS_WHITE = [
-    'rgba(255,255,255,0.98)',
-    'rgba(245,245,245,0.88)',
-    'rgba(220,220,220,0.75)'
-  ];
-  const PETAL_COLORS_DARK = [
-    'rgba(0,0,0,0.98)',
-    'rgba(18,12,12,0.88)',
-    'rgba(36,20,20,0.75)'
-  ];
-
-  function createPetalFromColors(colors, x = rand(0,w), y = rand(0,h)){
-    return {
-      x, y,
-      vx: rand(-0.12,0.12),
-      vy: rand(-0.03,0.08),
-      rot: rand(0,Math.PI*2),
-      vr: rand(-0.008,0.008),
-      size: rand(6,18),
-      color: colors[Math.floor(Math.random()*colors.length)],
-      life: rand(700,1600),
-      age: 0
-    };
-  }
-
-  function seedPetals(){
-    petals = [];
-    const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    const colors = theme === 'light' ? PETAL_COLORS_DARK : PETAL_COLORS_WHITE;
-    BASE_COUNT = Math.max(8, Math.round((w*h)/140000));
-    for(let i=0;i<BASE_COUNT;i++) petals.push(createPetalFromColors(colors));
-  }
-
-  // Bloom spawn uses current theme colors
-  function spawnBloom(x,y){
-    const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    const colors = theme === 'light' ? PETAL_COLORS_DARK : PETAL_COLORS_WHITE;
-
-    blooms.push({ x, y, t:0, max: Math.max(w,h) * 0.45 });
-
-    const count = 18 + Math.floor(rand(0,12));
-    for(let i=0;i<count;i++){
-      const angle = Math.PI*2 * Math.random();
-      const speed = rand(1.2,3.2);
-      const p = {
-        x, y,
-        vx: Math.cos(angle) * speed + rand(-0.4,0.4),
-        vy: Math.sin(angle) * speed + rand(-0.4,0.4),
-        rot: rand(0,Math.PI*2),
-        vr: rand(-0.06,0.06),
-        size: rand(6,14),
-        color: colors[Math.floor(Math.random()*colors.length)],
-        life: rand(60,120),
-        age: 0
-      };
-      petals.push(p);
-    }
-  }
-
-  // Resize handling
-  function resize(){
-    w = canvas.width = innerWidth;
-    h = canvas.height = innerHeight;
-    canvas.width = w * DPR;
-    canvas.height = h * DPR;
-    canvas.style.width = w + 'px';
-    canvas.style.height = h + 'px';
-    ctx.setTransform(DPR,0,0,DPR,0,0);
-    BASE_COUNT = Math.max(8, Math.round((w*h)/140000));
-    seedPetals();
-  }
-  window.addEventListener('resize', resize);
-
-  // Pointer helpers
-  function getPointerPos(e){
-    const rect = canvas.getBoundingClientRect();
-    const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
-    const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
-    return { x, y };
-  }
-
-  function onPointer(e){
-    const pos = getPointerPos(e);
-    spawnBloom(pos.x, pos.y);
-  }
-  window.addEventListener('pointerdown', onPointer);
-  window.addEventListener('touchstart', onPointer, {passive:true});
-
-  window.addEventListener('pointermove', (e) => {
-    const pos = getPointerPos(e);
-    pointer.x = pos.x;
-    pointer.y = pos.y;
-  });
-
-  // Animation loop
-  let last = performance.now();
-  function tick(now){
-    const dt = Math.min(40, now - last) / 16.666;
-    last = now;
-
-    pointer.px += (pointer.x - pointer.px) * 0.08;
-    pointer.py += (pointer.y - pointer.py) * 0.08;
-
-    ctx.clearRect(0,0,w,h);
-
-    // background gradient from CSS variables
-    const bgTop = getComputedStyle(document.documentElement).getPropertyValue('--bg-top').trim() || '#050506';
-    const bgBottom = getComputedStyle(document.documentElement).getPropertyValue('--bg-bottom').trim() || '#0b0b0d';
-    const g = ctx.createLinearGradient(0,0,0,h);
-    g.addColorStop(0, bgTop);
-    g.addColorStop(1, bgBottom);
-    ctx.fillStyle = g;
-    ctx.fillRect(0,0,w,h);
-
-    // blooms (soft ring + center)
-    for(let i=blooms.length-1;i>=0;i--){
-      const b = blooms[i];
-      b.t += dt;
-      const progress = b.t / 30;
-      const radius = Math.min(b.max, progress * b.max);
-      const alpha = Math.max(0, 0.9 * (1 - progress));
-      if(alpha <= 0.01){ blooms.splice(i,1); continue; }
-
-      ctx.beginPath();
-      ctx.arc(b.x, b.y, radius, 0, Math.PI*2);
-      // subtle ring color depends on theme (use near-black in both but low alpha)
-      ctx.strokeStyle = `rgba(0,0,0,${alpha*0.06})`;
-      ctx.lineWidth = 2 + (1 - progress) * 6;
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.arc(b.x, b.y, radius * 0.28, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(0,0,0,${alpha*0.02})`;
-      ctx.fill();
+  <script>
+    // Basic navigation helper — keeps links consistent and easy to update.
+    function navigate(path){
+      // If you prefer opening in a new tab for staff login, change to window.open(path, '_blank')
+      window.location.href = path;
     }
 
-    // petals
-    for(let i=petals.length-1;i>=0;i--){
-      const p = petals[i];
-      const dx = pointer.px - p.x;
-      const dy = pointer.py - p.y;
-      const dist = Math.max(20, Math.hypot(dx,dy));
-      const force = 6 / (dist * dist);
-      p.vx += dx * force * 0.02 * dt;
-      p.vy += dy * force * 0.02 * dt;
-
-      p.rot += p.vr * dt;
-      p.vx *= 0.993;
-      p.vy *= 0.993;
-
-      p.x += p.vx * dt;
-      p.y += p.vy * dt;
-
-      p.age += dt;
-      if(p.age > p.life || p.x < -60 || p.x > w+60 || p.y < -60 || p.y > h+60){
-        petals.splice(i,1);
-        // keep density stable
-        if(petals.length < BASE_COUNT * 1.6){
-          const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-          const colors = theme === 'light' ? PETAL_COLORS_DARK : PETAL_COLORS_WHITE;
-          petals.push(createPetalFromColors(colors));
-        }
-        continue;
+    // Accessibility: allow Enter key to activate focused buttons
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' && document.activeElement && document.activeElement.classList.contains('btn')){
+        document.activeElement.click();
       }
+    });
 
-      // draw petal as rotated ellipse with velvet shading
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rot);
-      const grad = ctx.createLinearGradient(-p.size, -p.size*0.2, p.size, p.size*0.2);
-      grad.addColorStop(0, p.color);
-      grad.addColorStop(1, 'rgba(10,6,8,0.02)');
-      ctx.fillStyle = grad;
-      ctx.globalAlpha = Math.max(0.06, 1 - (p.age / p.life));
-      ctx.beginPath();
-      ctx.ellipse(0, 0, p.size, p.size * 0.6, 0, 0, Math.PI*2);
-      ctx.fill();
+    // Small runtime polish
+    document.getElementById('year').textContent = new Date().getFullYear();
 
-      // tiny sheen for depth (very subtle)
-      ctx.beginPath();
-      ctx.fillStyle = 'rgba(255,255,255,0.02)';
-      ctx.ellipse(-p.size*0.18, -p.size*0.12, p.size*0.22, p.size*0.1, 0, 0, Math.PI*2);
-      ctx.fill();
+    // Optional: subtle focus ring for keyboard users
+    document.addEventListener('focusin', (e) => {
+      if(e.target.classList && e.target.classList.contains('btn')){
+        e.target.style.outline = '2px solid rgba(191,166,255,0.18)';
+        e.target.style.outlineOffset = '3px';
+      }
+    });
+    document.addEventListener('focusout', (e) => {
+      if(e.target.classList && e.target.classList.contains('btn')){
+        e.target.style.outline = 'none';
+      }
+    });
 
-      ctx.restore();
-      ctx.globalAlpha = 1;
+    // If you want to gate the staff login button client-side (visual only),
+    // uncomment and adapt the snippet below. Server-side auth is required for real protection.
+    /*
+    const isStaff = false; // replace with real check
+    if(!isStaff){
+      const btn = document.getElementById('staffLoginBtn');
+      btn.setAttribute('title', 'Staff login restricted');
+      // Optionally hide:
+      // btn.style.display = 'none';
     }
-
-    // faint texture lines
-    ctx.fillStyle = 'rgba(0,0,0,0.03)';
-    for(let y=0;y<h;y+=36) ctx.fillRect(0,y,w,0.6);
-
-    requestAnimationFrame(tick);
-  }
-
-  // initial seed
-  seedPetals();
-  requestAnimationFrame(tick);
-
-  // Expose reseed for theme changes
-  window.__reseedPetals = seedPetals;
-
-  // helper to create petals with current theme colors
-  function createPetalFromColors(colors){
-    return {
-      x: rand(0,w),
-      y: rand(0,h),
-      vx: rand(-0.12,0.12),
-      vy: rand(-0.03,0.08),
-      rot: rand(0,Math.PI*2),
-      vr: rand(-0.008,0.008),
-      size: rand(6,18),
-      color: colors[Math.floor(Math.random()*colors.length)],
-      life: rand(700,1600),
-      age: 0
-    };
-  }
-})();
-
-/* Menu interactions + theme toggle with persistence and cross-page effect */
-(() => {
-  const descriptions = {
-    rules: { title: "Rules", text: "Clear, fair, and enforced. Read the server rules and enforcement tiers. Follow them to keep the community safe and fun." },
-    ranks: { title: "Ranks", text: "Official rank directory. Competitive ranks, progression, and how to try out. Open a ticket to start a tryout." },
-    staffapp: { title: "Staff Application", text: "Apply to join staff. Leadership reviews every submission. Be honest and include availability and experience." },
-    staffrules: { title: "Staff Rules", text: "Staff-specific conduct and enforcement: warnings, demotions, and permanent removal policies." },
-    info: { title: "More Info", text: "General information, events, and community resources. Check Discord for live updates and schedules." }
-  };
-
-  const buttons = Array.from(document.querySelectorAll('.menu-item'));
-  const descTitle = document.querySelector('.menu-desc-title');
-  const descText = document.querySelector('.menu-desc-text');
-
-  function setActive(key){
-    buttons.forEach(btn => {
-      if(btn.dataset.key === key) btn.classList.add('active');
-      else btn.classList.remove('active');
-    });
-    const d = descriptions[key] || { title: '', text: '' };
-    descTitle.textContent = d.title;
-    descText.textContent = d.text;
-  }
-
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      setActive(btn.dataset.key);
-      const map = {
-        rules: 'rules.html',
-        ranks: 'ranks.html',
-        staffapp: 'staffapp.html',
-        staffrules: 'staffrules.html',
-        info: 'info.html'
-      };
-      const url = map[btn.dataset.key];
-      if(url) setTimeout(()=> location.href = url, 220);
-    });
-    btn.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
-    });
-  });
-
-  // Theme toggle logic
-  const themeToggle = document.getElementById('themeToggle');
-  const root = document.documentElement;
-  const storageKey = 'bv_theme';
-
-  function applyTheme(theme){
-    if(theme === 'light') root.setAttribute('data-theme','light');
-    else root.removeAttribute('data-theme');
-    themeToggle.setAttribute('aria-pressed', theme === 'dark' ? 'false' : 'true');
-    localStorage.setItem(storageKey, theme);
-    // reseed petals to match new theme
-    if(window.__reseedPetals) window.__reseedPetals();
-  }
-
-  // load saved theme (default dark)
-  const saved = localStorage.getItem(storageKey) || 'dark';
-  applyTheme(saved);
-
-  themeToggle.addEventListener('click', () => {
-    const current = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    const next = current === 'light' ? 'dark' : 'light';
-    applyTheme(next);
-  });
-
-  // initial active
-  setActive('rules');
-})();
-</script>
+    */
+  </script>
 </body>
 </html>
