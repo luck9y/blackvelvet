@@ -1,257 +1,524 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Black Velvet — Staff Application</title>
 
 <style>
   :root{
     --bg:#050506;
-    --panel:#0f0f11;
+    --card:#0f0f11;
+    --glass: rgba(255,255,255,0.03);
     --accent:#bfa6ff;
     --muted:#9a8fb8;
-    --glass: rgba(255,255,255,0.03);
-    --btn-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.25));
-    --btn-border: rgba(255,255,255,0.06);
-    font-family: Inter, system-ui;
+    --text:#e9e6ef;
+    --btn-bg: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.28));
+    --btn-border: rgba(255,255,255,0.08);
+    --btn-hover: rgba(255,255,255,0.06);
+    --success: #7ee787;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   }
 
-  body{
-    margin:0;
-    background:var(--bg);
-    color:#e9e6ef;
-    overflow-x:hidden;
-  }
-
-  .wrap{
+  /* Page */
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;}
+  .page{
     min-height:100vh;
     display:flex;
     align-items:center;
     justify-content:center;
-    padding:40px;
-  }
-
-  .card{
-    width:980px;
-    max-width:96%;
-    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.18));
-    border-radius:18px;
-    border:1px solid rgba(255,255,255,0.03);
-    box-shadow:0 10px 40px rgba(0,0,0,0.7);
-    display:grid;
-    grid-template-columns:1fr 280px;
+    padding:48px;
     position:relative;
     overflow:hidden;
   }
 
-  .main{
-    padding:34px 36px;
+  /* Outside petals (fixed, behind card) */
+  .petal-layer{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    overflow:hidden;
+  }
+  .petal{
+    position:absolute;
+    width:40px;
+    height:60px;
+    border-radius:50% 50% 40% 60% / 60% 60% 40% 40%;
+    background:linear-gradient(135deg, rgba(18,18,18,0.98), rgba(36,36,36,0.9) 60%, rgba(70,70,70,0.6));
+    filter:drop-shadow(0 10px 30px rgba(0,0,0,0.7));
+    opacity:0.95;
+    transform-origin:center;
+    animation:petalFloat 3.6s forwards cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes petalFloat{
+    0%{ transform:translateY(0) rotate(0deg) scale(1); opacity:1; }
+    60%{ transform:translateY(-120px) rotate(40deg) scale(1.02); opacity:0.9; }
+    100%{ transform:translateY(-320px) rotate(120deg) scale(0.9); opacity:0; }
+  }
+
+  /* Card */
+  .card{
+    width:980px;
+    max-width:96%;
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.22));
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.04);
+    box-shadow:0 18px 60px rgba(0,0,0,0.7);
+    display:grid;
+    grid-template-columns:1fr 320px;
+    gap:0;
+    position:relative;
+    z-index:2;
+    overflow:hidden;
+  }
+
+  /* Left / Form area */
+  .form-area{
+    padding:36px 40px;
     display:flex;
     flex-direction:column;
     gap:18px;
-    z-index:2;
   }
 
-  .sidebar{
-    background:var(--glass);
-    padding:24px;
-    border-left:1px solid rgba(255,255,255,0.03);
+  .title{
     display:flex;
-    flex-direction:column;
-    gap:16px;
+    align-items:center;
+    gap:12px;
   }
-
-  h2{
+  .title h1{
     margin:0;
     font-size:20px;
-    color:#efeaf8;
+    letter-spacing:0.2px;
+    color:var(--text);
+    font-weight:700;
+  }
+  .subtitle{
+    margin:0;
+    color:var(--muted);
+    font-size:13px;
+  }
+
+  /* Form layout: each row has a left check column and right content column */
+  .form{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    margin-top:6px;
+  }
+
+  .row{
+    display:grid;
+    grid-template-columns:36px 1fr;
+    gap:12px;
+    align-items:start;
+  }
+
+  .check{
+    width:36px;
+    height:36px;
+    border-radius:10px;
+    background:linear-gradient(180deg, rgba(191,166,255,0.08), rgba(191,166,255,0.03));
+    border:1px solid rgba(191,166,255,0.12);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--accent);
+    font-weight:700;
+    font-size:13px;
+    margin-top:2px;
+    flex-shrink:0;
+  }
+
+  .field{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
   }
 
   label{
     font-size:13px;
     color:var(--muted);
-    margin-top:6px;
+    margin:0;
+    display:block;
   }
 
-  input, textarea{
-    width:100%;
-    background:var(--panel);
+  input[type="text"], input[type="email"], input[type="number"], textarea{
+    background:var(--card);
     border:1px solid rgba(255,255,255,0.06);
-    border-radius:8px;
-    padding:10px;
-    color:#e9e6ef;
-    font-size:14px;
-    resize:none;
-  }
-
-  textarea{ min-height:80px; }
-
-  .btn{
-    border:1px solid var(--btn-border);
-    background:var(--btn-bg);
-    color:#efeaf8;
-    padding:12px 16px;
+    color:var(--text);
+    padding:12px 14px;
     border-radius:10px;
     font-size:14px;
-    cursor:pointer;
-    box-shadow:0 6px 18px rgba(0,0,0,0.5);
-    transition:0.18s;
+    transition:box-shadow .18s, border-color .18s;
   }
-
-  .btn:hover{
-    transform:translateY(-4px);
-    box-shadow:0 18px 40px rgba(0,0,0,0.6);
+  input:focus, textarea:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 6px 20px rgba(191,166,255,0.12);
   }
+  textarea{ min-height:96px; resize:vertical; }
 
-  .radio-group{
+  /* Role radios inline */
+  .roles{
     display:flex;
-    flex-direction:column;
-    gap:6px;
-    margin-top:6px;
-  }
-
-  .footer{
-    margin-top:20px;
-    font-size:12px;
-    color:var(--muted);
-  }
-
-  .sidebar h3{
-    margin:0;
-    font-size:15px;
-    color:#efeaf8;
-  }
-
-  .sidebar p{
-    font-size:13px;
-    color:var(--muted);
-    line-height:1.4;
-  }
-
-  .nav-buttons{
-    display:flex;
-    gap:8px;
+    gap:12px;
     flex-wrap:wrap;
   }
+  .roles label{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    font-size:13px;
+    color:var(--muted);
+    background:rgba(255,255,255,0.01);
+    padding:8px 10px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.02);
+  }
+  .roles input{ width:14px; height:14px; }
 
-  .nav-buttons .btn{
+  /* Buttons row */
+  .actions{
+    display:flex;
+    gap:12px;
+    margin-top:6px;
+  }
+  .btn{
     flex:1;
-    text-align:center;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:12px 16px;
+    border-radius:12px;
+    border:1px solid var(--btn-border);
+    background:var(--btn-bg);
+    color:var(--text);
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 8px 28px rgba(0,0,0,0.55);
+    transition:transform .18s, box-shadow .18s, background .18s;
+    text-decoration:none;
+    font-size:14px;
+  }
+  .btn:hover{ transform:translateY(-4px); background:var(--btn-hover); box-shadow:0 20px 50px rgba(0,0,0,0.65); }
+  .btn.ghost{ background:transparent; border:1px solid rgba(255,255,255,0.06); box-shadow:none; color:var(--muted); font-weight:600; }
+  .btn.primary{ background:linear-gradient(180deg, rgba(191,166,255,0.14), rgba(191,166,255,0.06)); border-color:rgba(191,166,255,0.28); color:#fff; box-shadow:0 12px 36px rgba(191,166,255,0.06); }
+
+  /* Right / Sidebar */
+  .sidebar{
+    padding:28px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));
+    border-left:1px solid rgba(255,255,255,0.02);
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    align-items:stretch;
   }
 
-  .petal-layer{
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    overflow:hidden;
-    z-index:1;
+  .sidebar .nav{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
   }
 
-  .petal{
-    position:absolute;
-    width:36px;
-    height:56px;
-    border-radius:50% 50% 40% 60% / 60% 60% 40% 40%;
-    background:linear-gradient(135deg, rgba(30,30,30,0.95), rgba(18,18,18,0.85) 60%, rgba(60,60,60,0.6));
-    opacity:0.95;
-    filter:drop-shadow(0 6px 18px rgba(0,0,0,0.6));
-    animation:petalFloat 3s forwards;
+  .sidebar .card{
+    background:transparent;
+    box-shadow:none;
+    border:none;
   }
 
-  @keyframes petalFloat{
-    0%{ transform:translateY(0) rotate(0deg); opacity:1; }
-    100%{ transform:translateY(-200px) rotate(120deg); opacity:0; }
+  .sidebar h3{ margin:0; color:var(--text); font-size:15px; font-weight:700; }
+  .sidebar p{ margin:0; color:var(--muted); font-size:13px; line-height:1.45; }
+
+  /* small helper text */
+  .hint{ font-size:12px; color:var(--muted); }
+
+  /* Responsive */
+  @media (max-width:980px){
+    .card{ grid-template-columns:1fr; }
+    .sidebar{ order:2; }
+    .form-area{ order:1; padding:28px; }
   }
 </style>
 </head>
-
 <body>
-<div class="wrap">
-  <div class="card" id="cardRoot">
+  <div class="petal-layer" id="petalLayer"></div>
 
-    <div class="main">
-      <h2>Staff Application</h2>
-      <p style="color:var(--muted);">Apply to join the staff team. Complete all fields and be honest — leadership reviews every submission.</p>
+  <div class="page">
+    <div class="card" role="main" aria-labelledby="pageTitle">
 
-      <label>Discord Tag</label>
-      <input placeholder="Username#1234">
-      <small style="color:var(--muted);">Provide the exact tag so we can verify your account.</small>
+      <div class="form-area">
+        <div class="title">
+          <h1 id="pageTitle">Staff Application</h1>
+        </div>
+        <p class="subtitle">Complete the form below. Each section has a quick checkmark for clarity — fill everything honestly.</p>
 
-      <label>Age</label>
-      <input placeholder="Your age">
-      <small style="color:var(--muted);">Applicants must meet the minimum age requirement for staff roles.</small>
+        <form class="form" id="applyForm" onsubmit="return false;">
+          <!-- Discord Tag -->
+          <div class="row">
+            <div class="check" aria-hidden>✓</div>
+            <div class="field">
+              <label for="discord">Discord Tag</label>
+              <input id="discord" name="discord" type="text" placeholder="Username#1234" autocomplete="off" />
+              <div class="hint">Provide the exact tag so we can verify your account.</div>
+            </div>
+          </div>
 
-      <label>Timezone</label>
-      <input placeholder="e.g., UTC-5 / America/Chicago">
+          <!-- Age -->
+          <div class="row">
+            <div class="check" aria-hidden>✓</div>
+            <div class="field">
+              <label for="age">Age</label>
+              <input id="age" name="age" type="number" placeholder="Your age" min="13" />
+              <div class="hint">Applicants must meet the community's minimum age requirement.</div>
+            </div>
+          </div>
 
-      <label>Moderation / Staff Experience</label>
-      <textarea placeholder="Describe previous moderation, community management, or relevant experience"></textarea>
+          <!-- Timezone -->
+          <div class="row">
+            <div class="check" aria-hidden>✓</div>
+            <div class="field">
+              <label for="tz">Timezone</label>
+              <input id="tz" name="timezone" type="text" placeholder="e.g., UTC-5 / America/Chicago" />
+            </div>
+          </div>
 
-      <label>Role applying for</label>
-      <div class="radio-group">
-        <label><input type="radio" name="role"> President</label>
-        <label><input type="radio" name="role"> Admin</label>
-        <label><input type="radio" name="role"> Mod</label>
-        <label><input type="radio" name="role"> Helper</label>
+          <!-- Experience -->
+          <div class="row">
+            <div class="check" aria-hidden>✓</div>
+            <div class="field">
+              <label for="exp">Moderation / Staff Experience</label>
+              <textarea id="exp" name="experience" placeholder="Describe previous moderation or community management experience"></textarea>
+              <div class="hint">Include roles, communities, and a short summary of responsibilities.</div>
+            </div>
+          </div>
+
+          <!-- Role -->
+          <div class="row">
+            <div class="check" aria-hidden>✓</div>
+            <div class="field">
+              <label>Role applying for</label>
+              <div class="roles" role="radiogroup" aria-label="Role options">
+                <label><input type="radio" name="role" value="president"> President</label>
+                <label><input type="radio" name="role" value="admin"> Admin</label>
+                <label><input type="radio" name="role" value="mod"> Mod</label>
+                <label><input type="radio" name="role" value="helper"> Helper</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Availability -->
+          <div class="row">
+            <div class="check" aria-hidden>✓</div>
+            <div class="field">
+              <label for="avail">Availability</label>
+              <input id="avail" name="availability" type="text" placeholder="Days/times you are typically available" />
+            </div>
+          </div>
+
+          <!-- Why -->
+          <div class="row">
+            <div class="check" aria-hidden>✓</div>
+            <div class="field">
+              <label for="why">Why do you want to join staff?</label>
+              <textarea id="why" name="why" placeholder="Tell us why you'd be a good fit"></textarea>
+            </div>
+          </div>
+
+          <!-- References -->
+          <div class="row">
+            <div class="check" aria-hidden>✓</div>
+            <div class="field">
+              <label for="refs">References (optional)</label>
+              <input id="refs" name="references" type="text" placeholder="Discord tags or links to previous communities" />
+            </div>
+          </div>
+
+          <!-- Agreement -->
+          <div class="row">
+            <div class="check" aria-hidden>✓</div>
+            <div class="field">
+              <label style="display:flex;align-items:center;gap:10px;">
+                <input id="agree" name="agree" type="checkbox" /> I have read and agree to follow the community and staff rules
+              </label>
+              <div class="hint">You must agree to staff rules to be considered.</div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="row" style="grid-template-columns:1fr;">
+            <div style="height:0"></div>
+            <div class="field">
+              <div class="actions" style="margin-top:6px;">
+                <button class="btn primary" id="submitBtn" type="button">Submit Application</button>
+                <button class="btn ghost" id="clearBtn" type="button">Clear</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Back -->
+          <div class="row" style="grid-template-columns:1fr;">
+            <div style="height:0"></div>
+            <div class="field">
+              <button class="btn" id="backBtn" type="button" onclick="location.href='index.html'">Back to Home</button>
+            </div>
+          </div>
+        </form>
       </div>
 
-      <label>Availability</label>
-      <input placeholder="Days/times you are typically available">
+      <!-- Sidebar -->
+      <aside class="sidebar" aria-label="Sidebar">
+        <div class="nav">
+          <button class="btn" onclick="location.href='rules.html'">Community Rules</button>
+          <button class="btn" onclick="location.href='staffrules.html'">Staff Rules</button>
+          <button class="btn" onclick="location.href='index.html'">Back to Home</button>
+        </div>
 
-      <label>Why do you want to join staff?</label>
-      <textarea placeholder="Tell us why you'd be a good fit"></textarea>
+        <div>
+          <h3>What we look for</h3>
+          <p>Reliability, clear communication, fair judgment, and a willingness to learn. Experience helps but attitude matters most.</p>
+        </div>
 
-      <label>References (optional)</label>
-      <input placeholder="Discord tags or links to previous communities">
+        <div>
+          <h3>Process</h3>
+          <p>Applications are reviewed by leadership. If selected, you'll be invited to a short interview and probation period. Typical response time: 7–14 days.</p>
+        </div>
 
-      <div style="margin-top:10px;">
-        <label><input type="checkbox"> I have read and agree to follow the community and staff rules</label>
-      </div>
+        <div>
+          <h3>Privacy</h3>
+          <p>Application details are visible only to leadership and senior staff. Sensitive incidents are handled privately.</p>
+        </div>
+      </aside>
 
-      <div style="margin-top:14px; display:flex; gap:10px;">
-        <button class="btn">Submit Application</button>
-        <button class="btn">Clear</button>
-      </div>
-
-      <div class="footer">
-        By submitting you confirm the information is accurate to the best of your knowledge.
-      </div>
-
-      <div style="margin-top:20px;">
-        <button class="btn" onclick="location.href='index.html'">Back to Home</button>
-      </div>
     </div>
-
-    <div class="sidebar">
-      <div class="nav-buttons">
-        <button class="btn" onclick="location.href='rules.html'">Community Rules</button>
-        <button class="btn" onclick="location.href='staffrules.html'">Staff Rules</button>
-        <button class="btn" onclick="location.href='index.html'">Back to Home</button>
-      </div>
-
-      <div>
-        <h3>What we look for</h3>
-        <p>Reliability, clear communication, fair judgment, and a willingness to learn. Experience is valued but not required for every role.</p>
-      </div>
-
-      <div>
-        <h3>Process</h3>
-        <p>Applications are reviewed by leadership. If selected, you'll be invited to an interview and a short probation period. Expect a response within 7–14 days.</p>
-      </div>
-
-      <div>
-        <h3>Privacy</h3>
-        <p>Application details are visible only to leadership and senior staff. Sensitive incidents are handled through private channels.</p>
-      </div>
-
-      <div>
-        <h3>Need help?</h3>
-        <p>Contact leadership in the staff channel or message a senior staff member directly.</p>
-      </div>
-    </div>
-
-    <div class="petal-layer" id="petalLayer"></div>
-
   </div>
-</div
+
+<script>
+/* Petal system (outside the card) */
+(function(){
+  const layer = document.getElementById('petalLayer');
+
+  function rand(min,max){ return Math.random()*(max-min)+min; }
+
+  function spawnPetal(x,y){
+    const p = document.createElement('div');
+    p.className = 'petal';
+    // Slight randomization for variety
+    const size = Math.round(rand(34,46));
+    p.style.width = size + 'px';
+    p.style.height = Math.round(size * 1.45) + 'px';
+    p.style.left = (x - size/2) + 'px';
+    p.style.top = (y - size/2) + 'px';
+    p.style.transform = `rotate(${rand(-20,20)}deg)`;
+    p.style.opacity = rand(0.85,1);
+    layer.appendChild(p);
+    // remove after animation
+    setTimeout(()=> p.remove(), 3800 + Math.random()*400);
+  }
+
+  // spawn a few gentle petals on load around the card edges for atmosphere
+  window.addEventListener('load', ()=>{
+    const rect = document.querySelector('.card').getBoundingClientRect();
+    for(let i=0;i<8;i++){
+      const x = rand(rect.left - 80, rect.right + 80);
+      const y = rand(rect.bottom - 20, rect.bottom + 40);
+      setTimeout(()=> spawnPetal(x,y), i*120);
+    }
+  });
+
+  // spawn on click/tap anywhere (outside or inside)
+  document.addEventListener('click', (e)=>{
+    const rect = layer.getBoundingClientRect();
+    spawnPetal(e.clientX - rect.left, e.clientY - rect.top);
+    // spawn a second offset petal for a richer effect
+    setTimeout(()=> spawnPetal(e.clientX - rect.left + rand(-24,24), e.clientY - rect.top + rand(-12,12)), 80);
+  });
+
+  // small periodic ambient petals
+  setInterval(()=>{
+    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+    const x = rand(vw*0.1, vw*0.9);
+    const y = rand(vh*0.85, vh*1.05);
+    spawnPetal(x,y);
+  }, 2200);
+})();
+
+/* Form behavior: simple client-side polish */
+(function(){
+  const form = document.getElementById('applyForm');
+  const submit = document.getElementById('submitBtn');
+  const clear = document.getElementById('clearBtn');
+
+  function showToast(msg, ok){
+    // lightweight inline toast
+    let t = document.createElement('div');
+    t.textContent = msg;
+    t.style.position='fixed';
+    t.style.right='20px';
+    t.style.bottom='20px';
+    t.style.padding='12px 16px';
+    t.style.borderRadius='10px';
+    t.style.background = ok ? 'linear-gradient(90deg,#0f6,#0a3)' : 'linear-gradient(90deg,#f66,#b22)';
+    t.style.color='#041';
+    t.style.boxShadow='0 10px 30px rgba(0,0,0,0.6)';
+    t.style.zIndex=9999;
+    document.body.appendChild(t);
+    setTimeout(()=> t.style.opacity='0', 2200);
+    setTimeout(()=> t.remove(), 3000);
+  }
+
+  submit.addEventListener('click', ()=>{
+    const discord = form.discord.value.trim();
+    const age = form.age.value.trim();
+    const agree = form.agree.checked;
+
+    if(!discord){
+      showToast('Please enter your Discord tag.', false);
+      form.discord.focus();
+      return;
+    }
+    if(!age || Number(age) < 13){
+      showToast('Please enter a valid age (13+).', false);
+      form.age.focus();
+      return;
+    }
+    if(!agree){
+      showToast('You must agree to the staff rules to apply.', false);
+      return;
+    }
+
+    // visual success feedback (no backend)
+    submit.classList.add('ghost');
+    submit.textContent = 'Submitted';
+    submit.disabled = true;
+    showToast('Application submitted — leadership will review it.', true);
+
+    // small check animation on each check element
+    document.querySelectorAll('.check').forEach((c,i)=>{
+      setTimeout(()=> {
+        c.style.background = 'linear-gradient(180deg, rgba(126,231,135,0.12), rgba(126,231,135,0.04))';
+        c.style.borderColor = 'rgba(126,231,135,0.28)';
+        c.textContent = '✓';
+      }, i*80);
+    });
+  });
+
+  clear.addEventListener('click', ()=>{
+    form.reset();
+    submit.disabled = false;
+    submit.classList.remove('ghost');
+    submit.textContent = 'Submit Application';
+    // reset checks visuals
+    document.querySelectorAll('.check').forEach(c=>{
+      c.style.background = 'linear-gradient(180deg, rgba(191,166,255,0.08), rgba(191,166,255,0.03))';
+      c.style.borderColor = 'rgba(191,166,255,0.12)';
+      c.textContent = '✓';
+    });
+  });
+})();
+</script>
+</body>
+</html>
