@@ -6,14 +6,16 @@
   <title>Black Velvet — Home</title>
   <style>
     :root{
-      --bg:#0b0b0d;
+      --bg:#050506;
       --panel:#0f0f11;
       --accent:#bfa6ff;
       --muted:#9a8fb8;
       --glass: rgba(255,255,255,0.03);
-      --glass-2: rgba(255,255,255,0.02);
       --btn-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.25));
       --btn-border: rgba(255,255,255,0.06);
+      --petal-dark: rgba(30,30,30,0.95);
+      --petal-mid: rgba(18,18,18,0.85);
+      --petal-edge: rgba(60,60,60,0.6);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
 
@@ -21,12 +23,13 @@
       height:100%;
       margin:0;
       background:
-        radial-gradient(1200px 600px at 10% 10%, rgba(191,166,255,0.06), transparent 8%),
-        radial-gradient(900px 500px at 90% 90%, rgba(255,120,150,0.03), transparent 6%),
+        radial-gradient(1200px 600px at 10% 10%, rgba(191,166,255,0.02), transparent 8%),
+        radial-gradient(900px 500px at 90% 90%, rgba(255,120,150,0.01), transparent 6%),
         var(--bg);
       color:#e9e6ef;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
     }
 
     /* Layout */
@@ -49,13 +52,13 @@
       grid-template-columns: 320px 1fr;
       overflow:hidden;
       border:1px solid rgba(255,255,255,0.03);
+      position:relative;
     }
 
     /* Left panel */
     .left{
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.12)),
-        url('') center/cover no-repeat;
+        linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.12));
       padding:28px;
       display:flex;
       flex-direction:column;
@@ -101,6 +104,7 @@
       flex-direction:column;
       gap:18px;
       position:relative;
+      z-index:2; /* keep above petals */
     }
 
     .button-group{
@@ -144,7 +148,6 @@
       overflow:visible;
     }
 
-    /* subtle pulse on hover to match petals */
     .btn.staff::after{
       content:"";
       position:absolute;
@@ -163,7 +166,6 @@
       transform:scale(1.02);
     }
 
-    /* small icon */
     .icon{
       width:18px;
       height:18px;
@@ -173,7 +175,6 @@
       box-shadow: 0 4px 10px rgba(191,166,255,0.18);
     }
 
-    /* Info / rules box */
     .panel{
       margin-top:8px;
       background:var(--glass);
@@ -184,7 +185,6 @@
       border:1px solid rgba(255,255,255,0.02);
     }
 
-    /* Footer */
     .footer{
       margin-top:auto;
       font-size:12px;
@@ -194,6 +194,53 @@
       align-items:center;
       justify-content:center;
       padding-bottom:6px;
+    }
+
+    /* Petal container sits behind content */
+    .petal-layer{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:1;
+    }
+
+    /* Petal base style */
+    .petal{
+      position:absolute;
+      width:36px;
+      height:56px;
+      border-radius:50% 50% 40% 60% / 60% 60% 40% 40%;
+      background: linear-gradient(135deg, var(--petal-dark), var(--petal-mid) 60%, var(--petal-edge));
+      transform-origin:center;
+      opacity:0.95;
+      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.6));
+      will-change: transform, opacity;
+      mix-blend-mode: multiply;
+    }
+
+    /* animation: float up, rotate, fade */
+    @keyframes petalFloat {
+      0%{
+        transform: translateY(0) rotate(0deg) scale(1);
+        opacity:1;
+      }
+      30%{
+        transform: translateY(-18px) rotate(15deg) scale(1.02);
+      }
+      60%{
+        transform: translateY(-60px) rotate(45deg) scale(.98);
+        opacity:0.9;
+      }
+      100%{
+        transform: translateY(-220px) rotate(120deg) scale(.86);
+        opacity:0;
+      }
+    }
+
+    /* reduced motion preference */
+    @media (prefers-reduced-motion: reduce){
+      .petal{ animation: none !important; opacity:0; }
     }
 
     /* Responsive */
@@ -207,7 +254,7 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="card" role="main" aria-label="Black Velvet Home">
+    <div class="card" role="main" aria-label="Black Velvet Home" id="cardRoot">
       <aside class="left" aria-hidden="false">
         <div class="logo" aria-hidden="true">BV</div>
         <div style="text-align:center;">
@@ -240,8 +287,8 @@
             Staff Policies
           </button>
 
-          <!-- Staff Login button added inline with the other nav buttons -->
-          <button class="btn staff" id="staffLoginBtn" onclick="navigate('stafflogin.html')" aria-label="Staff Login">
+          <!-- Staff Login now points to staffpanel.html -->
+          <button class="btn staff" id="staffLoginBtn" onclick="navigate('staffpanel.html')" aria-label="Staff Login">
             <span class="icon" style="background:linear-gradient(180deg,#bfa6ff,#ff78a0);"></span>
             Staff Login
           </button>
@@ -250,7 +297,7 @@
         <div class="panel" role="region" aria-label="Quick info">
           <strong style="color:#efeaf8;">Quick tips</strong>
           <div style="margin-top:6px;">
-            Keep your credentials secure. Staff login is restricted to approved members.
+            Keep your credentials secure. Staff access is restricted to approved members.
           </div>
         </div>
 
@@ -260,17 +307,19 @@
           <div style="opacity:.7;">Privacy</div>
         </div>
       </section>
+
+      <!-- Petal layer sits behind the main content -->
+      <div class="petal-layer" id="petalLayer" aria-hidden="true"></div>
     </div>
   </div>
 
   <script>
-    // Basic navigation helper — keeps links consistent and easy to update.
+    // Basic navigation helper
     function navigate(path){
-      // If you prefer opening in a new tab for staff login, change to window.open(path, '_blank')
       window.location.href = path;
     }
 
-    // Accessibility: allow Enter key to activate focused buttons
+    // Accessibility: Enter key activates focused buttons
     document.addEventListener('keydown', function(e){
       if(e.key === 'Enter' && document.activeElement && document.activeElement.classList.contains('btn')){
         document.activeElement.click();
@@ -280,7 +329,7 @@
     // Small runtime polish
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Optional: subtle focus ring for keyboard users
+    // Focus ring for keyboard users
     document.addEventListener('focusin', (e) => {
       if(e.target.classList && e.target.classList.contains('btn')){
         e.target.style.outline = '2px solid rgba(191,166,255,0.18)';
@@ -293,17 +342,101 @@
       }
     });
 
-    // If you want to gate the staff login button client-side (visual only),
-    // uncomment and adapt the snippet below. Server-side auth is required for real protection.
-    /*
-    const isStaff = false; // replace with real check
-    if(!isStaff){
-      const btn = document.getElementById('staffLoginBtn');
-      btn.setAttribute('title', 'Staff login restricted');
-      // Optionally hide:
-      // btn.style.display = 'none';
-    }
+    /* Petal spawn logic
+       - Greish-black petals appear when clicking inside the card.
+       - Limited number of petals to avoid performance issues.
+       - Respects prefers-reduced-motion.
     */
+    (function(){
+      const layer = document.getElementById('petalLayer');
+      const card = document.getElementById('cardRoot');
+      const MAX_PETALS = 28; // cap total petals on screen
+      let activePetals = 0;
+
+      // Utility: random in range
+      function rand(min, max){ return Math.random() * (max - min) + min; }
+
+      // Create a single petal at (x,y) relative to layer
+      function createPetal(x, y){
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (activePetals >= MAX_PETALS) return;
+
+        const petal = document.createElement('div');
+        petal.className = 'petal';
+
+        // randomize size and rotation
+        const w = Math.round(rand(18, 48));
+        const h = Math.round(rand(28, 84));
+        petal.style.width = w + 'px';
+        petal.style.height = h + 'px';
+
+        // position centered on click
+        petal.style.left = (x - w/2) + 'px';
+        petal.style.top = (y - h/2) + 'px';
+
+        // random initial rotation
+        const rot = rand(-40, 40);
+        petal.style.transform = `rotate(${rot}deg)`;
+
+        // subtle color variation using inline gradient
+        const dark = `rgba(${Math.round(rand(18,40))},${Math.round(rand(18,40))},${Math.round(rand(18,40))},${rand(0.85,0.98)})`;
+        const mid = `rgba(${Math.round(rand(12,28))},${Math.round(rand(12,28))},${Math.round(rand(12,28))},${rand(0.7,0.9)})`;
+        const edge = `rgba(${Math.round(rand(40,80))},${Math.round(rand(40,80))},${Math.round(rand(40,80))},${rand(0.45,0.7)})`;
+        petal.style.background = `linear-gradient(135deg, ${dark}, ${mid} 60%, ${edge})`;
+
+        // random animation duration and delay
+        const duration = rand(2200, 4200);
+        const delay = rand(0, 160);
+        petal.style.animation = `petalFloat ${duration}ms cubic-bezier(.22,.9,.35,1) ${delay}ms forwards`;
+
+        // slight horizontal drift using CSS transform animation via inline style (random)
+        const driftX = rand(-80, 80);
+        petal.style.setProperty('--drift-x', driftX + 'px');
+
+        activePetals++;
+        layer.appendChild(petal);
+
+        // remove after animation completes
+        setTimeout(() => {
+          if (petal && petal.parentNode) petal.parentNode.removeChild(petal);
+          activePetals = Math.max(0, activePetals - 1);
+        }, duration + delay + 200);
+      }
+
+      // Spawn a small burst of petals at click location
+      function spawnBurst(clientX, clientY){
+        const rect = layer.getBoundingClientRect();
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
+
+        // number of petals per burst
+        const count = Math.floor(rand(3, 8));
+        for(let i=0;i<count;i++){
+          // slight offset for each petal so they don't overlap exactly
+          const ox = rand(-18, 18);
+          const oy = rand(-18, 18);
+          setTimeout(() => createPetal(x + ox, y + oy), Math.round(rand(0, 120)));
+        }
+      }
+
+      // Click handler: spawn petals when clicking inside the card but not when clicking interactive controls
+      card.addEventListener('click', function(e){
+        // ignore clicks on buttons/links to avoid interfering with navigation
+        const tag = e.target.tagName.toLowerCase();
+        if (tag === 'button' || tag === 'a' || e.target.closest('button') || e.target.closest('a')) return;
+
+        spawnBurst(e.clientX, e.clientY);
+      });
+
+      // Optional: spawn a tiny pulse when focusing via keyboard (Enter/Space) on the card background
+      card.addEventListener('keydown', function(e){
+        if (e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter'){
+          // center of card
+          const rect = layer.getBoundingClientRect();
+          spawnBurst(rect.left + rect.width/2, rect.top + rect.height/2);
+        }
+      });
+    })();
   </script>
 </body>
 </html>
