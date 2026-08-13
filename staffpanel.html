@@ -1,317 +1,302 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Black Velvet — Staff Panel</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Black Velvet — Staff Panel</title>
 
-  <style>
-    :root{
-      --bg:#050506;
-      --panel:#0f0f11;
-      --accent:#bfa6ff;
-      --muted:#9a8fb8;
-      --glass: rgba(255,255,255,0.03);
-      --btn-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.25));
-      --btn-border: rgba(255,255,255,0.06);
-      --petal-dark: rgba(30,30,30,0.95);
-      --petal-mid: rgba(18,18,18,0.85);
-      --petal-edge: rgba(60,60,60,0.6);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
+<style>
+  :root{
+    --bg:#050506;
+    --panel:#0f0f11;
+    --accent:#bfa6ff;
+    --muted:#9a8fb8;
+    --glass: rgba(255,255,255,0.03);
+    --btn-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.25));
+    --btn-border: rgba(255,255,255,0.06);
+    --petal-dark: rgba(30,30,30,0.95);
+    --petal-mid: rgba(18,18,18,0.85);
+    --petal-edge: rgba(60,60,60,0.6);
+    font-family: Inter, system-ui;
+  }
 
-    html,body{
-      height:100%;
-      margin:0;
-      background:
-        radial-gradient(1200px 600px at 10% 10%, rgba(191,166,255,0.02), transparent 8%),
-        radial-gradient(900px 500px at 90% 90%, rgba(255,120,150,0.01), transparent 6%),
-        var(--bg);
-      color:#e9e6ef;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      overflow-x:hidden;
-    }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:#e9e6ef;
+    overflow-x:hidden;
+  }
 
-    .wrap{
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:48px 24px;
-      box-sizing:border-box;
-    }
+  .wrap{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px;
+  }
 
-    .card{
-      width:980px;
-      max-width:96%;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.18));
-      border-radius:18px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
-      display:grid;
-      grid-template-columns: 320px 1fr;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,0.03);
-      position:relative;
-    }
+  .card{
+    width:980px;
+    max-width:96%;
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.18));
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.03);
+    box-shadow:0 10px 40px rgba(0,0,0,0.7);
+    display:grid;
+    grid-template-columns:320px 1fr;
+    position:relative;
+    overflow:hidden;
+  }
 
-    .left{
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.12));
-      padding:28px;
-      display:flex;
-      flex-direction:column;
-      gap:18px;
-      align-items:center;
-      justify-content:flex-start;
-    }
+  .left{
+    padding:28px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+  }
 
-    .logo{
-      width:120px;
-      height:120px;
-      border-radius:12px;
-      background:linear-gradient(135deg, rgba(191,166,255,0.12), rgba(255,120,150,0.06));
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:700;
-      letter-spacing:1px;
-      color:var(--accent);
-      font-size:20px;
-      border:1px solid rgba(255,255,255,0.04);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
-    }
+  .logo{
+    width:120px;
+    height:120px;
+    border-radius:12px;
+    background:linear-gradient(135deg, rgba(191,166,255,0.12), rgba(255,120,150,0.06));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    font-weight:700;
+    color:var(--accent);
+  }
 
-    .title{
-      text-align:center;
-      font-size:18px;
-      color:#efeaf8;
-      margin-top:6px;
-    }
+  .main{
+    padding:34px 36px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    z-index:2;
+  }
 
-    .subtitle{
-      font-size:12px;
-      color:var(--muted);
-      text-align:center;
-    }
+  .btn{
+    border:1px solid var(--btn-border);
+    background:var(--btn-bg);
+    color:#efeaf8;
+    padding:12px 16px;
+    border-radius:10px;
+    font-size:14px;
+    cursor:pointer;
+    box-shadow:0 6px 18px rgba(0,0,0,0.5);
+    transition:0.18s;
+  }
 
-    .main{
-      padding:34px 36px;
-      display:flex;
-      flex-direction:column;
-      gap:18px;
-      position:relative;
-      z-index:2;
-    }
+  .btn:hover{
+    transform:translateY(-4px);
+    box-shadow:0 18px 40px rgba(0,0,0,0.6);
+  }
 
-    .button-group{
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      align-items:center;
-    }
+  .panel-box{
+    background:var(--glass);
+    padding:14px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.02);
+    color:var(--muted);
+  }
 
-    .btn{
-      appearance:none;
-      border:1px solid var(--btn-border);
-      background:var(--btn-bg);
-      color:#efeaf8;
-      padding:12px 16px;
-      border-radius:10px;
-      font-size:14px;
-      cursor:pointer;
-      transition:transform .18s ease, box-shadow .18s ease;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
-      backdrop-filter: blur(6px) saturate(120%);
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-    }
+  .petal-layer{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:1;
+  }
 
-    .btn:hover{
-      transform:translateY(-4px);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.6);
-    }
+  .petal{
+    position:absolute;
+    width:36px;
+    height:56px;
+    border-radius:50% 50% 40% 60% / 60% 60% 40% 40%;
+    background:linear-gradient(135deg, var(--petal-dark), var(--petal-mid) 60%, var(--petal-edge));
+    opacity:0.95;
+    filter:drop-shadow(0 6px 18px rgba(0,0,0,0.6));
+    animation:petalFloat 3s forwards;
+  }
 
-    .icon{
-      width:18px;
-      height:18px;
-      border-radius:4px;
-      background:linear-gradient(180deg, var(--accent), #ff78a0);
-      box-shadow: 0 4px 10px rgba(191,166,255,0.18);
-    }
+  @keyframes petalFloat{
+    0%{ transform:translateY(0) rotate(0deg); opacity:1; }
+    100%{ transform:translateY(-200px) rotate(120deg); opacity:0; }
+  }
 
-    .panel{
-      margin-top:8px;
-      background:var(--glass);
-      border-radius:12px;
-      padding:14px;
-      color:var(--muted);
-      font-size:13px;
-      border:1px solid rgba(255,255,255,0.02);
-    }
-
-    .footer{
-      margin-top:auto;
-      font-size:12px;
-      color:var(--muted);
-      display:flex;
-      gap:12px;
-      align-items:center;
-      justify-content:center;
-      padding-bottom:6px;
-    }
-
-    .petal-layer{
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      overflow:hidden;
-      z-index:1;
-    }
-
-    .petal{
-      position:absolute;
-      width:36px;
-      height:56px;
-      border-radius:50% 50% 40% 60% / 60% 60% 40% 40%;
-      background: linear-gradient(135deg, var(--petal-dark), var(--petal-mid) 60%, var(--petal-edge));
-      transform-origin:center;
-      opacity:0.95;
-      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.6));
-      mix-blend-mode:multiply;
-      will-change: transform, opacity;
-    }
-
-    @keyframes petalFloat {
-      0%{ transform: translateY(0) rotate(0deg) scale(1); opacity:1; }
-      30%{ transform: translateY(-18px) rotate(15deg) scale(1.02); }
-      60%{ transform: translateY(-60px) rotate(45deg) scale(.98); opacity:0.9; }
-      100%{ transform: translateY(-220px) rotate(120deg) scale(.86); opacity:0; }
-    }
-
-    @media (prefers-reduced-motion: reduce){
-      .petal{ animation:none !important; opacity:0; }
-    }
-
-    @media (max-width:880px){
-      .card{ grid-template-columns:1fr; }
-      .left{ flex-direction:row; gap:12px; padding:18px; }
-      .logo{ width:84px; height:84px; font-size:16px; }
-      .main{ padding:20px; }
-    }
-  </style>
+  #staffContent{ display:none; }
+  .panel{ display:none; }
+  .panel.active{ display:block; }
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="card" id="cardRoot">
+<div class="wrap">
+  <div class="card" id="cardRoot">
 
-      <aside class="left">
-        <div class="logo">BV</div>
-        <div class="title">Staff Panel</div>
-        <div class="subtitle">Black Velvet Administration</div>
-      </aside>
-
-      <section class="main">
-        <h2 style="margin:0;font-size:16px;color:#efeaf8;">Staff Controls</h2>
-
-        <div class="button-group">
-          <button class="btn">
-            <span class="icon"></span>
-            Panel 1 — Coming Soon
-          </button>
-
-          <button class="btn">
-            <span class="icon"></span>
-            Panel 2 — Coming Soon
-          </button>
-
-          <button class="btn">
-            <span class="icon"></span>
-            Panel 3 — Coming Soon
-          </button>
-
-          <button class="btn">
-            <span class="icon"></span>
-            Panel 4 — Coming Soon
-          </button>
-        </div>
-
-        <div class="panel">
-          <strong style="color:#efeaf8;">Staff Notice</strong>
-          <div style="margin-top:6px;">
-            All staff tools are currently locked. Panels will unlock as development continues.
-          </div>
-        </div>
-
-        <div class="footer">
-          <div>© <span id="year"></span> Black Velvet</div>
-          <div style="opacity:.6;">•</div>
-          <div style="opacity:.7;">Staff Access</div>
-        </div>
-      </section>
-
-      <div class="petal-layer" id="petalLayer"></div>
+    <div class="left">
+      <div class="logo">BV</div>
+      <h3>Staff Panel</h3>
+      <p style="color:var(--muted);">Black Velvet Administration</p>
     </div>
+
+    <div class="main">
+
+      <!-- LOGIN AREA -->
+      <div id="loginArea">
+        <h2>Staff Login</h2>
+        <input id="user" placeholder="Username" class="btn" style="width:200px;">
+        <input id="code" placeholder="Code" class="btn" style="width:200px; margin-top:10px;">
+        <button class="btn" style="margin-top:10px;" id="loginBtn">Unlock</button>
+      </div>
+
+      <!-- STAFF CONTENT -->
+      <div id="staffContent">
+
+        <h2>Welcome, Staff</h2>
+
+        <div class="panel-box">
+          Staff tools are locked. Panels will unlock as development continues.
+        </div>
+
+        <div style="margin-top:20px; display:flex; gap:10px;">
+          <button class="btn panelBtn" data-panel="1">Panel 1</button>
+          <button class="btn panelBtn" data-panel="2">Panel 2</button>
+          <button class="btn panelBtn" data-panel="3">Panel 3</button>
+          <button class="btn panelBtn" data-panel="4">Panel 4</button>
+        </div>
+
+        <div id="panel1" class="panel active panel-box">COMING SOON</div>
+        <div id="panel2" class="panel panel-box">COMING SOON</div>
+        <div id="panel3" class="panel panel-box">COMING SOON</div>
+        <div id="panel4" class="panel panel-box">COMING SOON</div>
+
+        <div style="margin-top:20px; display:flex; gap:10px;">
+          <button class="btn" onclick="relock()">Re-lock</button>
+          <button class="btn" onclick="location.href='index.html'">Back Home</button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="petal-layer" id="petalLayer"></div>
+
   </div>
+</div>
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
+<script>
+/* ---------------- DEVICE HEX ---------------- */
+function generateHex(){
+  const hex = Math.floor(Math.random()*0xFFFF).toString(16).toUpperCase();
+  return hex.padStart(4,"0");
+}
+if(!localStorage.deviceHex){
+  localStorage.deviceHex = generateHex();
+}
 
-    const layer = document.getElementById('petalLayer');
-    const card = document.getElementById('cardRoot');
-    const MAX_PETALS = 28;
-    let activePetals = 0;
+/* ---------------- ACCOUNTS ---------------- */
+const accounts = {
+  "gear10":"9033",
+  "luckyy1":"0226",
+  "suoaztic":"4423",
+  "Staff1":"1",
+  "flip2":"2",
+  "fork3":"3",
+  "an4":"4",
+  "fin5":"5"
+};
 
-    function rand(min,max){ return Math.random()*(max-min)+min; }
+/* ---------------- WEBHOOK ---------------- */
+const webhookURL = "https://discord.com/api/webhooks/1537233521410576546/qoHYqRmP1SbBfuuMCzvJBxWgTIGIlKpS3bhQ7xuj2MnbxNSoRGu0xUxCzkiXV6d43DIs";
 
-    function createPetal(x,y){
-      if(activePetals >= MAX_PETALS) return;
+function sendLog(success,user,code,reason){
+  const payload = {
+    content: success ? "**Login Successful**" : "**Incorrect Credentials**",
+    embeds:[{
+      title: success ? "Staff Login" : "Failed Login",
+      color: success ? 65280 : 16711680,
+      fields:[
+        {name:"Username", value:user},
+        {name:"Code", value:code},
+        {name:"Reason", value:reason},
+        {name:"Device Hex", value:localStorage.deviceHex},
+        {name:"Browser", value:navigator.userAgent},
+        {name:"Language", value:navigator.language},
+        {name:"Platform", value:navigator.platform},
+        {name:"Resolution", value:window.innerWidth+"x"+window.innerHeight},
+        {name:"Time", value:new Date().toString()}
+      ]
+    }]
+  };
 
-      const petal = document.createElement('div');
-      petal.className = 'petal';
+  fetch(webhookURL,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify(payload)
+  });
+}
 
-      const w = Math.round(rand(18,48));
-      const h = Math.round(rand(28,84));
-      petal.style.width = w+'px';
-      petal.style.height = h+'px';
+/* ---------------- LOGIN ---------------- */
+document.getElementById("loginBtn").onclick = function(){
+  const u = document.getElementById("user").value.trim();
+  const c = document.getElementById("code").value.trim();
 
-      petal.style.left = (x-w/2)+'px';
-      petal.style.top = (y-h/2)+'px';
+  if(accounts[u] && accounts[u] === c){
+    sendLog(true,u,c,"Correct credentials");
+    sessionStorage.staffUnlocked = "true";
+    unlock();
+  } else {
+    sendLog(false,u,c,"Wrong username or code");
+  }
+};
 
-      petal.style.transform = `rotate(${rand(-40,40)}deg)`;
+function unlock(){
+  document.getElementById("loginArea").style.display="none";
+  document.getElementById("staffContent").style.display="block";
+}
 
-      const duration = rand(2200,4200);
-      const delay = rand(0,160);
-      petal.style.animation = `petalFloat ${duration}ms cubic-bezier(.22,.9,.35,1) ${delay}ms forwards`;
+function relock(){
+  sessionStorage.removeItem("staffUnlocked");
+  document.getElementById("staffContent").style.display="none";
+  document.getElementById("loginArea").style.display="block";
+}
 
-      activePetals++;
-      layer.appendChild(petal);
+/* ---------------- RESTORE UNLOCK ---------------- */
+if(sessionStorage.staffUnlocked === "true"){
+  unlock();
+}
 
-      setTimeout(()=>{
-        if(petal.parentNode) petal.parentNode.removeChild(petal);
-        activePetals = Math.max(0,activePetals-1);
-      }, duration+delay+200);
-    }
+/* ---------------- PANEL SWITCH ---------------- */
+document.querySelectorAll(".panelBtn").forEach(btn=>{
+  btn.onclick = ()=>{
+    const id = btn.dataset.panel;
+    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+    document.getElementById("panel"+id).classList.add("active");
+  };
+});
 
-    function spawnBurst(clientX,clientY){
-      const rect = layer.getBoundingClientRect();
-      const x = clientX - rect.left;
-      const y = clientY - rect.top;
+/* ---------------- PETALS ---------------- */
+const layer = document.getElementById("petalLayer");
+const card = document.getElementById("cardRoot");
 
-      const count = Math.floor(rand(3,8));
-      for(let i=0;i<count;i++){
-        const ox = rand(-18,18);
-        const oy = rand(-18,18);
-        setTimeout(()=>createPetal(x+ox,y+oy), Math.round(rand(0,120)));
-      }
-    }
+function spawnPetal(x,y){
+  const p = document.createElement("div");
+  p.className="petal";
+  p.style.left = x+"px";
+  p.style.top = y+"px";
+  layer.appendChild(p);
+  setTimeout(()=>p.remove(),3000);
+}
 
-    card.addEventListener('click', e=>{
-      const tag = e.target.tagName.toLowerCase();
-      if(tag === 'button' || e.target.closest('button')) return;
-      spawnBurst(e.clientX,e.clientY);
-    });
-  </script>
+card.addEventListener("click",e=>{
+  if(e.target.tagName.toLowerCase()==="button") return;
+  const rect = layer.getBoundingClientRect();
+  spawnPetal(e.clientX - rect.left, e.clientY - rect.top);
+});
+</script>
+
 </body>
 </html>
