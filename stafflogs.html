@@ -13,91 +13,9 @@
     text-align: center;
   }
 
-  .btn {
-    display: block;
-    width: 300px;
-    margin: 15px auto;
-    padding: 15px;
-    background: #111;
-    border: 2px solid #444;
-    border-radius: 10px;
-    color: white;
-    font-family: Arial, sans-serif;
-    text-decoration: none;
-    transition: 0.2s;
-  }
-
-  .btn:hover {
-    background: #222;
-    border-color: #fff;
-  }
-
-  #homeBtn {
-    margin-top: 40px;
-  }
-</style>
-</head>
-
-<body>
-
-<h1>STAFF LOG</h1>
-
-<div id="content"></div>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  // Check if user logged in from password.html
-  const loggedIn = localStorage.staffLoggedIn === "true";
-
-  constAlright Romeo — let’s make **stafflog.html** behave EXACTLY how you want:
-
-### ✔ If user comes **directly from password.html** → show the page normally  
-### ✔ If user tries to access **stafflog.html manually** → show ONLY a “Return to Home” button  
-### ✔ Page should have **4 buttons**, each named **test**  
-### ✔ No white screen  
-### ✔ No redirect loops  
-### ✔ No broken login  
-
-This is a **clean, safe, guaranteed‑working** setup.
-
----
-
-# 🖤 **HOW IT WORKS**
-We will use a simple flag:
-
-### `localStorage.staffLoggedIn = "true"`
-
-This flag is set **only** when the user logs in through password.html.
-
-So in stafflog.html:
-
-### ✔ If flag exists → show the page  
-### ✔ If flag does NOT exist → hide the page and show “Return to Home”
-
-No redirects.  
-No loops.  
-No crashing.  
-No white screen.
-
----
-
-# 🖤 **FULL stafflog.html (PASTE THIS EXACTLY)**
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Staff Log</title>
-
-<style>
-  body {
-    background: #0d0d0d;
-    color: white;
-    font-family: Arial, sans-serif;
-    padding: 40px;
-    text-align: center;
+  h1 {
+    font-size: 28px;
+    margin-bottom: 30px;
   }
 
   .btn {
@@ -145,13 +63,11 @@ No white screen.
 
 <h1>STAFF LOG</h1>
 
-<!-- BLOCKED VIEW -->
 <div id="blocked">
   <p>You must log in first.</p>
   <button onclick="window.location.href='index.html'">Return to Home</button>
 </div>
 
-<!-- REAL CONTENT -->
 <div id="content">
   <button class="btn">test</button>
   <button class="btn">test</button>
@@ -161,18 +77,13 @@ No white screen.
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-
-  // Check login status
   const loggedIn = localStorage.staffLoggedIn === "true";
 
   if (loggedIn) {
-    // Show staff content
     document.getElementById("content").style.display = "block";
   } else {
-    // Show blocked message
     document.getElementById("blocked").style.display = "block";
   }
-
 });
 </script>
 
