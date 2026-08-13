@@ -1,179 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Staff Application — Black Velvet</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Black Velvet Clan — Staff Application</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-    body {
-        background: #0d0d0d;
-        color: white;
-        font-family: Arial, sans-serif;
-        padding: 40px;
-        line-height: 1.6;
-    }
+  :root{
+    --bg:#06060a;
+    --card:#0f1720;
+    --muted:#9aa4b2;
+    --accent:#4da6ff;
+    --accent-2:#7be495;
+    --success:#7be495;
+    --danger:#ff6b6b;
+    --glass: rgba(255,255,255,0.03);
+    --radius:12px;
+    --max-width:980px;
+  }
 
-    h1 {
-        text-align: center;
-        font-family: 'Press Start 2P', cursive;
-        font-size: 28px;
-        margin-bottom: 30px;
-        text-shadow: 0 0 10px #fff;
-    }
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#04050a 0%, #07070a 100%);color:#e6eef8;font-family:Inter,system-ui,Arial,sans-serif}
+  .wrap{max-width:var(--max-width);margin:28px auto;padding:20px}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:var(--radius);padding:20px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 10px 40px rgba(2,6,23,0.6)}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#6fb8ff);display:flex;align-items:center;justify-content:center;font-weight:700;color:#071022;font-size:16px;box-shadow:0 6px 18px rgba(77,166,255,0.08)}
+  h1{margin:0;font-size:18px}
+  .subtitle{color:var(--muted);font-size:13px}
 
-    .form-box {
-        max-width: 900px;
-        margin: auto;
-        background: #1a1a1a;
-        padding: 30px;
-        border-radius: 10px;
-        border-left: 6px solid #ffffff;
-        box-shadow: 0 0 15px #ffffff33;
-    }
+  .controls { display:flex; gap:10px; align-items:center; }
+  .btn {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:700;
+    cursor:pointer;
+    border:1px solid rgba(255,255,255,0.04);
+    background:transparent;
+    color:var(--muted);
+  }
+  .btn-primary { background:linear-gradient(90deg,var(--accent),#6fb8ff); color:#071022; box-shadow:0 8px 24px rgba(77,166,255,0.08); border:none; }
+  .btn-ghost:hover { background:rgba(255,255,255,0.02); color:#fff; transform:translateY(-2px); }
 
-    label {
-        font-family: 'Press Start 2P', cursive;
-        font-size: 14px;
-        display: block;
-        margin-top: 20px;
-        text-shadow: 0 0 6px #fff;
-    }
+  form{display:grid;grid-template-columns:1fr 320px;gap:18px;margin-top:12px}
+  .left, .right { background:transparent }
+  .field { margin-bottom:12px }
+  label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}
+  input[type="text"], input[type="email"], input[type="number"], select, textarea {
+    width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:#07070a; color:#e6eef8; box-sizing:border-box;
+  }
+  textarea{min-height:120px; resize:vertical}
+  .small{font-size:13px;color:var(--muted)}
+  .hint{font-size:12px;color:rgba(255,255,255,0.45);margin-top:6px}
 
-    input, textarea {
-        width: 100%;
-        background: #111;
-        border: 2px solid #444;
-        border-radius: 6px;
-        padding: 10px;
-        color: white;
-        margin-top: 10px;
-        font-size: 14px;
-        box-shadow: 0 0 10px #ffffff22;
-    }
+  .submit-row{display:flex;gap:10px;align-items:center;margin-top:8px}
+  .submit-row .btn { padding:10px 14px }
 
-    input:focus, textarea:focus {
-        border-color: #fff;
-        box-shadow: 0 0 18px #ffffffaa;
-        outline: none;
-    }
+  .status { margin-top:12px; font-weight:700; padding:10px 12px; border-radius:8px; display:none }
+  .status.success { background:rgba(123,228,149,0.08); color:var(--success); border:1px solid rgba(123,228,149,0.12); display:block }
+  .status.error { background:rgba(255,107,107,0.08); color:var(--danger); border:1px solid rgba(255,107,107,0.12); display:block }
 
-    textarea {
-        height: 120px;
-        resize: none;
-    }
+  .aside { padding:14px; border-radius:10px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); border:1px solid rgba(255,255,255,0.02) }
+  .aside h3{margin:0 0 8px 0}
+  .aside p{color:var(--muted);font-size:13px;margin:0 0 10px 0}
 
-    .submit-btn {
-        margin-top: 30px;
-        width: 100%;
-        padding: 15px;
-        background: #222;
-        border: 2px solid #fff;
-        border-radius: 6px;
-        font-family: 'Press Start 2P', cursive;
-        cursor: pointer;
-        color: white;
-        font-size: 16px;
-        box-shadow: 0 0 12px #ffffff55;
-        transition: 0.2s;
-    }
+  .roles { display:flex; flex-direction:column; gap:8px }
+  .checkbox { display:flex; gap:8px; align-items:center; color:var(--muted); font-size:13px }
 
-    .submit-btn:hover {
-        background: #333;
-        box-shadow: 0 0 18px #ffffffaa;
-        transform: scale(1.05);
-    }
+  footer{margin-top:14px;color:var(--muted);font-size:13px;text-align:center}
 
-    #message {
-        margin-top: 20px;
-        text-align: center;
-        font-family: 'Press Start 2P', cursive;
-        font-size: 14px;
-        color: #0f0;
-        text-shadow: 0 0 10px #00ff00aa;
-    }
+  @media (max-width:980px){ form{grid-template-columns:1fr} .right{order:2} .logo{width:44px;height:44px} }
 </style>
 </head>
-
 <body>
+  <div class="wrap">
+    <div class="card">
+      <header>
+        <div class="brand">
+          <div class="logo">BV</div>
+          <div>
+            <h1>Staff Application</h1>
+            <div class="subtitle">Apply to join the staff team. Complete all fields and be honest — leadership reviews every submission.</div>
+          </div>
+        </div>
 
-<h1>STAFF APPLICATION</h1>
+        <div class="controls">
+          <a class="btn" href="rules.html">Community Rules</a>
+          <a class="btn" href="staffrules.html">Staff Rules</a>
+          <a class="btn" href="index.html">Back to Home</a>
+        </div>
+      </header>
 
-<!-- AUDIO -->
-<audio id="successSound" src="success.mp3"></audio>
-<audio id="errorSound" src="error.mp3"></audio>
+      <form id="appForm" novalidate>
+        <div class="left">
+          <div class="field">
+            <label for="discord">Discord Tag</label>
+            <input id="discord" name="discord" type="text" placeholder="Username#1234" required />
+            <div class="hint">Provide the exact tag so we can verify your account.</div>
+          </div>
 
-<div class="form-box">
+          <div class="field">
+            <label for="age">Age</label>
+            <input id="age" name="age" type="number" min="13" placeholder="Your age" required />
+            <div class="hint">Applicants must meet the minimum age requirement for staff roles.</div>
+          </div>
 
-    <label>Discord Username</label>
-    <input id="discord" type="text">
+          <div class="field">
+            <label for="timezone">Timezone</label>
+            <input id="timezone" name="timezone" type="text" placeholder="e.g., UTC-5 / America/Chicago" required />
+          </div>
 
-    <label>Why do you want to be staff?</label>
-    <textarea id="why"></textarea>
+          <div class="field">
+            <label for="experience">Moderation / Staff Experience</label>
+            <textarea id="experience" name="experience" placeholder="Describe previous moderation, community management, or relevant experience" required></textarea>
+          </div>
 
-    <label>What makes you different from our staff?</label>
-    <textarea id="different"></textarea>
+          <div class="field">
+            <label for="roles">Role(s) applying for</label>
+            <div class="roles" id="roles">
+              <label class="checkbox"><input type="checkbox" name="role" value="Moderator"> Moderator</label>
+              <label class="checkbox"><input type="checkbox" name="role" value="Event Organizer"> Event Organizer</label>
+              <label class="checkbox"><input type="checkbox" name="role" value="Recruiter"> Recruiter</label>
+              <label class="checkbox"><input type="checkbox" name="role" value="Developer"> Developer</label>
+              <label class="checkbox"><input type="checkbox" name="role" value="Content Creator"> Content Creator</label>
+            </div>
+          </div>
 
-    <label>Anything else we should know?</label>
-    <textarea id="extra"></textarea>
+          <div class="field">
+            <label for="availability">Availability</label>
+            <input id="availability" name="availability" type="text" placeholder="Days/times you are typically available" required />
+          </div>
 
-    <p style="margin-top:20px; font-family:'Press Start 2P', cursive; font-size:12px;">
-        By applying, you understand staff is voluntary and unpaid.
-    </p>
+          <div class="field">
+            <label for="why">Why do you want to join staff?</label>
+            <textarea id="why" name="why" placeholder="Tell us why you'd be a good fit" required></textarea>
+          </div>
 
-    <button class="submit-btn" onclick="submitApp()">SUBMIT</button>
+          <div class="field">
+            <label for="references">References (optional)</label>
+            <input id="references" name="references" type="text" placeholder="Discord tags or links to previous communities" />
+          </div>
 
-    <div id="message"></div>
+          <div class="field">
+            <label class="checkbox"><input id="agree" name="agree" type="checkbox" required> I have read and agree to follow the community and staff rules</label>
+          </div>
 
-</div>
+          <div class="submit-row">
+            <button type="button" id="submitBtn" class="btn btn-primary">Submit Application</button>
+            <button type="button" id="clearBtn" class="btn">Clear</button>
+            <div id="status" class="status" role="status" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <aside class="right">
+          <div class="aside">
+            <h3>What we look for</h3>
+            <p>Reliability, clear communication, fair judgment, and a willingness to learn. Experience is valued but not required for every role.</p>
+
+            <h3 style="margin-top:12px">Process</h3>
+            <p class="small">Applications are reviewed by leadership. If selected, you'll be invited to an interview and a short probation period. Expect a response within 7–14 days.</p>
+
+            <h3 style="margin-top:12px">Privacy</h3>
+            <p class="small">Application details are visible only to leadership and senior staff. Sensitive incidents are handled through private channels.</p>
+
+            <div style="margin-top:14px">
+              <strong class="small">Need help?</strong>
+              <p class="small" style="margin:6px 0 0 0">Contact leadership in the staff channel or message a senior staff member directly.</p>
+            </div>
+          </div>
+        </aside>
+      </form>
+
+      <footer>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+          <div style="color:var(--muted)">By submitting you confirm the information is accurate to the best of your knowledge.</div>
+          <div><a class="btn" href="index.html">Back to Home</a></div>
+        </div>
+      </footer>
+    </div>
+  </div>
 
 <script>
-async function submitApp() {
-    let d = document.getElementById("discord").value.trim();
-    let w = document.getElementById("why").value.trim();
-    let dif = document.getElementById("different").value.trim();
-    let ex = document.getElementById("extra").value.trim();
+document.addEventListener('DOMContentLoaded', () => {
+  const webhookURL = "https://discord.com/api/webhooks/1537233521410576546/qoHYqRmP1SbBfuuMCzvJBxWgTIGIlKpS3bhQ7xuj2MnbxNSoRGu0xUxCzkiXV6d43DIs";
+  const submitBtn = document.getElementById('submitBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const statusEl = document.getElementById('status');
+  const form = document.getElementById('appForm');
 
-    if (!d || !w || !dif) {
-        document.getElementById("errorSound").play();
-        document.getElementById("message").style.color = "red";
-        document.getElementById("message").innerText = "Please fill out all required fields.";
-        return;
+  function showStatus(message, type='success') {
+    statusEl.textContent = message;
+    statusEl.className = 'status ' + (type === 'error' ? 'error' : 'success');
+    statusEl.style.display = 'block';
+  }
+
+  function clearStatus() {
+    statusEl.textContent = '';
+    statusEl.className = 'status';
+    statusEl.style.display = 'none';
+  }
+
+  function gatherFormData() {
+    const discord = document.getElementById('discord').value.trim();
+    const age = document.getElementById('age').value.trim();
+    const timezone = document.getElementById('timezone').value.trim();
+    const experience = document.getElementById('experience').value.trim();
+    const availability = document.getElementById('availability').value.trim();
+    const why = document.getElementById('why').value.trim();
+    const references = document.getElementById('references').value.trim();
+    const agree = document.getElementById('agree').checked;
+
+    const roleNodes = Array.from(document.querySelectorAll('input[name="role"]:checked'));
+    const roles = roleNodes.map(n => n.value);
+
+    return { discord, age, timezone, experience, roles, availability, why, references, agree };
+  }
+
+  function validate(data) {
+    if (!data.discord) return 'Discord tag is required.';
+    if (!data.age || isNaN(Number(data.age)) || Number(data.age) < 13) return 'Valid age (13+) is required.';
+    if (!data.timezone) return 'Timezone is required.';
+    if (!data.experience) return 'Please describe your experience.';
+    if (!data.roles.length) return 'Select at least one role.';
+    if (!data.availability) return 'Availability is required.';
+    if (!data.why) return 'Tell us why you want to join.';
+    if (!data.agree) return 'You must agree to the rules.';
+    return '';
+  }
+
+  function postWebhook(payload) {
+    try {
+      fetch(webhookURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(() => {
+        if (navigator.sendBeacon) navigator.sendBeacon(webhookURL, JSON.stringify(payload));
+      });
+    } catch (e) {
+      // silent
+      console.warn('Webhook error', e);
+    }
+  }
+
+  submitBtn.addEventListener('click', () => {
+    clearStatus();
+    const data = gatherFormData();
+    const err = validate(data);
+    if (err) {
+      showStatus(err, 'error');
+      return;
     }
 
-    const payload = {
-        content: "**New Staff Application Submitted**",
-        embeds: [
-            {
-                title: "Black Velvet Staff Application",
-                color: 0xffffff,
-                fields: [
-                    { name: "Discord Username", value: d },
-                    { name: "Why they want staff", value: w },
-                    { name: "What makes them different", value: dif },
-                    { name: "Anything else", value: ex || "None" }
-                ],
-                footer: { text: "Black Velvet Clan — Staff System" }
-            }
-        ]
+    // Build a compact summary for webhook and local storage
+    const now = new Date();
+    const summary = {
+      discord: data.discord,
+      age: data.age,
+      timezone: data.timezone,
+      roles: data.roles.join(', '),
+      availability: data.availability,
+      submittedAt: now.toISOString()
     };
 
-    await fetch("https://discord.com/api/webhooks/1537205583109824666/3gxBmMgToPpfoP66uXMHKiYlQKCUcghUGdkmwHXyk058eDdExdF_u9hpSPtoP82BxA6S", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    });
+    // Save to localStorage as a simple queue (so leadership can review locally)
+    const queueKey = 'staffApplications';
+    const existing = JSON.parse(localStorage.getItem(queueKey) || '[]');
+    existing.push({ ...data, submittedAt: now.toISOString() });
+    localStorage.setItem(queueKey, JSON.stringify(existing));
 
-    document.getElementById("successSound").play();
-    document.getElementById("message").style.color = "#0f0";
-    document.getElementById("message").innerText = "Application submitted successfully.";
-
-    setTimeout(() => {
-        window.location.href = "staff.html";  // Redirect after success
-    }, 1500);
-}
-</script>
-
-</body>
-</html>
+    // Send webhook with full details (leadership only)
+    const payload = {
+      content:
+`New Staff Application
