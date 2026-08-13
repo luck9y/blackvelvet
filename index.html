@@ -1,180 +1,378 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Black Velvet Clan — Home</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
-  body {
-    background: #0d0d0d;
-    color: white;
-    font-family: Arial, sans-serif;
-    padding: 40px;
-    line-height: 1.6;
-    position: relative;
+  :root{
+    --bg:#06060b;
+    --panel:#0e1114;
+    --muted:#9aa4b2;
+    --accent:#4da6ff;
+    --accent-2:#ff6b6b;
+    --glass: rgba(255,255,255,0.03);
+    --menu-w:260px;
+    --radius:12px;
   }
 
-  h1 {
-    text-align: center;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 32px;
-    margin-bottom: 30px;
-    color: #ffffff;
-    letter-spacing: 2px;
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#04050a 0%, #07070a 100%);font-family:Inter,system-ui,Arial,sans-serif;color:#eaf2ff;overflow:hidden}
+  .app{display:flex;height:100vh;align-items:stretch}
+
+  /* Left menu (video-game style) */
+  nav.menu{
+    width:var(--menu-w);
+    min-width:var(--menu-w);
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-right:1px solid rgba(255,255,255,0.03);
+    padding:28px 18px;
+    box-sizing:border-box;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    box-shadow: 0 12px 40px rgba(2,6,23,0.6);
   }
 
-  .nav-btn {
-    display: block;
-    width: 300px;
-    margin: 15px auto;
-    text-align: center;
-    padding: 15px;
-    background: #111;
-    border: 2px solid #444;
-    border-radius: 10px;
-    font-family: 'Press Start 2P', cursive;
-    color: white;
-    text-decoration: none;
-    transition: 0.2s;
+  .brand{
+    display:flex;align-items:center;gap:12px;margin-bottom:6px;
+  }
+  .logo{
+    width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#6fb8ff);display:flex;align-items:center;justify-content:center;font-weight:800;color:#071022;font-family:'Press Start 2P',cursive;font-size:14px;box-shadow:0 8px 30px rgba(77,166,255,0.08)
+  }
+  .brand h1{font-family:'Press Start 2P',cursive;font-size:12px;margin:0;line-height:1;color:#fff}
+  .brand p{margin:0;color:var(--muted);font-size:11px}
+
+  .menu-list{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+  .menu-btn{
+    display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.04);text-decoration:none;color:#eaf2ff;font-weight:700;font-size:12px;
+    transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+  }
+  .menu-btn .dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.06);box-shadow:0 6px 18px rgba(0,0,0,0.6)}
+  .menu-btn:hover{transform:translateX(6px);box-shadow:0 12px 30px rgba(0,0,0,0.6);background:rgba(255,255,255,0.01)}
+  .menu-btn.active{background:linear-gradient(90deg, rgba(77,166,255,0.12), rgba(123,228,149,0.06));border-color:rgba(77,166,255,0.12)}
+  .menu-btn .label{flex:1;text-align:left}
+
+  .menu-footer{margin-top:auto;font-size:11px;color:var(--muted);display:flex;flex-direction:column;gap:8px}
+  .small-cta{display:inline-block;padding:8px 10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted);text-decoration:none;font-weight:700;font-size:11px}
+  .small-cta:hover{background:rgba(255,255,255,0.02);color:#fff}
+
+  /* Main content */
+  main.content{
+    position:relative;flex:1;overflow:auto;
+    display:flex;flex-direction:column;
   }
 
-  .nav-btn:hover {
-    border-color: #ffffff;
-    background: #222;
-    transform: scale(1.03);
+  /* Canvas background container */
+  .bg-wrap{position:absolute;inset:0;z-index:0;pointer-events:none}
+  canvas#bgCanvas{width:100%;height:100%;display:block}
+
+  /* Foreground content */
+  .foreground{position:relative;z-index:2;padding:40px;display:flex;gap:28px;align-items:flex-start}
+  .hero{
+    flex:1;max-width:980px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:28px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 18px 60px rgba(2,6,23,0.6)
+  }
+  .hero h2{font-family:'Press Start 2P',cursive;font-size:18px;margin:0 0 12px 0}
+  .hero p{color:var(--muted);margin:0 0 18px 0;line-height:1.5}
+
+  .quick-links{display:flex;flex-wrap:wrap;gap:12px}
+  .quick{
+    padding:10px 14px;border-radius:10px;background:linear-gradient(90deg, rgba(77,166,255,0.08), rgba(123,228,149,0.06));color:#071022;font-weight:800;text-decoration:none;font-size:13px;border:1px solid rgba(255,255,255,0.02)
   }
 
-  .staff-hidden {
-    margin-top: 40px;
-    text-align: center;
+  .panel{
+    width:360px;min-width:260px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.03)
   }
+  .panel h3{margin:0 0 8px 0;font-size:14px}
+  .panel p{color:var(--muted);font-size:13px;margin:0 0 12px 0}
 
-  .staff-hidden a {
-    font-size: 10px;
-    opacity: 0.3;
-    text-decoration: none;
-    color: #666;
-    font-family: 'Press Start 2P', cursive;
-  }
+  /* Footer small */
+  .site-footer{padding:18px;color:var(--muted);font-size:12px;text-align:center}
 
-  .staff-hidden a:hover {
-    opacity: 0.6;
-  }
-
-  .credits-right {
-    position: fixed;
-    right: 20px;
-    bottom: 40px;
-    width: 260px;
-    text-align: right;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 9px;
-    color: #777;
-    opacity: 0.7;
-    line-height: 1.6;
-  }
-
-  .credits-left {
-    position: fixed;
-    left: 20px;
-    bottom: 40px;
-    width: 320px;
-    text-align: left;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 9px;
-    color: #777;
-    opacity: 0.9;
-    line-height: 1.6;
-  }
-
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .blue {
-    color: #4da6ff;
-    text-decoration: underline;
-  }
-
-  .red {
-    color: #ff4d4d;
-    text-decoration: underline;
-  }
-
-  /* STAFF LOGIN button styling */
-  .staff-cta {
-    margin-top: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .staff-button {
-    padding: 8px 12px;
-    background: #111;
-    border: 2px solid #444;
-    border-radius: 8px;
-    color: #fff;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 11px;
-    text-decoration: none;
-    opacity: 0.95;
-  }
-
-  .staff-button:hover {
-    background: #222;
-    border-color: #fff;
-  }
-
-  @media (max-width: 420px) {
-    .credits-left { width: 90%; left: 10px; bottom: 20px; }
-    .staff-button { font-size: 10px; padding: 6px 10px; }
+  /* Responsive */
+  @media (max-width:980px){
+    nav.menu{display:none}
+    .foreground{padding:18px}
+    .panel{display:none}
   }
 </style>
 </head>
-
 <body>
+  <div class="app" role="application" aria-label="Black Velvet Clan Home">
+    <!-- Left menu -->
+    <nav class="menu" aria-label="Main menu">
+      <div class="brand" aria-hidden="false">
+        <div class="logo">BV</div>
+        <div>
+          <h1>BLACK VELVET</h1>
+          <p>Clan • Community • Competition</p>
+        </div>
+      </div>
 
-<h1>BLACK VELVET CLAN</h1>
+      <div class="menu-list" role="menu" aria-label="Navigation">
+        <a class="menu-btn active" href="rules.html" role="menuitem" aria-current="page">
+          <span class="dot" style="background:linear-gradient(90deg,var(--accent),#9ff3c9)"></span>
+          <span class="label">Rules</span>
+        </a>
 
-<a class="nav-btn" href="rules.html">RULES</a>
-<a class="nav-btn" href="ranks.html">RANKS</a>
-<a class="nav-btn" href="staff.html">STAFF TEAM</a>
-<a class="nav-btn" href="info.html">MORE INFORMATION</a>
-<a class="nav-btn" href="staffapp.html">STAFF APPLICATION</a>
+        <a class="menu-btn" href="ranks.html" role="menuitem">
+          <span class="dot" style="background:linear-gradient(90deg,#ffd166,#ff9ccf)"></span>
+          <span class="label">Ranks</span>
+        </a>
 
-<div class="staff-hidden">
-  <a href="password.html">staff only</a>
-</div>
+        <!-- removed staff.html per request -->
+        <a class="menu-btn" href="staffapp.html" role="menuitem">
+          <span class="dot" style="background:linear-gradient(90deg,#bfe9ff,#cbd5ff)"></span>
+          <span class="label">Staff Application</span>
+        </a>
 
-<!-- LEFT-SIDE CREDIT + STAFF LOGIN BUTTON -->
-<div class="credits-left">
-  From the founders of 
-  <a href="https://discord.gg/Fn2ref2uMz" class="blue">Azul Clan</a>
+        <a class="menu-btn" href="staffrules.html" role="menuitem">
+          <span class="dot" style="background:linear-gradient(90deg,#7be495,#4da6ff)"></span>
+          <span class="label">Staff Rules</span>
+        </a>
 
-  <div class="staff-cta" aria-hidden="false">
-    <a class="staff-button" href="staffpanel.html" title="Staff Login">STAFF LOGIN</a>
+        <a class="menu-btn" href="info.html" role="menuitem">
+          <span class="dot" style="background:linear-gradient(90deg,#ff7aa2,#ffd166)"></span>
+          <span class="label">More Info</span>
+        </a>
+
+        <a class="menu-btn" href="staffpanel.html" role="menuitem">
+          <span class="dot" style="background:linear-gradient(90deg,#ff6b6b,#ff9ccf)"></span>
+          <span class="label">Staff Login</span>
+        </a>
+      </div>
+
+      <div class="menu-footer" aria-hidden="false">
+        <a class="small-cta" href="discord.html">Join Discord</a>
+        <a class="small-cta" href="contact.html">Contact Leadership</a>
+        <div style="margin-top:8px;color:var(--muted);font-size:11px">Built by Rin • Reborn in the flames</div>
+      </div>
+    </nav>
+
+    <!-- Main content + animated background -->
+    <main class="content" aria-live="polite">
+      <div class="bg-wrap" aria-hidden="true">
+        <canvas id="bgCanvas"></canvas>
+      </div>
+
+      <div class="foreground">
+        <section class="hero" aria-labelledby="heroTitle">
+          <h2 id="heroTitle">Welcome to Black Velvet Clan</h2>
+          <p>Competitive, creative, and community-first. Use the menu on the left to navigate — everything you need is a click away. Tap anywhere on the background to leave a red pulse; it reacts to your presence.</p>
+
+          <div class="quick-links" role="navigation" aria-label="Quick links">
+            <a class="quick" href="rules.html">Read Rules</a>
+            <a class="quick" href="ranks.html">View Ranks</a>
+            <a class="quick" href="staffapp.html">Apply to Staff</a>
+            <a class="quick" href="staffrules.html">Staff Policies</a>
+          </div>
+
+          <div style="margin-top:18px;color:var(--muted);font-size:13px">
+            <strong>Tip</strong>: Open a tryout ticket to be considered for competitive ranks. Be respectful — staff decisions are final during active incidents.
+          </div>
+        </section>
+
+        <aside class="panel" aria-labelledby="panelTitle">
+          <h3 id="panelTitle">Latest</h3>
+          <p>Server updates, events, and announcements appear here. Check the Discord for live scheduling and event signups.</p>
+
+          <div style="margin-top:12px">
+            <strong style="font-size:13px">Founders</strong>
+            <div style="color:var(--muted);font-size:13px;margin-top:6px">jsfeelings • Suoaz</div>
+          </div>
+
+          <div style="margin-top:12px">
+            <strong style="font-size:13px">Credits</strong>
+            <div style="color:var(--muted);font-size:13px;margin-top:6px">Design & site by Rin</div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="site-footer" role="contentinfo">
+        © Black Velvet Clan — Respect the rules. Questions? Reach leadership in the staff channel.
+      </div>
+    </main>
   </div>
-</div>
 
-<!-- RIGHT-SIDE CREDITS -->
-<div class="credits-right">
-  This clan is operated by 
-  <a href="discord.html" class="blue">Fond</a> & 
-  <a href="discord.html" class="red">Rin</a><br>
+<script>
+/*
+  Animated background canvas:
+  - moving particles
+  - on pointerdown/tap: create a red pulse ripple and local particle burst
+  - subtle parallax on pointermove
+*/
 
-  Website created and maintained by 
-  <a href="discord.html" class="red">Rin</a><br>
+(() => {
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d', { alpha: true });
+  let w = canvas.width = innerWidth;
+  let h = canvas.height = innerHeight;
 
-  Owner usernames:<br>
-  <a href="discord.html" class="red">jsfeelings</a><br>
-  <a href="discord.html" class="blue">Suoaz</a><br>
+  const DPR = Math.max(1, window.devicePixelRatio || 1);
+  canvas.width = w * DPR;
+  canvas.height = h * DPR;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  ctx.scale(DPR, DPR);
 
-  Reborn in the flames of the abyss
-</div>
+  // Particles
+  const particles = [];
+  const PARTICLE_COUNT = Math.round((w * h) / 70000); // density
+  const colors = ['rgba(77,166,255,0.9)','rgba(123,228,149,0.9)','rgba(255,122,162,0.9)'];
 
+  function rand(min, max){ return Math.random() * (max - min) + min; }
+
+  function createParticle(x = rand(0,w), y = rand(0,h), color = null){
+    return {
+      x, y,
+      vx: rand(-0.2,0.2),
+      vy: rand(-0.2,0.2),
+      r: rand(1.2,3.6),
+      hue: color || colors[Math.floor(Math.random()*colors.length)],
+      life: rand(80,220),
+      age: 0
+    };
+  }
+
+  for(let i=0;i<PARTICLE_COUNT;i++) particles.push(createParticle());
+
+  // Ripples (red pulses)
+  const ripples = [];
+
+  function addRipple(x,y){
+    ripples.push({ x, y, t:0, max: Math.max(w,h) * 0.6 });
+    // small burst of particles
+    for(let i=0;i<18;i++){
+      const p = createParticle(x + rand(-12,12), y + rand(-12,12), 'rgba(255,90,90,0.95)');
+      p.vx = rand(-2.4,2.4);
+      p.vy = rand(-2.4,2.4);
+      p.r = rand(1.6,3.8);
+      p.life = rand(40,90);
+      particles.push(p);
+    }
+  }
+
+  // Pointer parallax
+  let pointer = { x: w/2, y: h/2, px: w/2, py: h/2 };
+
+  function resize(){
+    w = canvas.width = innerWidth;
+    h = canvas.height = innerHeight;
+    canvas.width = w * DPR;
+    canvas.height = h * DPR;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  window.addEventListener('resize', resize);
+
+  // Interaction
+  function onPointer(e){
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+    const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+    addRipple(x, y);
+  }
+  window.addEventListener('pointerdown', onPointer);
+  window.addEventListener('touchstart', onPointer, {passive:true});
+
+  window.addEventListener('pointermove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    pointer.x = (e.clientX || 0) - rect.left;
+    pointer.y = (e.clientY || 0) - rect.top;
+  });
+
+  // Animation loop
+  let last = performance.now();
+  function tick(now){
+    const dt = Math.min(40, now - last) / 16.666;
+    last = now;
+
+    // smooth pointer
+    pointer.px += (pointer.x - pointer.px) * 0.08;
+    pointer.py += (pointer.y - pointer.py) * 0.08;
+
+    // clear
+    ctx.clearRect(0,0,w,h);
+
+    // subtle background vignette
+    const g = ctx.createLinearGradient(0,0,0,h);
+    g.addColorStop(0, 'rgba(6,6,10,0.35)');
+    g.addColorStop(1, 'rgba(3,3,6,0.6)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,w,h);
+
+    // draw ripples
+    for(let i=ripples.length-1;i>=0;i--){
+      const r = ripples[i];
+      r.t += dt;
+      const progress = r.t / 30;
+      const radius = Math.min(r.max, progress * r.max);
+      const alpha = Math.max(0, 0.9 * (1 - progress));
+      if(alpha <= 0.01){ ripples.splice(i,1); continue; }
+
+      ctx.beginPath();
+      ctx.arc(r.x, r.y, radius, 0, Math.PI*2);
+      ctx.strokeStyle = `rgba(255,80,80,${alpha})`;
+      ctx.lineWidth = 2 + (1 - progress) * 6;
+      ctx.stroke();
+
+      // soft glow
+      ctx.beginPath();
+      ctx.arc(r.x, r.y, radius * 0.6, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(255,60,60,${alpha*0.06})`;
+      ctx.fill();
+    }
+
+    // update particles
+    for(let i=particles.length-1;i>=0;i--){
+      const p = particles[i];
+      // attraction to pointer
+      const dx = pointer.px - p.x;
+      const dy = pointer.py - p.y;
+      const dist = Math.max(20, Math.hypot(dx,dy));
+      const force = 12 / (dist * dist);
+      p.vx += dx * force * 0.06 * dt;
+      p.vy += dy * force * 0.06 * dt;
+
+      // friction
+      p.vx *= 0.985;
+      p.vy *= 0.985;
+
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+
+      p.age += dt;
+      if(p.age > p.life || p.x < -40 || p.x > w+40 || p.y < -40 || p.y > h+40){
+        // recycle
+        particles.splice(i,1);
+        if(particles.length < PARTICLE_COUNT * 1.2) particles.push(createParticle());
+        continue;
+      }
+
+      // draw
+      ctx.beginPath();
+      ctx.fillStyle = p.hue;
+      ctx.globalAlpha = Math.max(0.08, 1 - (p.age / p.life));
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    // subtle overlay grid / scanline
+    ctx.fillStyle = 'rgba(255,255,255,0.01)';
+    for(let y=0;y<h;y+=28){
+      ctx.fillRect(0,y,w,0.6);
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+})();
+
+</script>
 </body>
 </html>
