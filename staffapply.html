@@ -1,304 +1,257 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Black Velvet Clan — Staff Application</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Black Velvet — Staff Application</title>
+
 <style>
   :root{
-    --bg:#06060a;
-    --card:#0f1720;
-    --muted:#9aa4b2;
-    --accent:#4da6ff;
-    --accent-2:#7be495;
-    --success:#7be495;
-    --danger:#ff6b6b;
+    --bg:#050506;
+    --panel:#0f0f11;
+    --accent:#bfa6ff;
+    --muted:#9a8fb8;
     --glass: rgba(255,255,255,0.03);
-    --radius:12px;
-    --max-width:980px;
+    --btn-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.25));
+    --btn-border: rgba(255,255,255,0.06);
+    font-family: Inter, system-ui;
   }
 
-  html,body{height:100%;margin:0;background:linear-gradient(180deg,#04050a 0%, #07070a 100%);color:#e6eef8;font-family:Inter,system-ui,Arial,sans-serif}
-  .wrap{max-width:var(--max-width);margin:28px auto;padding:20px}
-  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:var(--radius);padding:20px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 10px 40px rgba(2,6,23,0.6)}
-  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
-  .brand{display:flex;align-items:center;gap:12px}
-  .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#6fb8ff);display:flex;align-items:center;justify-content:center;font-weight:700;color:#071022;font-size:16px;box-shadow:0 6px 18px rgba(77,166,255,0.08)}
-  h1{margin:0;font-size:18px}
-  .subtitle{color:var(--muted);font-size:13px}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:#e9e6ef;
+    overflow-x:hidden;
+  }
 
-  .controls { display:flex; gap:10px; align-items:center; }
-  .btn {
-    display:inline-flex;
+  .wrap{
+    min-height:100vh;
+    display:flex;
     align-items:center;
-    gap:8px;
-    padding:8px 12px;
+    justify-content:center;
+    padding:40px;
+  }
+
+  .card{
+    width:980px;
+    max-width:96%;
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.18));
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.03);
+    box-shadow:0 10px 40px rgba(0,0,0,0.7);
+    display:grid;
+    grid-template-columns:1fr 280px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .main{
+    padding:34px 36px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    z-index:2;
+  }
+
+  .sidebar{
+    background:var(--glass);
+    padding:24px;
+    border-left:1px solid rgba(255,255,255,0.03);
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+
+  h2{
+    margin:0;
+    font-size:20px;
+    color:#efeaf8;
+  }
+
+  label{
+    font-size:13px;
+    color:var(--muted);
+    margin-top:6px;
+  }
+
+  input, textarea{
+    width:100%;
+    background:var(--panel);
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius:8px;
+    padding:10px;
+    color:#e9e6ef;
+    font-size:14px;
+    resize:none;
+  }
+
+  textarea{ min-height:80px; }
+
+  .btn{
+    border:1px solid var(--btn-border);
+    background:var(--btn-bg);
+    color:#efeaf8;
+    padding:12px 16px;
     border-radius:10px;
-    text-decoration:none;
-    font-weight:700;
+    font-size:14px;
     cursor:pointer;
-    border:1px solid rgba(255,255,255,0.04);
-    background:transparent;
+    box-shadow:0 6px 18px rgba(0,0,0,0.5);
+    transition:0.18s;
+  }
+
+  .btn:hover{
+    transform:translateY(-4px);
+    box-shadow:0 18px 40px rgba(0,0,0,0.6);
+  }
+
+  .radio-group{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    margin-top:6px;
+  }
+
+  .footer{
+    margin-top:20px;
+    font-size:12px;
     color:var(--muted);
   }
-  .btn-primary { background:linear-gradient(90deg,var(--accent),#6fb8ff); color:#071022; box-shadow:0 8px 24px rgba(77,166,255,0.08); border:none; }
-  .btn-ghost:hover { background:rgba(255,255,255,0.02); color:#fff; transform:translateY(-2px); }
 
-  form{display:grid;grid-template-columns:1fr 320px;gap:18px;margin-top:12px}
-  .left, .right { background:transparent }
-  .field { margin-bottom:12px }
-  label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}
-  input[type="text"], input[type="email"], input[type="number"], select, textarea {
-    width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:#07070a; color:#e6eef8; box-sizing:border-box;
+  .sidebar h3{
+    margin:0;
+    font-size:15px;
+    color:#efeaf8;
   }
-  textarea{min-height:120px; resize:vertical}
-  .small{font-size:13px;color:var(--muted)}
-  .hint{font-size:12px;color:rgba(255,255,255,0.45);margin-top:6px}
 
-  .submit-row{display:flex;gap:10px;align-items:center;margin-top:8px}
-  .submit-row .btn { padding:10px 14px }
+  .sidebar p{
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.4;
+  }
 
-  .status { margin-top:12px; font-weight:700; padding:10px 12px; border-radius:8px; display:none }
-  .status.success { background:rgba(123,228,149,0.08); color:var(--success); border:1px solid rgba(123,228,149,0.12); display:block }
-  .status.error { background:rgba(255,107,107,0.08); color:var(--danger); border:1px solid rgba(255,107,107,0.12); display:block }
+  .nav-buttons{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
 
-  .aside { padding:14px; border-radius:10px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); border:1px solid rgba(255,255,255,0.02) }
-  .aside h3{margin:0 0 8px 0}
-  .aside p{color:var(--muted);font-size:13px;margin:0 0 10px 0}
+  .nav-buttons .btn{
+    flex:1;
+    text-align:center;
+  }
 
-  .roles { display:flex; flex-direction:column; gap:8px }
-  .checkbox { display:flex; gap:8px; align-items:center; color:var(--muted); font-size:13px }
+  .petal-layer{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:1;
+  }
 
-  footer{margin-top:14px;color:var(--muted);font-size:13px;text-align:center}
+  .petal{
+    position:absolute;
+    width:36px;
+    height:56px;
+    border-radius:50% 50% 40% 60% / 60% 60% 40% 40%;
+    background:linear-gradient(135deg, rgba(30,30,30,0.95), rgba(18,18,18,0.85) 60%, rgba(60,60,60,0.6));
+    opacity:0.95;
+    filter:drop-shadow(0 6px 18px rgba(0,0,0,0.6));
+    animation:petalFloat 3s forwards;
+  }
 
-  @media (max-width:980px){ form{grid-template-columns:1fr} .right{order:2} .logo{width:44px;height:44px} }
+  @keyframes petalFloat{
+    0%{ transform:translateY(0) rotate(0deg); opacity:1; }
+    100%{ transform:translateY(-200px) rotate(120deg); opacity:0; }
+  }
 </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="card">
-      <header>
-        <div class="brand">
-          <div class="logo">BV</div>
-          <div>
-            <h1>Staff Application</h1>
-            <div class="subtitle">Apply to join the staff team. Complete all fields and be honest — leadership reviews every submission.</div>
-          </div>
-        </div>
+<div class="wrap">
+  <div class="card" id="cardRoot">
 
-        <div class="controls">
-          <a class="btn" href="rules.html">Community Rules</a>
-          <a class="btn" href="staffrules.html">Staff Rules</a>
-          <a class="btn" href="index.html">Back to Home</a>
-        </div>
-      </header>
+    <div class="main">
+      <h2>Staff Application</h2>
+      <p style="color:var(--muted);">Apply to join the staff team. Complete all fields and be honest — leadership reviews every submission.</p>
 
-      <form id="appForm" novalidate>
-        <div class="left">
-          <div class="field">
-            <label for="discord">Discord Tag</label>
-            <input id="discord" name="discord" type="text" placeholder="Username#1234" required />
-            <div class="hint">Provide the exact tag so we can verify your account.</div>
-          </div>
+      <label>Discord Tag</label>
+      <input placeholder="Username#1234">
+      <small style="color:var(--muted);">Provide the exact tag so we can verify your account.</small>
 
-          <div class="field">
-            <label for="age">Age</label>
-            <input id="age" name="age" type="number" min="13" placeholder="Your age" required />
-            <div class="hint">Applicants must meet the minimum age requirement for staff roles.</div>
-          </div>
+      <label>Age</label>
+      <input placeholder="Your age">
+      <small style="color:var(--muted);">Applicants must meet the minimum age requirement for staff roles.</small>
 
-          <div class="field">
-            <label for="timezone">Timezone</label>
-            <input id="timezone" name="timezone" type="text" placeholder="e.g., UTC-5 / America/Chicago" required />
-          </div>
+      <label>Timezone</label>
+      <input placeholder="e.g., UTC-5 / America/Chicago">
 
-          <div class="field">
-            <label for="experience">Moderation / Staff Experience</label>
-            <textarea id="experience" name="experience" placeholder="Describe previous moderation, community management, or relevant experience" required></textarea>
-          </div>
+      <label>Moderation / Staff Experience</label>
+      <textarea placeholder="Describe previous moderation, community management, or relevant experience"></textarea>
 
-          <div class="field">
-            <label for="roles">Role applying for</label>
-            <div class="roles" id="roles">
-              <label class="checkbox"><input type="radio" name="role" value="President"> President</label>
-              <label class="checkbox"><input type="radio" name="role" value="Admin"> Admin</label>
-              <label class="checkbox"><input type="radio" name="role" value="Mod"> Mod</label>
-              <label class="checkbox"><input type="radio" name="role" value="Helper"> Helper</label>
-            </div>
-            <div class="hint">Select the single role you are applying for.</div>
-          </div>
+      <label>Role applying for</label>
+      <div class="radio-group">
+        <label><input type="radio" name="role"> President</label>
+        <label><input type="radio" name="role"> Admin</label>
+        <label><input type="radio" name="role"> Mod</label>
+        <label><input type="radio" name="role"> Helper</label>
+      </div>
 
-          <div class="field">
-            <label for="availability">Availability</label>
-            <input id="availability" name="availability" type="text" placeholder="Days/times you are typically available" required />
-          </div>
+      <label>Availability</label>
+      <input placeholder="Days/times you are typically available">
 
-          <div class="field">
-            <label for="why">Why do you want to join staff?</label>
-            <textarea id="why" name="why" placeholder="Tell us why you'd be a good fit" required></textarea>
-          </div>
+      <label>Why do you want to join staff?</label>
+      <textarea placeholder="Tell us why you'd be a good fit"></textarea>
 
-          <div class="field">
-            <label for="references">References (optional)</label>
-            <input id="references" name="references" type="text" placeholder="Discord tags or links to previous communities" />
-          </div>
+      <label>References (optional)</label>
+      <input placeholder="Discord tags or links to previous communities">
 
-          <div class="field">
-            <label class="checkbox"><input id="agree" name="agree" type="checkbox" required> I have read and agree to follow the community and staff rules</label>
-          </div>
+      <div style="margin-top:10px;">
+        <label><input type="checkbox"> I have read and agree to follow the community and staff rules</label>
+      </div>
 
-          <div class="submit-row">
-            <button type="button" id="submitBtn" class="btn btn-primary">Submit Application</button>
-            <button type="button" id="clearBtn" class="btn">Clear</button>
-            <div id="status" class="status" role="status" aria-live="polite"></div>
-          </div>
-        </div>
+      <div style="margin-top:14px; display:flex; gap:10px;">
+        <button class="btn">Submit Application</button>
+        <button class="btn">Clear</button>
+      </div>
 
-        <aside class="right">
-          <div class="aside">
-            <h3>What we look for</h3>
-            <p>Reliability, clear communication, fair judgment, and a willingness to learn. Experience is valued but not required for every role.</p>
+      <div class="footer">
+        By submitting you confirm the information is accurate to the best of your knowledge.
+      </div>
 
-            <h3 style="margin-top:12px">Process</h3>
-            <p class="small">Applications are reviewed by leadership. If selected, you'll be invited to an interview and a short probation period. Expect a response within 7–14 days.</p>
-
-            <h3 style="margin-top:12px">Privacy</h3>
-            <p class="small">Application details are visible only to leadership and senior staff. Sensitive incidents are handled through private channels.</p>
-
-            <div style="margin-top:14px">
-              <strong class="small">Need help?</strong>
-              <p class="small" style="margin:6px 0 0 0">Contact leadership in the staff channel or message a senior staff member directly.</p>
-            </div>
-          </div>
-        </aside>
-      </form>
-
-      <footer>
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
-          <div style="color:var(--muted)">By submitting you confirm the information is accurate to the best of your knowledge.</div>
-          <div><a class="btn" href="index.html">Back to Home</a></div>
-        </div>
-      </footer>
+      <div style="margin-top:20px;">
+        <button class="btn" onclick="location.href='index.html'">Back to Home</button>
+      </div>
     </div>
+
+    <div class="sidebar">
+      <div class="nav-buttons">
+        <button class="btn" onclick="location.href='rules.html'">Community Rules</button>
+        <button class="btn" onclick="location.href='staffrules.html'">Staff Rules</button>
+        <button class="btn" onclick="location.href='index.html'">Back to Home</button>
+      </div>
+
+      <div>
+        <h3>What we look for</h3>
+        <p>Reliability, clear communication, fair judgment, and a willingness to learn. Experience is valued but not required for every role.</p>
+      </div>
+
+      <div>
+        <h3>Process</h3>
+        <p>Applications are reviewed by leadership. If selected, you'll be invited to an interview and a short probation period. Expect a response within 7–14 days.</p>
+      </div>
+
+      <div>
+        <h3>Privacy</h3>
+        <p>Application details are visible only to leadership and senior staff. Sensitive incidents are handled through private channels.</p>
+      </div>
+
+      <div>
+        <h3>Need help?</h3>
+        <p>Contact leadership in the staff channel or message a senior staff member directly.</p>
+      </div>
+    </div>
+
+    <div class="petal-layer" id="petalLayer"></div>
+
   </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  // Webhook provided by user
-  const webhookURL = "https://discord.com/api/webhooks/1537266764067377283/1ql9LGG7fPEyoAX7JxFA7drIwdEPCXlwZ0SLT_5Bm8irwYVGXOhguFExUx9T0LBzanWw";
-
-  const submitBtn = document.getElementById('submitBtn');
-  const clearBtn = document.getElementById('clearBtn');
-  const statusEl = document.getElementById('status');
-  const form = document.getElementById('appForm');
-
-  function showStatus(message, type='success') {
-    statusEl.textContent = message;
-    statusEl.className = 'status ' + (type === 'error' ? 'error' : 'success');
-    statusEl.style.display = 'block';
-  }
-
-  function clearStatus() {
-    statusEl.textContent = '';
-    statusEl.className = 'status';
-    statusEl.style.display = 'none';
-  }
-
-  function gatherFormData() {
-    const discord = document.getElementById('discord').value.trim();
-    const age = document.getElementById('age').value.trim();
-    const timezone = document.getElementById('timezone').value.trim();
-    const experience = document.getElementById('experience').value.trim();
-    const availability = document.getElementById('availability').value.trim();
-    const why = document.getElementById('why').value.trim();
-    const references = document.getElementById('references').value.trim();
-    const agree = document.getElementById('agree').checked;
-
-    const roleNode = document.querySelector('input[name="role"]:checked');
-    const role = roleNode ? roleNode.value : '';
-
-    return { discord, age, timezone, experience, role, availability, why, references, agree };
-  }
-
-  function validate(data) {
-    if (!data.discord) return 'Discord tag is required.';
-    if (!data.age || isNaN(Number(data.age)) || Number(data.age) < 13) return 'Valid age (13+) is required.';
-    if (!data.timezone) return 'Timezone is required.';
-    if (!data.experience) return 'Please describe your experience.';
-    if (!data.role) return 'Select a role to apply for.';
-    if (!data.availability) return 'Availability is required.';
-    if (!data.why) return 'Tell us why you want to join.';
-    if (!data.agree) return 'You must agree to the rules.';
-    return '';
-  }
-
-  function postWebhook(payload) {
-    try {
-      fetch(webhookURL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).catch(() => {
-        if (navigator.sendBeacon) navigator.sendBeacon(webhookURL, JSON.stringify(payload));
-      });
-    } catch (e) {
-      console.warn('Webhook error', e);
-    }
-  }
-
-  submitBtn.addEventListener('click', () => {
-    clearStatus();
-    const data = gatherFormData();
-    const err = validate(data);
-    if (err) {
-      showStatus(err, 'error');
-      return;
-    }
-
-    const now = new Date();
-    const submittedAt = now.toISOString();
-
-    // Save to localStorage queue for leadership review (optional)
-    const queueKey = 'staffApplications';
-    const existing = JSON.parse(localStorage.getItem(queueKey) || '[]');
-    existing.push({ ...data, submittedAt });
-    localStorage.setItem(queueKey, JSON.stringify(existing));
-
-    // Build Discord webhook payload (clean, readable)
-    const content =
-`**New Staff Application**
-**Discord:** ${data.discord}
-**Age:** ${data.age}
-**Timezone:** ${data.timezone}
-**Role Applied For:** ${data.role}
-**Availability:** ${data.availability}
-**References:** ${data.references || '[none]'}
-**Submitted:** ${now.toLocaleString()}
-
-**Experience**
-${data.experience}
-
-**Why**
-${data.why}
-`;
-
-    // Use a simple JSON payload for Discord webhook
-    const payload = { content };
-
-    postWebhook(payload);
-
-    showStatus('Application submitted. Leadership will review and respond within 7–14 days.', 'success');
-
-    // Reset form
-    form.reset();
-  });
-
-  clearBtn.addEventListener('click', () => {
-    form.reset();
-    clearStatus();
-  });
-});
-</script>
-</body>
-</html>
+</div
