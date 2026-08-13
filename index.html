@@ -23,18 +23,52 @@
     cursor:none; /* hide default cursor */
   }
 
-  /* Water after-aura blobs following cursor */
+  /* Water after-aura cursor trail */
   .cursor-water{
     position:absolute;
-    width:18px;
-    height:18px;
+    width:20px;
+    height:20px;
     border-radius:50%;
-    background:radial-gradient(circle, rgba(180,180,200,0.7), rgba(60,60,80,0.0));
+    background:radial-gradient(circle, rgba(150,150,180,0.6), rgba(60,60,80,0));
     pointer-events:none;
     filter:blur(4px);
     opacity:0.9;
-    transition:opacity 0.4s ease-out, transform 0.4s ease-out;
+    transform:scale(0.8);
+    transition:opacity 0.5s ease-out, transform 0.5s ease-out;
     z-index:9999;
+  }
+
+  /* Water ripple on click */
+  .water-ripple{
+    position:absolute;
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(180,180,200,0.5), rgba(80,80,100,0));
+    pointer-events:none;
+    filter:blur(4px);
+    opacity:0.8;
+    transform:scale(0.2);
+    transition:transform 0.6s ease-out, opacity 0.6s ease-out;
+    z-index:9998;
+  }
+
+  /* Falling Black Velvet Petals */
+  .falling-petal{
+    position:absolute;
+    width:34px;
+    height:52px;
+    border-radius:50% 50% 40% 60%;
+    background:linear-gradient(135deg, rgba(30,30,30,0.95), rgba(60,60,60,0.85));
+    filter:drop-shadow(0 10px 30px rgba(0,0,0,0.7));
+    pointer-events:none;
+    animation:petalFall 4.5s linear forwards;
+    opacity:0.9;
+  }
+
+  @keyframes petalFall{
+    0%{ transform:translateY(-60px) rotate(0deg); opacity:1; }
+    100%{ transform:translateY(110vh) rotate(120deg); opacity:0; }
   }
 
   /* Black Velvet Flower */
@@ -101,7 +135,6 @@
     color:var(--muted);
   }
 
-  /* Glow buttons */
   .btn{
     padding:12px 20px;
     border-radius:12px;
@@ -156,8 +189,8 @@
 document.addEventListener("mousemove", e=>{
   const blob = document.createElement("div");
   blob.className = "cursor-water";
-  blob.style.left = (e.clientX - 9) + "px";
-  blob.style.top = (e.clientY - 9) + "px";
+  blob.style.left = (e.clientX - 10) + "px";
+  blob.style.top = (e.clientY - 10) + "px";
   document.body.appendChild(blob);
 
   setTimeout(()=>{
@@ -165,46 +198,65 @@ document.addEventListener("mousemove", e=>{
     blob.style.transform = "scale(1.6)";
   }, 20);
 
-  setTimeout(()=>{
-    blob.remove();
-  }, 500);
+  setTimeout(()=> blob.remove(), 600);
 });
 
-/* Black Velvet Flower: 5s visible, 5s hidden, respawn elsewhere */
+/* Water ripple on background click */
+document.addEventListener("click", e=>{
+  if(e.target.closest(".btn")) return;
+
+  const ripple = document.createElement("div");
+  ripple.className = "water-ripple";
+  ripple.style.left = (e.clientX - 35) + "px";
+  ripple.style.top = (e.clientY - 35) + "px";
+  document.body.appendChild(ripple);
+
+  setTimeout(()=>{
+    ripple.style.transform = "scale(2)";
+    ripple.style.opacity = "0";
+  }, 20);
+
+  setTimeout(()=> ripple.remove(), 700);
+});
+
+/* Falling petals */
+(function(){
+  function spawnFallingPetal(){
+    const p = document.createElement("div");
+    p.className = "falling-petal";
+    p.style.left = Math.random() * window.innerWidth + "px";
+    p.style.top = "-60px";
+    document.body.appendChild(p);
+    setTimeout(()=> p.remove(), 5000);
+  }
+  setInterval(spawnFallingPetal, 250);
+})();
+
+/* Flower: 5s visible → disappear → 5s later respawn */
 (function(){
   const flower = document.getElementById("velvetFlower");
 
   function spawnFlower(){
     const maxX = window.innerWidth - 320;
     const maxY = window.innerHeight - 320;
-    const x = Math.random() * maxX;
-    const y = Math.random() * maxY;
-    flower.style.left = x + "px";
-    flower.style.top = y + "px";
+    flower.style.left = Math.random() * maxX + "px";
+    flower.style.top = Math.random() * maxY + "px";
   }
 
   function cycleFlower(){
-    // show flower
     spawnFlower();
     flower.style.opacity = "0.35";
     flower.style.transform = "scale(1)";
 
-    // after 5 seconds, fade out
     setTimeout(()=>{
       flower.style.opacity = "0";
       flower.style.transform = "scale(0.6)";
     }, 5000);
 
-    // after another 5 seconds, respawn somewhere else
-    setTimeout(()=>{
-      cycleFlower();
-    }, 10000);
+    setTimeout(cycleFlower, 10000);
   }
 
-  // initial cycle
   cycleFlower();
-
-  window.addEventListener("resize", spawnFlower);
 })();
 </script>
 
