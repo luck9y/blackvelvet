@@ -1,227 +1,393 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Black Velvet — Staff Panel</title>
-
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Black Velvet — Staffpanel</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
   :root{
     --bg:#050506;
-    --panel:#0f0f11;
-    --accent:#bfa6ff;
-    --muted:#9a8fb8;
-    --glass: rgba(255,255,255,0.03);
-    --btn-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.25));
-    --btn-border: rgba(255,255,255,0.06);
-    --petal-dark: rgba(30,30,30,0.95);
-    --petal-mid: rgba(18,18,18,0.85);
-    --petal-edge: rgba(60,60,60,0.6);
-    font-family: Inter, system-ui;
+    --card-bg: rgba(255,255,255,0.03);
+    --glass-border: rgba(255,255,255,0.06);
+    --accent: #cfe8ff;
+    --muted: #9a8fb8;
+    --success: #7be495;
+    --danger: #ff6b6b;
+    --glass-blur: 10px;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   }
 
-  body{
+  html,body{
+    height:100%;
     margin:0;
-    background:var(--bg);
-    color:#e9e6ef;
-    overflow-x:hidden;
-  }
-
-  .wrap{
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:40px;
-  }
-
-  .card{
-    width:980px;
-    max-width:96%;
-    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.18));
-    border-radius:18px;
-    border:1px solid rgba(255,255,255,0.03);
-    box-shadow:0 10px 40px rgba(0,0,0,0.7);
-    display:grid;
-    grid-template-columns:320px 1fr;
-    position:relative;
+    background: linear-gradient(180deg, #040405 0%, #07070a 100%);
+    color: #e9e6ef;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
     overflow:hidden;
   }
 
-  .left{
-    padding:28px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:18px;
-  }
-
-  .logo{
-    width:120px;
-    height:120px;
-    border-radius:12px;
-    background:linear-gradient(135deg, rgba(191,166,255,0.12), rgba(255,120,150,0.06));
+  /* Page layout */
+  .wrap{
+    height:100vh;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:22px;
-    font-weight:700;
-    color:var(--accent);
+    gap:28px;
+    padding:28px;
+    box-sizing:border-box;
   }
 
-  .main{
-    padding:34px 36px;
+  /* Left column: login */
+  .login-card{
+    width:420px;
+    max-width:92vw;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid var(--glass-border);
+    border-radius:16px;
+    padding:22px;
+    backdrop-filter: blur(var(--glass-blur));
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+    transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s;
+    position:relative;
+    overflow:visible;
+  }
+
+  .login-card:hover{ transform: translateY(-6px); box-shadow: 0 18px 60px rgba(0,0,0,0.7); }
+
+  .brand{
     display:flex;
-    flex-direction:column;
-    gap:18px;
-    z-index:2;
+    gap:12px;
+    align-items:center;
+    margin-bottom:14px;
+  }
+
+  .brand .logo{
+    width:48px;
+    height:48px;
+    border-radius:10px;
+    background:linear-gradient(135deg,#0b0b0b,#1b1b1b);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.6), 0 0 18px rgba(120,140,160,0.04);
+    border:1px solid rgba(255,255,255,0.03);
+  }
+
+  .brand h2{ margin:0; font-size:18px; letter-spacing:0.6px; color:var(--accent); }
+  .brand p{ margin:0; font-size:12px; color:var(--muted); }
+
+  .field{
+    margin-top:12px;
+  }
+
+  label{
+    display:block;
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+
+  input[type="text"], input[type="password"]{
+    width:100%;
+    padding:12px 14px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.04);
+    background: rgba(0,0,0,0.45);
+    color:var(--text);
+    outline:none;
+    transition: box-shadow .18s, border-color .18s, transform .12s;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+    font-size:14px;
+  }
+
+  input:focus{
+    border-color: rgba(180,200,220,0.18);
+    box-shadow: 0 6px 26px rgba(120,160,200,0.06), 0 0 18px rgba(180,200,220,0.04);
+    transform: translateY(-1px);
+  }
+
+  .actions{
+    display:flex;
+    gap:12px;
+    margin-top:16px;
+    align-items:center;
   }
 
   .btn{
-    border:1px solid var(--btn-border);
-    background:var(--btn-bg);
-    color:#efeaf8;
-    padding:12px 16px;
+    padding:10px 14px;
     border-radius:10px;
-    font-size:14px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.06);
+    color:var(--accent);
+    font-weight:700;
     cursor:pointer;
-    box-shadow:0 6px 18px rgba(0,0,0,0.5);
-    transition:0.18s;
+    transition: transform .12s, box-shadow .12s, background .12s;
   }
 
-  .btn:hover{
-    transform:translateY(-4px);
-    box-shadow:0 18px 40px rgba(0,0,0,0.6);
+  .btn:hover{ transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+
+  .btn.primary{
+    background: linear-gradient(180deg, rgba(120,180,220,0.12), rgba(80,140,200,0.08));
+    border:1px solid rgba(140,190,230,0.12);
+    color: #eaf6ff;
   }
 
-  .panel-box{
-    background:var(--glass);
-    padding:14px;
-    border-radius:12px;
-    border:1px solid rgba(255,255,255,0.02);
+  .small{
+    font-size:13px;
     color:var(--muted);
   }
 
-  .warning{
-    margin-top:10px;
-    padding:10px;
+  .device-id{
+    margin-top:12px;
+    font-size:13px;
+    color:var(--muted);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .device-pill{
+    padding:6px 10px;
     border-radius:8px;
-    background:rgba(255,0,0,0.15);
-    border:1px solid rgba(255,0,0,0.4);
-    color:#ff6b6b;
-    font-weight:600;
-    display:none;
+    background: rgba(255,255,255,0.02);
+    border:1px solid rgba(255,255,255,0.03);
+    color:var(--accent);
+    font-weight:700;
+    letter-spacing:1px;
+    font-size:13px;
   }
 
-  .petal-layer{
-    position:absolute;
-    inset:0;
-    pointer-events:none;
+  /* Right column: staffpanel */
+  .panel-wrap{
+    width:760px;
+    max-width:calc(100vw - 64px);
+    border-radius:16px;
     overflow:hidden;
-    z-index:1;
+    position:relative;
+    transition: transform .28s ease, opacity .28s ease;
+    display:flex;
+    gap:0;
+    align-items:stretch;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
   }
 
-  .petal{
-    position:absolute;
-    width:36px;
-    height:56px;
-    border-radius:50% 50% 40% 60% / 60% 60% 40% 40%;
-    background:linear-gradient(135deg, var(--petal-dark), var(--petal-mid) 60%, var(--petal-edge));
-    opacity:0.95;
-    filter:drop-shadow(0 6px 18px rgba(0,0,0,0.6));
-    animation:petalFloat 3s forwards;
+  .panel-left{
+    width:220px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-right:1px solid rgba(255,255,255,0.03);
+    padding:18px;
+    box-sizing:border-box;
+    backdrop-filter: blur(6px);
   }
 
-  @keyframes petalFloat{
-    0%{ transform:translateY(0) rotate(0deg); opacity:1; }
-    100%{ transform:translateY(-200px) rotate(120deg); opacity:0; }
+  .panel-left .menu{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
   }
 
-  #staffContent{ display:none; }
-  .panel{ display:none; }
-  .panel.active{ display:block; }
+  .menu button{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    padding:10px 12px;
+    border-radius:10px;
+    background:transparent;
+    border:1px solid transparent;
+    color:var(--muted);
+    cursor:pointer;
+    text-align:left;
+    transition: all .18s;
+    font-weight:700;
+  }
 
-  @keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-6px); }
-    50% { transform: translateX(6px); }
-    75% { transform: translateX(-6px); }
-    100% { transform: translateX(0); }
+  .menu button:hover{ color:var(--accent); transform: translateX(6px); }
+  .menu button.active{
+    color:var(--accent);
+    background: linear-gradient(90deg, rgba(120,180,220,0.06), rgba(80,140,200,0.03));
+    border:1px solid rgba(140,190,230,0.06);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+
+  .panel-main{
+    flex:1;
+    padding:22px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.28));
+    color:var(--text);
+    min-height:320px;
+    box-sizing:border-box;
+  }
+
+  .panel-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+  }
+
+  .panel-title{
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+
+  .panel-title h3{ margin:0; font-size:16px; color:var(--accent); }
+  .panel-title p{ margin:0; font-size:12px; color:var(--muted); }
+
+  .relock{
+    padding:8px 10px;
+    border-radius:10px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.04);
+    color:var(--danger);
+    font-weight:800;
+    cursor:pointer;
+  }
+
+  .card{
+    margin-top:12px;
+    padding:16px;
+    border-radius:12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.03);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  }
+
+  .muted{ color:var(--muted); font-size:13px; }
+
+  /* small responsive */
+  @media (max-width:980px){
+    .wrap{ flex-direction:column; align-items:center; justify-content:flex-start; padding-top:28px; gap:18px; }
+    .panel-wrap{ width:92vw; }
+    .panel-left{ display:none; }
   }
 </style>
 </head>
-
 <body>
+
 <div class="wrap">
-  <div class="card" id="cardRoot">
 
-    <div class="left">
-      <div class="logo">BV</div>
-      <h3>Staff Panel</h3>
-      <p style="color:var(--muted);">Black Velvet Administration</p>
+  <!-- LOGIN CARD -->
+  <div class="login-card" id="loginCard" aria-live="polite">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <!-- small decorative flower -->
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" style="opacity:0.95">
+          <circle cx="12" cy="12" r="5" fill="#0d0d0d"></circle>
+          <g fill="#111">
+            <path d="M12 2c1.2 2.8 4 4 4 4s-2.8 1.2-4 4c-1.2-2.8-4-4-4-4s2.8-1.2 4-4z"></path>
+          </g>
+        </svg>
+      </div>
+      <div>
+        <h2>Black Velvet Staff</h2>
+        <p>Secure staff access panel</p>
+      </div>
     </div>
 
-    <div class="main">
-
-      <!-- LOGIN AREA -->
-      <div id="loginArea">
-        <h2>Staff Login</h2>
-        <input id="user" placeholder="Username" class="btn" style="width:200px;">
-        <input id="code" placeholder="Code" class="btn" style="width:200px; margin-top:10px;">
-        <button class="btn" style="margin-top:10px;" id="loginBtn">Unlock</button>
-
-        <div id="warningBox" class="warning">
-          ⚠️ WARNING: YOU ARE NOT AUTHORIZED TO ENTER. AUTHORITIES HAVE BEEN ALERTED.
-        </div>
-      </div>
-
-      <!-- STAFF CONTENT -->
-      <div id="staffContent">
-
-        <h2>Welcome, Staff</h2>
-
-        <div class="panel-box">
-          Staff tools are locked. Panels will unlock as development continues.
-        </div>
-
-        <div style="margin-top:20px; display:flex; gap:10px;">
-          <button class="btn panelBtn" data-panel="1">Panel 1</button>
-          <button class="btn panelBtn" data-panel="2">Panel 2</button>
-          <button class="btn panelBtn" data-panel="3">Panel 3</button>
-          <button class="btn panelBtn" data-panel="4">Panel 4</button>
-        </div>
-
-        <div id="panel1" class="panel active panel-box">COMING SOON</div>
-        <div id="panel2" class="panel panel-box">COMING SOON</div>
-        <div id="panel3" class="panel panel-box">COMING SOON</div>
-        <div id="panel4" class="panel panel-box">COMING SOON</div>
-
-        <div style="margin-top:20px; display:flex; gap:10px;">
-          <button class="btn" onclick="relock()">Re-lock</button>
-          <button class="btn" onclick="location.href='index.html'">Back Home</button>
-        </div>
-
-      </div>
-
+    <div class="field">
+      <label for="username">Username</label>
+      <input id="username" type="text" autocomplete="username" placeholder="Enter username" />
     </div>
 
-    <div class="petal-layer" id="petalLayer"></div>
+    <div class="field">
+      <label for="code">Access Code</label>
+      <input id="code" type="password" autocomplete="current-password" placeholder="4-digit code" maxlength="8" />
+    </div>
 
+    <div class="actions">
+      <button id="loginBtn" class="btn primary">Unlock Staffpanel</button>
+      <div class="small muted" id="statusText">Enter credentials to unlock</div>
+    </div>
+
+    <div class="device-id">
+      <div class="small muted">Device ID</div>
+      <div id="devicePill" class="device-pill">----</div>
+    </div>
   </div>
+
+  <!-- STAFF PANEL (hidden until unlocked) -->
+  <div class="panel-wrap" id="staffPanel" style="opacity:0; transform: translateY(18px); pointer-events:none;">
+    <div class="panel-left">
+      <div style="margin-bottom:12px; color:var(--muted); font-weight:700;">Panels</div>
+      <div class="menu" id="menuList">
+        <button data-panel="panel1" class="active">Dashboard</button>
+        <button data-panel="panel2">Staff Logs</button>
+        <button data-panel="panel3">Tools</button>
+        <button data-panel="panel4">Notes</button>
+      </div>
+
+      <div style="margin-top:18px; color:var(--muted); font-size:12px;">
+        <div style="margin-bottom:8px;">Device</div>
+        <div id="panelDevice" class="device-pill" style="font-size:12px; padding:6px 8px;">----</div>
+      </div>
+    </div>
+
+    <div class="panel-main">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#0b0b0b,#141414);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,0.6);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" fill="#0d0d0d"></circle></svg>
+          </div>
+          <div>
+            <h3 id="panelTitle">Dashboard</h3>
+            <p class="muted" id="panelSubtitle">Overview & quick actions</p>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button id="relockBtn" class="relock">Re-lock</button>
+        </div>
+      </div>
+
+      <!-- Panel content -->
+      <div id="panelContent">
+        <div id="panel1" class="card">
+          <h4 style="margin:0 0 8px 0;">Welcome</h4>
+          <p class="muted">This is the staff dashboard. Use the left menu to switch panels. All login attempts are logged to your webhook.</p>
+          <div style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap;">
+            <div style="min-width:160px; padding:12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03);">
+              <div class="muted">Logged in as</div>
+              <div id="loggedUser" style="font-weight:800; margin-top:6px;">—</div>
+            </div>
+            <div style="min-width:160px; padding:12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03);">
+              <div class="muted">Device Hex</div>
+              <div id="loggedDevice" style="font-weight:800; margin-top:6px;">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="panel2" class="card" style="display:none;">
+          <h4 style="margin:0 0 8px 0;">Staff Logs</h4>
+          <p class="muted">Recent login attempts are sent to your webhook. This panel will show a local preview of the last attempts.</p>
+          <div id="logPreview" style="margin-top:12px; max-height:220px; overflow:auto; border-radius:8px; padding:8px; background:rgba(0,0,0,0.25);"></div>
+        </div>
+
+        <div id="panel3" class="card" style="display:none;">
+          <h4 style="margin:0 0 8px 0;">Tools</h4>
+          <p class="muted">Placeholder for staff tools (ban, warn, manage ranks, etc.).</p>
+        </div>
+
+        <div id="panel4" class="card" style="display:none;">
+          <h4 style="margin:0 0 8px 0;">Notes</h4>
+          <p class="muted">Quick notes for staff. This is local only.</p>
+          <textarea id="staffNotes" style="width:100%; min-height:120px; margin-top:8px; padding:10px; border-radius:8px; background:rgba(0,0,0,0.35); color:var(--text); border:1px solid rgba(255,255,255,0.03);"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
-/* ---------------- DEVICE HEX ---------------- */
-function generateHex(){
-  const hex = Math.floor(Math.random()*0xFFFF).toString(16).toUpperCase();
-  return hex.padStart(4,"0");
-}
-if(!localStorage.deviceHex){
-  localStorage.deviceHex = generateHex();
-}
-
-/* ---------------- ACCOUNTS ---------------- */
-const accounts = {
+/* ============================
+   Configuration & Accounts
+   ============================ */
+const WEBHOOK_URL = 'YOUR_WEBHOOK_URL_HERE'; // <-- replace with your webhook URL
+const STAFF_ACCOUNTS = {
   "gear10":"9033",
   "luckyy1":"0226",
   "suoaztic":"4423",
@@ -232,101 +398,262 @@ const accounts = {
   "fin5":"5"
 };
 
-/* ---------------- WEBHOOK ---------------- */
-const webhookURL = "https://discord.com/api/webhooks/1537233521410576546/qoHYqRmP1SbBfuuMCzvJBxWgTIGIlKpS3bhQ7xuj2MnbxNSoRGu0xUxCzkiXV6d43DIs";
+/* ============================
+   Utilities
+   ============================ */
+function randHex4(){
+  // deterministic-ish device hex stored in localStorage
+  const existing = localStorage.getItem('bv_device_hex');
+  if(existing) return existing;
+  const hex = Math.floor(Math.random()*0xFFFF).toString(16).toUpperCase().padStart(4,'0');
+  localStorage.setItem('bv_device_hex', hex);
+  return hex;
+}
 
-function sendLog(success,user,code,reason){
+function nowISO(){
+  return new Date().toISOString();
+}
+
+function getBrowserInfo(){
+  const ua = navigator.userAgent;
+  return ua;
+}
+
+/* ============================
+   DOM refs
+   ============================ */
+const loginBtn = document.getElementById('loginBtn');
+const usernameInput = document.getElementById('username');
+const codeInput = document.getElementById('code');
+const statusText = document.getElementById('statusText');
+const devicePill = document.getElementById('devicePill');
+
+const staffPanel = document.getElementById('staffPanel');
+const loginCard = document.getElementById('loginCard');
+const relockBtn = document.getElementById('relockBtn');
+
+const panelWrap = document.querySelector('.panel-wrap');
+const menuButtons = document.querySelectorAll('#menuList button');
+const panelTitle = document.getElementById('panelTitle');
+const panelSubtitle = document.getElementById('panelSubtitle');
+
+const loggedUser = document.getElementById('loggedUser');
+const loggedDevice = document.getElementById('loggedDevice');
+const panelDevice = document.getElementById('panelDevice');
+const logPreview = document.getElementById('logPreview');
+
+/* ============================
+   Device hex + UI init
+   ============================ */
+const DEVICE_HEX = randHex4();
+devicePill.textContent = DEVICE_HEX;
+panelDevice.textContent = DEVICE_HEX;
+
+/* ============================
+   Session unlock persistence
+   ============================ */
+const SESSION_KEY = 'bv_staff_unlocked';
+function setUnlocked(username){
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify({user:username, time:Date.now()}));
+}
+function clearUnlocked(){
+  sessionStorage.removeItem(SESSION_KEY);
+}
+function getUnlocked(){
+  try{
+    return JSON.parse(sessionStorage.getItem(SESSION_KEY));
+  }catch(e){ return null; }
+}
+
+/* ============================
+   Webhook logging (same data, prettier payload)
+   ============================ */
+async function sendWebhookAttempt({username, code, success, reason}){
+  // Build a clean, readable payload (Discord webhook embed-like plain text)
   const payload = {
-    content: success ? "**Login Successful**" : "**Incorrect Credentials**",
-    embeds:[{
-      title: success ? "Staff Login" : "Failed Login",
-      color: success ? 65280 : 16711680,
-      fields:[
-        {name:"Username", value:user},
-        {name:"Code", value:code},
-        {name:"Reason", value:reason},
-        {name:"Device Hex", value:localStorage.deviceHex},
-        {name:"Browser", value:navigator.userAgent},
-        {name:"Language", value:navigator.language},
-        {name:"Platform", value:navigator.platform},
-        {name:"Resolution", value:window.innerWidth+"x"+window.innerHeight},
-        {name:"Time", value:new Date().toString()}
-      ]
+    content: null,
+    embeds: [{
+      title: "🖤 Black Velvet Staff Login",
+      color: success ? 3066993 : 15158332,
+      fields: [
+        { name: "User", value: username || "—", inline: true },
+        { name: "Code", value: code ? String(code) : "—", inline: true },
+        { name: "Device Hex", value: DEVICE_HEX, inline: true },
+        { name: "Status", value: success ? "SUCCESS" : `FAIL — ${reason || 'invalid'}`, inline: true },
+        { name: "Time", value: new Date().toLocaleString(), inline: true },
+        { name: "Browser UA", value: navigator.userAgent || "—", inline: false }
+      ],
+      footer: { text: "Black Velvet • Staffpanel" },
+      timestamp: new Date().toISOString()
     }]
   };
 
-  fetch(webhookURL,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify(payload)
-  });
-}
-
-/* ---------------- LOGIN ---------------- */
-document.getElementById("loginBtn").onclick = function(){
-  const u = document.getElementById("user").value.trim();
-  const c = document.getElementById("code").value.trim();
-  const warning = document.getElementById("warningBox");
-
-  if(accounts[u] && accounts[u] === c){
-    warning.style.display = "none";
-    sendLog(true,u,c,"Correct credentials");
-    sessionStorage.staffUnlocked = "true";
-    unlock();
-  } else {
-    warning.style.display = "block";
-    sendLog(false,u,c,"Wrong username or code");
-
-    const loginBox = document.getElementById("loginArea");
-    loginBox.style.animation = "shake 0.4s";
-    setTimeout(()=>loginBox.style.animation="",500);
+  // Try to send; swallow errors but show local preview
+  try{
+    await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  }catch(e){
+    // network/CORS may block; still continue
+    console.warn('Webhook send failed', e);
   }
-};
 
-function unlock(){
-  document.getElementById("loginArea").style.display="none";
-  document.getElementById("staffContent").style.display="block";
+  // Add to local preview
+  const entry = document.createElement('div');
+  entry.style.padding = '8px';
+  entry.style.borderBottom = '1px dashed rgba(255,255,255,0.03)';
+  entry.innerHTML = `<div style="font-weight:700;color:${success ? '#7be495' : '#ff9b9b'}">${username || '—'} — ${success ? 'SUCCESS' : 'FAIL'}</div>
+                     <div style="font-size:12px;color:var(--muted)">${new Date().toLocaleString()} • Device ${DEVICE_HEX} • ${reason || ''}</div>`;
+  logPreview.prepend(entry);
 }
 
-function relock(){
-  sessionStorage.removeItem("staffUnlocked");
-  document.getElementById("staffContent").style.display="none";
-  document.getElementById("loginArea").style.display="block";
+/* ============================
+   Login logic (same checks)
+   ============================ */
+function attemptLogin(){
+  const user = (usernameInput.value || '').trim();
+  const code = (codeInput.value || '').trim();
+
+  if(!user || !code){
+    statusText.textContent = 'Enter username and code';
+    return;
+  }
+
+  const expected = STAFF_ACCOUNTS[user];
+  const success = expected && expected === code;
+
+  // send webhook (fire-and-forget)
+  sendWebhookAttempt({ username: user, code, success, reason: success ? 'OK' : 'Invalid credentials' });
+
+  if(success){
+    statusText.textContent = 'Unlocked — welcome';
+    setUnlocked(user);
+    showStaffPanel(user);
+  } else {
+    statusText.textContent = 'Invalid credentials';
+    // small shake animation
+    loginCard.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-8px)' }, { transform: 'translateX(8px)' }, { transform: 'translateX(0)' }], { duration: 360 });
+  }
 }
 
-/* ---------------- RESTORE UNLOCK ---------------- */
-if(sessionStorage.staffUnlocked === "true"){
-  unlock();
+/* ============================
+   Show / hide staffpanel (prettier animation)
+   ============================ */
+function showStaffPanel(user){
+  // populate UI
+  loggedUser.textContent = user;
+  loggedDevice.textContent = DEVICE_HEX;
+
+  // reveal panel with smooth animation
+  staffPanel.style.pointerEvents = 'auto';
+  staffPanel.style.opacity = '1';
+  staffPanel.style.transform = 'translateY(0)';
+  panelWrap.style.opacity = '1';
+  panelWrap.style.transform = 'translateY(0)';
+
+  // subtle background dim of login card
+  loginCard.style.opacity = '0.85';
+  loginCard.style.filter = 'blur(0.2px)';
+
+  // ensure first panel active
+  activatePanel('panel1');
 }
 
-/* ---------------- PANEL SWITCH ---------------- */
-document.querySelectorAll(".panelBtn").forEach(btn=>{
-  btn.onclick = ()=>{
-    const id = btn.dataset.panel;
-    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
-    document.getElementById("panel"+id).classList.add("active");
+/* hide staffpanel */
+function hideStaffPanel(){
+  staffPanel.style.pointerEvents = 'none';
+  staffPanel.style.opacity = '0';
+  staffPanel.style.transform = 'translateY(18px)';
+  loginCard.style.opacity = '1';
+  loginCard.style.filter = 'none';
+  clearUnlocked();
+}
+
+/* ============================
+   Panel switching
+   ============================ */
+function activatePanel(id){
+  // hide all
+  document.querySelectorAll('#panelContent > div').forEach(d => d.style.display = 'none');
+  const el = document.getElementById(id);
+  if(el) el.style.display = 'block';
+
+  // update menu active
+  menuButtons.forEach(b => b.classList.toggle('active', b.dataset.panel === id));
+  // update header
+  const titleMap = {
+    panel1: ['Dashboard','Overview & quick actions'],
+    panel2: ['Staff Logs','Recent login attempts'],
+    panel3: ['Tools','Staff utilities (coming soon)'],
+    panel4: ['Notes','Local staff notes']
   };
-});
-
-/* ---------------- PETALS ---------------- */
-const layer = document.getElementById("petalLayer");
-const card = document.getElementById("cardRoot");
-
-function spawnPetal(x,y){
-  const p = document.createElement("div");
-  p.className="petal";
-  p.style.left = x+"px";
-  p.style.top = y+"px";
-  layer.appendChild(p);
-  setTimeout(()=>p.remove(),3000);
+  const t = titleMap[id] || ['Panel',''];
+  panelTitle.textContent = t[0];
+  panelSubtitle.textContent = t[1];
 }
 
-card.addEventListener("click",e=>{
-  if(e.target.tagName.toLowerCase()==="button") return;
-  const rect = layer.getBoundingClientRect();
-  spawnPetal(e.clientX - rect.left, e.clientY - rect.top);
-});
-</script>
+/* ============================
+   Event bindings
+   ============================ */
+loginBtn.addEventListener('click', attemptLogin);
+codeInput.addEventListener('keydown', (e)=> { if(e.key === 'Enter') attemptLogin(); });
+usernameInput.addEventListener('keydown', (e)=> { if(e.key === 'Enter') attemptLogin(); });
 
+relockBtn.addEventListener('click', ()=>{
+  hideStaffPanel();
+  statusText.textContent = 'Panel re-locked';
+});
+
+menuButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=> activatePanel(btn.dataset.panel));
+});
+
+/* ============================
+   On load: check session
+   ============================ */
+window.addEventListener('load', ()=>{
+  const unlocked = getUnlocked();
+  if(unlocked && unlocked.user){
+    // restore unlocked state
+    showStaffPanel(unlocked.user);
+    statusText.textContent = `Restored session for ${unlocked.user}`;
+  } else {
+    // keep panel hidden
+    hideStaffPanel();
+  }
+
+  // show device hex in UI
+  devicePill.textContent = DEVICE_HEX;
+  panelDevice.textContent = DEVICE_HEX;
+});
+
+/* ============================
+   Small UX: focus first input
+   ============================ */
+setTimeout(()=> usernameInput.focus(), 300);
+
+/* ============================
+   Keep local log preview size reasonable
+   ============================ */
+(function(){
+  // load any saved notes
+  const notes = localStorage.getItem('bv_staff_notes');
+  if(notes) document.getElementById('staffNotes').value = notes;
+
+  document.getElementById('staffNotes').addEventListener('input', (e)=>{
+    localStorage.setItem('bv_staff_notes', e.target.value);
+  });
+})();
+
+/* ============================
+   Optional: graceful fallback if webhook not set
+   ============================ */
+if(!WEBHOOK_URL || WEBHOOK_URL === 'YOUR_WEBHOOK_URL_HERE'){
+  // show a small hint in status
+  statusText.textContent = 'Webhook not configured — replace WEBHOOK_URL in script';
+}
+</script>
 </body>
 </html>
