@@ -102,6 +102,17 @@
     color:var(--muted);
   }
 
+  .warning{
+    margin-top:10px;
+    padding:10px;
+    border-radius:8px;
+    background:rgba(255,0,0,0.15);
+    border:1px solid rgba(255,0,0,0.4);
+    color:#ff6b6b;
+    font-weight:600;
+    display:none;
+  }
+
   .petal-layer{
     position:absolute;
     inset:0;
@@ -158,6 +169,10 @@
         <input id="user" placeholder="Username" class="btn" style="width:200px;">
         <input id="code" placeholder="Code" class="btn" style="width:200px; margin-top:10px;">
         <button class="btn" style="margin-top:10px;" id="loginBtn">Unlock</button>
+
+        <div id="warningBox" class="warning">
+          ⚠️ WARNING: YOU ARE NOT AUTHORIZED TO ENTER. AUTHORITIES HAVE BEEN ALERTED.
+        </div>
       </div>
 
       <!-- STAFF CONTENT -->
@@ -251,15 +266,16 @@ function sendLog(success,user,code,reason){
 document.getElementById("loginBtn").onclick = function(){
   const u = document.getElementById("user").value.trim();
   const c = document.getElementById("code").value.trim();
+  const warning = document.getElementById("warningBox");
 
   if(accounts[u] && accounts[u] === c){
+    warning.style.display = "none";
     sendLog(true,u,c,"Correct credentials");
     sessionStorage.staffUnlocked = "true";
     unlock();
   } else {
+    warning.style.display = "block";
     sendLog(false,u,c,"Wrong username or code");
-
-    alert("⚠️ WARNING: YOU ARE NOT AUTHORIZED TO ENTER.\nAuthorities have been alerted.");
 
     const loginBox = document.getElementById("loginArea");
     loginBox.style.animation = "shake 0.4s";
