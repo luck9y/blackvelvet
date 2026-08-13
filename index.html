@@ -90,44 +90,55 @@
   /* Cursor Velvet Flower (small) */
   #cursorFlower{
     position:fixed;
-    width:72px;
-    height:72px;
+    width:84px;
+    height:84px;
     pointer-events:none;
     z-index:99999;
     transform:translate(-50%,-50%) scale(1);
     transition: transform 0.06s linear;
     will-change: transform, left, top;
     mix-blend-mode:normal;
+    /* glow so it's visible: greish-white soft glow */
+    filter: drop-shadow(0 6px 18px rgba(180,200,210,0.28));
+    -webkit-filter: drop-shadow(0 6px 18px rgba(180,200,210,0.28));
   }
 
   /* small petal shapes inside cursor flower */
   .cursor-petal{
     position:absolute;
-    width:34px;
-    height:52px;
+    width:40px;
+    height:60px;
     background:linear-gradient(135deg,#0a0a0a,#1c1c1c);
     border-radius:50% 50% 40% 60%;
     filter:drop-shadow(0 6px 12px rgba(0,0,0,0.6));
+    left:50%;
+    top:50%;
+    transform-origin:center;
+    will-change: transform;
   }
-  .c1{ transform:rotate(0deg) translateY(-28px) scale(0.45); left:50%; top:50%; transform-origin:center; }
-  .c2{ transform:rotate(72deg) translateY(-28px) scale(0.45); left:50%; top:50%; transform-origin:center; }
-  .c3{ transform:rotate(144deg) translateY(-28px) scale(0.45); left:50%; top:50%; transform-origin:center; }
-  .c4{ transform:rotate(216deg) translateY(-28px) scale(0.45); left:50%; top:50%; transform-origin:center; }
-  .c5{ transform:rotate(288deg) translateY(-28px) scale(0.45); left:50%; top:50%; transform-origin:center; }
+  /* base positions (we will override transforms in JS for motion) */
+  .c1{ --angle:0deg; }
+  .c2{ --angle:72deg; }
+  .c3{ --angle:144deg; }
+  .c4{ --angle:216deg; }
+  .c5{ --angle:288deg; }
 
   .cursor-center{
     position:absolute;
-    width:36px;
-    height:36px;
+    width:40px;
+    height:40px;
     background:#0d0d0d;
     border-radius:50%;
     left:50%;
     top:50%;
-    transform:translate(-50%,-50%) scale(0.6);
-    box-shadow:0 0 18px rgba(255,255,255,0.04);
+    transform:translate(-50%,-50%) scale(0.7);
+    box-shadow:
+      0 0 18px rgba(220,230,240,0.12),
+      0 0 36px rgba(180,200,210,0.12);
+    will-change: box-shadow, transform;
   }
 
-  /* Cursor water trail blob */
+  /* Cursor water trail blob (kept behind cursor) */
   .cursor-water{
     position:absolute;
     width:20px;
@@ -170,11 +181,11 @@
     will-change: transform, opacity;
   }
 
-  /* small responsiveness tweak so cursor doesn't get too big on tiny screens */
+  /* responsiveness */
   @media (max-width:420px){
-    #cursorFlower{ width:56px; height:56px; }
+    #cursorFlower{ width:64px; height:64px; }
     .cursor-petal{ width:28px; height:42px; }
-    .cursor-center{ width:28px; height:28px; transform:translate(-50%,-50%) scale(0.6); }
+    .cursor-center{ width:28px; height:28px; transform:translate(-50%,-50%) scale(0.7); }
   }
 </style>
 </head>
@@ -214,60 +225,105 @@ function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
 /* ---------------------------
    Cursor Velvet Flower behavior
    - follows pointer smoothly
-   - scales slightly on movement for liveliness
+   - petals rotate and sway based on movement to look like a living flower
+   - greish-white glow applied via box-shadow on center and subtle outer glow
 ----------------------------*/
 (function(){
   const cursor = document.getElementById('cursorFlower');
-  let lastX = window.innerWidth / 2;
-  let lastY = window.innerHeight / 2;
+  const petals = Array.from(cursor.querySelectorAll('.cursor-petal'));
+  const center = cursor.querySelector('.cursor-center');
+
+  // base angles for petals
+  const baseAngles = [0,72,144,216,288];
+
+  // initial positions
+  let targetX = window.innerWidth / 2;
+  let targetY = window.innerHeight / 2;
+  let px = targetX, py = targetY;
+
+  // velocity smoothing
+  let lastMouse = { x: targetX, y: targetY, t: performance.now() };
   let vx = 0, vy = 0;
 
-  // smoothing factor
+  // easing for position
   const ease = 0.18;
 
+  // glow intensities
+  function setGlow(intensity){
+    // intensity 0..1
+    const outer = 12 + intensity * 28; // px
+    const outerAlpha = 0.18 + intensity * 0.6;
+    const inner = 6 + intensity * 12;
+    center.style.boxShadow = `0 0 ${outer}px rgba(200,220,230,${outerAlpha}), 0 0 ${inner}px rgba(220,240,255,0.12)`;
+    cursor.style.filter = `drop-shadow(0 8px ${Math.round(outer/1.6)}px rgba(180,200,210,${0.22 + intensity*0.5}))`;
+  }
+
+  // update target on mousemove
   document.addEventListener('mousemove', e=>{
-    // target position
-    const tx = e.clientX;
-    const ty = e.clientY;
+    targetX = e.clientX;
+    targetY = e.clientY;
 
-    // immediate set for responsiveness, then smooth via RAF loop
-    lastX = tx;
-    lastY = ty;
+    const now = performance.now();
+    const dt = Math.max(1, now - lastMouse.t);
+    const dx = e.clientX - lastMouse.x;
+    const dy = e.clientY - lastMouse.y;
+    vx = dx / dt * 16; // normalized velocity per frame
+    vy = dy / dt * 16;
+    lastMouse.x = e.clientX;
+    lastMouse.y = e.clientY;
+    lastMouse.t = now;
 
-    // small scale effect based on speed
-    const speed = Math.hypot((tx - (cursor._prevX||tx)), (ty - (cursor._prevY||ty)));
-    const scale = clamp(1 + Math.min(speed / 180, 0.28), 1, 1.28);
-    cursor.style.transform = `translate(-50%,-50%) scale(${scale})`;
-
-    cursor._prevX = tx;
-    cursor._prevY = ty;
+    // stronger glow when moving faster
+    const speed = Math.hypot(vx, vy);
+    const glow = clamp(speed / 18, 0.12, 1.0);
+    setGlow(glow);
   });
 
-  // RAF loop to smoothly move the cursor element
-  let px = window.innerWidth / 2;
-  let py = window.innerHeight / 2;
-  function tick(){
-    // ease px,py toward lastX,lastY
-    px += (lastX - px) * ease;
-    py += (lastY - py) * ease;
+  // animate petals and position
+  let time = 0;
+  function tick(now){
+    time = now || performance.now();
+
+    // smooth position
+    px += (targetX - px) * ease;
+    py += (targetY - py) * ease;
     cursor.style.left = px + 'px';
     cursor.style.top = py + 'px';
 
-    // gently return scale to 1 over time
-    const current = cursor.style.transform.match(/scale\(([^)]+)\)/);
-    if(current){
-      const s = parseFloat(current[1]);
-      const ns = 1 + (s - 1) * 0.86;
-      cursor.style.transform = `translate(-50%,-50%) scale(${ns})`;
-    }
+    // compute movement-based sway
+    const speed = Math.hypot(vx, vy);
+    // base sway amplitude
+    const swayAmp = clamp(speed * 0.9 + 2, 2, 18);
+
+    // subtle bobbing over time
+    const bob = Math.sin(now / 350) * 1.6;
+
+    petals.forEach((petal, i) => {
+      const base = baseAngles[i];
+      // dynamic rotation influenced by velocity and time
+      const dir = Math.atan2(vy, vx) * (180 / Math.PI); // direction in degrees
+      const rotOffset = Math.sin(now / (700 + i*60) + i) * (2 + i*1.2); // gentle oscillation
+      const velocityTilt = (vx * Math.cos(base * Math.PI/180) + vy * Math.sin(base * Math.PI/180)) * 0.9;
+      const angle = base + rotOffset + velocityTilt * 1.8;
+      // translate outward slightly based on swayAmp and petal index
+      const translateY = -28 + bob * (i%2 ? 0.6 : 1.0);
+      const scale = 0.45 + Math.min(speed / 220, 0.18);
+      petal.style.transform = `rotate(${angle}deg) translateY(${translateY}px) scale(${scale.toFixed(3)})`;
+      // subtle brightness change to emphasize glow
+      petal.style.filter = `drop-shadow(0 6px ${6 + swayAmp/3}px rgba(160,180,200,0.12))`;
+    });
+
+    // gently relax glow back to subtle when idle
+    const idleGlow = clamp(Math.hypot(vx, vy) / 18, 0.08, 0.28);
+    // reduce over time
+    setGlow(idleGlow);
 
     requestAnimationFrame(tick);
   }
-  tick();
+  requestAnimationFrame(tick);
 
-  // show cursor on enter, hide on leave
-  document.addEventListener('mouseenter', ()=> cursor.style.opacity = '1');
-  document.addEventListener('mouseleave', ()=> cursor.style.opacity = '0');
+  // hide on touch devices fallback
+  document.addEventListener('touchstart', ()=>{ document.body.style.cursor = 'default'; }, {passive:true});
 })();
 
 /* ---------------------------
@@ -281,33 +337,27 @@ function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
     const p = document.createElement('div');
     p.className = 'falling-petal';
 
-    // random horizontal start offset so they don't all align
     const startX = rand(-40, 40) + 'px';
-    const sway = rand(20, 120) + 'px'; // how much it sways horizontally
+    const sway = rand(20, 120) + 'px';
     const startRot = rand(-30, 30) + 'deg';
     const startScale = rand(0.85, 1.15).toFixed(2);
 
-    // random left spawn across the screen
     const left = rand(0, window.innerWidth) + 'px';
     p.style.left = left;
     p.style.top = '-80px';
 
-    // set CSS variables used by keyframes
     p.style.setProperty('--start-x', startX);
     p.style.setProperty('--sway', sway);
     p.style.setProperty('--start-rot', startRot);
     p.style.setProperty('--start-scale', startScale);
 
-    // random duration and easing to feel natural
     const duration = rand(3.8, 6.2).toFixed(2) + 's';
     p.style.animation = `leafFall ${duration} linear forwards`;
 
-    // slight horizontal jitter via transform translateX on creation for variety
     p.style.transform = `translateX(${rand(-8,8)}px)`;
 
     document.body.appendChild(p);
 
-    // remove after life
     setTimeout(()=> {
       if(p && p.parentNode) p.parentNode.removeChild(p);
     }, life + 800);
@@ -322,7 +372,7 @@ function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
 ----------------------------*/
 (function(){
   let last = {x: window.innerWidth/2, y: window.innerHeight/2};
-  const spacing = 8; // minimum px movement to spawn a new blob
+  const spacing = 8;
 
   document.addEventListener('mousemove', e=>{
     const dx = e.clientX - last.x;
@@ -376,13 +426,11 @@ function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
 ----------------------------*/
 (function(){
   document.addEventListener('click', e=>{
-    // ignore clicks on UI elements (buttons, links)
     if(e.target.closest('.btn') || e.target.closest('a')) return;
 
     const cx = e.clientX;
     const cy = e.clientY;
 
-    // create 3 concentric rings with staggered timing
     for(let i=0;i<3;i++){
       const ring = document.createElement('div');
       ring.className = 'ripple-ring';
@@ -403,7 +451,6 @@ function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
       setTimeout(()=> { if(ring.parentNode) ring.parentNode.removeChild(ring); }, 1200 + i*200);
     }
 
-    // spawn several small droplets that pop up and fall back
     const drops = Math.round(rand(6,12));
     for(let i=0;i<drops;i++){
       spawnWaterDrop(cx, cy);
