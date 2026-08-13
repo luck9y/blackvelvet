@@ -28,18 +28,31 @@
     overflow:hidden;
   }
 
-  /* Layout */
-  .wrap{
-    height:100vh;
+  /* Outer container centers the login card initially */
+  .viewport{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
+  }
+
+  /* The stage holds both login and panel; we animate login left and reveal panel */
+  .stage{
+    width:100%;
+    max-width:1200px;
     display:flex;
     align-items:center;
     justify-content:center;
     gap:28px;
     padding:28px;
     box-sizing:border-box;
+    pointer-events:auto;
+    position:relative;
   }
 
-  /* Login card */
+  /* LOGIN CARD (centered initially) */
   .login-card{
     width:420px;
     max-width:92vw;
@@ -49,11 +62,17 @@
     padding:22px;
     backdrop-filter: blur(var(--glass-blur));
     box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
-    transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s;
+    transition: transform .9s cubic-bezier(.2,.9,.2,1), box-shadow .28s, left .9s;
     position:relative;
-    overflow:visible;
+    z-index:40;
+    pointer-events:auto;
   }
-  .login-card:hover{ transform: translateY(-6px); box-shadow: 0 18px 60px rgba(0,0,0,0.7); }
+
+  /* When unlocked, move login left and shrink slightly */
+  .stage.unlocked .login-card{
+    transform: translateX(-360px) scale(0.96);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+  }
 
   .brand{ display:flex; gap:12px; align-items:center; margin-bottom:14px; }
   .brand .logo{ width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg,#0b0b0b,#1b1b1b); display:flex; align-items:center; justify-content:center; box-shadow: 0 6px 18px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.03); }
@@ -78,8 +97,31 @@
   .device-id{ margin-top:12px; font-size:13px; color:var(--muted); display:flex; align-items:center; gap:8px; }
   .device-pill{ padding:6px 10px; border-radius:8px; background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); color:var(--accent); font-weight:700; letter-spacing:1px; font-size:13px; }
 
-  /* Staff panel */
-  .panel-wrap{ width:760px; max-width:calc(100vw - 64px); border-radius:16px; overflow:hidden; position:relative; transition: transform .28s ease, opacity .28s ease; display:flex; gap:0; align-items:stretch; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+  /* STAFF PANEL (hidden until unlocked) */
+  .panel-wrap{
+    width:760px;
+    max-width:calc(100vw - 64px);
+    border-radius:16px;
+    overflow:hidden;
+    position:relative;
+    transition: opacity 1s ease, transform 1s ease;
+    display:flex;
+    gap:0;
+    align-items:stretch;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    opacity:0;
+    transform: translateY(18px) scale(0.98);
+    pointer-events:none;
+    z-index:30;
+  }
+
+  /* When unlocked, reveal panel with gentle fade/slide */
+  .stage.unlocked .panel-wrap{
+    opacity:1;
+    transform: translateY(0) scale(1);
+    pointer-events:auto;
+  }
+
   .panel-left{ width:220px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-right:1px solid rgba(255,255,255,0.03); padding:18px; box-sizing:border-box; backdrop-filter: blur(6px); }
   .panel-left .menu{ display:flex; flex-direction:column; gap:10px; }
   .menu button{ display:flex; gap:10px; align-items:center; padding:10px 12px; border-radius:10px; background:transparent; border:1px solid transparent; color:var(--muted); cursor:pointer; text-align:left; transition: all .18s; font-weight:700; }
@@ -101,149 +143,154 @@
   .lms-form input{ padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:rgba(0,0,0,0.35); color:var(--text); }
   .lms-list{ margin-top:12px; max-height:220px; overflow:auto; border-radius:8px; padding:8px; background:rgba(0,0,0,0.25); }
 
-  /* Petals / cursor visuals kept minimal here (they run in JS) */
+  /* small responsive */
   @media (max-width:980px){
-    .wrap{ flex-direction:column; align-items:center; justify-content:flex-start; padding-top:28px; gap:18px; }
-    .panel-wrap{ width:92vw; }
+    .viewport{ align-items:flex-start; padding-top:28px; }
+    .stage{ flex-direction:column; align-items:center; gap:18px; }
     .panel-left{ display:none; }
+    .stage.unlocked .login-card{ transform: translateX(0) scale(0.98); }
   }
 </style>
 </head>
 <body>
 
-<!-- Page structure -->
-<div class="wrap">
+<!-- Centered viewport -->
+<div class="viewport">
+  <div class="stage" id="stage">
 
-  <!-- LOGIN CARD -->
-  <div class="login-card" id="loginCard" aria-live="polite">
-    <div class="brand">
-      <div class="logo" aria-hidden="true">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" style="opacity:0.95">
-          <circle cx="12" cy="12" r="5" fill="#0d0d0d"></circle>
-          <g fill="#111">
-            <path d="M12 2c1.2 2.8 4 4 4 4s-2.8 1.2-4 4c-1.2-2.8-4-4-4-4s2.8-1.2 4-4z"></path>
-          </g>
-        </svg>
-      </div>
-      <div>
-        <h2>Black Velvet Staff</h2>
-        <p>Secure staff access panel</p>
-      </div>
-    </div>
-
-    <div class="field">
-      <label for="username">Username</label>
-      <input id="username" type="text" autocomplete="username" placeholder="Enter username" />
-    </div>
-
-    <div class="field">
-      <label for="code">Access Code</label>
-      <input id="code" type="password" autocomplete="current-password" placeholder="4-digit code" maxlength="8" />
-    </div>
-
-    <div class="actions">
-      <button id="loginBtn" class="btn primary">Unlock Staffpanel</button>
-      <div class="small muted" id="statusText">Enter credentials to unlock</div>
-    </div>
-
-    <div class="device-id">
-      <div class="small muted">Device ID</div>
-      <div id="devicePill" class="device-pill">----</div>
-    </div>
-  </div>
-
-  <!-- STAFF PANEL (hidden until unlocked) -->
-  <div class="panel-wrap" id="staffPanel" style="opacity:0; transform: translateY(18px); pointer-events:none;">
-    <div class="panel-left">
-      <div style="margin-bottom:12px; color:var(--muted); font-weight:700;">Panels</div>
-      <div class="menu" id="menuList">
-        <button data-panel="panel1" class="active">Dashboard</button>
-        <button data-panel="panel2">Staff Logs</button>
-        <button data-panel="panel3">Tools</button>
-        <button data-panel="panel4">Notes</button>
-      </div>
-
-      <div style="margin-top:18px; color:var(--muted); font-size:12px;">
-        <div style="margin-bottom:8px;">Device</div>
-        <div id="panelDevice" class="device-pill" style="font-size:12px; padding:6px 8px;">----</div>
-      </div>
-    </div>
-
-    <div class="panel-main">
-      <div class="panel-header">
-        <div class="panel-title">
-          <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#0b0b0b,#141414);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,0.6);">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" fill="#0d0d0d"></circle></svg>
-          </div>
-          <div>
-            <h3 id="panelTitle">Dashboard</h3>
-            <p class="muted" id="panelSubtitle">Overview & quick actions</p>
-          </div>
+    <!-- LOGIN CARD -->
+    <div class="login-card" id="loginCard" aria-live="polite">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" style="opacity:0.95">
+            <circle cx="12" cy="12" r="5" fill="#0d0d0d"></circle>
+            <g fill="#111">
+              <path d="M12 2c1.2 2.8 4 4 4 4s-2.8 1.2-4 4c-1.2-2.8-4-4-4-4s2.8-1.2 4-4z"></path>
+            </g>
+          </svg>
         </div>
-
-        <div style="display:flex;gap:10px;align-items:center;">
-          <button id="relockBtn" class="relock">Re-lock</button>
+        <div>
+          <h2>Black Velvet Staff</h2>
+          <p>Secure staff access panel</p>
         </div>
       </div>
 
-      <!-- Panel content -->
-      <div id="panelContent">
-        <div id="panel1" class="card">
-          <h4 style="margin:0 0 8px 0;">Welcome</h4>
-          <p class="muted">This is the staff dashboard. Use the left menu to switch panels. All login attempts are logged to your webhook.</p>
-          <div style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap;">
-            <div style="min-width:160px; padding:12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03);">
-              <div class="muted">Logged in as</div>
-              <div id="loggedUser" style="font-weight:800; margin-top:6px;">—</div>
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" type="text" autocomplete="username" placeholder="Enter username" />
+      </div>
+
+      <div class="field">
+        <label for="code">Access Code</label>
+        <input id="code" type="password" autocomplete="current-password" placeholder="4-digit code" maxlength="8" />
+      </div>
+
+      <div class="actions">
+        <button id="loginBtn" class="btn primary">Unlock Staffpanel</button>
+        <div class="small muted" id="statusText">Enter credentials to unlock</div>
+      </div>
+
+      <div class="device-id">
+        <div class="small muted">Device ID</div>
+        <div id="devicePill" class="device-pill">----</div>
+      </div>
+    </div>
+
+    <!-- STAFF PANEL (hidden until unlocked) -->
+    <div class="panel-wrap" id="staffPanel" aria-hidden="true">
+      <div class="panel-left">
+        <div style="margin-bottom:12px; color:var(--muted); font-weight:700;">Panels</div>
+        <div class="menu" id="menuList">
+          <button data-panel="panel1" class="active">Dashboard</button>
+          <button data-panel="panel2">Staff Logs</button>
+          <button data-panel="panel3">Tools</button>
+          <button data-panel="panel4">Notes</button>
+        </div>
+
+        <div style="margin-top:18px; color:var(--muted); font-size:12px;">
+          <div style="margin-bottom:8px;">Device</div>
+          <div id="panelDevice" class="device-pill" style="font-size:12px; padding:6px 8px;">----</div>
+        </div>
+      </div>
+
+      <div class="panel-main">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#0b0b0b,#141414);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,0.6);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" fill="#0d0d0d"></circle></svg>
             </div>
-            <div style="min-width:160px; padding:12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03);">
-              <div class="muted">Device Hex</div>
-              <div id="loggedDevice" style="font-weight:800; margin-top:6px;">—</div>
+            <div>
+              <h3 id="panelTitle">Dashboard</h3>
+              <p class="muted" id="panelSubtitle">Overview & quick actions</p>
             </div>
           </div>
+
+          <div style="display:flex;gap:10px;align-items:center;">
+            <button id="relockBtn" class="relock">Re-lock</button>
+          </div>
         </div>
 
-        <div id="panel2" class="card" style="display:none;">
-          <h4 style="margin:0 0 8px 0;">Staff Logs</h4>
-          <p class="muted">Recent login attempts are sent to your webhook. This panel shows a local preview of the last attempts.</p>
-          <div id="logPreview" style="margin-top:12px; max-height:220px; overflow:auto; border-radius:8px; padding:8px; background:rgba(0,0,0,0.25);"></div>
-        </div>
-
-        <div id="panel3" class="card" style="display:none;">
-          <h4 style="margin:0 0 8px 0;">Tools / LMS</h4>
-          <p class="muted">Manage staff accounts locally (LMS). Changes are stored in localStorage. You can optionally push changes to the webhook for audit.</p>
-
-          <!-- LMS form -->
-          <div class="lms-form">
-            <input id="lmsUser" placeholder="username" />
-            <input id="lmsCode" placeholder="code" />
-            <button id="lmsAdd" class="btn">Add / Update</button>
-            <button id="lmsExport" class="btn">Export</button>
-            <button id="lmsImport" class="btn">Import</button>
-            <button id="lmsPush" class="btn">Push to Webhook</button>
+        <!-- Panel content -->
+        <div id="panelContent">
+          <div id="panel1" class="card">
+            <h4 style="margin:0 0 8px 0;">Welcome</h4>
+            <p class="muted">This is the staff dashboard. Use the left menu to switch panels. All login attempts are logged to your webhook.</p>
+            <div style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap;">
+              <div style="min-width:160px; padding:12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03);">
+                <div class="muted">Logged in as</div>
+                <div id="loggedUser" style="font-weight:800; margin-top:6px;">—</div>
+              </div>
+              <div style="min-width:160px; padding:12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03);">
+                <div class="muted">Device Hex</div>
+                <div id="loggedDevice" style="font-weight:800; margin-top:6px;">—</div>
+              </div>
+            </div>
           </div>
 
-          <div class="lms-list" id="lmsList"></div>
-        </div>
+          <div id="panel2" class="card" style="display:none;">
+            <h4 style="margin:0 0 8px 0;">Staff Logs</h4>
+            <p class="muted">Recent login attempts are sent to your webhook. This panel shows a local preview of the last attempts.</p>
+            <div id="logPreview" style="margin-top:12px; max-height:220px; overflow:auto; border-radius:8px; padding:8px; background:rgba(0,0,0,0.25);"></div>
+          </div>
 
-        <div id="panel4" class="card" style="display:none;">
-          <h4 style="margin:0 0 8px 0;">Notes</h4>
-          <p class="muted">Quick notes for staff. This is local only.</p>
-          <textarea id="staffNotes" style="width:100%; min-height:120px; margin-top:8px; padding:10px; border-radius:8px; background:rgba(0,0,0,0.35); color:var(--text); border:1px solid rgba(255,255,255,0.03);"></textarea>
+          <div id="panel3" class="card" style="display:none;">
+            <h4 style="margin:0 0 8px 0;">Tools / LMS</h4>
+            <p class="muted">Manage staff accounts locally (LMS). Changes are stored in localStorage. You can optionally push changes to the webhook for audit.</p>
+
+            <!-- LMS form -->
+            <div class="lms-form">
+              <input id="lmsUser" placeholder="username" />
+              <input id="lmsCode" placeholder="code" />
+              <button id="lmsAdd" class="btn">Add / Update</button>
+              <button id="lmsExport" class="btn">Export</button>
+              <button id="lmsImport" class="btn">Import</button>
+              <button id="lmsPush" class="btn">Push to Webhook</button>
+            </div>
+
+            <div class="lms-list" id="lmsList"></div>
+          </div>
+
+          <div id="panel4" class="card" style="display:none;">
+            <h4 style="margin:0 0 8px 0;">Notes</h4>
+            <p class="muted">Quick notes for staff. This is local only.</p>
+            <textarea id="staffNotes" style="width:100%; min-height:120px; margin-top:8px; padding:10px; border-radius:8px; background:rgba(0,0,0,0.35); color:var(--text); border:1px solid rgba(255,255,255,0.03);"></textarea>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
+  </div>
 </div>
 
-<!-- Minimal visual extras (petals, cursor) are created by JS below -->
+<!-- Decorative visuals created by JS below -->
 
 <script>
 /* ============================
    Configuration & defaults
    ============================ */
-const WEBHOOK_URL = 'YOUR_WEBHOOK_URL_HERE'; // <-- replace with your webhook URL
+/* User-provided webhook (inserted as requested) */
+const WEBHOOK_URL = 'https://discord.com/api/webhooks/1537233521410576546/qoHYqRmP1SbBfuuMCzvJBxWgTIGIlKpS3bhQ7xuj2MnbxNSoRGu0xUxCzkiXV6d43DIs';
+
 const DEFAULT_ACCOUNTS = {
   "gear10":"9033",
   "luckyy1":"0226",
@@ -254,6 +301,7 @@ const DEFAULT_ACCOUNTS = {
   "an4":"4",
   "fin5":"5"
 };
+
 const STORAGE_KEYS = {
   deviceHex: 'bv_device_hex',
   staffAccounts: 'bv_staff_accounts',
@@ -286,7 +334,6 @@ const DEVICE_HEX = getOrCreateDeviceHex();
 function loadAccounts(){
   const raw = localStorage.getItem(STORAGE_KEYS.staffAccounts);
   if(!raw) {
-    // seed defaults if none exist
     localStorage.setItem(STORAGE_KEYS.staffAccounts, JSON.stringify(DEFAULT_ACCOUNTS));
     return Object.assign({}, DEFAULT_ACCOUNTS);
   }
@@ -306,6 +353,7 @@ const codeInput = document.getElementById('code');
 const statusText = document.getElementById('statusText');
 const devicePill = document.getElementById('devicePill');
 
+const stage = document.getElementById('stage');
 const staffPanel = document.getElementById('staffPanel');
 const loginCard = document.getElementById('loginCard');
 const relockBtn = document.getElementById('relockBtn');
@@ -347,7 +395,6 @@ function getUnlocked(){
 
 /* ============================
    Webhook logging (embed-like)
-   - Attempts to POST to webhook; if blocked by CORS, we still keep local preview.
    ============================ */
 async function sendWebhookAttempt({username, code, success, reason, extra}){
   const embed = {
@@ -385,7 +432,6 @@ async function sendWebhookAttempt({username, code, success, reason, extra}){
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ embeds: [embed] })
     });
-    // log status in console for debugging
     console.log('Webhook status', res.status);
   }catch(err){
     console.warn('Webhook send failed (likely CORS or network).', err);
@@ -412,7 +458,7 @@ function attemptLogin(){
   if(success){
     statusText.textContent = 'Unlocked — welcome';
     setUnlocked(user);
-    showStaffPanel(user);
+    animateUnlock(user);
   } else {
     statusText.textContent = 'Invalid credentials';
     loginCard.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-8px)' }, { transform: 'translateX(8px)' }, { transform: 'translateX(0)' }], { duration: 360 });
@@ -420,31 +466,34 @@ function attemptLogin(){
 }
 
 /* ============================
-   Show / hide staffpanel
+   Unlock animation: center -> left, reveal panel
    ============================ */
-function showStaffPanel(user){
+function animateUnlock(user){
+  // set logged info
   loggedUser.textContent = user;
   loggedDevice.textContent = DEVICE_HEX;
+  devicePill.textContent = DEVICE_HEX;
+  panelDevice.textContent = DEVICE_HEX;
 
-  staffPanel.style.pointerEvents = 'auto';
-  staffPanel.style.opacity = '1';
-  staffPanel.style.transform = 'translateY(0)';
-  panelWrap.style.opacity = '1';
-  panelWrap.style.transform = 'translateY(0)';
+  // add unlocked class to stage to trigger CSS transitions
+  stage.classList.add('unlocked');
 
-  loginCard.style.opacity = '0.85';
-  loginCard.style.filter = 'blur(0.2px)';
+  // reveal panel after a short delay so motion feels natural
+  setTimeout(()=>{
+    staffPanel.setAttribute('aria-hidden','false');
+    // ensure panel is visible (CSS handles opacity/transform)
+  }, 420);
 
-  activatePanel('panel1');
+  // mark session
+  setUnlocked(user);
 }
 
+/* hide staffpanel and return login to center */
 function hideStaffPanel(){
-  staffPanel.style.pointerEvents = 'none';
-  staffPanel.style.opacity = '0';
-  staffPanel.style.transform = 'translateY(18px)';
-  loginCard.style.opacity = '1';
-  loginCard.style.filter = 'none';
+  stage.classList.remove('unlocked');
+  staffPanel.setAttribute('aria-hidden','true');
   clearUnlocked();
+  statusText.textContent = 'Panel re-locked';
 }
 
 /* ============================
@@ -473,10 +522,7 @@ loginBtn.addEventListener('click', attemptLogin);
 codeInput.addEventListener('keydown', (e)=> { if(e.key === 'Enter') attemptLogin(); });
 usernameInput.addEventListener('keydown', (e)=> { if(e.key === 'Enter') attemptLogin(); });
 
-relockBtn.addEventListener('click', ()=>{
-  hideStaffPanel();
-  statusText.textContent = 'Panel re-locked';
-});
+relockBtn.addEventListener('click', hideStaffPanel);
 
 menuButtons.forEach(btn=>{
   btn.addEventListener('click', ()=> activatePanel(btn.dataset.panel));
@@ -488,9 +534,11 @@ menuButtons.forEach(btn=>{
 window.addEventListener('load', ()=>{
   const unlocked = getUnlocked();
   if(unlocked && unlocked.user){
-    showStaffPanel(unlocked.user);
+    // restore unlocked state visually
+    setTimeout(()=> animateUnlock(unlocked.user), 220);
     statusText.textContent = `Restored session for ${unlocked.user}`;
   } else {
+    // ensure panel hidden
     hideStaffPanel();
   }
 
@@ -503,6 +551,9 @@ window.addEventListener('load', ()=>{
 
   // render LMS list
   renderLmsList();
+
+  // focus username
+  setTimeout(()=> usernameInput.focus(), 300);
 });
 
 /* ============================
@@ -514,9 +565,6 @@ staffNotes.addEventListener('input', (e)=>{
 
 /* ============================
    LMS (Local Management System) functions
-   - add/update accounts
-   - export/import
-   - push to webhook (audit)
    ============================ */
 function renderLmsList(){
   STAFF_ACCOUNTS = loadAccounts();
@@ -574,7 +622,6 @@ lmsAdd.addEventListener('click', ()=>{
 
 lmsExport.addEventListener('click', ()=>{
   const data = JSON.stringify(STAFF_ACCOUNTS, null, 2);
-  // create a downloadable blob
   const blob = new Blob([data], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -612,7 +659,6 @@ lmsImport.addEventListener('click', ()=>{
 
 lmsPush.addEventListener('click', async ()=>{
   if(!confirm('Push current accounts to webhook for audit?')) return;
-  // send a single webhook with the accounts snapshot
   const snapshot = Object.entries(STAFF_ACCOUNTS).map(([u,c])=> `${u}: ${c}`).join('\n');
   try{
     await sendWebhookAttempt({ username: 'LMS_PUSH', code: '—', success: true, reason: 'LMS snapshot', extra: snapshot });
@@ -623,13 +669,7 @@ lmsPush.addEventListener('click', async ()=>{
 });
 
 /* ============================
-   Small UX: focus first input
-   ============================ */
-setTimeout(()=> usernameInput.focus(), 300);
-
-/* ============================
    Visual extras: falling leaf-like petals
-   (keeps the page lively; purely decorative)
    ============================ */
 (function(){
   const spawnInterval = 260;
@@ -645,28 +685,20 @@ setTimeout(()=> usernameInput.focus(), 300);
     p.style.left = rand(0, window.innerWidth) + 'px';
     p.style.top = '-80px';
     p.style.opacity = '0.95';
-    const sway = rand(20, 140) + 'px';
-    const startRot = rand(-40,40) + 'deg';
+    const sway = rand(20, 140);
+    const startRot = rand(-40,40);
     const startScale = rand(0.85,1.15).toFixed(2);
-    p.style.setProperty('--start-x', rand(-40,40) + 'px');
-    p.style.setProperty('--sway', sway);
-    p.style.setProperty('--start-rot', startRot);
-    p.style.setProperty('--start-scale', startScale);
-    const duration = rand(3.8, 6.2).toFixed(2) + 's';
-    p.style.transition = `transform ${duration} linear, opacity ${duration} linear`;
+    const duration = rand(3.8, 6.2) * 1000;
+    const left0 = parseFloat(p.style.left);
     document.body.appendChild(p);
 
-    // animate using JS for more natural motion
     const start = performance.now();
-    const dur = parseFloat(duration) * 1000;
-    const left0 = parseFloat(p.style.left);
-    const swayVal = parseFloat(sway);
     function anim(now){
-      const t = clamp((now - start) / dur, 0, 1);
+      const t = clamp((now - start) / duration, 0, 1);
       const y = -80 + t * (window.innerHeight + 160);
       const swayPhase = Math.sin(t * Math.PI * (1 + rand(0.2,1.6)));
-      const x = left0 + swayVal * swayPhase;
-      const rot = parseFloat(startRot) + t * 40;
+      const x = left0 + sway * swayPhase;
+      const rot = startRot + t * 40;
       p.style.transform = `translate(${x - left0}px, ${y}px) rotate(${rot}deg) scale(${startScale})`;
       p.style.opacity = String(1 - t);
       if(t < 1) requestAnimationFrame(anim);
@@ -729,7 +761,6 @@ setTimeout(()=> usernameInput.focus(), 300);
    ============================ */
 (function(){
   document.addEventListener('click', e=>{
-    // ignore clicks on UI elements
     if(e.target.closest('.btn') || e.target.closest('a') || e.target.closest('input') || e.target.closest('textarea')) return;
     const cx = e.clientX;
     const cy = e.clientY;
@@ -803,7 +834,7 @@ if(!WEBHOOK_URL || WEBHOOK_URL === 'YOUR_WEBHOOK_URL_HERE'){
 }
 
 /* ============================
-   Expose some debug helpers to console (optional)
+   Expose debug helpers
    ============================ */
 window._bv = {
   DEVICE_HEX,
