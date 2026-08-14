@@ -128,10 +128,7 @@ function renderLogs() {
           ["Resolution", log.resolution],
           ["Time", log.created_at ? new Date(log.created_at).toString() : ""]
         ].map(([label, value]) => `
-          <div class="log-field">
-            <span>${label}</span>
-            <strong>${escapeHtml(value)}</strong>
-          </div>
+          <div class="log-field"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>
         `).join("")}
       </div>
     </div>
@@ -193,26 +190,19 @@ function renderAccounts() {
           <span class="log-status">${escapeHtml(account.role)}</span>
         </div>
         <div class="log-grid">
-          <div class="log-field">
-            <span>Created</span>
-            <strong>${escapeHtml(account.created_at)}</strong>
-          </div>
+          <div class="log-field"><span>Created</span><strong>${escapeHtml(account.created_at)}</strong></div>
           <div class="log-field">
             <span>Rank</span>
             ${protectedAccount ? "<strong>Owner · Protected</strong>" : `
               <select data-role-account="${escapeHtml(username)}">
-                ${staffRoles.map((role) => `
-                  <option value="${role}" ${account.role === role ? "selected" : ""}>${role}</option>
-                `).join("")}
+                ${staffRoles.map((role) => `<option value="${role}" ${account.role === role ? "selected" : ""}>${role}</option>`).join("")}
               </select>
             `}
           </div>
         </div>
         ${protectedAccount
           ? '<p class="muted">This owner account cannot be changed or removed.</p>'
-          : `<div class="card-actions">
-              <button type="button" data-delete-account="${escapeHtml(username)}">Remove account</button>
-            </div>`}
+          : `<div class="card-actions"><button type="button" data-delete-account="${escapeHtml(username)}">Remove account</button></div>`}
       </div>
     `;
   }).join("") : '<div class="empty-state">No approved staff accounts yet.</div>';
@@ -252,14 +242,13 @@ function renderClanMembers() {
       <div class="log-card approved">
         <div class="log-title">
           <span>${escapeHtml(member.username)}</span>
-          <span class="log-status">${escapeHtml(member.rank)}</span>
+          <span class="log-status">${escapeHtml(member.rank)} · #${escapeHtml(member.ranking_number || "N/A")}</span>
         </div>
         <div class="card-actions">
           <select data-clan-rank="${escapeHtml(member.username)}">
-            ${clanRanks.map((rank) => `
-              <option value="${rank}" ${member.rank === rank ? "selected" : ""}>${rank}</option>
-            `).join("")}
+            ${clanRanks.map((rank) => `<option value="${rank}" ${member.rank === rank ? "selected" : ""}>${rank}</option>`).join("")}
           </select>
+          <input type="number" min="1" value="${escapeHtml(member.ranking_number || "")}" placeholder="Ranking #" data-ranking-number="${escapeHtml(member.username)}">
           <button type="button" data-delete-member="${escapeHtml(member.username)}">Remove member</button>
         </div>
       </div>
@@ -339,10 +328,8 @@ loginForm.addEventListener("submit", async (event) => {
     return;
   }
 
-  currentUser = {
-    username: usernameKey,
-    role: admin?.role || account.role
-  };
+  currentUser = { username: usernameKey, role: admin?.role || account.role };
+  localStorage.setItem("blackVelvetProfile", JSON.stringify(currentUser));
 
   $("signedInAs").textContent = `${usernameInput} · ${currentUser.role}`;
   $("loginMessage").textContent = "";
@@ -402,6 +389,7 @@ $("clearApplicationButton").addEventListener("click", () => {
 
 $("logoutButton").addEventListener("click", () => {
   currentUser = null;
+  localStorage.removeItem("blackVelvetProfile");
   show(homeView);
 });
 
@@ -417,9 +405,7 @@ $("navigation").addEventListener("click", (event) => {
     panel.classList.toggle("active-panel", panel.id === button.dataset.panel)
   );
 
-  if (button.dataset.panel === "loginLogs") {
-    markLogsRead();
-  }
+  if (button.dataset.panel === "loginLogs") markLogsRead();
 });
 
 $("applicationList").addEventListener("click", async (event) => {
@@ -429,13 +415,10 @@ $("applicationList").addEventListener("click", async (event) => {
   const id = button.dataset.id;
   const action = button.dataset.applicationAction;
   const status = action === "approve" ? "Approved" : "Denied";
-
   setMessage("applicationsMessage", `${status === "Approved" ? "Accepting" : "Denying"} application...`);
   button.disabled = true;
 
-  const { error } = await supabase.from("applications")
-    .update({ status }).eq("id", id);
-
+  const { error } = await supabase.from("applications").update({ status }).eq("id", id);
   if (error) {
     button.disabled = false;
     showDatabaseError("applicationsMessage", "Could not update application", error);
@@ -443,7 +426,6 @@ $("applicationList").addEventListener("click", async (event) => {
   }
 
   const app = applications.find((item) => String(item.id) === String(id));
-
   if (status === "Approved" && app) {
     const { error: accountError } = await supabase.from("staff_accounts").upsert({
       username: app.staff_username,
@@ -476,9 +458,7 @@ $("staffAccountList").addEventListener("change", async (event) => {
   setMessage("accountsMessage", `Changing ${username} to ${role}...`);
   select.disabled = true;
 
-  const { error } = await supabase.from("staff_accounts")
-    .update({ role }).eq("username", username);
-
+  const { error } = await supabase.from("staff_accounts").update({ role }).eq("username", username);
   if (error) {
     showDatabaseError("accountsMessage", "Could not change staff rank", error);
     await loadData();
@@ -487,6 +467,7 @@ $("staffAccountList").addEventListener("change", async (event) => {
 
   if (currentUser?.username === username.toLowerCase()) {
     currentUser.role = role;
+    localStorage.setItem("blackVelvetProfile", JSON.stringify(currentUser));
     $("signedInAs").textContent = `${username} · ${role}`;
     renderLeadership();
   }
@@ -508,9 +489,7 @@ $("staffAccountList").addEventListener("click", async (event) => {
   setMessage("accountsMessage", `Removing ${username}...`);
   button.disabled = true;
 
-  const { error } = await supabase.from("staff_accounts")
-    .delete().eq("username", username);
-
+  const { error } = await supabase.from("staff_accounts").delete().eq("username", username);
   if (error) {
     button.disabled = false;
     showDatabaseError("accountsMessage", "Could not remove staff account", error);
@@ -529,17 +508,11 @@ $("clanApplicationList").addEventListener("click", async (event) => {
   const action = button.dataset.clanAction;
   const status = action === "approve" ? "Approved" : "Denied";
 
-  setMessage(
-    "clanApplicationsMessage",
-    `${status === "Approved" ? "Accepting" : "Denying"} clan application...`
-  );
+  setMessage("clanApplicationsMessage", `${status === "Approved" ? "Accepting" : "Denying"} clan application...`);
   button.disabled = true;
 
   const { data: application, error: findError } = await supabase
-    .from("clan_member_applications")
-    .select("*")
-    .eq("id", id)
-    .single();
+    .from("clan_member_applications").select("*").eq("id", id).single();
 
   if (findError) {
     showDatabaseError("clanApplicationsMessage", "Could not find application", findError);
@@ -547,9 +520,7 @@ $("clanApplicationList").addEventListener("click", async (event) => {
   }
 
   const { error } = await supabase
-    .from("clan_member_applications")
-    .update({ status })
-    .eq("id", id);
+    .from("clan_member_applications").update({ status }).eq("id", id);
 
   if (error) {
     showDatabaseError("clanApplicationsMessage", "Could not update application", error);
@@ -581,9 +552,7 @@ $("clanMemberList").addEventListener("change", async (event) => {
   setMessage("clanMembersMessage", `Changing ${username} to ${select.value}...`);
   select.disabled = true;
 
-  const { error } = await supabase.from("clan_members")
-    .update({ rank: select.value }).eq("username", username);
-
+  const { error } = await supabase.from("clan_members").update({ rank: select.value }).eq("username", username);
   if (error) {
     showDatabaseError("clanMembersMessage", "Could not change clan rank", error);
     await loadData();
@@ -591,6 +560,43 @@ $("clanMemberList").addEventListener("change", async (event) => {
   }
 
   setMessage("clanMembersMessage", `${username} is now ${select.value}.`, "success");
+  await loadData();
+});
+
+$("clanMemberList").addEventListener("change", async (event) => {
+  const input = event.target.closest("input[data-ranking-number]");
+  if (!input || !isLeadership()) return;
+
+  const username = input.dataset.rankingNumber;
+  const rankingNumber = Number(input.value);
+
+  if (!Number.isInteger(rankingNumber) || rankingNumber < 1) {
+    setMessage("clanMembersMessage", "Ranking number must be a positive whole number.", "error");
+    await loadData();
+    return;
+  }
+
+  if (clanMembers.some((member) =>
+    member.username !== username && Number(member.ranking_number) === rankingNumber
+  )) {
+    setMessage("clanMembersMessage", `Ranking #${rankingNumber} is already assigned to another member.`, "error");
+    await loadData();
+    return;
+  }
+
+  setMessage("clanMembersMessage", `Assigning #${rankingNumber} to ${username}...`);
+  input.disabled = true;
+
+  const { error } = await supabase.from("clan_members")
+    .update({ ranking_number: rankingNumber }).eq("username", username);
+
+  if (error) {
+    showDatabaseError("clanMembersMessage", "Ranking number must be unique", error);
+    await loadData();
+    return;
+  }
+
+  setMessage("clanMembersMessage", `${username} is now ranked #${rankingNumber}.`, "success");
   await loadData();
 });
 
@@ -602,9 +608,7 @@ $("clanMemberList").addEventListener("click", async (event) => {
   setMessage("clanMembersMessage", `Removing ${username}...`);
   button.disabled = true;
 
-  const { error } = await supabase.from("clan_members")
-    .delete().eq("username", username);
-
+  const { error } = await supabase.from("clan_members").delete().eq("username", username);
   if (error) {
     showDatabaseError("clanMembersMessage", "Could not remove clan member", error);
     return;
@@ -615,12 +619,10 @@ $("clanMemberList").addEventListener("click", async (event) => {
 });
 
 function subscribeToChanges() {
-  ["access_logs", "applications", "staff_accounts",
-    "clan_member_applications", "clan_members"].forEach((table) => {
+  ["access_logs", "applications", "staff_accounts", "clan_member_applications", "clan_members"]
+    .forEach((table) => {
       supabase.channel(`black-velvet-${table}`)
-        .on("postgres_changes", {
-          event: "*", schema: "public", table
-        }, loadData)
+        .on("postgres_changes", { event: "*", schema: "public", table }, loadData)
         .subscribe();
     });
 }
@@ -631,8 +633,7 @@ function subscribeToChanges() {
     subscribeToChanges();
   } catch (error) {
     console.error("Supabase setup error:", error);
-    $("loginMessage").textContent =
-      `Supabase error: ${error.message || "Check your tables and policies."}`;
+    $("loginMessage").textContent = `Supabase error: ${error.message || "Check your tables and policies."}`;
     $("loginMessage").className = "login-message error";
   }
 })();
