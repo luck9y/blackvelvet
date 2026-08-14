@@ -1,502 +1,205 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Black Velvet — Home</title>
-<style>
-  :root{
-    --bg:#050506;
-    --text:#e9e6ef;
-    --muted:#9a8fb8;
-    --accent:#ffffff;
-    font-family:Inter,system-ui,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-  }
-
-  html,body{
-    margin:0;
-    height:100%;
-    background:var(--bg);
-    color:var(--text);
-    overflow:hidden;
-    cursor:none; /* hide native cursor so custom flower cursor is visible */
-  }
-
-  /* Page layout */
-  .page{
-    height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-    text-align:center;
-    position:relative;
-    z-index:20;
-    transform:translateX(-30px);
-    pointer-events:auto;
-  }
-
-  h1{ font-size:42px; margin:0; color:var(--accent); text-shadow:0 0 12px rgba(255,255,255,0.08); }
-  p{ margin-top:10px; font-size:16px; color:var(--muted); }
-
-  .btn{
-    padding:12px 20px;
-    border-radius:12px;
-    background:rgba(255,255,255,0.04);
-    border:1px solid rgba(255,255,255,0.06);
-    color:#fff;
-    font-weight:700;
-    text-decoration:none;
-    box-shadow:0 6px 18px rgba(0,0,0,0.6);
-    transition:transform .18s ease, box-shadow .18s ease;
-    display:inline-block;
-  }
-  .btn:hover{ transform:translateY(-4px); box-shadow:0 12px 30px rgba(0,0,0,0.7); }
-
-  /* Falling petal (leaf-like) base */
-  .falling-petal{
-    position:absolute;
-    width:36px;
-    height:54px;
-    border-radius:50% 50% 40% 60%;
-    background:linear-gradient(135deg, rgba(34,34,34,0.98), rgba(64,64,64,0.88));
-    filter:drop-shadow(0 10px 30px rgba(0,0,0,0.6));
-    pointer-events:none;
-    opacity:0.95;
-    will-change: transform, opacity;
-  }
-
-  @keyframes leafFall {
-    0%{
-      transform: translate3d(var(--start-x,0), -80px, 0) rotate(var(--start-rot,0deg)) scale(var(--start-scale,1));
-      opacity:1;
-    }
-    20%{
-      transform: translate3d(calc(var(--start-x,0) + var(--sway,20px)), 10vh, 0) rotate(calc(var(--start-rot,0deg) + 15deg)) scale(calc(var(--start-scale,1) * 0.98));
-    }
-    50%{
-      transform: translate3d(calc(var(--start-x,0) - var(--sway,12px)), 45vh, 0) rotate(calc(var(--start-rot,0deg) - 10deg)) scale(calc(var(--start-scale,1) * 1.02));
-    }
-    80%{
-      transform: translate3d(calc(var(--start-x,0) + var(--sway,8px)), 80vh, 0) rotate(calc(var(--start-rot,0deg) + 25deg)) scale(calc(var(--start-scale,1) * 0.96));
-      opacity:0.9;
-    }
-    100%{
-      transform: translate3d(calc(var(--start-x,0) + var(--sway,0px)), 110vh, 0) rotate(calc(var(--start-rot,0deg) + 40deg)) scale(calc(var(--start-scale,1) * 0.94));
-      opacity:0;
-    }
-  }
-
-  /* Cursor Velvet Flower (small) */
-  #cursorFlower{
-    position:fixed;
-    width:84px;
-    height:84px;
-    pointer-events:none;
-    z-index:99999;
-    transform:translate(-50%,-50%) scale(1);
-    transition: transform 0.06s linear;
-    will-change: transform, left, top;
-    mix-blend-mode:normal;
-    /* glow so it's visible: greish-white soft glow */
-    filter: drop-shadow(0 6px 18px rgba(180,200,210,0.28));
-    -webkit-filter: drop-shadow(0 6px 18px rgba(180,200,210,0.28));
-  }
-
-  /* small petal shapes inside cursor flower */
-  .cursor-petal{
-    position:absolute;
-    width:40px;
-    height:60px;
-    background:linear-gradient(135deg,#0a0a0a,#1c1c1c);
-    border-radius:50% 50% 40% 60%;
-    filter:drop-shadow(0 6px 12px rgba(0,0,0,0.6));
-    left:50%;
-    top:50%;
-    transform-origin:center;
-    will-change: transform;
-  }
-  /* base positions (we will override transforms in JS for motion) */
-  .c1{ --angle:0deg; }
-  .c2{ --angle:72deg; }
-  .c3{ --angle:144deg; }
-  .c4{ --angle:216deg; }
-  .c5{ --angle:288deg; }
-
-  .cursor-center{
-    position:absolute;
-    width:40px;
-    height:40px;
-    background:#0d0d0d;
-    border-radius:50%;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%) scale(0.7);
-    box-shadow:
-      0 0 18px rgba(220,230,240,0.12),
-      0 0 36px rgba(180,200,210,0.12);
-    will-change: box-shadow, transform;
-  }
-
-  /* Cursor water trail blob (kept behind cursor) */
-  .cursor-water{
-    position:absolute;
-    width:20px;
-    height:20px;
-    border-radius:50%;
-    background:radial-gradient(circle at 35% 30%, rgba(170,180,200,0.85), rgba(80,80,100,0.12));
-    pointer-events:none;
-    filter:blur(4px);
-    opacity:0.95;
-    transform:scale(0.8);
-    will-change: transform, opacity;
-    z-index:99998;
-  }
-
-  /* Water ripple on click */
-  .ripple-ring{
-    position:absolute;
-    border-radius:50%;
-    pointer-events:none;
-    box-shadow: 0 0 18px rgba(160,170,190,0.12), inset 0 0 8px rgba(255,255,255,0.02);
-    border:1px solid rgba(180,190,210,0.06);
-    background: radial-gradient(circle, rgba(200,210,230,0.06), rgba(80,80,100,0));
-    opacity:0.9;
-    transform:scale(0.2);
-    will-change: transform, opacity;
-    z-index:99997;
-  }
-
-  /* small water droplet particle */
-  .water-drop{
-    position:absolute;
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    background:linear-gradient(180deg, rgba(220,230,250,0.95), rgba(120,130,160,0.6));
-    pointer-events:none;
-    filter:blur(0.6px) drop-shadow(0 6px 12px rgba(0,0,0,0.45));
-    opacity:0.95;
-    z-index:99999;
-    will-change: transform, opacity;
-  }
-
-  /* responsiveness */
-  @media (max-width:420px){
-    #cursorFlower{ width:64px; height:64px; }
-    .cursor-petal{ width:28px; height:42px; }
-    .cursor-center{ width:28px; height:28px; transform:translate(-50%,-50%) scale(0.7); }
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Black velvet Staff</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <main class="app-shell">
+    <section id="homeView" class="home-card">
+      <div class="flower-mark" aria-hidden="true">✽</div>
+      <p class="eyebrow">BLACK VELVET CLAN</p>
+      <h1>Black velvet Staff</h1>
+      <p class="muted">A private space for staff access and signups.</p>
+      <div class="home-actions">
+        <button id="staffLoginButton" class="primary-button">Staff Login</button>
+        <button id="applicationButton" class="secondary-button">Sign up</button>
+      </div>
+    </section>
 
-<!-- Custom cursor: Velvet flower -->
-<div id="cursorFlower" aria-hidden="true">
-  <div class="cursor-petal c1"></div>
-  <div class="cursor-petal c2"></div>
-  <div class="cursor-petal c3"></div>
-  <div class="cursor-petal c4"></div>
-  <div class="cursor-petal c5"></div>
-  <div class="cursor-center"></div>
-</div>
+    <section id="loginView" class="login-card hidden">
+      <button class="back-button" data-home>← Back to Home</button>
+      <div class="flower-mark small" aria-hidden="true">✽</div>
+      <p class="eyebrow">BLACK VELVET CLAN</p>
+      <h1>Staff Login</h1>
+      <p class="muted">Authorized staff access only.</p>
 
-<!-- Page content -->
-<div class="page" id="pageContent">
-  <h1>Black Velvet</h1>
-  <p>Welcome to the official clan hub.</p>
+      <form id="loginForm">
+        <label for="username">Username</label>
+        <input id="username" type="text" autocomplete="username" required />
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" required />
+        <button class="primary-button" type="submit">Sign in</button>
+        <p id="loginMessage" class="login-message" role="alert"></p>
+      </form>
+      <p class="security-note">Access attempts are audited without recording passwords.</p>
+    </section>
 
-  <div style="display:flex; flex-direction:column; gap:14px; margin-top:24px; width:240px;">
-    <a href="ranks.html" class="btn">Clan Ranks</a>
-    <a href="rules.html" class="btn">Rules</a>
-    <a href="information.html" class="btn">Information</a>
-    <a href="staffapply.html" class="btn">Apply for Staff</a>
-    <a href="staffpanel.html" class="btn">Staff Login</a>
-  </div>
-</div>
+    <section id="applicationView" class="application-card hidden">
+      <button class="back-button" data-home>← Back to Home</button>
+      <p class="eyebrow">BLACK VELVET CLAN</p>
+      <h1>Staff Signup</h1>
+      <p class="muted">Complete the form below. Each section has a quick checkmark for clarity — fill everything honestly.</p>
 
-<script>
-/* ---------------------------
-   Utilities
-----------------------------*/
-function rand(min, max){ return Math.random() * (max - min) + min; }
-function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+      <form id="applicationForm" class="application-form">
+        <label>✓ Discord Tag
+          <input name="discordTag" placeholder="Username#1234" required />
+          <small>Provide the exact tag so we can verify your account.</small>
+        </label>
+        <label>✓ Desired Staff Username
+          <input name="staffUsername" placeholder="Choose a username" required />
+        </label>
+        <label>✓ Account Password
+          <input name="staffPassword" type="password" minlength="6" required />
+        </label>
+        <label>✓ Age
+          <input name="age" type="number" min="13" required />
+        </label>
+        <label>✓ Timezone
+          <input name="timezone" required />
+        </label>
+        <label>✓ Moderation / Staff Experience
+          <textarea name="experience" rows="4" required></textarea>
+        </label>
+        <label>✓ Role applying for
+          <select name="role" required>
+            <option value="">Select a role</option>
+            <option>Owner</option>
+            <option>Admin</option>
+            <option>Manager</option>
+            <option>President</option>
+            <option>Mod</option>
+            <option>Helper</option>
+          </select>
+        </label>
+        <label>✓ Availability
+          <textarea name="availability" rows="3" required></textarea>
+        </label>
+        <label>✓ Why do you want to join staff?
+          <textarea name="motivation" rows="4" required></textarea>
+        </label>
+        <label>✓ References <span class="optional">(optional)</span>
+          <textarea name="references" rows="3"></textarea>
+        </label>
+        <label class="checkbox-row">
+          <input name="rulesAccepted" type="checkbox" required />
+          <span>I have read and agree to follow the community and staff rules.</span>
+        </label>
 
-/* ---------------------------
-   Cursor Velvet Flower behavior
-   - follows pointer smoothly
-   - petals rotate and sway based on movement to look like a living flower
-   - greish-white glow applied via box-shadow on center and subtle outer glow
-----------------------------*/
-(function(){
-  const cursor = document.getElementById('cursorFlower');
-  const petals = Array.from(cursor.querySelectorAll('.cursor-petal'));
-  const center = cursor.querySelector('.cursor-center');
+        <div class="form-actions">
+          <button class="primary-button" type="submit">Submit Signup</button>
+          <button id="clearApplicationButton" class="secondary-button" type="button">Clear</button>
+        </div>
+        <p id="applicationMessage" class="login-message" role="alert"></p>
+      </form>
+    </section>
 
-  // base angles for petals
-  const baseAngles = [0,72,144,216,288];
+    <section id="portalView" class="portal hidden">
+      <header class="topbar">
+        <div class="brand">
+          <div class="flower-mark tiny" aria-hidden="true">✽</div>
+          <div>
+            <p class="eyebrow">BLACK VELVET</p>
+            <h2>Staff Portal</h2>
+          </div>
+        </div>
+        <div class="user-area">
+          <span id="signedInAs"></span>
+          <button id="logoutButton" class="ghost-button">Log out</button>
+        </div>
+      </header>
 
-  // initial positions
-  let targetX = window.innerWidth / 2;
-  let targetY = window.innerHeight / 2;
-  let px = targetX, py = targetY;
+      <div class="portal-layout">
+        <aside class="sidebar">
+          <p class="sidebar-label">Navigation</p>
+          <nav id="navigation">
+            <button class="nav-button active" data-panel="staffGuide">Staff Guide</button>
+            <button class="nav-button" data-panel="abuseGuide">Abuse Guide</button>
+            <button class="nav-button" data-panel="tryoutGuide">Tryout Guide</button>
+            <button class="nav-button" data-panel="ticketGuide">Ticket Guide</button>
+            <button class="nav-button leadership-only" data-panel="loginLogs">
+              Logs <span id="logCount" class="count">0</span>
+            </button>
+            <button class="nav-button leadership-only" data-panel="applications">
+              Staff Applications <span id="applicationCount" class="count">0</span>
+            </button>
+            <button class="nav-button leadership-only" data-panel="clanApplications">
+              Clan Member Applications <span id="clanApplicationCount" class="count">0</span>
+            </button>
+            <button class="nav-button leadership-only" data-panel="clanMembers">Clan Members</button>
+            <button class="nav-button leadership-only" data-panel="staffAccounts">Staff Accounts</button>
+          </nav>
+        </aside>
 
-  // velocity smoothing
-  let lastMouse = { x: targetX, y: targetY, t: performance.now() };
-  let vx = 0, vy = 0;
+        <section class="content">
+          <article id="staffGuide" class="panel active-panel">
+            <p class="eyebrow">STAFF RESOURCES</p>
+            <h1>Staff Guide</h1>
+            <div class="placeholder">To be continued</div>
+          </article>
 
-  // easing for position
-  const ease = 0.18;
+          <article id="abuseGuide" class="panel">
+            <p class="eyebrow">STAFF RESOURCES</p>
+            <h1>Abuse Guide</h1>
+            <div class="placeholder">To be continued</div>
+          </article>
 
-  // glow intensities
-  function setGlow(intensity){
-    // intensity 0..1
-    const outer = 12 + intensity * 28; // px
-    const outerAlpha = 0.18 + intensity * 0.6;
-    const inner = 6 + intensity * 12;
-    center.style.boxShadow = `0 0 ${outer}px rgba(200,220,230,${outerAlpha}), 0 0 ${inner}px rgba(220,240,255,0.12)`;
-    cursor.style.filter = `drop-shadow(0 8px ${Math.round(outer/1.6)}px rgba(180,200,210,${0.22 + intensity*0.5}))`;
-  }
+          <article id="tryoutGuide" class="panel">
+            <p class="eyebrow">STAFF RESOURCES</p>
+            <h1>Tryout Guide</h1>
+            <div class="placeholder">To be continued</div>
+          </article>
 
-  // update target on mousemove
-  document.addEventListener('mousemove', e=>{
-    targetX = e.clientX;
-    targetY = e.clientY;
+          <article id="ticketGuide" class="panel">
+            <p class="eyebrow">STAFF RESOURCES</p>
+            <h1>Ticket Guide</h1>
+            <div class="placeholder">To be continued</div>
+          </article>
 
-    const now = performance.now();
-    const dt = Math.max(1, now - lastMouse.t);
-    const dx = e.clientX - lastMouse.x;
-    const dy = e.clientY - lastMouse.y;
-    vx = dx / dt * 16; // normalized velocity per frame
-    vy = dy / dt * 16;
-    lastMouse.x = e.clientX;
-    lastMouse.y = e.clientY;
-    lastMouse.t = now;
+          <article id="loginLogs" class="panel leadership-only">
+            <p class="eyebrow">PANEL 5 · SECURITY AUDIT</p>
+            <h1>Logs</h1>
+            <p class="muted">Unread login events appear in the counter until this panel is opened.</p>
+            <p id="logsMessage" class="action-message" role="status"></p>
+            <div id="logList" class="log-list"></div>
+          </article>
 
-    // stronger glow when moving faster
-    const speed = Math.hypot(vx, vy);
-    const glow = clamp(speed / 18, 0.12, 1.0);
-    setGlow(glow);
-  });
+          <article id="applications" class="panel leadership-only">
+            <p class="eyebrow">PANEL 6 · LEADERSHIP</p>
+            <h1>Staff Applications</h1>
+            <p id="applicationsMessage" class="action-message" role="status"></p>
+            <div id="applicationList" class="log-list"></div>
+          </article>
 
-  // animate petals and position
-  let time = 0;
-  function tick(now){
-    time = now || performance.now();
+          <article id="clanApplications" class="panel leadership-only">
+            <p class="eyebrow">PANEL 7 · CLAN MANAGEMENT</p>
+            <h1>Clan Member Applications</h1>
+            <p class="muted">Clan members apply from the external signup site.</p>
+            <p id="clanApplicationsMessage" class="action-message" role="status"></p>
+            <div id="clanApplicationList" class="log-list"></div>
+          </article>
 
-    // smooth position
-    px += (targetX - px) * ease;
-    py += (targetY - py) * ease;
-    cursor.style.left = px + 'px';
-    cursor.style.top = py + 'px';
+          <article id="clanMembers" class="panel leadership-only">
+            <p class="eyebrow">PANEL 8 · CLAN MANAGEMENT</p>
+            <h1>Clan Members</h1>
+            <p id="clanMembersMessage" class="action-message" role="status"></p>
+            <div id="clanMemberList" class="log-list"></div>
+          </article>
 
-    // compute movement-based sway
-    const speed = Math.hypot(vx, vy);
-    // base sway amplitude
-    const swayAmp = clamp(speed * 0.9 + 2, 2, 18);
+          <article id="staffAccounts" class="panel leadership-only">
+            <p class="eyebrow">PANEL 9 · LEADERSHIP</p>
+            <h1>Staff Accounts</h1>
+            <p class="muted">Leadership can change staff ranks or remove staff accounts.</p>
+            <p id="accountsMessage" class="action-message" role="status"></p>
+            <div id="staffAccountList" class="log-list"></div>
+          </article>
+        </section>
+      </div>
+    </section>
+  </main>
 
-    // subtle bobbing over time
-    const bob = Math.sin(now / 350) * 1.6;
-
-    petals.forEach((petal, i) => {
-      const base = baseAngles[i];
-      // dynamic rotation influenced by velocity and time
-      const dir = Math.atan2(vy, vx) * (180 / Math.PI); // direction in degrees
-      const rotOffset = Math.sin(now / (700 + i*60) + i) * (2 + i*1.2); // gentle oscillation
-      const velocityTilt = (vx * Math.cos(base * Math.PI/180) + vy * Math.sin(base * Math.PI/180)) * 0.9;
-      const angle = base + rotOffset + velocityTilt * 1.8;
-      // translate outward slightly based on swayAmp and petal index
-      const translateY = -28 + bob * (i%2 ? 0.6 : 1.0);
-      const scale = 0.45 + Math.min(speed / 220, 0.18);
-      petal.style.transform = `rotate(${angle}deg) translateY(${translateY}px) scale(${scale.toFixed(3)})`;
-      // subtle brightness change to emphasize glow
-      petal.style.filter = `drop-shadow(0 6px ${6 + swayAmp/3}px rgba(160,180,200,0.12))`;
-    });
-
-    // gently relax glow back to subtle when idle
-    const idleGlow = clamp(Math.hypot(vx, vy) / 18, 0.08, 0.28);
-    // reduce over time
-    setGlow(idleGlow);
-
-    requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
-
-  // hide on touch devices fallback
-  document.addEventListener('touchstart', ()=>{ document.body.style.cursor = 'default'; }, {passive:true});
-})();
-
-/* ---------------------------
-   Leaf-like falling petals
-----------------------------*/
-(function(){
-  const spawnInterval = 220; // ms between spawns
-  const life = 6000; // remove after ~6s
-
-  function spawnPetal(){
-    const p = document.createElement('div');
-    p.className = 'falling-petal';
-
-    const startX = rand(-40, 40) + 'px';
-    const sway = rand(20, 120) + 'px';
-    const startRot = rand(-30, 30) + 'deg';
-    const startScale = rand(0.85, 1.15).toFixed(2);
-
-    const left = rand(0, window.innerWidth) + 'px';
-    p.style.left = left;
-    p.style.top = '-80px';
-
-    p.style.setProperty('--start-x', startX);
-    p.style.setProperty('--sway', sway);
-    p.style.setProperty('--start-rot', startRot);
-    p.style.setProperty('--start-scale', startScale);
-
-    const duration = rand(3.8, 6.2).toFixed(2) + 's';
-    p.style.animation = `leafFall ${duration} linear forwards`;
-
-    p.style.transform = `translateX(${rand(-8,8)}px)`;
-
-    document.body.appendChild(p);
-
-    setTimeout(()=> {
-      if(p && p.parentNode) p.parentNode.removeChild(p);
-    }, life + 800);
-  }
-
-  setInterval(spawnPetal, spawnInterval);
-  for(let i=0;i<6;i++) setTimeout(spawnPetal, i*120);
-})();
-
-/* ---------------------------
-   Cursor water trail (realistic water path)
-----------------------------*/
-(function(){
-  let last = {x: window.innerWidth/2, y: window.innerHeight/2};
-  const spacing = 8;
-
-  document.addEventListener('mousemove', e=>{
-    const dx = e.clientX - last.x;
-    const dy = e.clientY - last.y;
-    const dist = Math.hypot(dx, dy);
-
-    if(dist > spacing){
-      const steps = Math.ceil(dist / spacing);
-      for(let i=0;i<steps;i++){
-        const t = (i+1)/steps;
-        const bx = last.x + dx * t;
-        const by = last.y + dy * t;
-        createWaterBlob(bx, by, dx, dy);
-      }
-      last.x = e.clientX;
-      last.y = e.clientY;
-    }
-  });
-
-  function createWaterBlob(x, y, dx, dy){
-    const blob = document.createElement('div');
-    blob.className = 'cursor-water';
-
-    const speed = Math.hypot(dx, dy);
-    const size = clamp(10 + speed * 0.5, 10, 36);
-    blob.style.width = size + 'px';
-    blob.style.height = size + 'px';
-
-    const offsetX = -dx * 0.02 + rand(-6,6);
-    const offsetY = -dy * 0.02 + rand(-6,6);
-
-    blob.style.left = (x + offsetX - size/2) + 'px';
-    blob.style.top = (y + offsetY - size/2) + 'px';
-    document.body.appendChild(blob);
-
-    requestAnimationFrame(()=>{
-      blob.style.transform = 'scale(1.8)';
-      blob.style.opacity = '0';
-    });
-
-    setTimeout(()=> {
-      if(blob && blob.parentNode) blob.parentNode.removeChild(blob);
-    }, 700 + rand(0,200));
-  }
-
-  document.addEventListener('touchstart', ()=>{ document.body.style.cursor = 'default'; }, {passive:true});
-})();
-
-/* ---------------------------
-   Water ripple + droplets on background click
-----------------------------*/
-(function(){
-  document.addEventListener('click', e=>{
-    if(e.target.closest('.btn') || e.target.closest('a')) return;
-
-    const cx = e.clientX;
-    const cy = e.clientY;
-
-    for(let i=0;i<3;i++){
-      const ring = document.createElement('div');
-      ring.className = 'ripple-ring';
-      const baseSize = 60 + i*48;
-      ring.style.width = baseSize + 'px';
-      ring.style.height = baseSize + 'px';
-      ring.style.left = (cx - baseSize/2) + 'px';
-      ring.style.top = (cy - baseSize/2) + 'px';
-      ring.style.opacity = (0.9 - i*0.18).toString();
-      ring.style.transition = `transform ${0.9 + i*0.12}s cubic-bezier(.2,.8,.2,1), opacity ${0.9 + i*0.12}s ease-out`;
-      document.body.appendChild(ring);
-
-      setTimeout(()=>{
-        ring.style.transform = 'scale(3.2)';
-        ring.style.opacity = '0';
-      }, 30 + i*90);
-
-      setTimeout(()=> { if(ring.parentNode) ring.parentNode.removeChild(ring); }, 1200 + i*200);
-    }
-
-    const drops = Math.round(rand(6,12));
-    for(let i=0;i<drops;i++){
-      spawnWaterDrop(cx, cy);
-    }
-  });
-
-  function spawnWaterDrop(cx, cy){
-    const drop = document.createElement('div');
-    drop.className = 'water-drop';
-    const size = rand(6,10);
-    drop.style.width = size + 'px';
-    drop.style.height = size + 'px';
-
-    const startX = cx + rand(-22,22);
-    const startY = cy + rand(-8,8);
-    drop.style.left = (startX - size/2) + 'px';
-    drop.style.top = (startY - size/2) + 'px';
-    document.body.appendChild(drop);
-
-    const rise = rand(28, 90);
-    const horiz = rand(-48, 48);
-    const duration = rand(700, 1200);
-
-    const start = performance.now();
-    function animate(now){
-      const t = clamp((now - start) / duration, 0, 1);
-      const easeUp = 1 - Math.pow(1 - t, 3);
-      const y = startY - rise * easeUp + (t * t * 18);
-      const x = startX + horiz * easeUp;
-      drop.style.left = (x - size/2) + 'px';
-      drop.style.top = (y - size/2) + 'px';
-      drop.style.opacity = String(1 - t);
-
-      if(t < 1) requestAnimationFrame(animate);
-      else if(drop.parentNode) drop.parentNode.removeChild(drop);
-    }
-    requestAnimationFrame(animate);
-  }
-})();
-
-/* ---------------------------
-   Keep things responsive on resize
-----------------------------*/
-window.addEventListener('resize', ()=> {
-  // nothing to recalc for now; petal spawns use window.innerWidth each time
-});
-</script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
