@@ -1,5 +1,465 @@
-<!-- Keep your current home.html content unchanged. Add this immediately after </style>. -->
-<link rel="stylesheet" href="theme.css">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#010204">
+  <title>Black Velvet Clan | Home</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
-<!-- Keep this immediately before </body>. -->
-<script src="theme.js"></script>
+    body {
+      margin: 0;
+      font-family: Orbitron, Arial, sans-serif;
+    }
+
+    .shell {
+      position: relative;
+      z-index: 1;
+      width: min(1180px, 90%);
+      margin: auto;
+      padding: 24px 0 75px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 16px 0 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 3px;
+    }
+
+    .brand-flower {
+      position: relative;
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: radial-gradient(circle, #87929a 0 10%, #151b20 30%, #020304 72%);
+      box-shadow: 0 0 18px rgba(220, 230, 236, .3);
+    }
+
+    .brand-flower::before,
+    .brand-flower::after {
+      position: absolute;
+      inset: 4px;
+      content: "";
+      border: 1px solid rgba(220, 230, 236, .35);
+      border-radius: 70% 30% 70% 30%;
+    }
+
+    .brand-flower::after {
+      transform: rotate(90deg);
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 18px;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-decoration: none;
+    }
+
+    .nav-links a:hover { color: var(--silver); }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 45px;
+      align-items: center;
+      min-height: 67vh;
+      padding: 80px 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 18px;
+      color: var(--silver);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+    }
+
+    h1, h2, h3 { font-family: Cinzel, Georgia, serif; }
+
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      color: #f4f6f7;
+      font-size: clamp(50px, 8vw, 108px);
+      line-height: .9;
+      letter-spacing: 5px;
+      text-shadow: 0 0 30px rgba(220, 230, 236, .4);
+    }
+
+    h1 span { color: #929ea6; }
+
+    .hero-copy {
+      max-width: 610px;
+      margin: 28px 0;
+      color: #aeb9bf;
+      font-family: Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 13px 18px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--text);
+      background: rgba(15, 20, 25, .88);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-decoration: none;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      border-color: var(--silver);
+      box-shadow: 0 0 24px rgba(220, 230, 236, .28);
+    }
+
+    .button.primary {
+      color: #06080a;
+      background: var(--silver);
+    }
+
+    .terminal {
+      position: relative;
+      overflow: hidden;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(5, 8, 11, .82);
+      box-shadow: 0 20px 65px #000, inset 0 0 35px rgba(220, 230, 236, .04);
+    }
+
+    .terminal::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      content: "";
+      background: linear-gradient(90deg, transparent, var(--silver), transparent);
+      box-shadow: 0 0 16px var(--silver);
+    }
+
+    .terminal-head {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 25px;
+    }
+
+    .terminal-head span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #82909a;
+      box-shadow: 0 0 8px #dce5eb;
+    }
+
+    .terminal p {
+      margin: 12px 0;
+      color: #8d9aa2;
+      font-size: 11px;
+      letter-spacing: 1px;
+      line-height: 1.65;
+    }
+
+    .terminal strong { color: var(--silver); }
+    .terminal .cursor { animation: blink .8s steps(1) infinite; }
+
+    .section {
+      margin-top: 45px;
+      scroll-margin-top: 20px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 25px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin: 0;
+      color: #edf1f3;
+      font-size: clamp(27px, 4vw, 43px);
+      letter-spacing: 2px;
+    }
+
+    .section-note {
+      max-width: 430px;
+      margin: 0;
+      color: var(--muted);
+      font: 14px/1.6 Arial, sans-serif;
+      text-align: right;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      min-height: 205px;
+      padding: 25px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(8, 12, 16, .84);
+      box-shadow: inset 0 0 28px rgba(220, 230, 236, .025);
+    }
+
+    .card-number {
+      display: block;
+      margin-bottom: 22px;
+      color: var(--silver);
+      font-size: 11px;
+      letter-spacing: 2px;
+    }
+
+    .card h3 {
+      margin: 0 0 12px;
+      color: #e7ecee;
+      font-size: 21px;
+    }
+
+    .card p {
+      margin: 0;
+      color: #98a4ac;
+      font: 14px/1.7 Arial, sans-serif;
+    }
+
+    .roster {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .member {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(7, 10, 14, .86);
+    }
+
+    .member-mark {
+      display: grid;
+      flex: 0 0 48px;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      border: 1px solid rgba(220, 230, 236, .35);
+      border-radius: 50%;
+      color: var(--silver);
+      background: radial-gradient(circle, #333e46, #07090b 68%);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .member h3 {
+      margin: 0 0 5px;
+      font-size: 18px;
+    }
+
+    .member p {
+      margin: 0;
+      color: var(--muted);
+      font: 12px Arial, sans-serif;
+      letter-spacing: 1px;
+    }
+
+    .rules-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+      padding: 30px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: linear-gradient(110deg, rgba(29, 38, 45, .88), rgba(5, 8, 11, .93));
+    }
+
+    .rules-banner h2 { font-size: 30px; }
+    .rules-banner p { margin: 10px 0 0; color: #aeb8be; font: 14px/1.6 Arial, sans-serif; }
+
+    footer {
+      margin-top: 70px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: #77838b;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-align: center;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    @media (max-width: 850px) {
+      .hero { grid-template-columns: 1fr; padding: 65px 0; }
+      .grid, .roster { grid-template-columns: 1fr; }
+      .section-heading, .rules-banner { align-items: flex-start; flex-direction: column; }
+      .section-note { text-align: left; }
+    }
+
+    @media (max-width: 600px) {
+      .shell { width: min(92%, 1180px); }
+      .nav { align-items: flex-start; flex-direction: column; }
+      .nav-links { justify-content: flex-start; }
+      h1 { letter-spacing: 2px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <nav class="nav">
+      <a class="brand" href="home.html" aria-label="Black Velvet home">
+        <span class="brand-flower" aria-hidden="true"></span>
+        BLACK VELVET
+      </a>
+      <div class="nav-links">
+        <a href="#about">ABOUT</a>
+        <a href="#roster">ROSTER</a>
+        <a href="rules.html">RULES</a>
+        <a href="staff.html">STAFF PORTAL</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div>
+        <p class="eyebrow">CLAN NETWORK // ESTABLISHED IN THE ABYSS</p>
+        <h1>BLACK<br><span>VELVET</span></h1>
+        <p class="hero-copy">
+          A disciplined clan built from legacy, loyalty, and players who refuse to disappear.
+          Enter the network, meet the people behind it, and become part of what comes next.
+        </p>
+        <div class="actions">
+          <a class="button primary" href="staff.html">STAFF LOG IN</a>
+          <a class="button" href="staff.html">STAFF SIGN UP</a>
+          <a class="button" href="staff.html">CLAN MEMBER SIGN UP</a>
+          <a class="button" href="rules.html">READ RULES</a>
+        </div>
+      </div>
+
+      <aside class="terminal" aria-label="Clan system status">
+        <div class="terminal-head"><span></span><span></span><span></span></div>
+        <p><strong>BV://NETWORK_STATUS</strong></p>
+        <p>CLAN SYSTEM........... <strong>ONLINE</strong></p>
+        <p>SECURITY PROTOCOL..... <strong>ACTIVE</strong></p>
+        <p>MEMBER DIRECTORY...... <strong>AVAILABLE</strong></p>
+        <p>STAFF CHANNEL......... <strong>SECURED</strong></p>
+        <p>MESSAGE: <strong>WELCOME TO BLACK VELVET</strong><span class="cursor">_</span></p>
+      </aside>
+    </section>
+
+    <section id="about" class="section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">01 // THE FOUNDATION</p>
+          <h2>Built for the long run.</h2>
+        </div>
+        <p class="section-note">
+          Black Velvet is a focused community where respect, activity, and improvement matter.
+        </p>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <span class="card-number">[ 01 ]</span>
+          <h3>Legacy</h3>
+          <p>Founded by people who understand that a clan is more than a name. Every member contributes to its history.</p>
+        </article>
+        <article class="card">
+          <span class="card-number">[ 02 ]</span>
+          <h3>Discipline</h3>
+          <p>We protect the community through clear expectations, reliable staff, and respectful competition.</p>
+        </article>
+        <article class="card">
+          <span class="card-number">[ 03 ]</span>
+          <h3>Growth</h3>
+          <p>Whether you are joining as a member or applying for staff, there is room to learn and prove yourself.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="roster" class="section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">02 // CLAN DIRECTORY</p>
+          <h2>Leadership roster.</h2>
+        </div>
+        <p class="section-note">The people responsible for maintaining the Black Velvet standard.</p>
+      </div>
+
+      <div class="roster">
+        <article class="member">
+          <div class="member-mark">L</div>
+          <div><h3>Luckyy</h3><p>FOUNDER · OWNER</p></div>
+        </article>
+        <article class="member">
+          <div class="member-mark">S</div>
+          <div><h3>Suoaz</h3><p>FOUNDER · OWNER</p></div>
+        </article>
+        <article class="member">
+          <div class="member-mark">G</div>
+          <div><h3>Gears</h3><p>MANAGEMENT</p></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="rules-banner">
+        <div>
+          <p class="eyebrow">03 // COMMUNITY PROTOCOL</p>
+          <h2>Know the rules before you enter.</h2>
+          <p>Read the community rules, then view the separate procedures that apply to Black Velvet staff.</p>
+        </div>
+        <div class="actions">
+          <a class="button primary" href="rules.html">RULES.HTML</a>
+          <a class="button" href="staffrules.html">STAFFRULES.HTML</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>BLACK VELVET CLAN // PRIVATE NETWORK // ALL SYSTEMS OPERATIONAL</footer>
+  </main>
+
+  <script src="theme.js"></script>
+</body>
+</html>
