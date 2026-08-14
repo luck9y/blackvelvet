@@ -61,9 +61,7 @@
       border-radius: 70% 30% 70% 30%;
     }
 
-    .brand-flower::after {
-      transform: rotate(90deg);
-    }
+    .brand-flower::after { transform: rotate(90deg); }
 
     .nav-links {
       display: flex;
@@ -228,7 +226,7 @@
       text-align: right;
     }
 
-    .grid {
+    .grid, .roster {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
@@ -261,12 +259,6 @@
       margin: 0;
       color: #98a4ac;
       font: 14px/1.7 Arial, sans-serif;
-    }
-
-    .roster {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
     }
 
     .member {
@@ -377,14 +369,14 @@
         </div>
       </div>
 
-      <aside class="terminal" aria-label="Clan system status">
+      <aside class="terminal" aria-label="Member network profile">
         <div class="terminal-head"><span></span><span></span><span></span></div>
-        <p><strong>BV://NETWORK_STATUS</strong></p>
-        <p>CLAN SYSTEM........... <strong>ONLINE</strong></p>
-        <p>SECURITY PROTOCOL..... <strong>ACTIVE</strong></p>
-        <p>MEMBER DIRECTORY...... <strong>AVAILABLE</strong></p>
-        <p>STAFF CHANNEL......... <strong>SECURED</strong></p>
-        <p>MESSAGE: <strong>WELCOME TO BLACK VELVET</strong><span class="cursor">_</span></p>
+        <p><strong>BV://MEMBER_PROFILE</strong></p>
+        <p>CLAN RANK............ <strong id="profileClanRank">N/A</strong></p>
+        <p>USERID............... <strong id="profileUserId">LOADING</strong></p>
+        <p>RANKING.............. <strong id="profileRanking">N/A</strong></p>
+        <p>ONLINE............... <strong>TRUE</strong></p>
+        <p>MESSAGE: <strong id="profileMessage">GUEST ACCESS DETECTED</strong><span class="cursor">_</span></p>
       </aside>
     </section>
 
@@ -394,27 +386,13 @@
           <p class="eyebrow">01 // THE FOUNDATION</p>
           <h2>Built for the long run.</h2>
         </div>
-        <p class="section-note">
-          Black Velvet is a focused community where respect, activity, and improvement matter.
-        </p>
+        <p class="section-note">Black Velvet is a focused community where respect, activity, and improvement matter.</p>
       </div>
 
       <div class="grid">
-        <article class="card">
-          <span class="card-number">[ 01 ]</span>
-          <h3>Legacy</h3>
-          <p>Founded by people who understand that a clan is more than a name. Every member contributes to its history.</p>
-        </article>
-        <article class="card">
-          <span class="card-number">[ 02 ]</span>
-          <h3>Discipline</h3>
-          <p>We protect the community through clear expectations, reliable staff, and respectful competition.</p>
-        </article>
-        <article class="card">
-          <span class="card-number">[ 03 ]</span>
-          <h3>Growth</h3>
-          <p>Whether you are joining as a member or applying for staff, there is room to learn and prove yourself.</p>
-        </article>
+        <article class="card"><span class="card-number">[ 01 ]</span><h3>Legacy</h3><p>Founded by people who understand that a clan is more than a name. Every member contributes to its history.</p></article>
+        <article class="card"><span class="card-number">[ 02 ]</span><h3>Discipline</h3><p>We protect the community through clear expectations, reliable staff, and respectful competition.</p></article>
+        <article class="card"><span class="card-number">[ 03 ]</span><h3>Growth</h3><p>Whether you are joining as a member or applying for staff, there is room to learn and prove yourself.</p></article>
       </div>
     </section>
 
@@ -428,18 +406,9 @@
       </div>
 
       <div class="roster">
-        <article class="member">
-          <div class="member-mark">L</div>
-          <div><h3>Luckyy</h3><p>FOUNDER · OWNER</p></div>
-        </article>
-        <article class="member">
-          <div class="member-mark">S</div>
-          <div><h3>Suoaz</h3><p>FOUNDER · OWNER</p></div>
-        </article>
-        <article class="member">
-          <div class="member-mark">G</div>
-          <div><h3>Gears</h3><p>MANAGEMENT</p></div>
-        </article>
+        <article class="member"><div class="member-mark">L</div><div><h3>Luckyy</h3><p>FOUNDER · OWNER</p></div></article>
+        <article class="member"><div class="member-mark">S</div><div><h3>Suoaz</h3><p>FOUNDER · OWNER</p></div></article>
+        <article class="member"><div class="member-mark">G</div><div><h3>Gears</h3><p>MANAGEMENT</p></div></article>
       </div>
     </section>
 
@@ -461,5 +430,39 @@
   </main>
 
   <script src="theme.js"></script>
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const profile = JSON.parse(localStorage.getItem("blackVelvetProfile") || "null");
+    let userId = localStorage.getItem("blackVelvetUserId");
+
+    if (!userId) {
+      const bytes = new Uint8Array(4);
+      crypto.getRandomValues(bytes);
+      userId = `BV-${Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join("").toUpperCase()}`;
+      localStorage.setItem("blackVelvetUserId", userId);
+    }
+
+    document.getElementById("profileUserId").textContent = userId;
+
+    if (profile?.username) {
+      document.getElementById("profileMessage").textContent = `WELCOME, ${profile.username.toUpperCase()}`;
+
+      const supabase = createClient(
+        "https://ptgzhljvzyceawwohmym.supabase.co",
+        "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk"
+      );
+
+      const { data: member } = await supabase
+        .from("clan_members")
+        .select("rank, ranking_number")
+        .ilike("username", profile.username)
+        .maybeSingle();
+
+      document.getElementById("profileClanRank").textContent = member?.rank || profile.role || "N/A";
+      document.getElementById("profileRanking").textContent =
+        member?.ranking_number ? `#${member.ranking_number}` : "N/A";
+    }
+  </script>
 </body>
 </html>
