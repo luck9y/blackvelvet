@@ -53,8 +53,13 @@ create table if not exists public.clip_comments (
   clip_id bigint not null references public.clips(id) on delete cascade,
   author_username text not null,
   comment_text text not null,
+  created_at timestamptz not null default '',
   created_at timestamptz not null default now()
 );
+
+insert into storage.buckets (id, name, public)
+values ('black-velvet-media', 'black-velvet-media', true)
+on conflict (id) do update set public = true;
 
 alter table public.clan_member_applications enable row level security;
 alter table public.clan_members enable row level security;
@@ -92,3 +97,18 @@ drop policy if exists "Public can delete clip comments" on public.clip_comments;
 create policy "Public can read clip comments" on public.clip_comments for select to anon, authenticated using (true);
 create policy "Public can create clip comments" on public.clip_comments for insert to anon, authenticated with check (true);
 create policy "Public can delete clip comments" on public.clip_comments for delete to anon, authenticated using (true);
+
+drop policy if exists "Public can view Black Velvet media" on storage.objects;
+drop policy if exists "Public can upload Black Velvet media" on storage.objects;
+drop policy if exists "Public can delete Black Velvet media" on storage.objects;
+create policy "Public can view Black Velvet media"
+on storage.objects for select to anon, authenticated
+using (bucket_id = 'black-velvet-media');
+
+create policy "Public can upload Black Velvet media"
+on storage.objects for insert to anon, authenticated
+with check (bucket_id = 'black-velvet-media');
+
+create policy "Public can delete Black Velvet media"
+on storage.objects for delete to anon, authenticated
+using (bucket_id = 'black-velvet-media');
