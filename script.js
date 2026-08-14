@@ -10,7 +10,6 @@ const leadershipRoles = ["Owner", "Admin", "Manager"];
 const staffRoles = ["Owner", "Admin", "Manager", "President", "Mod", "Helper"];
 const clanRanks = ["Goat", "Elite", "Legend", "Decent", "Rookie", "BVR"];
 const games = ["Minecraft Java", "Minecraft Bedrock", "Valorant", "Fortnite", "Roblox", "Rocket League"];
-const protectedOwner = "imjustluckyy";
 const $ = id => document.getElementById(id);
 
 const homeView = $("homeView");
@@ -20,7 +19,8 @@ const portalView = $("portalView");
 const loginForm = $("loginForm");
 const applicationForm = $("applicationForm");
 
-let accessLogs = [], applications = [], staffAccounts = [], clanApplications = [], clanMembers = [], currentUser = null;
+let accessLogs = [], applications = [], staffAccounts = [], clanApplications = [], clanMembers = [];
+let currentUser = null;
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -42,8 +42,8 @@ function showDatabaseError(id, action, error) {
 }
 
 function show(view) {
-  [homeView, loginView, applicationView, portalView].forEach(item => item.classList.add("hidden"));
-  view.classList.remove("hidden");
+  [homeView, loginView, applicationView, portalView].forEach(item => item?.classList.add("hidden"));
+  view?.classList.remove("hidden");
 }
 
 function createDeviceHex() {
@@ -73,8 +73,14 @@ function isLeadership() {
   return Boolean(username && (adminCredentials[username] || leadershipRoles.includes(currentUser?.role)));
 }
 
+function isStaffSession(profile) {
+  return Boolean(profile?.username && (adminCredentials[profile.username.toLowerCase()] || staffRoles.includes(profile.role)));
+}
+
 function renderLeadership() {
-  document.querySelectorAll(".leadership-only").forEach(element => element.classList.toggle("hidden", !isLeadership()));
+  document.querySelectorAll(".leadership-only").forEach(element => {
+    element.classList.toggle("hidden", !isLeadership());
+  });
 }
 
 function getReadKey() {
@@ -150,12 +156,19 @@ async function loadData() {
   const failed = results.find(result => result.error);
   if (failed) throw failed.error;
   [accessLogs, applications, staffAccounts, clanApplications, clanMembers] = results.map(result => result.data || []);
-  renderLogs(); renderApplications(); renderAccounts(); renderClanApplications(); renderClanMembers();
+  renderLogs();
+  renderApplications();
+  renderAccounts();
+  renderClanApplications();
+  renderClanMembers();
 }
 
 async function addAccessLog(username, success, reason) {
   const info = deviceInfo();
-  await supabase.from("access_logs").insert({ username, success, reason, device_hex: info.deviceHex, device: info.device, browser: info.browser, language: info.language, platform: info.platform, resolution: info.resolution });
+  await supabase.from("access_logs").insert({
+    username, success, reason, device_hex: info.deviceHex, device: info.device,
+    browser: info.browser, language: info.language, platform: info.platform, resolution: info.resolution
+  });
   await loadData();
 }
 
@@ -179,7 +192,7 @@ loginForm.addEventListener("submit", async event => {
     return;
   }
 
-  currentUser = { username: usernameKey, role: admin?.role || account.role };
+  currentUser = { username: usernameKey, role: admin?.role || account.role, type: "staff" };
   localStorage.setItem("blackVelvetProfile", JSON.stringify(currentUser));
   $("signedInAs").textContent = `${usernameInput} · ${currentUser.role}`;
   loginForm.reset();
@@ -190,9 +203,8 @@ loginForm.addEventListener("submit", async event => {
 applicationForm.addEventListener("submit", async event => {
   event.preventDefault();
   const data = Object.fromEntries(new FormData(applicationForm));
-  const username = data.staffUsername.trim();
   const { error } = await supabase.from("applications").insert({
-    discord_tag: data.discordTag, staff_username: username, staff_password: data.staffPassword,
+    discord_tag: data.discordTag, staff_username: data.staffUsername.trim(), staff_password: data.staffPassword,
     age: Number(data.age), timezone: data.timezone, experience: data.experience, role: data.role,
     availability: data.availability, motivation: data.motivation, references_text: data.references || "", status: "Pending"
   });
@@ -203,7 +215,11 @@ applicationForm.addEventListener("submit", async event => {
 });
 
 $("clearApplicationButton").addEventListener("click", () => applicationForm.reset());
-$("logoutButton").addEventListener("click", () => { currentUser = null; localStorage.removeItem("blackVelvetProfile"); show(homeView); });
+$("logoutButton").addEventListener("click", () => {
+  currentUser = null;
+  localStorage.removeItem("blackVelvetProfile");
+  show(homeView);
+});
 
 $("navigation").addEventListener("click", event => {
   const button = event.target.closest(".nav-button");
@@ -219,7 +235,11 @@ $("applicationList").addEventListener("click", async event => {
   const status = button.dataset.applicationAction === "approve" ? "Approved" : "Denied";
   const { error } = await supabase.from("applications").update({ status }).eq("id", button.dataset.id);
   if (error) return showDatabaseError("applicationsMessage", "Could not update application", error);
-  if (status === "Approved") await supabase.from("staff_accounts").upsert({ username: app.staff_username, staff_password: app.staff_password, role: app.role }, { onConflict: "username" });
+  if (status === "Approved") {
+    await supabase.from("staff_accounts").upsert({
+      username: app.staff_username, staff_password: app.staff_password, role: app.role
+    }, { onConflict: "username" });
+  }
   await loadData();
 });
 
@@ -230,10 +250,14 @@ $("clanApplicationList").addEventListener("click", async event => {
   const status = button.dataset.clanAction === "approve" ? "Approved" : "Denied";
   const { error } = await supabase.from("clan_member_applications").update({ status }).eq("id", application.id);
   if (error) return showDatabaseError("clanApplicationsMessage", "Could not update application", error);
+
   if (status === "Approved") {
     const { error: memberError } = await supabase.from("clan_members").upsert({
-      username: application.username, discord_tag: application.discord_tag,
-      game: application.game || "Minecraft Java", rank: application.rank || "BVR"
+      username: application.username,
+      discord_tag: application.discord_tag,
+      avatar_url: application.avatar_url || null,
+      game: application.game || "Minecraft Java",
+      rank: application.rank || "BVR"
     }, { onConflict: "username" });
     if (memberError) return showDatabaseError("clanApplicationsMessage", "Member creation failed", memberError);
   }
@@ -280,6 +304,15 @@ function subscribeToChanges() {
 (async function start() {
   try {
     await loadData();
+    const savedProfile = JSON.parse(localStorage.getItem("blackVelvetProfile") || "null");
+
+    if (isStaffSession(savedProfile)) {
+      currentUser = savedProfile;
+      $("signedInAs").textContent = `${currentUser.username} · ${currentUser.role}`;
+      show(portalView);
+      renderLeadership();
+    }
+
     subscribeToChanges();
   } catch (error) {
     $("loginMessage").textContent = `Supabase error: ${error.message || "Check your tables and policies."}`;
