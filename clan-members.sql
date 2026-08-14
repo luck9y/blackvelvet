@@ -34,12 +34,18 @@ alter table public.clan_member_applications enable row level security;
 alter table public.clan_members enable row level security;
 
 drop policy if exists "Public can read clan applications" on public.clan_member_applications;
+drop policy if exists "Public can submit clan applications" on public.clan_member_applications;
 drop policy if exists "Public can update clan applications" on public.clan_member_applications;
 
 create policy "Public can read clan applications"
 on public.clan_member_applications
 for select to anon, authenticated
 using (true);
+
+create policy "Public can submit clan applications"
+on public.clan_member_applications
+for insert to anon, authenticated
+with check (true);
 
 create policy "Public can update clan applications"
 on public.clan_member_applications
