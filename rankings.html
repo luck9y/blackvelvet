@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#010204">
+  <title>Black Velvet | Rankings</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Orbitron, Arial, sans-serif; }
+    main { position: relative; z-index: 1; width: min(1180px, 90%); margin: auto; padding: 45px 0 75px; }
+    .top { display: flex; justify-content: space-between; gap: 20px; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+    a { color: var(--silver); font-size: 11px; letter-spacing: 1.5px; text-decoration: none; }
+    .eyebrow { margin: 58px 0 15px; color: var(--silver); font-size: 11px; letter-spacing: 3px; }
+    h1, h2, h3 { font-family: Cinzel, Georgia, serif; }
+    h1 { margin: 0; font-size: clamp(42px, 8vw, 75px); letter-spacing: 4px; }
+    .intro { color: #aab5bc; font: 16px/1.8 Arial, sans-serif; }
+    #rankingPanels { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 32px; }
+    .game-panel { padding: 25px; border: 1px solid var(--line); border-radius: 14px; background: rgba(7, 11, 15, .88); }
+    .game-panel h2 { margin: 0 0 22px; color: var(--silver); font-size: 28px; letter-spacing: 2px; }
+    .rank-block { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+    .rank-block h3 { margin: 0 0 10px; color: #dce5eb; font-size: 16px; letter-spacing: 1px; }
+    .member { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; color: #aeb9bf; font: 13px Arial, sans-serif; }
+    .member strong { color: var(--silver); font-family: Orbitron, Arial, sans-serif; }
+    .empty { color: #71808a; font: 12px Arial, sans-serif; }
+    @media (max-width: 800px) { #rankingPanels { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="top">
+      <a href="home.html">← BLACK VELVET HOME</a>
+      <a href="clan-signup.html">SIGN UP</a>
+    </header>
+
+    <p class="eyebrow">BLACK VELVET // COMPETITIVE NETWORK</p>
+    <h1>RANKINGS</h1>
+    <p class="intro">Members are sorted by game, rank, and their assigned ranking number.</p>
+    <section id="rankingPanels"></section>
+  </main>
+
+  <script src="theme.js"></script>
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabase = createClient("https://ptgzhljvzyceawwohmym.supabase.co", "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk");
+    const games = ["Minecraft Java", "Minecraft Bedrock", "Valorant", "Fortnite", "Roblox", "Rocket League"];
+    const ranks = ["Goat", "Elite", "Legend", "Decent", "Rookie", "BVR"];
+    const rankOrder = Object.fromEntries(ranks.map((rank, index) => [rank, index]));
+    const panels = document.getElementById("rankingPanels");
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+      }[char]));
+    }
+
+    function render(members) {
+      panels.innerHTML = games.map(game => {
+        const gameMembers = members.filter(member => member.game === game)
+          .sort((a, b) => rankOrder[a.rank] - rankOrder[b.rank] || (a.ranking_number || 999999) - (b.ranking_number || 999999));
+
+        return `<article class="game-panel">
+          <h2>${escapeHtml(game)}</h2>
+          ${ranks.map(rank => {
+            const rankMembers = gameMembers.filter(member => member.rank === rank);
+            return `<section class="rank-block">
+              <h3>${rank.toUpperCase()}</h3>
+              ${rankMembers.length ? rankMembers.map(member => `<div class="member"><span>USER: ${escapeHtml(member.username)}</span><strong>#${escapeHtml(member.ranking_number || "N/A")}</strong></div>`).join("") : '<p class="empty">No members assigned.</p>'}
+            </section>`;
+          }).join("")}
+        </article>`;
+      }).join("");
+    }
+
+    async function loadRankings() {
+      const { data, error } = await supabase.from("clan_members").select("username, game, rank, ranking_number");
+      if (!error) render(data || []);
+    }
+
+    await loadRankings();
+    supabase.channel("ranking-updates")
+      .on("postgres_changes", { event: "*", schema: "public", table: "clan_members" }, loadRankings)
+      .subscribe();
+  </script>
+</body>
+</html>
