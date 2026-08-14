@@ -26,15 +26,12 @@
     .verification {
       display: none; overflow: hidden; margin-top: 24px; padding: 20px;
       border: 1px solid rgba(220, 230, 236, .3); border-radius: 10px;
-      background: rgba(220, 230, 236, .04); animation: reveal .35s ease;
+      background: rgba(220, 230, 236, .04);
     }
     .verification.open { display: block; }
     .verification h2 { margin: 0 0 8px; color: var(--silver); font: 700 14px Orbitron, sans-serif; letter-spacing: 1.5px; }
     .verification p { margin: 0 0 16px; color: #9eabb3; font: 13px/1.6 Arial, sans-serif; }
-    .choice {
-      display: flex; align-items: center; gap: 10px; margin: 10px 0;
-      padding: 13px; border: 1px solid var(--line); border-radius: 7px; cursor: pointer;
-    }
+    .choice { display: flex; align-items: center; gap: 10px; margin: 10px 0; padding: 13px; border: 1px solid var(--line); border-radius: 7px; cursor: pointer; }
     .choice input { width: auto; margin: 0; accent-color: #dce5eb; }
     .choice span { color: var(--text); font: 12px Orbitron, sans-serif; letter-spacing: 1px; }
     #clipArea { display: none; }
@@ -44,10 +41,8 @@
       border-radius: 7px; color: #06080a; background: var(--silver);
       font: 700 12px Orbitron, sans-serif; letter-spacing: 2px; cursor: pointer;
     }
-    button:hover { box-shadow: 0 0 24px rgba(220, 230, 236, .4); }
     #message { min-height: 22px; margin: 16px 0 0; color: var(--silver); font: 13px Arial, sans-serif; text-align: center; }
     #message.error { color: #e7a4a4; }
-    @keyframes reveal { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
@@ -59,7 +54,7 @@
 
     <p class="eyebrow">BLACK VELVET // MEMBER APPLICATION</p>
     <h1>SIGN UP</h1>
-    <p class="intro">Apply to Black Velvet. Higher-rank applications require either a tryout request or a gameplay clip for review.</p>
+    <p class="intro">Choose the game and rank you are applying for. Higher ranks require a tryout request or clip.</p>
 
     <form id="signupForm">
       <label for="username">USERNAME
@@ -72,6 +67,18 @@
 
       <label for="discord">DISCORD USER
         <input id="discord" name="discord" maxlength="80" placeholder="username or username#0000" required>
+      </label>
+
+      <label for="game">GAME YOU ARE APPLYING FOR
+        <select id="game" name="game" required>
+          <option value="">SELECT A GAME</option>
+          <option>Minecraft Java</option>
+          <option>Minecraft Bedrock</option>
+          <option>Valorant</option>
+          <option>Fortnite</option>
+          <option>Roblox</option>
+          <option>Rocket League</option>
+        </select>
       </label>
 
       <label for="rank">RANK YOU DESERVE
@@ -87,21 +94,12 @@
 
       <section id="verification" class="verification">
         <h2>RANK VERIFICATION REQUIRED</h2>
-        <p>Select how you would like staff to verify your requested rank.</p>
-
-        <label class="choice">
-          <input type="radio" name="verificationType" value="tryout">
-          <span>PREFERRED TRYOUT</span>
-        </label>
-
-        <label class="choice">
-          <input type="radio" name="verificationType" value="clip">
-          <span>SEND A CLIP</span>
-        </label>
-
+        <p>Select how staff should verify the requested rank.</p>
+        <label class="choice"><input type="radio" name="verificationType" value="tryout"><span>PREFERRED TRYOUT</span></label>
+        <label class="choice"><input type="radio" name="verificationType" value="clip"><span>SEND A CLIP</span></label>
         <div id="clipArea">
           <label for="clipUrl">CLIP LINK
-            <input id="clipUrl" name="clipUrl" type="url" placeholder="https://youtube.com/... or https://medal.tv/...">
+            <input id="clipUrl" name="clipUrl" type="url" placeholder="https://youtube.com/...">
           </label>
         </div>
       </section>
@@ -115,11 +113,7 @@
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-    const supabase = createClient(
-      "https://ptgzhljvzyceawwohmym.supabase.co",
-      "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk"
-    );
-
+    const supabase = createClient("https://ptgzhljvzyceawwohmym.supabase.co", "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk");
     const form = document.getElementById("signupForm");
     const rank = document.getElementById("rank");
     const verification = document.getElementById("verification");
@@ -128,17 +122,15 @@
     const message = document.getElementById("message");
 
     async function hashPassword(password) {
-      const bytes = new TextEncoder().encode(password);
-      const hash = await crypto.subtle.digest("SHA-256", bytes);
-      return Array.from(new Uint8Array(hash), (byte) => byte.toString(16).padStart(2, "0")).join("");
+      const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(password));
+      return Array.from(new Uint8Array(hash), byte => byte.toString(16).padStart(2, "0")).join("");
     }
 
     function updateVerification() {
       const needsVerification = rank.value !== "BVR";
       verification.classList.toggle("open", needsVerification);
-
       if (!needsVerification) {
-        form.querySelectorAll('[name="verificationType"]').forEach((input) => input.checked = false);
+        form.querySelectorAll('[name="verificationType"]').forEach(input => input.checked = false);
         clipArea.classList.remove("open");
         clipUrl.required = false;
         clipUrl.value = "";
@@ -146,33 +138,24 @@
     }
 
     rank.addEventListener("change", updateVerification);
-
-    form.querySelectorAll('[name="verificationType"]').forEach((input) => {
+    form.querySelectorAll('[name="verificationType"]').forEach(input => {
       input.addEventListener("change", () => {
-        const sendingClip = input.value === "clip" && input.checked;
-        clipArea.classList.toggle("open", sendingClip);
-        clipUrl.required = sendingClip;
+        const isClip = input.checked && input.value === "clip";
+        clipArea.classList.toggle("open", isClip);
+        clipUrl.required = isClip;
       });
     });
 
-    form.addEventListener("submit", async (event) => {
+    form.addEventListener("submit", async event => {
       event.preventDefault();
-
       const data = new FormData(form);
       const username = data.get("username").trim();
       const requestedRank = data.get("rank");
       const verificationType = data.get("verificationType");
-      const isBvr = requestedRank === "BVR";
 
-      if (!isBvr && !verificationType) {
+      if (requestedRank !== "BVR" && !verificationType) {
         message.className = "error";
         message.textContent = "SELECT PREFERRED TRYOUT OR SEND A CLIP.";
-        return;
-      }
-
-      if (verificationType === "clip" && !data.get("clipUrl").trim()) {
-        message.className = "error";
-        message.textContent = "A CLIP LINK IS REQUIRED.";
         return;
       }
 
@@ -180,20 +163,11 @@
       message.textContent = "TRANSMITTING APPLICATION...";
 
       const { data: existing, error: checkError } = await supabase
-        .from("clan_member_applications")
-        .select("id")
-        .ilike("username", username)
-        .limit(1);
+        .from("clan_member_applications").select("id").ilike("username", username).limit(1);
 
-      if (checkError) {
+      if (checkError || existing.length) {
         message.className = "error";
-        message.textContent = `Unable to check application: ${checkError.message}`;
-        return;
-      }
-
-      if (existing.length) {
-        message.className = "error";
-        message.textContent = "AN APPLICATION FOR THIS USERNAME ALREADY EXISTS.";
+        message.textContent = checkError ? `Submission check failed: ${checkError.message}` : "AN APPLICATION FOR THIS USERNAME ALREADY EXISTS.";
         return;
       }
 
@@ -201,6 +175,7 @@
         username,
         password_hash: await hashPassword(data.get("password")),
         discord_tag: data.get("discord").trim(),
+        game: data.get("game"),
         rank: requestedRank,
         preferred_tryout: verificationType === "tryout",
         clip_url: verificationType === "clip" ? data.get("clipUrl").trim() : null,
