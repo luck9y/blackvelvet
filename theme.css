@@ -1,0 +1,221 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Orbitron:wght@400;500;600;700&display=swap");
+
+:root {
+  --black: #010204;
+  --dark: #05080b;
+  --panel: rgba(7, 11, 15, .9);
+  --panel-light: rgba(24, 30, 36, .94);
+  --line: rgba(190, 205, 218, .3);
+  --text: #f1f4f6;
+  --muted: #8996a0;
+  --silver: #dce5eb;
+  --green: #cbd4d9;
+  --red: #cbd4d9;
+}
+
+html {
+  min-height: 100%;
+  background: #010204;
+}
+
+body {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at 50% -20%, rgba(115, 132, 145, .2), transparent 42%),
+    radial-gradient(ellipse at 100% 100%, rgba(80, 95, 108, .12), transparent 38%),
+    linear-gradient(rgba(180, 195, 205, .11) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(180, 195, 205, .11) 1px, transparent 1px),
+    #010204;
+  background-size: auto, auto, 52px 52px, 52px 52px;
+  animation: futuristicBackground 18s linear infinite;
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  content: "";
+  opacity: .65;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 5px,
+      rgba(220, 230, 236, .055) 6px,
+      transparent 7px
+    ),
+    linear-gradient(
+      115deg,
+      transparent 0 38%,
+      rgba(220, 230, 236, .1) 38.1%,
+      transparent 38.3%
+    ),
+    linear-gradient(
+      295deg,
+      transparent 0 66%,
+      rgba(220, 230, 236, .08) 66.1%,
+      transparent 66.3%
+    );
+  background-size: auto, 420px 420px, 520px 520px;
+  animation: scanAndCircuit 11s linear infinite;
+}
+
+body::after {
+  position: fixed;
+  inset: -20%;
+  z-index: -1;
+  pointer-events: none;
+  content: "";
+  opacity: .24;
+  background:
+    linear-gradient(90deg, transparent 49.8%, rgba(220, 230, 236, .55) 50%, transparent 50.2%),
+    linear-gradient(0deg, transparent 49.8%, rgba(220, 230, 236, .55) 50%, transparent 50.2%),
+    radial-gradient(ellipse, transparent 0 36%, rgba(190, 205, 215, .18) 36.2%, transparent 36.7%),
+    radial-gradient(ellipse, transparent 0 58%, rgba(190, 205, 215, .12) 58.2%, transparent 58.7%);
+  background-size: 180px 180px, 180px 180px, 620px 360px, 900px 520px;
+  animation: hudRotation 28s linear infinite;
+}
+
+@keyframes futuristicBackground {
+  from {
+    background-position: 0 0, 0 0, 0 0, 0 0;
+  }
+
+  to {
+    background-position: 0 0, 0 0, 52px 52px, -52px 52px;
+  }
+}
+
+@keyframes scanAndCircuit {
+  from {
+    background-position: 0 0, -420px -420px, 520px -520px;
+  }
+
+  to {
+    background-position: 0 70px, 420px 420px, -520px 520px;
+  }
+}
+
+@keyframes hudRotation {
+  from {
+    transform: rotate(0deg) scale(1);
+  }
+
+  50% {
+    opacity: .34;
+    transform: rotate(180deg) scale(1.08);
+  }
+
+  to {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+a,
+button {
+  transition: .2s ease;
+}
+
+.primary-button,
+.secondary-button,
+.ghost-button,
+.nav-button,
+.card-actions button,
+.button {
+  border-color: var(--line) !important;
+  color: var(--text) !important;
+  background: #151b20 !important;
+}
+
+.primary-button:hover,
+.secondary-button:hover,
+.ghost-button:hover,
+.nav-button:hover,
+.card-actions button:hover,
+.button:hover {
+  border-color: var(--silver) !important;
+  color: #050607 !important;
+  background: var(--silver) !important;
+  box-shadow: 0 0 25px rgba(220, 230, 236, .42);
+}
+
+.login-message.success,
+.action-message.success,
+.log-status,
+.success .log-status,
+.approved .log-status,
+.eyebrow,
+.card-number,
+.terminal strong {
+  color: var(--silver) !important;
+}
+
+.count {
+  color: #050607 !important;
+  background: var(--silver) !important;
+}
+
+.water-splash {
+  position: fixed;
+  z-index: 9999;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  border: 2px solid rgba(220, 230, 236, .95);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: waterRing .9s ease-out forwards;
+  box-shadow: 0 0 12px var(--silver), 0 0 30px rgba(220, 230, 236, .4);
+}
+
+.water-drop {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 4px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--silver);
+  box-shadow: 0 0 8px var(--silver);
+  animation: waterDrop .7s ease-out forwards;
+}
+
+@keyframes waterRing {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(7);
+  }
+}
+
+@keyframes waterDrop {
+  to {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateY(var(--distance)) scale(.2);
+  }
+}
+
+@media (max-width: 700px) {
+  body {
+    background-size: auto, auto, 34px 34px, 34px 34px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
