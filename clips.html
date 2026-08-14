@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#010204"><title>Black Velvet | Clips</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:Orbitron,Arial,sans-serif}main{position:relative;z-index:1;width:min(850px,90%);margin:auto;padding:45px 0 75px}.top{display:flex;justify-content:space-between;gap:16px;padding-bottom:22px;border-bottom:1px solid var(--line)}a{color:var(--silver);font-size:11px;letter-spacing:1.5px;text-decoration:none}.eyebrow{margin:48px 0 12px;color:var(--silver);font-size:11px;letter-spacing:3px}h1,h2{font-family:Cinzel,Georgia,serif}h1{margin:0;font-size:clamp(42px,8vw,70px);letter-spacing:4px}.intro,.notice{color:#aab5bc;font:15px/1.7 Arial,sans-serif}.card{margin-top:24px;padding:22px;border:1px solid var(--line);border-radius:14px;background:rgba(7,11,15,.9)}input,textarea{width:100%;margin:8px 0 12px;padding:12px;border:1px solid var(--line);border-radius:7px;color:var(--text);background:#080c10;font:14px Arial,sans-serif}button{padding:10px 14px;border:1px solid var(--line);border-radius:7px;background:var(--silver);color:#07090b;font:700 10px Orbitron,sans-serif;letter-spacing:1px;cursor:pointer}.clip{margin-top:18px;padding:20px;border:1px solid var(--line);border-radius:12px;background:rgba(7,11,15,.9)}.author{display:flex;align-items:center;gap:11px}.avatar{width:38px;height:38px;border:1px solid var(--line);border-radius:50%;object-fit:cover;background:#111}.meta{color:#87949c;font:11px Arial,sans-serif}.clip-link{display:inline-block;margin:15px 0;color:var(--silver);font:12px Orbitron,sans-serif}.delete{float:right;background:transparent;color:#e6a6a6}.comment{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);color:#c1cbd0;font:13px Arial,sans-serif}.comment-form{display:flex;gap:8px;margin-top:12px}.comment-form input{margin:0}.empty{color:#84919a;font:14px Arial,sans-serif}
+  </style>
+</head>
+<body>
+  <main>
+    <header class="top"><a href="home.html">← BLACK VELVET HOME</a><a href="Game.html">GAMES</a><a href="rankings.html">RANKINGS</a></header>
+    <p class="eyebrow">BLACK VELVET // COMMUNITY MEDIA</p><h1>CLIPS</h1>
+    <p class="intro">Approved members and staff can publish clips. Everyone can view and comment.</p>
+    <section id="postArea"></section><section id="feed"></section>
+  </main>
+  <script src="theme.js"></script>
+  <script type="module">
+    import {createClient} from "https://esm.sh/@supabase/supabase-js@2";
+    const supabase=createClient("https://ptgzhljvzyceawwohmym.supabase.co","sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk");
+    const profile=JSON.parse(localStorage.getItem("blackVelvetProfile")||"null"),staffRoles=["Owner","Admin","Manager","President","Mod","Helper"],isStaff=staffRoles.includes(profile?.role),postArea=document.getElementById("postArea"),feed=document.getElementById("feed");
+    const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+    if(profile)postArea.innerHTML=`<form id="postForm" class="card"><h2>POST A CLIP</h2><textarea name="caption" maxlength="300" placeholder="Caption"></textarea><input name="url" type="url" placeholder="Clip URL (YouTube, Twitch, Medal, etc.)" required><button>POST CLIP</button></form>`;else postArea.innerHTML=`<div class="card notice">Log in as an approved member or staff member to post clips.</div>`;
+    document.getElementById("postForm")?.addEventListener("submit",async e=>{e.preventDefault();const d=new FormData(e.target),{error}=await supabase.from("clips").insert({author_username:profile.username,caption:d.get("caption").trim(),clip_url:d.get("url").trim()});if(!error)e.target.reset()});
+    async function load(){const [{data:clips},{data:members},{data:comments}]=await Promise.all([supabase.from("clips").select("*").order("created_at",{ascending:false}),supabase.from("clan_members").select("username,avatar_url"),supabase.from("clip_comments").select("*").order("created_at")]);const avatars=Object.fromEntries((members||[]).map(m=>[m.username,m.avatar_url]));feed.innerHTML=(clips||[]).length?(clips||[]).map(c=>`<article class="clip"><div class="author"><img class="avatar" src="${esc(avatars[c.author_username]||"https://placehold.co/80x80/111827/dce5eb?text=BV")}" onerror="this.src='https://placehold.co/80x80/111827/dce5eb?text=BV'"><div><a href="profile.html?user=${encodeURIComponent(c.author_username)}">${esc(c.author_username)}</a><div class="meta">${new Date(c.created_at).toLocaleString()}</div></div></div>${(isStaff||profile?.username===c.author_username)?`<button class="delete" data-delete-clip="${c.id}">DELETE</button>`:""}<p>${esc(c.caption)}</p><a class="clip-link" href="${esc(c.clip_url)}" target="_blank" rel="noopener">OPEN CLIP ↗</a><section>${(comments||[]).filter(x=>x.clip_id===c.id).map(x=>`<div class="comment"><strong>${esc(x.author_username)}</strong>: ${esc(x.comment_text)} ${(isStaff||profile?.username===x.author_username)?`<button class="delete" data-delete-comment="${x.id}">DELETE</button>`:""}</div>`).join("")}</section>${profile?`<form class="comment-form" data-comment-form="${c.id}"><input name="comment" maxlength="250" required placeholder="Write a comment"><button>COMMENT</button></form>`:""}</article>`).join(""):`<p class="empty">No clips have been posted yet.</p>`}
+    feed.addEventListener("submit",async e=>{const form=e.target.closest("[data-comment-form]");if(!form)return;e.preventDefault();const text=new FormData(form).get("comment").trim();if(text){await supabase.from("clip_comments").insert({clip_id:Number(form.dataset.commentForm),author_username:profile.username,comment_text:text});form.reset()}});
+    feed.addEventListener("click",async e=>{const clip=e.target.closest("[data-delete-clip]"),comment=e.target.closest("[data-delete-comment]");if(clip)await supabase.from("clips").delete().eq("id",clip.dataset.deleteClip);if(comment)await supabase.from("clip_comments").delete().eq("id",comment.dataset.deleteComment)});
+    await load();["clips","clip_comments","clan_members"].forEach(table=>supabase.channel(`clip-${table}`).on("postgres_changes",{event:"*",schema:"public",table},load).subscribe());
+  </script>
+</body>
+</html>
