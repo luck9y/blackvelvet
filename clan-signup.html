@@ -7,192 +7,46 @@
   <title>Black Velvet | Clan Sign Up</title>
   <link rel="stylesheet" href="theme.css">
   <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: Orbitron, Arial, sans-serif; }
-    main { position: relative; z-index: 1; width: min(680px, 90%); margin: auto; padding: 45px 0 75px; }
-    .top { display: flex; justify-content: space-between; gap: 20px; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
-    a { color: var(--silver); font-size: 11px; letter-spacing: 1.5px; text-decoration: none; }
-    .eyebrow { margin: 58px 0 15px; color: var(--silver); font-size: 11px; letter-spacing: 3px; }
-    h1 { margin: 0; font-family: Cinzel, Georgia, serif; font-size: clamp(42px, 8vw, 75px); letter-spacing: 4px; }
-    .intro { color: #aab5bc; font: 16px/1.8 Arial, sans-serif; }
-    form { margin-top: 28px; padding: 28px; border: 1px solid var(--line); border-radius: 14px; background: rgba(7, 11, 15, .88); }
-    label { display: block; margin: 18px 0 8px; color: var(--silver); font-size: 12px; font-weight: 700; letter-spacing: 1px; }
-    input, select {
-      width: 100%; margin-top: 8px; padding: 13px; border: 1px solid var(--line);
-      border-radius: 7px; outline: none; color: var(--text); background: #080c10;
-      font: 14px Arial, sans-serif;
-    }
-    input:focus, select:focus { border-color: var(--silver); box-shadow: 0 0 0 3px rgba(220, 230, 236, .12); }
-    .verification {
-      display: none; overflow: hidden; margin-top: 24px; padding: 20px;
-      border: 1px solid rgba(220, 230, 236, .3); border-radius: 10px;
-      background: rgba(220, 230, 236, .04);
-    }
-    .verification.open { display: block; }
-    .verification h2 { margin: 0 0 8px; color: var(--silver); font: 700 14px Orbitron, sans-serif; letter-spacing: 1.5px; }
-    .verification p { margin: 0 0 16px; color: #9eabb3; font: 13px/1.6 Arial, sans-serif; }
-    .choice { display: flex; align-items: center; gap: 10px; margin: 10px 0; padding: 13px; border: 1px solid var(--line); border-radius: 7px; cursor: pointer; }
-    .choice input { width: auto; margin: 0; accent-color: #dce5eb; }
-    .choice span { color: var(--text); font: 12px Orbitron, sans-serif; letter-spacing: 1px; }
-    #clipArea { display: none; }
-    #clipArea.open { display: block; }
-    button {
-      width: 100%; margin-top: 25px; padding: 14px; border: 1px solid var(--line);
-      border-radius: 7px; color: #06080a; background: var(--silver);
-      font: 700 12px Orbitron, sans-serif; letter-spacing: 2px; cursor: pointer;
-    }
-    #message { min-height: 22px; margin: 16px 0 0; color: var(--silver); font: 13px Arial, sans-serif; text-align: center; }
-    #message.error { color: #e7a4a4; }
+    *{box-sizing:border-box}body{margin:0;font-family:Orbitron,Arial,sans-serif}main{position:relative;z-index:1;width:min(680px,90%);margin:auto;padding:45px 0 75px}.top{display:flex;justify-content:space-between;gap:20px;padding-bottom:22px;border-bottom:1px solid var(--line)}a{color:var(--silver);font-size:11px;letter-spacing:1.5px;text-decoration:none}.eyebrow{margin:58px 0 15px;color:var(--silver);font-size:11px;letter-spacing:3px}h1{margin:0;font-family:Cinzel,Georgia,serif;font-size:clamp(42px,8vw,75px);letter-spacing:4px}.intro{color:#aab5bc;font:16px/1.8 Arial,sans-serif}form{margin-top:28px;padding:28px;border:1px solid var(--line);border-radius:14px;background:rgba(7,11,15,.88)}label{display:block;margin:18px 0 8px;color:var(--silver);font-size:12px;font-weight:700;letter-spacing:1px}input,select{width:100%;margin-top:8px;padding:13px;border:1px solid var(--line);border-radius:7px;outline:none;color:var(--text);background:#080c10;font:14px Arial,sans-serif}.verification{display:none;overflow:hidden;margin-top:24px;padding:20px;border:1px solid rgba(220,230,236,.3);border-radius:10px;background:rgba(220,230,236,.04)}.verification.open,#clipArea.open{display:block}.verification h2{margin:0 0 8px;color:var(--silver);font:700 14px Orbitron,sans-serif;letter-spacing:1.5px}.verification p{margin:0 0 16px;color:#9eabb3;font:13px/1.6 Arial,sans-serif}.choice{display:flex;align-items:center;gap:10px;margin:10px 0;padding:13px;border:1px solid var(--line);border-radius:7px}.choice input{width:auto;margin:0}#clipArea{display:none}button{width:100%;margin-top:25px;padding:14px;border:1px solid var(--line);border-radius:7px;color:#06080a;background:var(--silver);font:700 12px Orbitron,sans-serif;letter-spacing:2px;cursor:pointer}#message{min-height:22px;margin:16px 0 0;color:var(--silver);font:13px Arial,sans-serif;text-align:center}#message.error{color:#e7a4a4}
   </style>
 </head>
 <body>
   <main>
-    <header class="top">
-      <a href="home.html">← BLACK VELVET HOME</a>
-      <a href="member-login.html">MEMBER LOGIN</a>
-    </header>
-
+    <header class="top"><a href="home.html">← BLACK VELVET HOME</a><a href="member-login.html">MEMBER LOGIN</a></header>
     <p class="eyebrow">BLACK VELVET // MEMBER APPLICATION</p>
     <h1>SIGN UP</h1>
-    <p class="intro">Choose the game and rank you are applying for. Higher ranks require a tryout request or clip.</p>
+    <p class="intro">Choose the game and rank you are applying for.</p>
 
     <form id="signupForm">
-      <label for="username">USERNAME
-        <input id="username" name="username" maxlength="40" required>
+      <label>USERNAME<input name="username" maxlength="40" required></label>
+      <label>PASSWORD<input name="password" type="password" minlength="6" autocomplete="new-password" required></label>
+      <label>DISCORD USER<input name="discord" maxlength="80" required></label>
+      <label>PROFILE PICTURE URL <input name="avatarUrl" type="url" placeholder="https://example.com/your-picture.png"></label>
+      <label>GAME YOU ARE APPLYING FOR
+        <select name="game" required><option value="">SELECT A GAME</option><option>Minecraft Java</option><option>Minecraft Bedrock</option><option>Valorant</option><option>Fortnite</option><option>Roblox</option><option>Rocket League</option></select>
       </label>
-
-      <label for="password">PASSWORD
-        <input id="password" name="password" type="password" minlength="6" autocomplete="new-password" required>
+      <label>RANK YOU DESERVE
+        <select id="rank" name="rank" required><option value="BVR">BVR</option><option value="Rookie">Rookie</option><option value="Decent">Decent</option><option value="Legend">Legend</option><option value="Elite">Elite</option><option value="Goat">Goat</option></select>
       </label>
-
-      <label for="discord">DISCORD USER
-        <input id="discord" name="discord" maxlength="80" placeholder="username or username#0000" required>
-      </label>
-
-      <label for="game">GAME YOU ARE APPLYING FOR
-        <select id="game" name="game" required>
-          <option value="">SELECT A GAME</option>
-          <option>Minecraft Java</option>
-          <option>Minecraft Bedrock</option>
-          <option>Valorant</option>
-          <option>Fortnite</option>
-          <option>Roblox</option>
-          <option>Rocket League</option>
-        </select>
-      </label>
-
-      <label for="rank">RANK YOU DESERVE
-        <select id="rank" name="rank" required>
-          <option value="BVR">BVR</option>
-          <option value="Rookie">Rookie</option>
-          <option value="Decent">Decent</option>
-          <option value="Legend">Legend</option>
-          <option value="Elite">Elite</option>
-          <option value="Goat">Goat</option>
-        </select>
-      </label>
-
       <section id="verification" class="verification">
-        <h2>RANK VERIFICATION REQUIRED</h2>
-        <p>Select how staff should verify the requested rank.</p>
+        <h2>RANK VERIFICATION REQUIRED</h2><p>Select how staff should verify the requested rank.</p>
         <label class="choice"><input type="radio" name="verificationType" value="tryout"><span>PREFERRED TRYOUT</span></label>
         <label class="choice"><input type="radio" name="verificationType" value="clip"><span>SEND A CLIP</span></label>
-        <div id="clipArea">
-          <label for="clipUrl">CLIP LINK
-            <input id="clipUrl" name="clipUrl" type="url" placeholder="https://youtube.com/...">
-          </label>
-        </div>
+        <div id="clipArea"><label>CLIP LINK<input id="clipUrl" name="clipUrl" type="url" placeholder="https://youtube.com/..."></label></div>
       </section>
-
-      <button type="submit">SUBMIT APPLICATION</button>
-      <p id="message" role="alert"></p>
+      <button type="submit">SUBMIT APPLICATION</button><p id="message" role="alert"></p>
     </form>
   </main>
-
   <script src="theme.js"></script>
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-    const supabase = createClient("https://ptgzhljvzyceawwohmym.supabase.co", "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk");
-    const form = document.getElementById("signupForm");
-    const rank = document.getElementById("rank");
-    const verification = document.getElementById("verification");
-    const clipArea = document.getElementById("clipArea");
-    const clipUrl = document.getElementById("clipUrl");
-    const message = document.getElementById("message");
-
-    async function hashPassword(password) {
-      const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(password));
-      return Array.from(new Uint8Array(hash), byte => byte.toString(16).padStart(2, "0")).join("");
-    }
-
-    function updateVerification() {
-      const needsVerification = rank.value !== "BVR";
-      verification.classList.toggle("open", needsVerification);
-      if (!needsVerification) {
-        form.querySelectorAll('[name="verificationType"]').forEach(input => input.checked = false);
-        clipArea.classList.remove("open");
-        clipUrl.required = false;
-        clipUrl.value = "";
-      }
-    }
-
-    rank.addEventListener("change", updateVerification);
-    form.querySelectorAll('[name="verificationType"]').forEach(input => {
-      input.addEventListener("change", () => {
-        const isClip = input.checked && input.value === "clip";
-        clipArea.classList.toggle("open", isClip);
-        clipUrl.required = isClip;
-      });
-    });
-
-    form.addEventListener("submit", async event => {
-      event.preventDefault();
-      const data = new FormData(form);
-      const username = data.get("username").trim();
-      const requestedRank = data.get("rank");
-      const verificationType = data.get("verificationType");
-
-      if (requestedRank !== "BVR" && !verificationType) {
-        message.className = "error";
-        message.textContent = "SELECT PREFERRED TRYOUT OR SEND A CLIP.";
-        return;
-      }
-
-      message.className = "";
-      message.textContent = "TRANSMITTING APPLICATION...";
-
-      const { data: existing, error: checkError } = await supabase
-        .from("clan_member_applications").select("id").ilike("username", username).limit(1);
-
-      if (checkError || existing.length) {
-        message.className = "error";
-        message.textContent = checkError ? `Submission check failed: ${checkError.message}` : "AN APPLICATION FOR THIS USERNAME ALREADY EXISTS.";
-        return;
-      }
-
-      const { error } = await supabase.from("clan_member_applications").insert({
-        username,
-        password_hash: await hashPassword(data.get("password")),
-        discord_tag: data.get("discord").trim(),
-        game: data.get("game"),
-        rank: requestedRank,
-        preferred_tryout: verificationType === "tryout",
-        clip_url: verificationType === "clip" ? data.get("clipUrl").trim() : null,
-        status: "Pending"
-      });
-
-      if (error) {
-        message.className = "error";
-        message.textContent = `Submission failed: ${error.message}`;
-        return;
-      }
-
-      form.reset();
-      updateVerification();
-      message.textContent = "APPLICATION RECEIVED. STAFF WILL REVIEW IT.";
-    });
-
+    const supabase=createClient("https://ptgzhljvzyceawwohmym.supabase.co","sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk");
+    const form=document.getElementById("signupForm"),rank=document.getElementById("rank"),verification=document.getElementById("verification"),clipArea=document.getElementById("clipArea"),clipUrl=document.getElementById("clipUrl"),message=document.getElementById("message");
+    async function hashPassword(password){const hash=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(password));return Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,"0")).join("")}
+    function updateVerification(){const needed=rank.value!=="BVR";verification.classList.toggle("open",needed);if(!needed){form.querySelectorAll('[name="verificationType"]').forEach(i=>i.checked=false);clipArea.classList.remove("open");clipUrl.required=false;clipUrl.value=""}}
+    rank.addEventListener("change",updateVerification);
+    form.querySelectorAll('[name="verificationType"]').forEach(input=>input.addEventListener("change",()=>{const clip=input.checked&&input.value==="clip";clipArea.classList.toggle("open",clip);clipUrl.required=clip}));
+    form.addEventListener("submit",async event=>{event.preventDefault();const data=new FormData(form),username=data.get("username").trim(),requestedRank=data.get("rank"),verificationType=data.get("verificationType");if(requestedRank!=="BVR"&&!verificationType){message.className="error";message.textContent="SELECT PREFERRED TRYOUT OR SEND A CLIP.";return}message.className="";message.textContent="TRANSMITTING APPLICATION...";const {data:existing,error:checkError}=await supabase.from("clan_member_applications").select("id").ilike("username",username).limit(1);if(checkError||existing.length){message.className="error";message.textContent=checkError?`Submission check failed: ${checkError.message}`:"AN APPLICATION FOR THIS USERNAME ALREADY EXISTS.";return}const {error}=await supabase.from("clan_member_applications").insert({username,password_hash:await hashPassword(data.get("password")),discord_tag:data.get("discord").trim(),avatar_url:data.get("avatarUrl").trim()||null,game:data.get("game"),rank:requestedRank,preferred_tryout:verificationType==="tryout",clip_url:verificationType==="clip"?data.get("clipUrl").trim():null,status:"Pending"});if(error){message.className="error";message.textContent=`Submission failed: ${error.message}`;return}form.reset();updateVerification();message.textContent="APPLICATION RECEIVED. STAFF WILL REVIEW IT."});
     updateVerification();
   </script>
 </body>
