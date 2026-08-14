@@ -1,205 +1,625 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Black velvet Staff</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Black Velvet Clan</title>
+
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Orbitron:wght@600;700&display=swap");
+
+    :root {
+      --white: #f5f5f5;
+      --silver: #c9cdd1;
+      --blue: #4aa3ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #010101;
+      color: var(--white);
+      font-family: Arial, sans-serif;
+      perspective: 1600px;
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+      content: "";
+      background:
+        radial-gradient(circle at center, transparent 5%, rgba(0, 0, 0, .35) 55%, #000 120%),
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent 3px,
+          rgba(255, 255, 255, .08) 4px
+        );
+    }
+
+    #velvetRain {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .rain-flower {
+      position: absolute;
+      top: -100px;
+      width: var(--size);
+      height: var(--size);
+      opacity: var(--opacity);
+      transform-style: preserve-3d;
+      animation: fall var(--duration) linear var(--delay) infinite;
+      filter: blur(var(--blur));
+    }
+
+    .petal,
+    .falling-petal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: 0 100%;
+      border-radius: 72% 28% 76% 24%;
+      background:
+        radial-gradient(ellipse at 25% 12%, rgba(255,255,255,.34), transparent 10%),
+        radial-gradient(ellipse at 65% 78%, #000 0%, transparent 48%),
+        linear-gradient(125deg, #666 0%, #292929 15%, #080808 52%, #000 90%);
+      box-shadow:
+        inset 6px 5px 14px rgba(255,255,255,.18),
+        inset -12px -16px 24px #000,
+        0 3px 12px rgba(0,0,0,.95);
+    }
+
+    .petal {
+      width: 42%;
+      height: 68%;
+    }
+
+    .petal:nth-child(1) { transform: translate(-50%,-100%) rotate(0deg); }
+    .petal:nth-child(2) { transform: translate(-50%,-100%) rotate(60deg) scale(.88); }
+    .petal:nth-child(3) { transform: translate(-50%,-100%) rotate(120deg); }
+    .petal:nth-child(4) { transform: translate(-50%,-100%) rotate(180deg) scale(.9); }
+    .petal:nth-child(5) { transform: translate(-50%,-100%) rotate(240deg); }
+    .petal:nth-child(6) { transform: translate(-50%,-100%) rotate(300deg) scale(.88); }
+
+    @keyframes fall {
+      0% {
+        transform: translate3d(0, -120px, 0) rotate(0deg) rotateX(15deg);
+      }
+
+      25% {
+        transform: translate3d(var(--sway), 25vh, 40px) rotate(95deg) rotateX(-15deg);
+      }
+
+      50% {
+        transform: translate3d(calc(var(--sway) * -1), 52vh, -30px) rotate(185deg) rotateY(20deg);
+      }
+
+      75% {
+        transform: translate3d(var(--sway), 78vh, 20px) rotate(275deg) rotateX(15deg);
+      }
+
+      100% {
+        transform: translate3d(calc(var(--sway) * -1), 115vh, -20px) rotate(360deg);
+      }
+    }
+
+    #fallingFlower {
+      position: fixed;
+      top: -30vh;
+      left: 76%;
+      z-index: 3;
+      width: clamp(140px, 19vw, 275px);
+      height: clamp(140px, 19vw, 275px);
+      opacity: 0;
+      visibility: hidden;
+      transform-style: preserve-3d;
+      filter: drop-shadow(0 18px 18px #000);
+      pointer-events: none;
+    }
+
+    #fallingFlower.visible {
+      opacity: .25;
+      visibility: visible;
+      animation: largeFlowerFall 18s cubic-bezier(.35,.05,.55,1) forwards;
+    }
+
+    .falling-petal {
+      width: 43%;
+      height: 68%;
+    }
+
+    .falling-petal:nth-child(1) { transform: translate(-50%,-100%) rotate(0deg); }
+    .falling-petal:nth-child(2) { transform: translate(-50%,-100%) rotate(45deg) scale(.94); }
+    .falling-petal:nth-child(3) { transform: translate(-50%,-100%) rotate(90deg); }
+    .falling-petal:nth-child(4) { transform: translate(-50%,-100%) rotate(135deg) scale(.95); }
+    .falling-petal:nth-child(5) { transform: translate(-50%,-100%) rotate(180deg); }
+    .falling-petal:nth-child(6) { transform: translate(-50%,-100%) rotate(225deg) scale(.94); }
+    .falling-petal:nth-child(7) { transform: translate(-50%,-100%) rotate(270deg); }
+    .falling-petal:nth-child(8) { transform: translate(-50%,-100%) rotate(315deg) scale(.95); }
+
+    @keyframes largeFlowerFall {
+      0% {
+        transform: translate3d(-8vw, -12vh, -20px) rotate(-20deg) rotateX(18deg) scale(.65);
+      }
+
+      35% {
+        transform: translate3d(5vw, 24vh, 70px) rotate(75deg) rotateY(25deg) scale(.82);
+      }
+
+      70% {
+        transform: translate3d(-3vw, 58vh, -30px) rotate(190deg) rotateX(16deg) scale(.9);
+      }
+
+      100% {
+        transform: translate3d(6vw, 118vh, 20px) rotate(390deg) rotateY(18deg) scale(.65);
+      }
+    }
+
+    #startScreen {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle, rgba(210,215,220,.12), transparent 35%), #010101;
+      transition: opacity 1s ease, visibility 1s ease;
+    }
+
+    #startScreen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    #startBtn,
+    #skipBtn {
+      font-family: Orbitron, sans-serif;
+      cursor: pointer;
+    }
+
+    #startBtn {
+      min-width: 220px;
+      padding: 19px 42px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      background: linear-gradient(135deg, #4b4e52, #0a0a0b);
+      color: white;
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: 6px;
+      box-shadow: 0 0 18px rgba(220,225,230,.5);
+    }
+
+    #skipBtn {
+      position: fixed;
+      top: 24px;
+      right: 28px;
+      z-index: 1100;
+      display: none;
+      padding: 9px 15px;
+      border: 1px solid rgba(220,225,230,.4);
+      background: rgba(0,0,0,.5);
+      color: #ddd;
+      letter-spacing: 2px;
+    }
+
+    .label,
+    #mainTitle {
+      position: fixed;
+      left: 50%;
+      pointer-events: none;
+      text-align: center;
+      opacity: 0;
+    }
+
+    .label {
+      top: 45%;
+      z-index: 100;
+      width: min(90%, 1100px);
+      transform: translate(-50%, -50%);
+      font-family: Cinzel, Georgia, serif;
+      font-size: clamp(21px, 3.5vw, 54px);
+      font-weight: 700;
+      line-height: 1.3;
+      text-shadow: 0 0 6px white, 0 0 18px var(--silver);
+    }
+
+    .label::after {
+      position: absolute;
+      left: 50%;
+      bottom: -18px;
+      width: min(70%, 560px);
+      height: 2px;
+      content: "";
+      transform: translateX(-50%) scaleX(0);
+      transform-origin: center;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        #fff,
+        var(--blue),
+        #fff,
+        transparent
+      );
+      box-shadow:
+        0 0 5px #fff,
+        0 0 14px var(--blue),
+        0 0 28px var(--blue);
+    }
+
+    .label.playing::after {
+      animation: lineReveal 5s ease forwards;
+    }
+
+    @keyframes lineReveal {
+      0%, 15% {
+        opacity: 0;
+        transform: translateX(-50%) scaleX(0);
+      }
+
+      28%, 75% {
+        opacity: 1;
+        transform: translateX(-50%) scaleX(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateX(-50%) scaleX(.35);
+      }
+    }
+
+    .accent {
+      color: #a9d7ff;
+    }
+
+    #mainTitle {
+      top: 45%;
+      z-index: 120;
+      width: 96%;
+      transform: translate(-50%, -50%);
+      font-family: Cinzel, Georgia, serif;
+      font-size: clamp(32px, 8vw, 112px);
+      font-weight: 900;
+      letter-spacing: clamp(3px, 1vw, 15px);
+      text-shadow: 0 0 5px white, 0 0 35px var(--silver);
+    }
+
+    .title-reveal {
+      animation: titleReveal 4.5s ease forwards;
+    }
+
+    @keyframes titleReveal {
+      0% {
+        opacity: 0;
+        transform: translate(-50%,-50%) scale(.55);
+        filter: blur(18px);
+      }
+
+      45% {
+        opacity: 1;
+        transform: translate(-50%,-50%) scale(1.05);
+        filter: blur(2px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translate(-50%,-50%) scale(1.25);
+        filter: blur(0);
+      }
+    }
+
+    @keyframes sentenceInOut {
+      0%, 10% {
+        opacity: 0;
+        transform: translate(-50%,-50%) scale(.9);
+        filter: blur(10px);
+      }
+
+      25%, 70% {
+        opacity: 1;
+        transform: translate(-50%,-50%) scale(1);
+        filter: blur(0);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(-50%,-50%) scale(1.08);
+        filter: blur(12px);
+      }
+    }
+
+    .label.playing {
+      animation: sentenceInOut 5s ease forwards;
+    }
+
+    .splash {
+      position: fixed;
+      z-index: 10;
+      width: 18px;
+      height: 18px;
+      pointer-events: none;
+      border: 2px solid rgba(150, 215, 255, .9);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: splashRing 900ms ease-out forwards;
+      box-shadow: 0 0 10px #73cfff, inset 0 0 8px #73cfff;
+    }
+
+    .splash::before,
+    .splash::after {
+      position: absolute;
+      inset: -5px;
+      content: "";
+      border: 1px solid rgba(220, 245, 255, .7);
+      border-radius: 50%;
+      animation: splashRing 900ms ease-out 80ms forwards;
+    }
+
+    .splash::after {
+      inset: -9px;
+      animation-delay: 170ms;
+    }
+
+    .drop {
+      position: absolute;
+      width: 4px;
+      height: 13px;
+      border-radius: 50%;
+      background: #a8e4ff;
+      box-shadow: 0 0 8px #54caff;
+      animation: dropAway 700ms ease-out forwards;
+    }
+
+    @keyframes splashRing {
+      from {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(.3);
+      }
+
+      to {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(7);
+      }
+    }
+
+    @keyframes dropAway {
+      from {
+        opacity: 1;
+        transform: rotate(var(--angle)) translateY(0) scale(1);
+      }
+
+      to {
+        opacity: 0;
+        transform: rotate(var(--angle)) translateY(var(--distance)) scale(.2);
+      }
+    }
+
+    @media (max-width: 600px) {
+      #fallingFlower {
+        left: 62%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rain-flower,
+      #fallingFlower {
+        animation: none;
+      }
+
+      .label,
+      #mainTitle {
+        animation: none !important;
+        filter: none !important;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <main class="app-shell">
-    <section id="homeView" class="home-card">
-      <div class="flower-mark" aria-hidden="true">✽</div>
-      <p class="eyebrow">BLACK VELVET CLAN</p>
-      <h1>Black velvet Staff</h1>
-      <p class="muted">A private space for staff access and signups.</p>
-      <div class="home-actions">
-        <button id="staffLoginButton" class="primary-button">Staff Login</button>
-        <button id="applicationButton" class="secondary-button">Sign up</button>
-      </div>
-    </section>
+  <div id="velvetRain"></div>
 
-    <section id="loginView" class="login-card hidden">
-      <button class="back-button" data-home>← Back to Home</button>
-      <div class="flower-mark small" aria-hidden="true">✽</div>
-      <p class="eyebrow">BLACK VELVET CLAN</p>
-      <h1>Staff Login</h1>
-      <p class="muted">Authorized staff access only.</p>
+  <div id="fallingFlower" aria-hidden="true">
+    <span class="falling-petal"></span>
+    <span class="falling-petal"></span>
+    <span class="falling-petal"></span>
+    <span class="falling-petal"></span>
+    <span class="falling-petal"></span>
+    <span class="falling-petal"></span>
+    <span class="falling-petal"></span>
+    <span class="falling-petal"></span>
+  </div>
 
-      <form id="loginForm">
-        <label for="username">Username</label>
-        <input id="username" type="text" autocomplete="username" required />
-        <label for="password">Password</label>
-        <input id="password" type="password" autocomplete="current-password" required />
-        <button class="primary-button" type="submit">Sign in</button>
-        <p id="loginMessage" class="login-message" role="alert"></p>
-      </form>
-      <p class="security-note">Access attempts are audited without recording passwords.</p>
-    </section>
+  <div id="startScreen">
+    <button id="startBtn" type="button">START</button>
+  </div>
 
-    <section id="applicationView" class="application-card hidden">
-      <button class="back-button" data-home>← Back to Home</button>
-      <p class="eyebrow">BLACK VELVET CLAN</p>
-      <h1>Staff Signup</h1>
-      <p class="muted">Complete the form below. Each section has a quick checkmark for clarity — fill everything honestly.</p>
+  <button id="skipBtn" type="button">SKIP INTRO</button>
 
-      <form id="applicationForm" class="application-form">
-        <label>✓ Discord Tag
-          <input name="discordTag" placeholder="Username#1234" required />
-          <small>Provide the exact tag so we can verify your account.</small>
-        </label>
-        <label>✓ Desired Staff Username
-          <input name="staffUsername" placeholder="Choose a username" required />
-        </label>
-        <label>✓ Account Password
-          <input name="staffPassword" type="password" minlength="6" required />
-        </label>
-        <label>✓ Age
-          <input name="age" type="number" min="13" required />
-        </label>
-        <label>✓ Timezone
-          <input name="timezone" required />
-        </label>
-        <label>✓ Moderation / Staff Experience
-          <textarea name="experience" rows="4" required></textarea>
-        </label>
-        <label>✓ Role applying for
-          <select name="role" required>
-            <option value="">Select a role</option>
-            <option>Owner</option>
-            <option>Admin</option>
-            <option>Manager</option>
-            <option>President</option>
-            <option>Mod</option>
-            <option>Helper</option>
-          </select>
-        </label>
-        <label>✓ Availability
-          <textarea name="availability" rows="3" required></textarea>
-        </label>
-        <label>✓ Why do you want to join staff?
-          <textarea name="motivation" rows="4" required></textarea>
-        </label>
-        <label>✓ References <span class="optional">(optional)</span>
-          <textarea name="references" rows="3"></textarea>
-        </label>
-        <label class="checkbox-row">
-          <input name="rulesAccepted" type="checkbox" required />
-          <span>I have read and agree to follow the community and staff rules.</span>
-        </label>
+  <audio id="introAudio" src="sounds/intro2.mp3" preload="auto"></audio>
 
-        <div class="form-actions">
-          <button class="primary-button" type="submit">Submit Signup</button>
-          <button id="clearApplicationButton" class="secondary-button" type="button">Clear</button>
-        </div>
-        <p id="applicationMessage" class="login-message" role="alert"></p>
-      </form>
-    </section>
+  <div id="mainTitle">BLACK VELVET CLAN</div>
 
-    <section id="portalView" class="portal hidden">
-      <header class="topbar">
-        <div class="brand">
-          <div class="flower-mark tiny" aria-hidden="true">✽</div>
-          <div>
-            <p class="eyebrow">BLACK VELVET</p>
-            <h2>Staff Portal</h2>
-          </div>
-        </div>
-        <div class="user-area">
-          <span id="signedInAs"></span>
-          <button id="logoutButton" class="ghost-button">Log out</button>
-        </div>
-      </header>
+  <div class="label" id="l1">By the founders of <span class="accent">Azul Clan</span></div>
+  <div class="label" id="l2">Forged stronger in the abyss</div>
+  <div class="label" id="l3">Motivated by memories</div>
+  <div class="label" id="l4">A legacy carved in darkness</div>
+  <div class="label" id="l5">Directed by those who never stopped dreaming</div>
+  <div class="label" id="l6">Managed by Gears</div>
+  <div class="label" id="l7">Back like we never left</div>
+  <div class="label" id="l8">FOUNDED BY LUCKYY AND SUOAZ</div>
 
-      <div class="portal-layout">
-        <aside class="sidebar">
-          <p class="sidebar-label">Navigation</p>
-          <nav id="navigation">
-            <button class="nav-button active" data-panel="staffGuide">Staff Guide</button>
-            <button class="nav-button" data-panel="abuseGuide">Abuse Guide</button>
-            <button class="nav-button" data-panel="tryoutGuide">Tryout Guide</button>
-            <button class="nav-button" data-panel="ticketGuide">Ticket Guide</button>
-            <button class="nav-button leadership-only" data-panel="loginLogs">
-              Logs <span id="logCount" class="count">0</span>
-            </button>
-            <button class="nav-button leadership-only" data-panel="applications">
-              Staff Applications <span id="applicationCount" class="count">0</span>
-            </button>
-            <button class="nav-button leadership-only" data-panel="clanApplications">
-              Clan Member Applications <span id="clanApplicationCount" class="count">0</span>
-            </button>
-            <button class="nav-button leadership-only" data-panel="clanMembers">Clan Members</button>
-            <button class="nav-button leadership-only" data-panel="staffAccounts">Staff Accounts</button>
-          </nav>
-        </aside>
+  <script>
+    (() => {
+      const startBtn = document.getElementById("startBtn");
+      const startScreen = document.getElementById("startScreen");
+      const skipBtn = document.getElementById("skipBtn");
+      const audio = document.getElementById("introAudio");
+      const mainTitle = document.getElementById("mainTitle");
+      const rain = document.getElementById("velvetRain");
+      const fallingFlower = document.getElementById("fallingFlower");
 
-        <section class="content">
-          <article id="staffGuide" class="panel active-panel">
-            <p class="eyebrow">STAFF RESOURCES</p>
-            <h1>Staff Guide</h1>
-            <div class="placeholder">To be continued</div>
-          </article>
+      const reducedMotion =
+        window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
-          <article id="abuseGuide" class="panel">
-            <p class="eyebrow">STAFF RESOURCES</p>
-            <h1>Abuse Guide</h1>
-            <div class="placeholder">To be continued</div>
-          </article>
+      const labels = ["l1", "l2", "l3", "l4", "l5", "l6", "l7", "l8"];
+      let timers = [];
+      let introStarted = false;
 
-          <article id="tryoutGuide" class="panel">
-            <p class="eyebrow">STAFF RESOURCES</p>
-            <h1>Tryout Guide</h1>
-            <div class="placeholder">To be continued</div>
-          </article>
+      fallingFlower.style.setProperty(
+        "--flower-left",
+        `${58 + Math.random() * 25}%`
+      );
 
-          <article id="ticketGuide" class="panel">
-            <p class="eyebrow">STAFF RESOURCES</p>
-            <h1>Ticket Guide</h1>
-            <div class="placeholder">To be continued</div>
-          </article>
+      for (let i = 0; i < (innerWidth < 600 ? 22 : 42); i++) {
+        const item = document.createElement("div");
 
-          <article id="loginLogs" class="panel leadership-only">
-            <p class="eyebrow">PANEL 5 · SECURITY AUDIT</p>
-            <h1>Logs</h1>
-            <p class="muted">Unread login events appear in the counter until this panel is opened.</p>
-            <p id="logsMessage" class="action-message" role="status"></p>
-            <div id="logList" class="log-list"></div>
-          </article>
+        item.className = "rain-flower";
+        item.style.left = `${Math.random() * 100}%`;
+        item.style.setProperty("--size", `${8 + Math.random() * 52}px`);
+        item.style.setProperty("--opacity", `${.12 + Math.random() * .42}`);
+        item.style.setProperty("--duration", `${16 + Math.random() * 30}s`);
+        item.style.setProperty("--delay", `${Math.random() * -40}s`);
+        item.style.setProperty("--sway", `${-100 + Math.random() * 200}px`);
+        item.style.setProperty(
+          "--blur",
+          `${Math.random() < .2 ? 1.2 : Math.random() * .45}px`
+        );
 
-          <article id="applications" class="panel leadership-only">
-            <p class="eyebrow">PANEL 6 · LEADERSHIP</p>
-            <h1>Staff Applications</h1>
-            <p id="applicationsMessage" class="action-message" role="status"></p>
-            <div id="applicationList" class="log-list"></div>
-          </article>
+        for (let j = 0; j < 6; j++) {
+          const petal = document.createElement("span");
+          petal.className = "petal";
+          item.appendChild(petal);
+        }
 
-          <article id="clanApplications" class="panel leadership-only">
-            <p class="eyebrow">PANEL 7 · CLAN MANAGEMENT</p>
-            <h1>Clan Member Applications</h1>
-            <p class="muted">Clan members apply from the external signup site.</p>
-            <p id="clanApplicationsMessage" class="action-message" role="status"></p>
-            <div id="clanApplicationList" class="log-list"></div>
-          </article>
+        rain.appendChild(item);
+      }
 
-          <article id="clanMembers" class="panel leadership-only">
-            <p class="eyebrow">PANEL 8 · CLAN MANAGEMENT</p>
-            <h1>Clan Members</h1>
-            <p id="clanMembersMessage" class="action-message" role="status"></p>
-            <div id="clanMemberList" class="log-list"></div>
-          </article>
+      function schedule(callback, delay) {
+        timers.push(setTimeout(callback, delay));
+      }
 
-          <article id="staffAccounts" class="panel leadership-only">
-            <p class="eyebrow">PANEL 9 · LEADERSHIP</p>
-            <h1>Staff Accounts</h1>
-            <p class="muted">Leadership can change staff ranks or remove staff accounts.</p>
-            <p id="accountsMessage" class="action-message" role="status"></p>
-            <div id="staffAccountList" class="log-list"></div>
-          </article>
-        </section>
-      </div>
-    </section>
-  </main>
+      function clearTimers() {
+        timers.forEach(clearTimeout);
+        timers = [];
+      }
 
-  <script type="module" src="script.js"></script>
+      function startAudio() {
+        audio.currentTime = 0;
+        audio.volume = 1;
+        audio.muted = false;
+
+        audio.play().catch(error => {
+          console.error("Audio could not play:", error);
+          alert("Audio could not load. Check that sounds/intro2.mp3 exists in GitHub Pages.");
+        });
+      }
+
+      function showLabel(id) {
+        const label = document.getElementById(id);
+        label.className = "label";
+
+        if (reducedMotion) {
+          label.style.opacity = "1";
+          return;
+        }
+
+        void label.offsetWidth;
+        label.classList.add("playing");
+      }
+
+      function createSplash(x, y) {
+        const splash = document.createElement("div");
+        splash.className = "splash";
+        splash.style.left = `${x}px`;
+        splash.style.top = `${y}px`;
+
+        for (let i = 0; i < 8; i++) {
+          const drop = document.createElement("span");
+          drop.className = "drop";
+          drop.style.left = "5px";
+          drop.style.top = "2px";
+          drop.style.setProperty("--angle", `${i * 45}deg`);
+          drop.style.setProperty("--distance", `${28 + Math.random() * 24}px`);
+          splash.appendChild(drop);
+        }
+
+        document.body.appendChild(splash);
+        splash.addEventListener("animationend", () => splash.remove(), { once: true });
+      }
+
+      function startIntro() {
+        if (introStarted) return;
+
+        introStarted = true;
+        startScreen.classList.add("hidden");
+        skipBtn.style.display = "block";
+        startAudio();
+
+        labels.forEach((id, index) => {
+          schedule(() => showLabel(id), 2000 + index * 5000);
+        });
+
+        schedule(() => {
+          if (reducedMotion) {
+            mainTitle.style.opacity = "1";
+          } else {
+            mainTitle.classList.add("title-reveal");
+          }
+        }, 42200);
+
+        // The flower starts moving only after the title animation is complete.
+        schedule(() => {
+          fallingFlower.classList.add("visible");
+        }, 47000);
+
+        schedule(() => {
+          window.location.href = "home.html";
+        }, 56000);
+      }
+
+      function skipIntro() {
+        clearTimers();
+        audio.pause();
+        audio.currentTime = 0;
+        fallingFlower.classList.remove("visible");
+        fallingFlower.style.animation = "none";
+        startScreen.classList.remove("hidden");
+        skipBtn.style.display = "none";
+        introStarted = false;
+      }
+
+      document.addEventListener("click", event => {
+        if (
+          event.target.closest("button") ||
+          event.target.closest("audio") ||
+          reducedMotion
+        ) {
+          return;
+        }
+
+        createSplash(event.clientX, event.clientY);
+      });
+
+      audio.addEventListener("error", () => {
+        console.error("Audio 404 or loading error:", audio.currentSrc);
+      });
+
+      startBtn.addEventListener("click", startIntro);
+      skipBtn.addEventListener("click", skipIntro);
+    })();
+  </script>
 </body>
 </html>
