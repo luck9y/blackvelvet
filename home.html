@@ -434,19 +434,26 @@
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
     const profile = JSON.parse(localStorage.getItem("blackVelvetProfile") || "null");
-    let userId = localStorage.getItem("blackVelvetUserId");
 
-    if (!userId) {
-      const bytes = new Uint8Array(4);
+    function createDeviceHex() {
+      const bytes = new Uint8Array(2);
       crypto.getRandomValues(bytes);
-      userId = `BV-${Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join("").toUpperCase()}`;
-      localStorage.setItem("blackVelvetUserId", userId);
+      return `D${Array.from(bytes, (value) =>
+        value.toString(16).padStart(2, "0")).join("").toUpperCase()}`;
     }
 
-    document.getElementById("profileUserId").textContent = userId;
+    let deviceHex = localStorage.getItem("blackVelvetDeviceHex");
+
+    if (!deviceHex) {
+      deviceHex = createDeviceHex();
+      localStorage.setItem("blackVelvetDeviceHex", deviceHex);
+    }
+
+    document.getElementById("profileUserId").textContent = deviceHex;
 
     if (profile?.username) {
-      document.getElementById("profileMessage").textContent = `WELCOME, ${profile.username.toUpperCase()}`;
+      document.getElementById("profileMessage").textContent =
+        `WELCOME, ${profile.username.toUpperCase()}`;
 
       const supabase = createClient(
         "https://ptgzhljvzyceawwohmym.supabase.co",
@@ -459,7 +466,8 @@
         .ilike("username", profile.username)
         .maybeSingle();
 
-      document.getElementById("profileClanRank").textContent = member?.rank || profile.role || "N/A";
+      document.getElementById("profileClanRank").textContent =
+        member?.rank || profile.role || "N/A";
       document.getElementById("profileRanking").textContent =
         member?.ranking_number ? `#${member.ranking_number}` : "N/A";
     }
