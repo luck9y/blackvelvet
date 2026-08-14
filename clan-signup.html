@@ -26,8 +26,7 @@
     .verification {
       display: none; overflow: hidden; margin-top: 24px; padding: 20px;
       border: 1px solid rgba(220, 230, 236, .3); border-radius: 10px;
-      background: rgba(220, 230, 236, .04);
-      animation: reveal .35s ease;
+      background: rgba(220, 230, 236, .04); animation: reveal .35s ease;
     }
     .verification.open { display: block; }
     .verification h2 { margin: 0 0 8px; color: var(--silver); font: 700 14px Orbitron, sans-serif; letter-spacing: 1.5px; }
@@ -55,7 +54,7 @@
   <main>
     <header class="top">
       <a href="home.html">← BLACK VELVET HOME</a>
-      <a href="staff.html">STAFF SITE</a>
+      <a href="member-login.html">MEMBER LOGIN</a>
     </header>
 
     <p class="eyebrow">BLACK VELVET // MEMBER APPLICATION</p>
@@ -65,6 +64,10 @@
     <form id="signupForm">
       <label for="username">USERNAME
         <input id="username" name="username" maxlength="40" required>
+      </label>
+
+      <label for="password">PASSWORD
+        <input id="password" name="password" type="password" minlength="6" autocomplete="new-password" required>
       </label>
 
       <label for="discord">DISCORD USER
@@ -123,6 +126,12 @@
     const clipArea = document.getElementById("clipArea");
     const clipUrl = document.getElementById("clipUrl");
     const message = document.getElementById("message");
+
+    async function hashPassword(password) {
+      const bytes = new TextEncoder().encode(password);
+      const hash = await crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(hash), (byte) => byte.toString(16).padStart(2, "0")).join("");
+    }
 
     function updateVerification() {
       const needsVerification = rank.value !== "BVR";
@@ -190,6 +199,7 @@
 
       const { error } = await supabase.from("clan_member_applications").insert({
         username,
+        password_hash: await hashPassword(data.get("password")),
         discord_tag: data.get("discord").trim(),
         rank: requestedRank,
         preferred_tryout: verificationType === "tryout",
