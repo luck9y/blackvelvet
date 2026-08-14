@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#010204">
+  <title>Black Velvet | Clan Sign Up</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Orbitron, Arial, sans-serif;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      width: min(680px, 90%);
+      margin: auto;
+      padding: 45px 0 75px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    a {
+      color: var(--silver);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-decoration: none;
+    }
+
+    .eyebrow {
+      margin: 58px 0 15px;
+      color: var(--silver);
+      font-size: 11px;
+      letter-spacing: 3px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Cinzel, Georgia, serif;
+      font-size: clamp(42px, 8vw, 75px);
+      letter-spacing: 4px;
+    }
+
+    .intro {
+      color: #aab5bc;
+      font: 16px/1.8 Arial, sans-serif;
+    }
+
+    form {
+      margin-top: 28px;
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(7, 11, 15, .88);
+    }
+
+    label {
+      display: block;
+      margin: 18px 0 8px;
+      color: var(--silver);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    input, select {
+      width: 100%;
+      margin-top: 8px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      outline: none;
+      color: var(--text);
+      background: #080c10;
+      font: 14px Arial, sans-serif;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--silver);
+      box-shadow: 0 0 0 3px rgba(220, 230, 236, .12);
+    }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      color: #06080a;
+      background: var(--silver);
+      font: 700 12px Orbitron, sans-serif;
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+
+    button:hover { box-shadow: 0 0 24px rgba(220, 230, 236, .4); }
+
+    #message {
+      min-height: 22px;
+      margin: 16px 0 0;
+      color: var(--silver);
+      font: 13px Arial, sans-serif;
+      text-align: center;
+    }
+
+    #message.error { color: #e7a4a4; }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="top">
+      <a href="home.html">← BLACK VELVET HOME</a>
+      <a href="staff.html">STAFF SITE</a>
+    </header>
+
+    <p class="eyebrow">BLACK VELVET // MEMBER APPLICATION</p>
+    <h1>SIGN UP</h1>
+    <p class="intro">Submit your application to join Black Velvet. Staff will review it through the secure clan management panel.</p>
+
+    <form id="signupForm">
+      <label for="username">USERNAME
+        <input id="username" name="username" maxlength="40" required>
+      </label>
+
+      <label for="discord">DISCORD TAG
+        <input id="discord" name="discord" maxlength="80" placeholder="username or username#0000" required>
+      </label>
+
+      <label for="rank">CURRENT / REQUESTED RANK
+        <select id="rank" name="rank" required>
+          <option value="BVR">BVR</option>
+          <option value="Rookie">Rookie</option>
+          <option value="Decent">Decent</option>
+          <option value="Legend">Legend</option>
+          <option value="Elite">Elite</option>
+          <option value="Goat">Goat</option>
+        </select>
+      </label>
+
+      <button type="submit">SUBMIT APPLICATION</button>
+      <p id="message" role="alert"></p>
+    </form>
+  </main>
+
+  <script src="theme.js"></script>
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabase = createClient(
+      "https://ptgzhljvzyceawwohmym.supabase.co",
+      "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk"
+    );
+
+    const form = document.getElementById("signupForm");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const data = new FormData(form);
+      const username = data.get("username").trim();
+
+      message.className = "";
+      message.textContent = "TRANSMITTING APPLICATION...";
+
+      const { data: existing, error: checkError } = await supabase
+        .from("clan_member_applications")
+        .select("id")
+        .ilike("username", username)
+        .limit(1);
+
+      if (checkError) {
+        message.className = "error";
+        message.textContent = `Unable to check application: ${checkError.message}`;
+        return;
+      }
+
+      if (existing.length) {
+        message.className = "error";
+        message.textContent = "An application for this username already exists.";
+        return;
+      }
+
+      const { error } = await supabase.from("clan_member_applications").insert({
+        username,
+        discord_tag: data.get("discord").trim(),
+        rank: data.get("rank"),
+        status: "Pending"
+      });
+
+      if (error) {
+        message.className = "error";
+        message.textContent = `Submission failed: ${error.message}`;
+        return;
+      }
+
+      form.reset();
+      message.textContent = "APPLICATION RECEIVED. STAFF WILL REVIEW IT.";
+    });
+  </script>
+</body>
+</html>
