@@ -25,8 +25,67 @@
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
     const supabase=createClient("https://ptgzhljvzyceawwohmym.supabase.co","sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk");
     const form=document.getElementById("loginForm"),message=document.getElementById("message");
-    async function hashPassword(password){const hash=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(password));return Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,"0")).join("")}
-    form.addEventListener("submit",async event=>{event.preventDefault();const username=document.getElementById("username").value.trim(),password=document.getElementById("password").value;message.className="";message.textContent="VERIFYING ACCESS...";const {data:application,error}=await supabase.from("clan_member_applications").select("username,password_hash").ilike("username",username).eq("status","Approved").maybeSingle();if(error||!application||application.password_hash!==await hashPassword(password)){message.className="error";message.textContent="INVALID MEMBER USERNAME OR PASSWORD.";return}const {data:member}=await supabase.from("clan_members").select("username,rank,game,avatar_url,ranking_number").ilike("username",application.username).maybeSingle();if(!member){message.className="error";message.textContent="MEMBER PROFILE IS NOT READY. CONTACT STAFF.";return}await supabase.from("clan_members").update({last_seen:new Date().toISOString()}).eq("username",member.username);localStorage.setItem("blackVelvetProfile",JSON.stringify({username:member.username,role:member.rank,game:member.game,avatarUrl:member.avatar_url||"",rankingNumber:member.ranking_number}));window.location.href="home.html"});
+
+    async function hashPassword(password){
+      const hash=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(password));
+      return Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,"0")).join("");
+    }
+
+    function deviceInfo(){
+      let hex=localStorage.getItem("blackVelvetDeviceHex");
+      if(!hex){
+        const bytes=new Uint8Array(2);crypto.getRandomValues(bytes);
+        hex=`D${Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("").toUpperCase()}`;
+        localStorage.setItem("blackVelvetDeviceHex",hex);
+      }
+      return {device_hex:hex,device:/Mobi|Android/i.test(navigator.userAgent)?"Mobile device":"Desktop device",browser:navigator.userAgent,language:navigator.language||"Unknown",platform:navigator.platform||"Unknown",resolution:`${screen.width}x${screen.height}`};
+    }
+
+    async function log(username,success,reason){
+      await supabase.from("member_access_logs").insert({username,success,reason,...deviceInfo()});
+    }
+
+    form.addEventListener("submit",async event=>{
+      event.preventDefault();
+      const username=document.getElementById("username").value.trim(),password=document.getElementById("password").value;
+      message.className="";message.textContent="VERIFYING ACCESS...";
+
+      const {data:application,error}=await supabase.from("clan_member_applications").select("*").ilike("username",username).eq("status","Approved").maybeSingle();
+      const valid=!error&&application&&application.password_hash===await hashPassword(password);
+
+      if(!valid){
+        await log(username||"Blank username",false,"Invalid member username or password");
+        message.className="error";message.textContent="INVALID MEMBER USERNAME OR PASSWORD.";
+        return;
+      }
+
+      let {data:member,error:memberError}=await supabase.from("clan_members").select("*").ilike("username",application.username).maybeSingle();
+      if(memberError){
+        message.className="error";message.textContent=`MEMBER PROFILE ERROR: ${memberError.message}`;
+        return;
+      }
+
+      if(!member){
+        const {data:created,error:createError}=await supabase.from("clan_members").insert({
+          username:application.username,discord_tag:application.discord_tag,avatar_url:application.avatar_url||null,
+          game:application.game||"Minecraft Java",rank:application.rank||"BVR",last_seen:new Date().toISOString()
+        }).select().single();
+        if(createError){
+          message.className="error";message.textContent=`PROFILE SETUP FAILED: ${createError.message}`;
+          return;
+        }
+        member=created;
+      }else{
+        await supabase.from("clan_members").update({last_seen:new Date().toISOString()}).eq("id",member.id);
+      }
+
+      await log(member.username,true,"Approved member login");
+      localStorage.setItem("blackVelvetProfile",JSON.stringify({
+        username:member.username,role:member.rank,game:member.game,
+        avatarUrl:member.avatar_url||"",rankingNumber:member.ranking_number
+      }));
+      window.location.href="home.html";
+    });
   </script>
 </body>
 </html>
