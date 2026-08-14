@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050204">
+  <title>Black Velvet Clan | Home</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    :root {
+      --velvet-black: #050304;
+      --velvet-dark: #0d070b;
+      --velvet-panel: rgba(25, 10, 18, .72);
+      --velvet-red: #9e2947;
+      --velvet-light: #e8cbd3;
+      --velvet-muted: #ad929b;
+    }
+
+    .home-page {
+      overflow: auto;
+      min-height: 100vh;
+      color: var(--velvet-light);
+      background:
+        radial-gradient(ellipse at 50% 15%, rgba(115, 20, 48, .2), transparent 38%),
+        radial-gradient(ellipse at 0% 65%, rgba(83, 17, 42, .16), transparent 34%),
+        linear-gradient(135deg, #10070c 0%, var(--velvet-black) 48%, #020102 100%);
+    }
+
+    .home-page::after {
+      opacity: .35;
+      background:
+        linear-gradient(115deg, transparent 20%, rgba(159, 42, 76, .12), transparent 45%),
+        linear-gradient(295deg, transparent 25%, rgba(255, 190, 210, .035), transparent 48%);
+    }
+
+    .home-shell {
+      position: relative;
+      z-index: 5;
+      width: min(1120px, 90%);
+      min-height: 100vh;
+      margin: auto;
+      padding: 34px 0 90px;
+    }
+
+    .home-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 22px;
+      border-bottom: 1px solid rgba(205, 133, 153, .24);
+    }
+
+    .brand {
+      color: #f1dce2;
+      font: 700 16px Orbitron, sans-serif;
+      letter-spacing: 4px;
+      text-shadow: 0 0 15px rgba(176, 48, 82, .6);
+    }
+
+    .nav-mark {
+      color: var(--velvet-red);
+      font-size: 24px;
+      text-shadow: 0 0 18px var(--velvet-red);
+    }
+
+    .hero {
+      max-width: 850px;
+      padding: 24vh 0 17vh;
+    }
+
+    .eyebrow {
+      color: #c45c78;
+      font: 600 12px Orbitron, sans-serif;
+      letter-spacing: 5px;
+      text-shadow: 0 0 14px rgba(174, 38, 76, .55);
+    }
+
+    .hero h1 {
+      margin: 20px 0 24px;
+      color: #f3e4e8;
+      font: 900 clamp(45px, 9vw, 105px)/.95 Cinzel, Georgia, serif;
+      letter-spacing: 5px;
+      text-shadow:
+        0 0 5px #fff,
+        0 0 24px rgba(205, 132, 153, .4),
+        0 0 55px rgba(111, 20, 52, .55);
+    }
+
+    .hero h1 span {
+      color: #bd526f;
+    }
+
+    .hero p {
+      max-width: 580px;
+      margin: 0;
+      color: var(--velvet-muted);
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    .home-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .home-card {
+      position: relative;
+      min-height: 170px;
+      padding: 30px;
+      overflow: hidden;
+      border: 1px solid rgba(193, 103, 128, .28);
+      background:
+        linear-gradient(145deg, rgba(63, 19, 35, .5), rgba(8, 3, 6, .88)),
+        repeating-linear-gradient(
+          110deg,
+          rgba(255, 255, 255, .025) 0,
+          rgba(255, 255, 255, .025) 2px,
+          transparent 2px,
+          transparent 9px
+        );
+      box-shadow:
+        0 14px 35px rgba(0, 0, 0, .35),
+        inset 0 0 28px rgba(121, 27, 59, .12);
+      transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+    }
+
+    .home-card::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 52px;
+      height: 2px;
+      content: "";
+      background: var(--velvet-red);
+      box-shadow: 0 0 14px var(--velvet-red);
+    }
+
+    .home-card:hover {
+      border-color: rgba(211, 111, 139, .62);
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, .5),
+        0 0 25px rgba(128, 24, 57, .2);
+      transform: translateY(-5px);
+    }
+
+    .home-card h2 {
+      margin: 0 0 14px;
+      color: #ead4da;
+      font: 700 19px Cinzel, Georgia, serif;
+      letter-spacing: 1px;
+    }
+
+    .home-card p {
+      margin: 0;
+      color: #a99099;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 700px) {
+      .home-shell {
+        width: min(92%, 560px);
+      }
+
+      .hero {
+        padding-top: 18vh;
+        padding-bottom: 14vh;
+      }
+
+      .hero h1 {
+        letter-spacing: 2px;
+      }
+
+      .home-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .home-card {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body class="home-page">
+  <div class="home-shell">
+    <nav class="home-nav">
+      <div class="brand">BVC / 001</div>
+      <div class="nav-mark">✦</div>
+    </nav>
+
+    <main>
+      <section class="hero">
+        <div class="eyebrow">BLACK VELVET CLAN</div>
+        <h1>BACK LIKE<br><span>WE NEVER LEFT.</span></h1>
+        <p>
+          Forged in darkness. Driven by memory. Black Velvet Clan is a legacy
+          built by dreamers who kept moving when the world went quiet.
+        </p>
+      </section>
+
+      <section class="home-grid" aria-label="About Black Velvet Clan">
+        <article class="home-card">
+          <h2>The Legacy</h2>
+          <p>A story carved in darkness and carried forward by every member.</p>
+        </article>
+
+        <article class="home-card">
+          <h2>The Founders</h2>
+          <p>Founded by Luckyy and Suoaz, with the spirit of Azul Clan alive within.</p>
+        </article>
+
+        <article class="home-card">
+          <h2>The Future</h2>
+          <p>Stronger, sharper, and ready to create the next chapter.</p>
+        </article>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
