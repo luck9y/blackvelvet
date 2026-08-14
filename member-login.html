@@ -7,103 +7,26 @@
   <title>Black Velvet | Member Login</title>
   <link rel="stylesheet" href="theme.css">
   <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: Orbitron, Arial, sans-serif; }
-    main { position: relative; z-index: 1; width: min(560px, 90%); margin: auto; padding: 45px 0 75px; }
-    .top { display: flex; justify-content: space-between; gap: 20px; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
-    a { color: var(--silver); font-size: 11px; letter-spacing: 1.5px; text-decoration: none; }
-    .eyebrow { margin: 58px 0 15px; color: var(--silver); font-size: 11px; letter-spacing: 3px; }
-    h1 { margin: 0; font-family: Cinzel, Georgia, serif; font-size: clamp(42px, 8vw, 75px); letter-spacing: 4px; }
-    .intro { color: #aab5bc; font: 16px/1.8 Arial, sans-serif; }
-    form { margin-top: 28px; padding: 28px; border: 1px solid var(--line); border-radius: 14px; background: rgba(7, 11, 15, .88); }
-    label { display: block; margin: 18px 0 8px; color: var(--silver); font-size: 12px; font-weight: 700; letter-spacing: 1px; }
-    input {
-      width: 100%; margin-top: 8px; padding: 13px; border: 1px solid var(--line);
-      border-radius: 7px; outline: none; color: var(--text); background: #080c10;
-      font: 14px Arial, sans-serif;
-    }
-    input:focus { border-color: var(--silver); box-shadow: 0 0 0 3px rgba(220, 230, 236, .12); }
-    button {
-      width: 100%; margin-top: 25px; padding: 14px; border: 1px solid var(--line);
-      border-radius: 7px; color: #06080a; background: var(--silver);
-      font: 700 12px Orbitron, sans-serif; letter-spacing: 2px; cursor: pointer;
-    }
-    button:hover { box-shadow: 0 0 24px rgba(220, 230, 236, .4); }
-    #message { min-height: 22px; margin: 16px 0 0; color: var(--silver); font: 13px Arial, sans-serif; text-align: center; }
-    #message.error { color: #e7a4a4; }
+    *{box-sizing:border-box}body{margin:0;font-family:Orbitron,Arial,sans-serif}main{position:relative;z-index:1;width:min(560px,90%);margin:auto;padding:45px 0 75px}.top{display:flex;justify-content:space-between;gap:20px;padding-bottom:22px;border-bottom:1px solid var(--line)}a{color:var(--silver);font-size:11px;letter-spacing:1.5px;text-decoration:none}.eyebrow{margin:58px 0 15px;color:var(--silver);font-size:11px;letter-spacing:3px}h1{margin:0;font-family:Cinzel,Georgia,serif;font-size:clamp(42px,8vw,75px);letter-spacing:4px}.intro{color:#aab5bc;font:16px/1.8 Arial,sans-serif}form{margin-top:28px;padding:28px;border:1px solid var(--line);border-radius:14px;background:rgba(7,11,15,.88)}label{display:block;margin:18px 0 8px;color:var(--silver);font-size:12px;font-weight:700;letter-spacing:1px}input{width:100%;margin-top:8px;padding:13px;border:1px solid var(--line);border-radius:7px;outline:none;color:var(--text);background:#080c10;font:14px Arial,sans-serif}button{width:100%;margin-top:25px;padding:14px;border:1px solid var(--line);border-radius:7px;color:#06080a;background:var(--silver);font:700 12px Orbitron,sans-serif;letter-spacing:2px;cursor:pointer}#message{min-height:22px;margin:16px 0 0;color:var(--silver);font:13px Arial,sans-serif;text-align:center}#message.error{color:#e7a4a4}
   </style>
 </head>
 <body>
   <main>
-    <header class="top">
-      <a href="home.html">← BLACK VELVET HOME</a>
-      <a href="clan-signup.html">SIGN UP</a>
-    </header>
-
-    <p class="eyebrow">BLACK VELVET // MEMBER ACCESS</p>
-    <h1>LOGIN</h1>
-    <p class="intro">Enter your approved Black Velvet member account.</p>
-
+    <header class="top"><a href="home.html">← BLACK VELVET HOME</a><a href="clan-signup.html">SIGN UP</a></header>
+    <p class="eyebrow">BLACK VELVET // MEMBER ACCESS</p><h1>LOGIN</h1><p class="intro">Enter your approved Black Velvet member account.</p>
     <form id="loginForm">
-      <label for="username">USERNAME
-        <input id="username" maxlength="40" autocomplete="username" required>
-      </label>
-
-      <label for="password">PASSWORD
-        <input id="password" type="password" autocomplete="current-password" required>
-      </label>
-
-      <button type="submit">ENTER NETWORK</button>
-      <p id="message" role="alert"></p>
+      <label>USERNAME<input id="username" maxlength="40" autocomplete="username" required></label>
+      <label>PASSWORD<input id="password" type="password" autocomplete="current-password" required></label>
+      <button type="submit">ENTER NETWORK</button><p id="message" role="alert"></p>
     </form>
   </main>
-
   <script src="theme.js"></script>
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-    const supabase = createClient(
-      "https://ptgzhljvzyceawwohmym.supabase.co",
-      "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk"
-    );
-
-    const form = document.getElementById("loginForm");
-    const message = document.getElementById("message");
-
-    async function hashPassword(password) {
-      const bytes = new TextEncoder().encode(password);
-      const hash = await crypto.subtle.digest("SHA-256", bytes);
-      return Array.from(new Uint8Array(hash), (byte) => byte.toString(16).padStart(2, "0")).join("");
-    }
-
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value;
-      message.className = "";
-      message.textContent = "VERIFYING ACCESS...";
-
-      const { data, error } = await supabase
-        .from("clan_member_applications")
-        .select("username, rank, status, password_hash")
-        .ilike("username", username)
-        .eq("status", "Approved")
-        .maybeSingle();
-
-      if (error || !data || data.password_hash !== await hashPassword(password)) {
-        message.className = "error";
-        message.textContent = "INVALID MEMBER USERNAME OR PASSWORD.";
-        return;
-      }
-
-      localStorage.setItem("blackVelvetProfile", JSON.stringify({
-        username: data.username,
-        role: data.rank
-      }));
-
-      window.location.href = "home.html";
-    });
+    const supabase=createClient("https://ptgzhljvzyceawwohmym.supabase.co","sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk");
+    const form=document.getElementById("loginForm"),message=document.getElementById("message");
+    async function hashPassword(password){const hash=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(password));return Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,"0")).join("")}
+    form.addEventListener("submit",async event=>{event.preventDefault();const username=document.getElementById("username").value.trim(),password=document.getElementById("password").value;message.className="";message.textContent="VERIFYING ACCESS...";const {data:application,error}=await supabase.from("clan_member_applications").select("username,password_hash").ilike("username",username).eq("status","Approved").maybeSingle();if(error||!application||application.password_hash!==await hashPassword(password)){message.className="error";message.textContent="INVALID MEMBER USERNAME OR PASSWORD.";return}const {data:member}=await supabase.from("clan_members").select("username,rank,game,avatar_url,ranking_number").ilike("username",application.username).maybeSingle();if(!member){message.className="error";message.textContent="MEMBER PROFILE IS NOT READY. CONTACT STAFF.";return}await supabase.from("clan_members").update({last_seen:new Date().toISOString()}).eq("username",member.username);localStorage.setItem("blackVelvetProfile",JSON.stringify({username:member.username,role:member.rank,game:member.game,avatarUrl:member.avatar_url||"",rankingNumber:member.ranking_number}));window.location.href="home.html"});
   </script>
 </body>
 </html>
