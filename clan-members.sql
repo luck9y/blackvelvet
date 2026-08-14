@@ -12,8 +12,23 @@ create table if not exists public.clan_members (
   username text not null unique,
   discord_tag text,
   rank text not null default 'BVR',
+  ranking_number integer unique check (ranking_number > 0),
   created_at timestamptz not null default now()
 );
+
+alter table public.clan_members
+add column if not exists ranking_number integer;
+
+alter table public.clan_members
+drop constraint if exists clan_members_ranking_number_check;
+
+alter table public.clan_members
+add constraint clan_members_ranking_number_check
+check (ranking_number is null or ranking_number > 0);
+
+create unique index if not exists clan_members_ranking_number_unique
+on public.clan_members (ranking_number)
+where ranking_number is not null;
 
 alter table public.clan_member_applications enable row level security;
 alter table public.clan_members enable row level security;
