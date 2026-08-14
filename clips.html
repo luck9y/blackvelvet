@@ -5,7 +5,7 @@
   <meta name="theme-color" content="#010204"><title>Black Velvet | Clips</title>
   <link rel="stylesheet" href="theme.css">
   <style>
-    *{box-sizing:border-box}body{margin:0;font-family:Orbitron,Arial,sans-serif}main{position:relative;z-index:1;width:min(850px,90%);margin:auto;padding:45px 0 75px}.top{display:flex;justify-content:space-between;gap:16px;padding-bottom:22px;border-bottom:1px solid var(--line)}a{color:var(--silver);font-size:11px;letter-spacing:1.5px;text-decoration:none}.eyebrow{margin:48px 0 12px;color:var(--silver);font-size:11px;letter-spacing:3px}h1,h2{font-family:Cinzel,Georgia,serif}h1{margin:0;font-size:clamp(42px,8vw,70px);letter-spacing:4px}.intro,.notice{color:#aab5bc;font:15px/1.7 Arial,sans-serif}.card{margin-top:24px;padding:22px;border:1px solid var(--line);border-radius:14px;background:rgba(7,11,15,.9)}input,textarea{width:100%;margin:8px 0 12px;padding:12px;border:1px solid var(--line);border-radius:7px;color:var(--text);background:#080c10;font:14px Arial,sans-serif}.hint{display:block;margin:-4px 0 12px;color:#84929a;font:12px Arial,sans-serif}button{padding:10px 14px;border:1px solid var(--line);border-radius:7px;background:var(--silver);color:#07090b;font:700 10px Orbitron,sans-serif;letter-spacing:1px;cursor:pointer}.clip{margin-top:18px;padding:20px;border:1px solid var(--line);border-radius:12px;background:rgba(7,11,15,.9)}.author{display:flex;align-items:center;gap:11px}.avatar{width:38px;height:38px;border:1px solid var(--line);border-radius:50%;object-fit:cover;background:#111}.meta{color:#87949c;font:11px Arial,sans-serif}.clip-link{display:inline-block;margin:15px 0;color:var(--silver);font:12px Orbitron,sans-serif}.delete{float:right;background:transparent;color:#e6a6a6}.comment{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);color:#c1cbd0;font:13px Arial,sans-serif}.comment-form{display:flex;gap:8px;margin-top:12px}.comment-form input{margin:0}.empty{color:#84919a;font:14px Arial,sans-serif}
+    *{box-sizing:border-box}body{margin:0;font-family:Orbitron,Arial,sans-serif}main{position:relative;z-index:1;width:min(850px,90%);margin:auto;padding:45px 0 75px}.top{display:flex;justify-content:space-between;gap:16px;padding-bottom:22px;border-bottom:1px solid var(--line)}a{color:var(--silver);font-size:11px;letter-spacing:1.5px;text-decoration:none}.eyebrow{margin:48px 0 12px;color:var(--silver);font-size:11px;letter-spacing:3px}h1,h2{font-family:Cinzel,Georgia,serif}h1{margin:0;font-size:clamp(42px,8vw,70px);letter-spacing:4px}.intro,.notice{color:#aab5bc;font:15px/1.7 Arial,sans-serif}.card{margin-top:24px;padding:22px;border:1px solid var(--line);border-radius:14px;background:rgba(7,11,15,.9)}input,textarea{width:100%;margin:8px 0 12px;padding:12px;border:1px solid var(--line);border-radius:7px;color:var(--text);background:#080c10;font:14px Arial,sans-serif}.hint{display:block;margin:-4px 0 12px;color:#84929a;font:12px Arial,sans-serif}button{padding:10px 14px;border:1px solid var(--line);border-radius:7px;background:var(--silver);color:#07090b;font:700 10px Orbitron,sans-serif;letter-spacing:1px;cursor:pointer}.clip{margin-top:18px;padding:20px;border:1px solid var(--line);border-radius:12px;background:rgba(7,11,15,.9)}.author{display:flex;align-items:center;gap:11px}.avatar{width:38px;height:38px;border:1px solid var(--line);border-radius:50%;object-fit:cover;background:#111}.meta{color:#87949c;font:11px Arial,sans-serif}.clip-video{display:none;width:100%;max-height:500px;margin:15px 0 0;border:1px solid var(--line);border-radius:10px;background:#000}.clip-video.open{display:block}.play-button{margin-top:15px}.clip-link{display:inline-block;margin:15px 0;color:var(--silver);font:12px Orbitron,sans-serif}.delete{float:right;background:transparent;color:#e6a6a6}.comment{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);color:#c1cbd0;font:13px Arial,sans-serif}.comment-form{display:flex;gap:8px;margin-top:12px}.comment-form input{margin:0}.empty{color:#84919a;font:14px Arial,sans-serif}
   </style>
 </head>
 <body>
@@ -27,6 +27,17 @@
       return name.toLowerCase().replace(/[^a-z0-9._-]/g,"-");
     }
 
+    function isVideoUrl(url){
+      return /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(url)||url.includes("/storage/v1/object/public/black-velvet-media/");
+    }
+
+    function clipPlayer(url,id){
+      if(!isVideoUrl(url)){
+        return `<a class="clip-link" href="${esc(url)}" target="_blank" rel="noopener">OPEN EXTERNAL CLIP ↗</a>`;
+      }
+      return `<button class="play-button" data-play-video="${id}">▶ PLAY CLIP</button><video id="video-${id}" class="clip-video" controls preload="metadata"><source src="${esc(url)}">Your browser cannot play this video.</video>`;
+    }
+
     async function uploadClip(file){
       if(file.size>100*1024*1024) throw new Error("Clip uploads must be 100 MB or smaller.");
       const path=`member-clips/${profile.username.toLowerCase()}-${crypto.randomUUID()}-${cleanName(file.name)}`;
@@ -36,7 +47,7 @@
     }
 
     if(profile){
-      postArea.innerHTML=`<form id="postForm" class="card"><h2>POST A CLIP</h2><textarea name="caption" maxlength="300" placeholder="Caption"></textarea><input name="file" type="file" accept="video/mp4,video/webm,video/quicktime"><input name="url" type="url" placeholder="Or paste a clip URL"><span class="hint">Upload a video or provide a URL. Maximum upload size: 100 MB.</span><button>POST CLIP</button><p id="postMessage" class="notice"></p></form>`;
+      postArea.innerHTML=`<form id="postForm" class="card"><h2>POST A CLIP</h2><textarea name="caption" maxlength="300" placeholder="Caption"></textarea><input name="file" type="file" accept="video/mp4,video/webm,video/quicktime"><input name="url" type="url" placeholder="Or paste a direct video URL"><span class="hint">Upload a video or provide a direct video URL. Maximum upload size: 100 MB.</span><button>POST CLIP</button><p id="postMessage" class="notice"></p></form>`;
     }else{
       postArea.innerHTML=`<div class="card notice">Log in as an approved member or staff member to post clips.</div>`;
     }
@@ -67,7 +78,7 @@
         supabase.from("clip_comments").select("*").order("created_at")
       ]);
       const avatars=Object.fromEntries((members||[]).map(m=>[m.username,m.avatar_url]));
-      feed.innerHTML=(clips||[]).length?(clips||[]).map(c=>`<article class="clip"><div class="author"><img class="avatar" src="${esc(avatars[c.author_username]||"https://placehold.co/80x80/111827/dce5eb?text=BV")}" onerror="this.src='https://placehold.co/80x80/111827/dce5eb?text=BV'"><div><a href="profile.html?user=${encodeURIComponent(c.author_username)}">${esc(c.author_username)}</a><div class="meta">${new Date(c.created_at).toLocaleString()}</div></div></div>${(isStaff||profile?.username===c.author_username)?`<button class="delete" data-delete-clip="${c.id}">DELETE</button>`:""}<p>${esc(c.caption)}</p><a class="clip-link" href="${esc(c.clip_url)}" target="_blank" rel="noopener">OPEN CLIP ↗</a><section>${(comments||[]).filter(x=>x.clip_id===c.id).map(x=>`<div class="comment"><strong>${esc(x.author_username)}</strong>: ${esc(x.comment_text)} ${(isStaff||profile?.username===x.author_username)?`<button class="delete" data-delete-comment="${x.id}">DELETE</button>`:""}</div>`).join("")}</section>${profile?`<form class="comment-form" data-comment-form="${c.id}"><input name="comment" maxlength="250" required placeholder="Write a comment"><button>COMMENT</button></form>`:""}</article>`).join(""):`<p class="empty">No clips have been posted yet.</p>`;
+      feed.innerHTML=(clips||[]).length?(clips||[]).map(c=>`<article class="clip"><div class="author"><img class="avatar" src="${esc(avatars[c.author_username]||"https://placehold.co/80x80/111827/dce5eb?text=BV")}" onerror="this.src='https://placehold.co/80x80/111827/dce5eb?text=BV'"><div><a href="profile.html?user=${encodeURIComponent(c.author_username)}">${esc(c.author_username)}</a><div class="meta">${new Date(c.created_at).toLocaleString()}</div></div></div>${(isStaff||profile?.username===c.author_username)?`<button class="delete" data-delete-clip="${c.id}">DELETE</button>`:""}<p>${esc(c.caption)}</p>${clipPlayer(c.clip_url,c.id)}<section>${(comments||[]).filter(x=>x.clip_id===c.id).map(x=>`<div class="comment"><strong>${esc(x.author_username)}</strong>: ${esc(x.comment_text)} ${(isStaff||profile?.username===x.author_username)?`<button class="delete" data-delete-comment="${x.id}">DELETE</button>`:""}</div>`).join("")}</section>${profile?`<form class="comment-form" data-comment-form="${c.id}"><input name="comment" maxlength="250" required placeholder="Write a comment"><button>COMMENT</button></form>`:""}</article>`).join(""):`<p class="empty">No clips have been posted yet.</p>`;
     }
 
     feed.addEventListener("submit",async e=>{
@@ -82,7 +93,13 @@
     });
 
     feed.addEventListener("click",async e=>{
-      const clip=e.target.closest("[data-delete-clip]"),comment=e.target.closest("[data-delete-comment]");
+      const play=e.target.closest("[data-play-video]"),clip=e.target.closest("[data-delete-clip]"),comment=e.target.closest("[data-delete-comment]");
+      if(play){
+        const video=document.getElementById(`video-${play.dataset.playVideo}`);
+        video.classList.add("open");
+        video.play();
+        play.remove();
+      }
       if(clip)await supabase.from("clips").delete().eq("id",clip.dataset.deleteClip);
       if(comment)await supabase.from("clip_comments").delete().eq("id",comment.dataset.deleteComment);
     });
