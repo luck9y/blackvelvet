@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050607">
+  <title>Black Velvet Clan | Home</title>
+
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Orbitron:wght@400;500;600;700&display=swap");
+
+    :root {
+      --black: #020304;
+      --panel: rgba(10, 13, 16, .9);
+      --panel-light: rgba(24, 29, 34, .9);
+      --line: rgba(190, 202, 212, .28);
+      --text: #edf1f3;
+      --muted: #89939b;
+      --green: #8fc7a7;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--text);
+      font-family: Arial, sans-serif;
+      background:
+        linear-gradient(rgba(170, 180, 188, .08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(170, 180, 188, .08) 1px, transparent 1px),
+        radial-gradient(circle at 80% 0, #303840, transparent 30rem),
+        var(--black);
+      background-size: 44px 44px;
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      content: "";
+      opacity: .18;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0 5px,
+        rgba(255, 255, 255, .05) 6px,
+        transparent 7px
+      );
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 40px));
+      margin: auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      color: #dce2e7;
+      font: 700 16px Orbitron, monospace;
+      letter-spacing: 4px;
+    }
+
+    nav {
+      display: flex;
+      gap: 22px;
+    }
+
+    nav a {
+      color: var(--muted);
+      font: 500 11px Orbitron, monospace;
+      letter-spacing: 2px;
+      text-decoration: none;
+      transition: color .2s ease;
+    }
+
+    nav a:hover {
+      color: white;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.3fr .7fr;
+      gap: 60px;
+      align-items: center;
+      min-height: 70vh;
+      padding: 90px 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 18px;
+      color: var(--green);
+      font: 600 11px Orbitron, monospace;
+      letter-spacing: 4px;
+    }
+
+    h1 {
+      max-width: 800px;
+      margin: 0 0 24px;
+      color: #f4f6f7;
+      font: 900 clamp(48px, 9vw, 108px) / .9 Cinzel, Georgia, serif;
+      letter-spacing: 4px;
+      text-shadow: 0 0 8px #fff, 0 0 28px #79848c;
+    }
+
+    h1 span {
+      color: #8f9aa2;
+    }
+
+    .hero-copy {
+      max-width: 620px;
+      color: #aeb7bd;
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    .terminal {
+      padding: 24px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: 0 25px 70px #000;
+      font: 12px/2 Orbitron, monospace;
+    }
+
+    .terminal-head {
+      display: flex;
+      gap: 7px;
+      margin-bottom: 18px;
+    }
+
+    .terminal-head i {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #aeb7bd;
+    }
+
+    .terminal p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .terminal strong {
+      color: var(--green);
+      font-weight: 500;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 32px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 14px 20px;
+      border: 1px solid #aeb7bd;
+      color: #f5f7f8;
+      background: #252b30;
+      font: 600 11px Orbitron, monospace;
+      letter-spacing: 2px;
+      text-decoration: none;
+      transition: .2s ease;
+    }
+
+    .button:hover {
+      color: #050607;
+      background: #dce2e7;
+      box-shadow: 0 0 25px rgba(220, 226, 231, .4);
+      transform: translateY(-2px);
+    }
+
+    .button.secondary {
+      border-color: var(--line);
+      color: var(--muted);
+      background: transparent;
+    }
+
+    .section-title {
+      margin: 0 0 24px;
+      color: #dfe4e7;
+      font: 700 28px Cinzel, Georgia, serif;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      padding-bottom: 90px;
+    }
+
+    .card {
+      min-height: 190px;
+      padding: 26px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, .45);
+    }
+
+    .card:hover {
+      border-color: #aeb7bd;
+      background: var(--panel-light);
+    }
+
+    .card-number {
+      color: var(--green);
+      font: 600 11px Orbitron, monospace;
+      letter-spacing: 2px;
+    }
+
+    .card h3 {
+      margin: 25px 0 12px;
+      color: #e8ecee;
+      font: 700 20px Cinzel, Georgia, serif;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    footer {
+      padding: 24px 0;
+      border-top: 1px solid var(--line);
+      color: #68737b;
+      font: 10px Orbitron, monospace;
+      letter-spacing: 2px;
+      text-align: center;
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        align-items: flex-start;
+        gap: 20px;
+      }
+
+      nav {
+        flex-direction: column;
+        gap: 9px;
+        align-items: flex-end;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 35px;
+        padding: 70px 0;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">BLACK VELVET</div>
+
+      <nav aria-label="Main navigation">
+        <a href="#about">ABOUT</a>
+        <a href="#protocol">PROTOCOL</a>
+        <a href="staff.html">STAFF PORTAL</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="about">
+        <div>
+          <p class="eyebrow">SYSTEM ONLINE // CLAN NETWORK ACTIVE</p>
+          <h1>BLACK<br><span>VELVET</span></h1>
+          <p class="hero-copy">
+            A legacy built in silence, strengthened by memory, and carried
+            forward by the people who never stopped believing.
+          </p>
+
+          <div class="actions">
+            <a class="button" href="staff.html">ENTER STAFF PORTAL</a>
+            <a class="button secondary" href="#protocol">VIEW PROTOCOL</a>
+          </div>
+        </div>
+
+        <div class="terminal" aria-label="System status">
+          <div class="terminal-head">
+            <i></i>
+            <i></i>
+            <i></i>
+          </div>
+          <p>&gt; booting black_velvet_core...</p>
+          <p>&gt; founders: <strong>LUCKYY / SUOAZ</strong></p>
+          <p>&gt; origin: <strong>AZUL CLAN</strong></p>
+          <p>&gt; status: <strong>CONNECTED</strong></p>
+          <p>&gt; access: <strong>AUTHORIZED</strong></p>
+        </div>
+      </section>
+
+      <section id="protocol">
+        <h2 class="section-title">Clan Protocol</h2>
+
+        <div class="grid">
+          <article class="card">
+            <span class="card-number">01 // LEGACY</span>
+            <h3>Built From Memory</h3>
+            <p>
+              Every chapter of Black Velvet carries the history of the clans
+              and people who came before it.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-number">02 // DISCIPLINE</span>
+            <h3>Strength In Silence</h3>
+            <p>
+              Respect, consistency, and loyalty are the foundation of every
+              member and every decision.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-number">03 // FUTURE</span>
+            <h3>Never Stopped</h3>
+            <p>
+              The network is active again. New members, new goals, and a new
+              legacy are waiting to be written.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      BLACK VELVET CLAN // ALL SYSTEMS OPERATIONAL
+    </footer>
+  </div>
+</body>
+</html>
