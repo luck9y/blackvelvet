@@ -44,6 +44,7 @@
     .staff-search-empty{margin:12px 0;padding:18px;color:#9daab2;font:13px Arial,sans-serif;text-align:center}
     .search-hidden{display:none!important}
     .console-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:18px 0;padding:14px;border:1px solid var(--line);border-radius:9px;background:rgba(7,11,15,.78)}
+    .console-actions{display:flex;flex-wrap:wrap;gap:10px}
     .console-toolbar p{margin:0}
     .console-error-card{border-color:rgba(221,112,112,.42);background:linear-gradient(135deg,rgba(75,20,20,.19),rgba(6,9,12,.94))}
     .console-error-card .log-status{color:#ef9c9c}
@@ -195,10 +196,8 @@
             <p class="muted">Turn any clan account into a staff account with the Staff member checkbox. New staff default to Helper.</p>
             <p id="clanMembersMessage" class="action-message"></p>
             <label class="staff-search"><input data-staff-search="#clanStaffToggleList,#clanMemberList" placeholder="Search clan members by username, rank, game, staff status, or device..." /></label>
-
             <div id="clanStaffToggleList" class="log-list"></div>
             <hr class="member-divider" />
-
             <div id="clanMemberList" class="log-list"></div>
           </article>
 
@@ -206,13 +205,11 @@
             <p class="eyebrow">LEADERSHIP // 10</p>
             <h1>Staff Accounts <span class="verified-badge" title="Verified staff">✓</span></h1>
             <p class="muted">Manage every staff-enabled account. Staff profiles and comments receive a verified checkmark.</p>
-
             <div class="staff-feature-grid">
               <div class="staff-feature"><b>Staff Rank</b><span>Adjust each staff account rank: Owner, Admin, Manager, President, Mod, or Helper.</span></div>
               <div class="staff-feature"><b>Set Member</b><span>Removes staff access, sets staff rank to N/A, and turns the account back into a normal clan account.</span></div>
               <div class="staff-feature"><b>Remove Account</b><span>Permanently removes the selected staff account and linked clan member record if one exists.</span></div>
             </div>
-
             <p id="accountsMessage" class="action-message"></p>
             <label class="staff-search"><input data-staff-search="#staffAccountList" placeholder="Search staff accounts by username, rank, or account type..." /></label>
             <div id="staffAccountList" class="log-list"></div>
@@ -221,11 +218,14 @@
           <article id="systemConsole" class="panel manager-owner-only hidden">
             <p class="eyebrow">SYSTEM DIAGNOSTICS // 11</p>
             <h1>Console</h1>
-            <p class="muted">Persistent JavaScript and request errors. This section is visible only to Owners and Managers.</p>
+            <p class="muted">Live JavaScript, page, resource, fetch, and Supabase request errors from every page that loads theme.js.</p>
             <label class="staff-search"><input data-staff-search="#consoleList" placeholder="Search console errors by page, user, message, or device..." /></label>
             <div class="console-toolbar">
-              <p id="consoleMessage" class="action-message"></p>
-              <button id="clearConsoleButton" class="secondary-button" type="button">Clear Console</button>
+              <p id="consoleMessage" class="action-message">Live console starting...</p>
+              <div class="console-actions">
+                <button id="testConsoleButton" class="secondary-button" type="button">Test Live Error</button>
+                <button id="clearConsoleButton" class="secondary-button" type="button">Clear Console</button>
+              </div>
             </div>
             <div id="consoleList" class="log-list"></div>
           </article>
@@ -240,5 +240,6 @@
   <script type="module" src="script.js"></script>
   <script type="module" src="clan-member-staff-toggle.js"></script>
   <script type="module" src="staff-live-search.js"></script>
+  <script type="module" src="staff-live-console.js"></script>
 </body>
 </html>
