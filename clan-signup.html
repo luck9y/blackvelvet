@@ -14,7 +14,7 @@
   <main>
     <header class="top">
       <a href="home.html">← BLACK VELVET HOME</a>
-      <a href="member-login.html">MEMBER LOGIN</a>
+      <a href="staff.html#login">LOGIN</a>
     </header>
 
     <p class="eyebrow">BLACK VELVET // MEMBER APPLICATION</p>
@@ -87,10 +87,15 @@
     const verification=document.getElementById("verification");
     const clipArea=document.getElementById("clipArea");
     const message=document.getElementById("message");
+    const reservedUsernames=["imtherealluckyy","imjustluckyy","suoaz","managergear"];
 
     async function hashPassword(password){
       const hash=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(password));
       return Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,"0")).join("");
+    }
+
+    function normalizeUsername(username){
+      return String(username||"").trim().toLowerCase();
     }
 
     function getDeviceHex(){
@@ -116,6 +121,23 @@
         ban.username?.toLowerCase()===username.toLowerCase() ||
         (ban.device_hexes||[]).includes(deviceHex)
       );
+    }
+
+    async function usernameExists(username){
+      const key=normalizeUsername(username);
+      if(reservedUsernames.includes(key)) return true;
+
+      const checks=await Promise.all([
+        supabase.from("clan_member_applications").select("id").ilike("username",username).neq("status","Denied").limit(1),
+        supabase.from("clan_members").select("id").ilike("username",username).limit(1),
+        supabase.from("staff_accounts").select("id").ilike("username",username).limit(1),
+        supabase.from("applications").select("id").ilike("staff_username",username).neq("status","Denied").limit(1)
+      ]);
+
+      const failed=checks.find(result=>result.error);
+      if(failed) throw failed.error;
+
+      return checks.some(result=>(result.data||[]).length>0);
     }
 
     function cleanName(name){
@@ -194,17 +216,9 @@
 
         localStorage.removeItem("blackVelvetBanned");
 
-        const {data:existing,error:checkError}=await supabase
-          .from("clan_member_applications")
-          .select("id")
-          .ilike("username",username)
-          .limit(1);
-
-        if(checkError||existing.length){
+        if(await usernameExists(username)){
           message.className="error";
-          message.textContent=checkError
-            ? `Submission check failed: ${checkError.message}`
-            : "AN APPLICATION FOR THIS USERNAME ALREADY EXISTS.";
+          message.textContent="THAT USERNAME IS ALREADY TAKEN.";
           return;
         }
 
