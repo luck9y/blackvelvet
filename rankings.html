@@ -9,22 +9,46 @@
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; font-family: Orbitron, Arial, sans-serif; }
-    main { position: relative; z-index: 1; width: min(1180px, 90%); margin: auto; padding: 45px 0 75px; }
+    main { position: relative; z-index: 1; width: min(980px, 90%); margin: auto; padding: 45px 0 75px; }
     .top { display: flex; justify-content: space-between; gap: 20px; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
     a { color: var(--silver); font-size: 11px; letter-spacing: 1.5px; text-decoration: none; }
     .eyebrow { margin: 58px 0 15px; color: var(--silver); font-size: 11px; letter-spacing: 3px; }
     h1, h2, h3 { font-family: Cinzel, Georgia, serif; }
     h1 { margin: 0; font-size: clamp(42px, 8vw, 75px); letter-spacing: 4px; }
     .intro { color: #aab5bc; font: 16px/1.8 Arial, sans-serif; }
-    #rankingPanels { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 32px; }
-    .game-panel { padding: 25px; border: 1px solid var(--line); border-radius: 14px; background: rgba(7, 11, 15, .88); }
-    .game-panel h2 { margin: 0 0 22px; color: var(--silver); font-size: 28px; letter-spacing: 2px; }
-    .rank-block { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
-    .rank-block h3 { margin: 0 0 10px; color: #dce5eb; font-size: 16px; letter-spacing: 1px; }
-    .member { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; color: #aeb9bf; font: 13px Arial, sans-serif; }
-    .member strong { color: var(--silver); font-family: Orbitron, Arial, sans-serif; }
-    .empty { color: #71808a; font: 12px Arial, sans-serif; }
-    @media (max-width: 800px) { #rankingPanels { grid-template-columns: 1fr; } }
+
+    .game-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 32px; }
+    .game-tab {
+      min-height: 72px; padding: 12px; border: 1px solid var(--line); border-radius: 10px;
+      background: rgba(7, 11, 15, .88); color: #aeb9bf; font: 700 10px Orbitron, Arial, sans-serif;
+      letter-spacing: 1px; cursor: pointer;
+    }
+    .game-tab:hover, .game-tab.active {
+      border-color: var(--silver); background: rgba(190, 205, 215, .12); color: var(--silver);
+      box-shadow: 0 0 20px rgba(190, 205, 215, .12);
+    }
+
+    .game-panel {
+      margin-top: 18px; min-height: 420px; padding: 28px; border: 1px solid var(--line);
+      border-radius: 14px; background: linear-gradient(135deg, rgba(16, 24, 31, .96), rgba(4, 7, 10, .96));
+    }
+    .panel-label { margin: 0; color: #84929a; font-size: 10px; letter-spacing: 3px; }
+    .game-panel h2 { margin: 9px 0 25px; color: var(--silver); font-size: clamp(30px, 5vw, 48px); letter-spacing: 3px; }
+    .leaderboard { display: grid; gap: 12px; }
+    .rank-entry {
+      display: grid; grid-template-columns: 115px 1fr auto; align-items: center; gap: 18px;
+      padding: 17px; border: 1px solid var(--line); border-radius: 9px; background: rgba(1, 2, 4, .55);
+    }
+    .tier { color: #b9c6ce; font: 700 11px Orbitron, Arial, sans-serif; letter-spacing: 1.4px; }
+    .player-name { color: #e5edf1; font: 700 16px Orbitron, Arial, sans-serif; letter-spacing: 1px; }
+    .rank-number { color: var(--silver); font: 700 20px Orbitron, Arial, sans-serif; }
+    .empty { color: #84919a; font: 14px Arial, sans-serif; }
+
+    @media (max-width: 700px) {
+      .game-tabs { grid-template-columns: repeat(2, 1fr); }
+      .rank-entry { grid-template-columns: 1fr auto; gap: 7px; }
+      .tier { grid-column: 1 / -1; }
+    }
   </style>
 </head>
 <body>
@@ -36,19 +60,27 @@
 
     <p class="eyebrow">BLACK VELVET // COMPETITIVE NETWORK</p>
     <h1>RANKINGS</h1>
-    <p class="intro">Members are sorted by game, rank, and their assigned ranking number.</p>
-    <section id="rankingPanels"></section>
+    <p class="intro">Choose a game panel. Players automatically appear in order when staff assigns their ranking number.</p>
+
+    <nav id="gameTabs" class="game-tabs" aria-label="Game ranking panels"></nav>
+    <section id="rankingPanel"></section>
   </main>
 
   <script src="theme.js"></script>
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-    const supabase = createClient("https://ptgzhljvzyceawwohmym.supabase.co", "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk");
-    const games = ["Minecraft Java", "Minecraft Bedrock", "Valorant", "Fortnite", "Roblox", "Rocket League"];
-    const ranks = ["Goat", "Elite", "Legend", "Decent", "Rookie", "BVR"];
-    const rankOrder = Object.fromEntries(ranks.map((rank, index) => [rank, index]));
-    const panels = document.getElementById("rankingPanels");
+    const supabase = createClient(
+      "https://ptgzhljvzyceawwohmym.supabase.co",
+      "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk"
+    );
+
+    const games = ["Minecraft Java", "Minecraft Bedrock", "Valorant", "Fortnite"];
+    const rankOrder = { Goat: 0, Elite: 1, Legend: 2, Decent: 3, Rookie: 4, BVR: 5 };
+    const tabs = document.getElementById("gameTabs");
+    const panel = document.getElementById("rankingPanel");
+    let activeGame = games[0];
+    let allMembers = [];
 
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -56,30 +88,57 @@
       }[char]));
     }
 
-    function render(members) {
-      panels.innerHTML = games.map(game => {
-        const gameMembers = members.filter(member => member.game === game)
-          .sort((a, b) => rankOrder[a.rank] - rankOrder[b.rank] || (a.ranking_number || 999999) - (b.ranking_number || 999999));
+    function render() {
+      tabs.innerHTML = games.map(game => `
+        <button class="game-tab ${game === activeGame ? "active" : ""}" data-game="${escapeHtml(game)}">
+          ${escapeHtml(game)}
+        </button>
+      `).join("");
 
-        return `<article class="game-panel">
-          <h2>${escapeHtml(game)}</h2>
-          ${ranks.map(rank => {
-            const rankMembers = gameMembers.filter(member => member.rank === rank);
-            return `<section class="rank-block">
-              <h3>${rank.toUpperCase()}</h3>
-              ${rankMembers.length ? rankMembers.map(member => `<div class="member"><span>USER: ${escapeHtml(member.username)}</span><strong>#${escapeHtml(member.ranking_number || "N/A")}</strong></div>`).join("") : '<p class="empty">No members assigned.</p>'}
-            </section>`;
-          }).join("")}
-        </article>`;
-      }).join("");
+      const members = allMembers
+        .filter(member => member.game === activeGame && member.ranking_number)
+        .sort((a, b) =>
+          a.ranking_number - b.ranking_number ||
+          (rankOrder[a.rank] ?? 99) - (rankOrder[b.rank] ?? 99)
+        );
+
+      panel.innerHTML = `
+        <article class="game-panel">
+          <p class="panel-label">ARCADE LEADERBOARD</p>
+          <h2>${escapeHtml(activeGame)}</h2>
+          <div class="leaderboard">
+            ${members.length ? members.map(member => `
+              <article class="rank-entry">
+                <span class="tier">${escapeHtml((member.rank || "BVR").toUpperCase())}</span>
+                <span class="player-name">${escapeHtml(member.username)}</span>
+                <strong class="rank-number">#${escapeHtml(member.ranking_number)}</strong>
+              </article>
+            `).join("") : '<p class="empty">No ranked players have been assigned to this game yet.</p>'}
+          </div>
+        </article>
+      `;
     }
 
+    tabs.addEventListener("click", event => {
+      const button = event.target.closest("[data-game]");
+      if (!button) return;
+      activeGame = button.dataset.game;
+      render();
+    });
+
     async function loadRankings() {
-      const { data, error } = await supabase.from("clan_members").select("username, game, rank, ranking_number");
-      if (!error) render(data || []);
+      const { data, error } = await supabase
+        .from("clan_members")
+        .select("username, game, rank, ranking_number");
+
+      if (!error) {
+        allMembers = data || [];
+        render();
+      }
     }
 
     await loadRankings();
+
     supabase.channel("ranking-updates")
       .on("postgres_changes", { event: "*", schema: "public", table: "clan_members" }, loadRankings)
       .subscribe();
