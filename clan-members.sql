@@ -67,8 +67,12 @@ create table if not exists public.clip_comments (
   clip_id bigint not null references public.clips(id) on delete cascade,
   author_username text not null,
   comment_text text not null,
+  parent_comment_id bigint references public.clip_comments(id) on delete cascade,
   created_at timestamptz not null default now()
 );
+
+alter table public.clip_comments
+add column if not exists parent_comment_id bigint references public.clip_comments(id) on delete cascade;
 
 insert into storage.buckets (id, name, public)
 values ('black-velvet-media', 'black-velvet-media', true)
