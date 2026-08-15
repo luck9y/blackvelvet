@@ -60,11 +60,18 @@ function addConsoleStyles() {
       background: rgba(40, 160, 80, .16);
     }
 
-    .console-done-button {
+    .console-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .console-done-button,
+    .console-description-toggle {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      margin-top: 12px;
       padding: 7px 10px;
       border: 1px solid rgba(220, 230, 236, .35);
       border-radius: 6px;
@@ -75,9 +82,44 @@ function addConsoleStyles() {
       cursor: pointer;
     }
 
-    .console-done-button:hover {
+    .console-done-button:hover,
+    .console-description-toggle:hover {
       border-color: #8df0a6;
       color: #8df0a6;
+    }
+
+    .console-description {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      border-left: 3px solid #8df0a6;
+      border-radius: 5px;
+      color: #dce6ec;
+      background: rgba(0, 0, 0, .3);
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font: 13px/1.55 Arial, sans-serif;
+    }
+
+    .console-description.is-visible {
+      display: block;
+    }
+
+    .console-description-title {
+      display: block;
+      margin-bottom: 6px;
+      color: #8df0a6;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .console-description pre {
+      margin: 10px 0 0;
+      color: #b8c4ca;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font: 12px/1.5 monospace;
     }
   `;
 
@@ -268,12 +310,15 @@ function render() {
       done ? "console-done-card" : ""
     ].filter(Boolean).join(" ");
 
+    const description = error.message || "Unknown error";
+    const stack = error.stack_trace || "";
+
     return `
       <article class="${cardClasses}">
         <div class="log-main">
           ${warning ? '<span class="console-warning-label">⚠ WARNING</span>' : ""}
           <strong>${escapeHtml(error.source || "Error")}</strong>
-          <span class="log-status">${escapeHtml(error.message || "Unknown error")}</span>
+          <span class="log-status">${escapeHtml(description)}</span>
         </div>
 
         <div class="log-meta">
@@ -285,21 +330,31 @@ function render() {
 
         <p class="muted">${escapeHtml(error.page_url || "Unknown page")}</p>
 
-        ${error.stack_trace ? `
-          <details class="console-details">
-            <summary>STACK / DETAILS</summary>
-            <pre>${escapeHtml(error.stack_trace)}</pre>
-          </details>
-        ` : ""}
+        <div class="console-description" data-console-description-panel>
+          <span class="console-description-title">ERROR DESCRIPTION</span>
+          ${escapeHtml(description)}
+          ${stack ? `<pre>${escapeHtml(stack)}</pre>` : ""}
+        </div>
 
-        <button
-          class="console-done-button"
-          type="button"
-          data-console-done="${escapeHtml(getErrorKey(error))}"
-          aria-pressed="${done}"
-        >
-          ${done ? "✓ DONE — UNCHECK" : "☐ MARK AS DONE"}
-        </button>
+        <div class="console-actions">
+          <button
+            class="console-description-toggle"
+            type="button"
+            data-console-description="${escapeHtml(getErrorKey(error))}"
+            aria-expanded="false"
+          >
+            ✓ VIEW DESCRIPTION
+          </button>
+
+          <button
+            class="console-done-button"
+            type="button"
+            data-console-done="${escapeHtml(getErrorKey(error))}"
+            aria-pressed="${done}"
+          >
+            ${done ? "✓ DONE — UNCHECK" : "☐ MARK AS DONE"}
+          </button>
+        </div>
       </article>
     `;
   }).join("");
@@ -500,11 +555,26 @@ function installNavigation() {
 
 function installDoneButtons() {
   list?.addEventListener("click", event => {
-    const button = event.target.closest("[data-console-done]");
-    if (!button) return;
+    const descriptionButton = event.target.closest("[data-console-description]");
+
+    if (descriptionButton) {
+      const card = descriptionButton.closest(".console-error-card");
+      const description = card?.querySelector("[data-console-description-panel]");
+      if (!description) return;
+
+      const visible = description.classList.toggle("is-visible");
+      descriptionButton.setAttribute("aria-expanded", String(visible));
+      descriptionButton.textContent = visible
+        ? "✓ HIDE DESCRIPTION"
+        : "✓ VIEW DESCRIPTION";
+      return;
+    }
+
+    const doneButton = event.target.closest("[data-console-done]");
+    if (!doneButton) return;
 
     const error = uniqueErrors().find(
-      item => getErrorKey(item) === button.dataset.consoleDone
+      item => getErrorKey(item) === doneButton.dataset.consoleDone
     );
 
     if (error) {
