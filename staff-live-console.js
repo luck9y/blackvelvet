@@ -16,6 +16,7 @@ let remoteErrors = [];
 let localErrors = [];
 let lastSupabaseFailure = "";
 let lastSupabaseFailureTime = 0;
+let diagnosticsComplete = false;
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, character => ({
@@ -40,8 +41,7 @@ function canUseConsole() {
   const username = String(profile?.username || "").toLowerCase();
   const role = String(profile?.role || profile?.staffRank || "").toLowerCase();
 
-  return permanentOwners.includes(username) ||
-    allowedRoles.includes(role);
+  return permanentOwners.includes(username) || allowedRoles.includes(role);
 }
 
 function applyConsoleAccess() {
@@ -82,9 +82,7 @@ function makeLocalError(source, errorMessage, stack = "") {
 
 function readLocalErrors() {
   try {
-    localErrors = JSON.parse(
-      localStorage.getItem(STORAGE_KEY) || "[]"
-    );
+    localErrors = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
   } catch {
     localErrors = [];
   }
@@ -92,10 +90,7 @@ function readLocalErrors() {
 
 function saveLocalError(error) {
   try {
-    const errors = JSON.parse(
-      localStorage.getItem(STORAGE_KEY) || "[]"
-    );
-
+    const errors = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
     errors.unshift(error);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(errors.slice(0, 500)));
   } catch {}
@@ -136,9 +131,7 @@ function render() {
 
   const errors = uniqueErrors();
 
-  if (count) {
-    count.textContent = errors.length;
-  }
+  if (count) count.textContent = errors.length;
 
   if (!errors.length) {
     list.innerHTML = `
@@ -153,9 +146,7 @@ function render() {
     <article class="log-card console-error-card">
       <div class="log-main">
         <strong>${escapeHtml(error.source || "Error")}</strong>
-        <span class="log-status">
-          ${escapeHtml(error.message || "Unknown error")}
-        </span>
+        <span class="log-status">${escapeHtml(error.message || "Unknown error")}</span>
       </div>
 
       <div class="log-meta">
@@ -180,19 +171,16 @@ function render() {
 async function saveRemote(error) {
   const { id, ...payload } = error;
 
-  const response = await fetch(
-    `${SUPABASE_URL}/rest/v1/system_errors`,
-    {
-      method: "POST",
-      headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`,
-        "Content-Type": "application/json",
-        Prefer: "return=minimal"
-      },
-      body: JSON.stringify(payload)
-    }
-  );
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/system_errors`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal"
+    },
+    body: JSON.stringify(payload)
+  });
 
   if (!response.ok) {
     throw new Error(
@@ -214,11 +202,70 @@ function recordSupabaseFailure(text, stack = "") {
   lastSupabaseFailure = text;
   lastSupabaseFailureTime = now;
 
-  saveLocalError(makeLocalError(
-    "staff.console.supabase",
-    text,
-    stack
-  ));
+  saveLocalError(makeLocalError("staff.console.supabase", text, stack));
+}
+
+async function checkColumn(table, column) {
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/${table}?select=${column}&limit=1`,
+    {
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const details = await response.text();
+
+    const readableMessage = details.toLowerCase().includes("column") ||
+      details.toLowerCase().includes("schema cache")
+        ? `NOT FOUND: "${column}" is missing from the "${table}" table in Supabase.`
+        : `Could not check "${column}" on "${table}". Details: ${details}`;
+
+    saveLocalError(makeLocalError(
+      "database.schema",
+      readableMessage,
+      details
+    ));
+
+    return false;
+  }
+
+  return true;
+}
+
+async function runDiagnostics() {
+  if (diagnosticsComplete || !canUseConsole()) return;
+
+  diagnosticsComplete = true;
+
+  const checks = [
+    ["applications", "avatar_url"],
+    ["clan_member_applications", "avatar_url"],
+    ["clan_members", "avatar_url"],
+    ["clan_members", "password_hash"],
+    ["system_errors", "source"]
+  ];
+
+  for (const [table, column] of checks) {
+    try {
+      await checkColumn(table, column);
+    } catch (error) {
+      saveLocalError(makeLocalError(
+        "database.connection",
+        `Could not inspect "${table}.${column}". ${error.message}`,
+        error.stack || ""
+      ));
+    }
+  }
+
+  if (message && diagnosticsComplete) {
+    message.textContent = "Console connected. Database diagnostics completed.";
+  }
+
+  render();
 }
 
 async function loadRemoteErrors() {
@@ -247,18 +294,17 @@ async function loadRemoteErrors() {
       message.textContent = "Live console connected. Errors are being saved.";
     }
   } catch (error) {
-    const text =
-      `Supabase console load failed. Details: ${error.message}`;
+    const text = `Supabase console load failed. Details: ${error.message}`;
 
-    if (message) {
-      message.textContent = text;
-    }
+    if (message) message.textContent = text;
 
     recordSupabaseFailure(text, error.stack || "");
   }
 
   readLocalErrors();
   render();
+
+  await runDiagnostics();
 }
 
 async function testLiveConsole() {
@@ -280,16 +326,13 @@ async function testLiveConsole() {
     await saveRemote(error);
 
     if (message) {
-      message.textContent =
-        "Test error added locally and saved to Supabase.";
+      message.textContent = "Test error added locally and saved to Supabase.";
     }
   } catch (saveError) {
     const text =
       `Test error saved locally, but Supabase rejected it. Details: ${saveError.message}`;
 
-    if (message) {
-      message.textContent = text;
-    }
+    if (message) message.textContent = text;
 
     recordSupabaseFailure(text, saveError.stack || "");
   }
@@ -300,10 +343,7 @@ async function testLiveConsole() {
 function installNavigation() {
   document.querySelectorAll(".nav-button").forEach(button => {
     button.addEventListener("click", () => {
-      if (
-        button.dataset.panel === "systemConsole" &&
-        !canUseConsole()
-      ) {
+      if (button.dataset.panel === "systemConsole" && !canUseConsole()) {
         return;
       }
 
@@ -330,8 +370,7 @@ function start() {
   render();
 
   if (message) {
-    message.textContent =
-      "Live console started. Waiting for page errors...";
+    message.textContent = "Live console started. Waiting for page errors...";
   }
 
   testButton?.addEventListener("click", testLiveConsole);
@@ -345,9 +384,11 @@ function start() {
 
   window.addEventListener("storage", event => {
     if (event.key === "blackVelvetProfile") {
+      diagnosticsComplete = false;
       applyConsoleAccess();
       readLocalErrors();
       render();
+      runDiagnostics();
     }
   });
 
