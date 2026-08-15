@@ -4,11 +4,12 @@ if (!window.__blackVelvetErrorReporterInstalled) {
   const SUPABASE_URL = "https://ptgzhljvzyceawwohmym.supabase.co";
   const SUPABASE_KEY = "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk";
   const STORAGE_KEY = "blackVelvetLocalConsoleErrors";
+  const CHANNEL_NAME = "black-velvet-console-errors";
 
   const originalConsoleError = console.error.bind(console);
   const originalConsoleWarn = console.warn.bind(console);
   const originalFetch = window.fetch.bind(window);
-  const channel = "BroadcastChannel" in window ? new BroadcastChannel("black-velvet-console-errors") : null;
+  const channel = "BroadcastChannel" in window ? new BroadcastChannel(CHANNEL_NAME) : null;
 
   let queue = Promise.resolve();
   let lastSignature = "";
@@ -24,8 +25,7 @@ if (!window.__blackVelvetErrorReporterInstalled) {
   }
 
   function stringify(value) {
-    if (value instanceof Error) return value.message || value.stack || "Error";
-
+    if (value instanceof Error) return value.stack || value.message || "Error";
     if (typeof value === "object") {
       try {
         return JSON.stringify(value);
@@ -33,24 +33,12 @@ if (!window.__blackVelvetErrorReporterInstalled) {
         return String(value);
       }
     }
-
     return String(value);
   }
 
   function shouldIgnore(message = "", url = "") {
     const text = `${message} ${url}`;
     return text.includes("blackVelvetLocalConsoleErrors");
-  }
-
-  function saveLocal(payload) {
-    try {
-      const current = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-      current.unshift(payload);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(current.slice(0, 300)));
-    } catch {}
-
-    window.dispatchEvent(new CustomEvent("blackVelvetConsoleError", { detail: payload }));
-    channel?.postMessage(payload);
   }
 
   function makePayload(source, message, stack = "") {
@@ -70,7 +58,20 @@ if (!window.__blackVelvetErrorReporterInstalled) {
     };
   }
 
+  function saveLocal(payload) {
+    try {
+      const current = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      current.unshift(payload);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(current.slice(0, 500)));
+    } catch {}
+
+    window.dispatchEvent(new CustomEvent("blackVelvetConsoleError", { detail: payload }));
+    channel?.postMessage(payload);
+  }
+
   async function saveRemote(payload) {
+    const { id, ...remotePayload } = payload;
+
     const response = await originalFetch(`${SUPABASE_URL}/rest/v1/system_errors`, {
       method: "POST",
       headers: {
@@ -79,11 +80,12 @@ if (!window.__blackVelvetErrorReporterInstalled) {
         "Content-Type": "application/json",
         Prefer: "return=minimal"
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(remotePayload)
     });
 
     if (!response.ok) {
-      throw new Error(`system_errors insert failed: ${response.status} ${response.statusText} | ${await response.text()}`);
+      const body = await response.text();
+      throw new Error(`system_errors insert failed: ${response.status} ${response.statusText}${body ? ` | ${body}` : ""}`);
     }
   }
 
@@ -106,13 +108,12 @@ if (!window.__blackVelvetErrorReporterInstalled) {
     const signature = `${source}:${text}:${location.pathname}`;
     const now = Date.now();
 
-    if (signature === lastSignature && now - lastTime < 1200) return;
+    if (signature === lastSignature && now - lastTime < 1000) return;
 
     lastSignature = signature;
     lastTime = now;
 
     const payload = makePayload(source, text, stack);
-
     saveLocal(payload);
 
     queue = queue
@@ -125,37 +126,20 @@ if (!window.__blackVelvetErrorReporterInstalled) {
 
   console.error = (...parts) => {
     originalConsoleError(...parts);
-
     const firstError = parts.find(part => part instanceof Error);
-
-    reportError(
-      "console.error",
-      parts.map(stringify).join(" "),
-      firstError?.stack || new Error().stack || ""
-    );
+    reportError("console.error", parts.map(stringify).join(" "), firstError?.stack || new Error().stack || "");
   };
 
   console.warn = (...parts) => {
     originalConsoleWarn(...parts);
-
-    reportError(
-      "console.warn",
-      parts.map(stringify).join(" "),
-      new Error().stack || ""
-    );
+    reportError("console.warn", parts.map(stringify).join(" "), new Error().stack || "");
   };
 
   window.addEventListener("error", event => {
     if (event.target && event.target !== window) {
       const target = event.target;
       const url = target.src || target.href || "unknown resource";
-
-      reportError(
-        "resource.error",
-        `Failed to load ${target.tagName || "resource"}: ${url}`,
-        ""
-      );
-
+      reportError("resource.error", `Failed to load ${target.tagName || "resource"}: ${url}`, "");
       return;
     }
 
@@ -180,7 +164,7 @@ if (!window.__blackVelvetErrorReporterInstalled) {
     try {
       const response = await originalFetch(...args);
 
-      if (!response.ok && !shouldIgnore("", url) && !url.includes("/system_errors")) {
+      if (!response.ok && !url.includes("/system_errors") && !shouldIgnore("", url)) {
         let body = "";
 
         try {
@@ -196,11 +180,11 @@ if (!window.__blackVelvetErrorReporterInstalled) {
 
       return response;
     } catch (error) {
-      if (!shouldIgnore(error.message, url) && !url.includes("/system_errors")) {
+      if (!url.includes("/system_errors") && !shouldIgnore(error.message, url)) {
         reportError(
           "fetch.exception",
           `${error.message} while requesting ${url || "unknown URL"}`,
-          error.stack
+          error.stack || ""
         );
       }
 
