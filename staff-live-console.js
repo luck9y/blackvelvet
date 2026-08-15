@@ -10,6 +10,8 @@ const testButton = document.getElementById("testConsoleButton");
 
 let remoteErrors = [];
 let localErrors = [];
+let lastSupabaseFailureMessage = "";
+let lastSupabaseFailureTime = 0;
 
 function esc(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -19,6 +21,48 @@ function esc(value) {
     '"': "&quot;",
     "'": "&#039;"
   }[char]));
+}
+
+function makeLocalError(source, errorMessage, stack = "") {
+  let profile = null;
+
+  try {
+    profile = JSON.parse(localStorage.getItem("blackVelvetProfile") || "null");
+  } catch {}
+
+  return {
+    id: `local-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    created_at: new Date().toISOString(),
+    source,
+    message: String(errorMessage || "Unknown error"),
+    stack_trace: stack || null,
+    page_url: location.href,
+    username: profile?.username || null,
+    user_role: profile?.staffRank || profile?.role || null,
+    device_hex: localStorage.getItem("blackVelvetDeviceHex") || null,
+    browser: navigator.userAgent
+  };
+}
+
+function writeLocal(payload) {
+  try {
+    const current = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    current.unshift(payload);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(current.slice(0, 300)));
+  } catch {}
+
+  localErrors.unshift(payload);
+  render();
+}
+
+function recordSupabaseFailure(text, stack = "") {
+  const now = Date.now();
+  if (text === lastSupabaseFailureMessage && now - lastSupabaseFailureTime < 6000) return;
+
+  lastSupabaseFailureMessage = text;
+  lastSupabaseFailureTime = now;
+
+  writeLocal(makeLocalError("staff.console.supabase", text, stack));
 }
 
 function readLocal() {
@@ -34,13 +78,13 @@ function uniqueErrors() {
 
   return [...localErrors, ...remoteErrors]
     .filter(error => {
-      const key = `${error.created_at}-${error.source}-${error.message}-${error.page_url}`;
+      const key = `${error.id || ""}-${error.created_at}-${error.source}-${error.message}-${error.page_url}`;
       if (seen.has(key)) return false;
       seen.add(key);
       return true;
     })
     .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))
-    .slice(0, 200);
+    .slice(0, 250);
 }
 
 function render() {
@@ -64,6 +108,7 @@ function render() {
       <div class="log-meta">
         <span>${esc(new Date(error.created_at || Date.now()).toLocaleString())}</span>
         <span>${esc(error.username || "Guest")}</span>
+        <span>${esc(error.user_role || "No role")}</span>
         <span>${esc(error.device_hex || "No device")}</span>
       </div>
       <p class="muted">${esc(error.page_url || "Unknown page")}</p>
@@ -97,7 +142,9 @@ async function loadRemote() {
     remoteErrors = await response.json();
     if (message) message.textContent = "Live console connected.";
   } catch (error) {
-    if (message) message.textContent = `Live console using local backup. Supabase load failed: ${error.message}`;
+    const text = `Supabase console load failed. Check system_errors table, API key, URL, and RLS policies. Details: ${error.message}`;
+    if (message) message.textContent = text;
+    recordSupabaseFailure(text, error.stack || "");
   }
 
   readLocal();
@@ -109,20 +156,61 @@ async function clearConsole() {
   localErrors = [];
 
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/system_errors?id=not.is.null`, {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/system_errors?id=not.is.null`, {
       method: "DELETE",
       headers: {
         apikey: SUPABASE_KEY,
         Authorization: `Bearer ${SUPABASE_KEY}`
       }
     });
+
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}: ${await response.text()}`);
+    }
+
     remoteErrors = [];
     if (message) message.textContent = "Console cleared.";
   } catch (error) {
-    if (message) message.textContent = `Local console cleared. Supabase clear failed: ${error.message}`;
+    const text = `Local console cleared. Supabase clear failed: ${error.message}`;
+    if (message) message.textContent = text;
+    recordSupabaseFailure(text, error.stack || "");
   }
 
   render();
+}
+
+function testLiveConsole() {
+  const before = uniqueErrors().length;
+
+  try {
+    if (window.BlackVelvetTestConsoleError) {
+      window.BlackVelvetTestConsoleError();
+    } else if (window.BlackVelvetReportError) {
+      window.BlackVelvetReportError(
+        "test.live",
+        "Black Velvet live console test error",
+        new Error("Black Velvet live console test error").stack
+      );
+    }
+  } catch (error) {
+    writeLocal(makeLocalError("test.live.exception", error.message, error.stack || ""));
+  }
+
+  setTimeout(() => {
+    readLocal();
+
+    if (uniqueErrors().length <= before) {
+      writeLocal(makeLocalError(
+        "test.live.fallback",
+        "Black Velvet live console test error. Reporter fallback was used because the global reporter did not respond.",
+        new Error("Reporter fallback stack").stack
+      ));
+    } else {
+      render();
+    }
+
+    if (message) message.textContent = "Test live error sent. If Supabase is set up, it will also save remotely.";
+  }, 150);
 }
 
 if (list) {
@@ -136,6 +224,13 @@ if (list) {
     render();
   });
 
+  window.addEventListener("storage", event => {
+    if (event.key === STORAGE_KEY) {
+      readLocal();
+      render();
+    }
+  });
+
   if ("BroadcastChannel" in window) {
     const channel = new BroadcastChannel("black-velvet-console-errors");
     channel.addEventListener("message", event => {
@@ -145,12 +240,5 @@ if (list) {
   }
 
   clearButton?.addEventListener("click", clearConsole);
-
-  testButton?.addEventListener("click", () => {
-    if (window.BlackVelvetTestConsoleError) {
-      window.BlackVelvetTestConsoleError();
-    } else {
-      console.error(new Error("Black Velvet live console test error"));
-    }
-  });
+  testButton?.addEventListener("click", testLiveConsole);
 }
