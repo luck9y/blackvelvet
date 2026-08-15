@@ -12,7 +12,11 @@
 </head>
 <body>
   <main>
-    <header class="top"><a href="home.html">← BLACK VELVET HOME</a><a href="member-login.html">MEMBER LOGIN</a></header>
+    <header class="top">
+      <a href="home.html">← BLACK VELVET HOME</a>
+      <a href="member-login.html">MEMBER LOGIN</a>
+    </header>
+
     <p class="eyebrow">BLACK VELVET // MEMBER APPLICATION</p>
     <h1>SIGN UP</h1>
     <p class="intro">Choose the game and rank you are applying for.</p>
@@ -21,40 +25,97 @@
       <label>USERNAME<input name="username" maxlength="40" required></label>
       <label>PASSWORD<input name="password" type="password" minlength="6" autocomplete="new-password" required></label>
       <label>DISCORD USER<input name="discord" maxlength="80" required></label>
+
       <label>PROFILE PICTURE
         <input name="avatarFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
         <input name="avatarUrl" type="url" placeholder="Or paste an image URL">
         <span class="hint">Upload an image or paste an image URL. Maximum upload size: 10 MB.</span>
       </label>
+
       <label>GAME YOU ARE APPLYING FOR
-        <select name="game" required><option value="">SELECT A GAME</option><option>Minecraft Java</option><option>Minecraft Bedrock</option><option>Valorant</option><option>Fortnite</option><option>Roblox</option><option>Rocket League</option></select>
+        <select name="game" required>
+          <option value="">SELECT A GAME</option>
+          <option>Minecraft Java</option>
+          <option>Minecraft Bedrock</option>
+          <option>Valorant</option>
+          <option>Fortnite</option>
+          <option>Roblox</option>
+          <option>Rocket League</option>
+        </select>
       </label>
+
       <label>RANK YOU DESERVE
-        <select id="rank" name="rank" required><option value="BVR">BVR</option><option value="Rookie">Rookie</option><option value="Decent">Decent</option><option value="Legend">Legend</option><option value="Elite">Elite</option><option value="Goat">Goat</option></select>
+        <select id="rank" name="rank" required>
+          <option value="BVR">BVR</option>
+          <option value="Rookie">Rookie</option>
+          <option value="Decent">Decent</option>
+          <option value="Legend">Legend</option>
+          <option value="Elite">Elite</option>
+          <option value="Goat">Goat</option>
+        </select>
       </label>
+
       <section id="verification" class="verification">
-        <h2>RANK VERIFICATION REQUIRED</h2><p>Select how staff should verify the requested rank.</p>
+        <h2>RANK VERIFICATION REQUIRED</h2>
+        <p>Select how staff should verify the requested rank.</p>
         <label class="choice"><input type="radio" name="verificationType" value="tryout"><span>PREFERRED TRYOUT</span></label>
         <label class="choice"><input type="radio" name="verificationType" value="clip"><span>SEND A CLIP</span></label>
+
         <div id="clipArea">
           <label>UPLOAD CLIP<input name="clipFile" type="file" accept="video/mp4,video/webm,video/quicktime"></label>
           <label>CLIP LINK<input id="clipUrl" name="clipUrl" type="url" placeholder="Or paste a YouTube, Twitch, Medal, or other clip link"></label>
           <span class="hint">Upload a video or provide one clip link. Maximum upload size: 100 MB.</span>
         </div>
       </section>
-      <button type="submit">SUBMIT APPLICATION</button><p id="message" role="alert"></p>
+
+      <button type="submit">SUBMIT APPLICATION</button>
+      <p id="message" role="alert"></p>
     </form>
   </main>
+
   <script src="theme.js"></script>
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-    const supabase=createClient("https://ptgzhljvzyceawwohmym.supabase.co","sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk");
-    const form=document.getElementById("signupForm"),rank=document.getElementById("rank"),verification=document.getElementById("verification"),clipArea=document.getElementById("clipArea"),clipUrl=document.getElementById("clipUrl"),message=document.getElementById("message");
+    const supabase=createClient(
+      "https://ptgzhljvzyceawwohmym.supabase.co",
+      "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk"
+    );
+
+    const form=document.getElementById("signupForm");
+    const rank=document.getElementById("rank");
+    const verification=document.getElementById("verification");
+    const clipArea=document.getElementById("clipArea");
+    const message=document.getElementById("message");
 
     async function hashPassword(password){
       const hash=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(password));
       return Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,"0")).join("");
+    }
+
+    function getDeviceHex(){
+      let hex=localStorage.getItem("blackVelvetDeviceHex");
+
+      if(!hex){
+        const bytes=new Uint8Array(2);
+        crypto.getRandomValues(bytes);
+        hex=`D${Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("").toUpperCase()}`;
+        localStorage.setItem("blackVelvetDeviceHex",hex);
+      }
+
+      return hex;
+    }
+
+    async function getBan(username){
+      const deviceHex=getDeviceHex();
+      const {data,error}=await supabase.from("account_bans").select("*");
+
+      if(error) throw error;
+
+      return (data||[]).find(ban=>
+        ban.username?.toLowerCase()===username.toLowerCase() ||
+        (ban.device_hexes||[]).includes(deviceHex)
+      );
     }
 
     function cleanName(name){
@@ -64,30 +125,46 @@
     async function upload(file,folder,maxBytes){
       if(!file) return null;
       if(file.size>maxBytes) throw new Error(`${file.name} is too large.`);
+
       const path=`${folder}/${crypto.randomUUID()}-${cleanName(file.name)}`;
-      const {error}=await supabase.storage.from("black-velvet-media").upload(path,file,{upsert:false});
+      const {error}=await supabase.storage
+        .from("black-velvet-media")
+        .upload(path,file,{upsert:false});
+
       if(error) throw error;
-      return supabase.storage.from("black-velvet-media").getPublicUrl(path).data.publicUrl;
+
+      return supabase.storage
+        .from("black-velvet-media")
+        .getPublicUrl(path).data.publicUrl;
     }
 
     function updateVerification(){
       const needed=rank.value!=="BVR";
       verification.classList.toggle("open",needed);
+
       if(!needed){
-        form.querySelectorAll('[name="verificationType"]').forEach(i=>i.checked=false);
+        form.querySelectorAll('[name="verificationType"]').forEach(input=>input.checked=false);
         clipArea.classList.remove("open");
       }
     }
 
     rank.addEventListener("change",updateVerification);
-    form.querySelectorAll('[name="verificationType"]').forEach(input=>input.addEventListener("change",()=>{
-      clipArea.classList.toggle("open",input.checked&&input.value==="clip");
-    }));
+
+    form.querySelectorAll('[name="verificationType"]').forEach(input=>{
+      input.addEventListener("change",()=>{
+        clipArea.classList.toggle("open",input.checked&&input.value==="clip");
+      });
+    });
 
     form.addEventListener("submit",async event=>{
       event.preventDefault();
-      const data=new FormData(form),username=data.get("username").trim(),requestedRank=data.get("rank"),verificationType=data.get("verificationType");
-      const avatarFile=data.get("avatarFile"),clipFile=data.get("clipFile");
+
+      const data=new FormData(form);
+      const username=data.get("username").trim();
+      const requestedRank=data.get("rank");
+      const verificationType=data.get("verificationType");
+      const avatarFile=data.get("avatarFile");
+      const clipFile=data.get("clipFile");
 
       if(requestedRank!=="BVR"&&!verificationType){
         message.className="error";
@@ -102,18 +179,45 @@
       }
 
       message.className="";
-      message.textContent="TRANSMITTING APPLICATION...";
-
-      const {data:existing,error:checkError}=await supabase.from("clan_member_applications").select("id").ilike("username",username).limit(1);
-      if(checkError||existing.length){
-        message.className="error";
-        message.textContent=checkError?`Submission check failed: ${checkError.message}`:"AN APPLICATION FOR THIS USERNAME ALREADY EXISTS.";
-        return;
-      }
+      message.textContent="CHECKING ACCOUNT ACCESS...";
 
       try{
-        const avatarUrl=avatarFile?.name ? await upload(avatarFile,"avatars",10*1024*1024) : data.get("avatarUrl").trim()||null;
-        const uploadedClip=clipFile?.name ? await upload(clipFile,"application-clips",100*1024*1024) : null;
+        const ban=await getBan(username);
+
+        if(ban){
+          localStorage.removeItem("blackVelvetProfile");
+          localStorage.setItem("blackVelvetBanned","true");
+          message.className="error";
+          message.textContent="THIS USERNAME OR DEVICE IS BANNED FROM CREATING ACCOUNTS.";
+          return;
+        }
+
+        localStorage.removeItem("blackVelvetBanned");
+
+        const {data:existing,error:checkError}=await supabase
+          .from("clan_member_applications")
+          .select("id")
+          .ilike("username",username)
+          .limit(1);
+
+        if(checkError||existing.length){
+          message.className="error";
+          message.textContent=checkError
+            ? `Submission check failed: ${checkError.message}`
+            : "AN APPLICATION FOR THIS USERNAME ALREADY EXISTS.";
+          return;
+        }
+
+        message.textContent="TRANSMITTING APPLICATION...";
+
+        const avatarUrl=avatarFile?.name
+          ? await upload(avatarFile,"avatars",10*1024*1024)
+          : data.get("avatarUrl").trim()||null;
+
+        const uploadedClip=clipFile?.name
+          ? await upload(clipFile,"application-clips",100*1024*1024)
+          : null;
+
         const {error}=await supabase.from("clan_member_applications").insert({
           username,
           password_hash:await hashPassword(data.get("password")),
@@ -125,7 +229,9 @@
           clip_url:uploadedClip||data.get("clipUrl").trim()||null,
           status:"Pending"
         });
+
         if(error) throw error;
+
         form.reset();
         updateVerification();
         message.textContent="APPLICATION RECEIVED. STAFF WILL REVIEW IT.";
