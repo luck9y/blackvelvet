@@ -88,7 +88,7 @@
 
     .game-tabs {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 10px;
     }
 
@@ -214,6 +214,10 @@
       text-align: center;
     }
 
+    @media (max-width: 850px) {
+      .game-tabs { grid-template-columns: repeat(3, 1fr); }
+    }
+
     @media (max-width: 700px) {
       main { width: min(94%, 1040px); }
       .arcade-shell { padding: 12px; }
@@ -253,7 +257,14 @@
       "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk"
     );
 
-    const games = ["Minecraft Java", "Minecraft Bedrock", "Valorant", "Fortnite"];
+    const games = [
+      "Minecraft Java",
+      "Minecraft Bedrock",
+      "Valorant",
+      "Fortnite",
+      "Rocket League"
+    ];
+
     const rankOrder = { Goat: 0, Elite: 1, Legend: 2, Decent: 3, Rookie: 4, BVR: 5 };
     const tabs = document.getElementById("gameTabs");
     const panel = document.getElementById("rankingPanel");
