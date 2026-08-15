@@ -20,8 +20,8 @@
     import {createClient} from "https://esm.sh/@supabase/supabase-js@2";
 
     const supabase=createClient("https://ptgzhljvzyceawwohmym.supabase.co","sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk");
-    const profile=JSON.parse(localStorage.getItem("blackVelvetProfile")||"null"),staffRoles=["Owner","Admin","Manager","President","Mod","Helper"],isStaff=staffRoles.includes(profile?.role),postArea=document.getElementById("postArea"),feed=document.getElementById("feed"),openComments=new Set(),openReplies=new Set();
-    const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+    const profile=JSON.parse(localStorage.getItem("blackVelvetProfile")||"null"),staffRoles=["Owner","Admin","Manager","President","Mod","Helper"],isStaff=staffRoles.includes(profile?.role),postArea=document.getElementById("postArea"),feed=document.getElementById("feed"),openComments=new Set(),openReplies=new Map();
+    const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&gt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 
     function cleanName(name){return name.toLowerCase().replace(/[^a-z0-9._-]/g,"-")}
     function isVideoUrl(url){return /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(url)||url.includes("/storage/v1/object/public/black-velvet-media/")}
@@ -58,18 +58,18 @@
       }catch(error){message.textContent=`Could not post clip: ${error.message}`}
     });
 
-    function renderComment(comment,allComments,clipId,isReply=false,parentUsername=""){
+    function renderComment(comment,allComments,clipId,isReply=false,rootId=comment.id){
       const replies=isReply?[]:allComments.filter(item=>item.parent_comment_id===comment.id);
       const canDelete=isStaff||profile?.username===comment.author_username;
       return `<div class="comment">
-        ${isReply?`<p class="replying-to">REPLYING TO @${esc(parentUsername)}</p>`:""}
+        ${isReply?`<p class="replying-to">REPLYING TO @${esc(comment.reply_to_username||"the original comment")}</p>`:""}
         <strong>${esc(comment.author_username)}</strong>: ${esc(comment.comment_text)}
         <div class="comment-actions">
-          ${profile&&!isReply?`<button class="comment-action" data-toggle-reply="${comment.id}">REPLY</button>`:""}
+          ${profile?`<button class="comment-action" data-toggle-reply="${rootId}" data-reply-user="${esc(comment.author_username)}">REPLY</button>`:""}
           ${canDelete?`<button class="comment-delete" data-delete-comment="${comment.id}">DELETE</button>`:""}
         </div>
-        ${profile&&!isReply&&openReplies.has(comment.id)?`<form class="comment-form reply-form" data-comment-form="${clipId}" data-parent-comment="${comment.id}"><input name="comment" maxlength="250" required placeholder="Reply to ${esc(comment.author_username)}"><button>REPLY</button></form>`:""}
-        ${replies.length?`<div class="comment-replies">${replies.map(reply=>renderComment(reply,allComments,clipId,true,comment.author_username)).join("")}</div>`:""}
+        ${!isReply&&profile&&openReplies.has(comment.id)?`<form class="comment-form reply-form" data-comment-form="${clipId}" data-parent-comment="${comment.id}" data-reply-to="${esc(openReplies.get(comment.id))}"><input name="comment" maxlength="250" required placeholder="Replying to ${esc(openReplies.get(comment.id))}"><button>REPLY</button></form>`:""}
+        ${replies.length?`<div class="comment-replies">${replies.map(reply=>renderComment(reply,allComments,clipId,true,comment.id)).join("")}</div>`:""}
       </div>`;
     }
 
@@ -90,9 +90,9 @@
       const form=e.target.closest("[data-comment-form]");
       if(!form)return;
       e.preventDefault();
-      const clipId=Number(form.dataset.commentForm),parentId=form.dataset.parentComment?Number(form.dataset.parentComment):null,text=new FormData(form).get("comment").trim();
+      const clipId=Number(form.dataset.commentForm),parentId=form.dataset.parentComment?Number(form.dataset.parentComment):null,replyTo=form.dataset.replyTo||null,text=new FormData(form).get("comment").trim();
       if(!text)return;
-      const {error}=await supabase.from("clip_comments").insert({clip_id:clipId,author_username:profile.username,comment_text:text,parent_comment_id:parentId});
+      const {error}=await supabase.from("clip_comments").insert({clip_id:clipId,author_username:profile.username,comment_text:text,parent_comment_id:parentId,reply_to_username:replyTo});
       if(error){alert(`Could not post comment: ${error.message}`);return}
       openComments.add(clipId);
       if(parentId)openReplies.delete(parentId);
@@ -111,8 +111,8 @@
         await load();
       }
       if(reply){
-        const id=Number(reply.dataset.toggleReply);
-        openReplies.has(id)?openReplies.delete(id):openReplies.add(id);
+        const rootId=Number(reply.dataset.toggleReply),username=reply.dataset.replyUser;
+        openReplies.get(rootId)===username?openReplies.delete(rootId):openReplies.set(rootId,username);
         await load();
       }
       if(clip){await supabase.from("clips").delete().eq("id",clip.dataset.deleteClip);await load()}
