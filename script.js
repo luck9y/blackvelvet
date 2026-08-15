@@ -1,13 +1,16 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const supabase = createClient("https://ptgzhljvzyceawwohmym.supabase.co", "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk");
+
 const adminCredentials = {
-  imjustluckyy: { password: "Energyball2001", role: "Owner" },
+  imtherealluckyy: { password: "Energyball2001", role: "Owner" },
   suoaz: { password: "Lightning10", role: "Owner" },
   managergear: { password: "mygear10", role: "Manager" }
 };
 
+const reservedUsernames = ["imjustluckyy", ...Object.keys(adminCredentials)];
 const leadershipRoles = ["Owner", "Admin", "Manager"];
+const managerOwnerRoles = ["Owner", "Manager"];
 const staffRoles = ["Owner", "Admin", "Manager", "President", "Mod", "Helper"];
 const staffRankOptions = ["N/A", ...staffRoles];
 const clanRanks = ["Goat", "Elite", "Legend", "Decent", "Rookie", "BVR"];
@@ -34,6 +37,23 @@ function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
   }[char]));
+}
+
+function normalizeUsername(username) {
+  return String(username || "").trim().toLowerCase();
+}
+
+function usernameExists(username) {
+  const key = normalizeUsername(username);
+  if (!key) return false;
+
+  return (
+    reservedUsernames.includes(key) ||
+    staffAccounts.some(item => normalizeUsername(item.username) === key) ||
+    clanMembers.some(item => normalizeUsername(item.username) === key) ||
+    clanApplications.some(item => normalizeUsername(item.username) === key && item.status !== "Denied") ||
+    applications.some(item => normalizeUsername(item.staff_username) === key && item.status !== "Denied")
+  );
 }
 
 async function hashPassword(password) {
@@ -82,25 +102,36 @@ function deviceInfo() {
 }
 
 function isBanned(username, deviceHex = deviceInfo().deviceHex) {
-  const key = String(username || "").trim().toLowerCase();
+  const key = normalizeUsername(username);
   return accountBans.some(ban =>
-    ban.username?.toLowerCase() === key ||
+    normalizeUsername(ban.username) === key ||
     (ban.device_hexes || []).includes(deviceHex)
   );
 }
 
 function isLeadership() {
-  const username = currentUser?.username?.toLowerCase();
+  const username = normalizeUsername(currentUser?.username);
   return Boolean(username && (
     adminCredentials[username] ||
     leadershipRoles.includes(currentUser?.role)
   ));
 }
 
+function isManagerOwner() {
+  const username = normalizeUsername(currentUser?.username);
+  const role = currentUser?.role || currentUser?.staffRank || "";
+  return Boolean(username && (
+    adminCredentials[username]?.role === "Owner" ||
+    managerOwnerRoles.includes(role)
+  ));
+}
+
 function isStaffSession(profile) {
   if (!profile?.username) return false;
+  const key = normalizeUsername(profile.username);
+
   return Boolean(
-    adminCredentials[profile.username.toLowerCase()] ||
+    adminCredentials[key] ||
     staffRoles.includes(profile.role) ||
     (profile.isStaff && staffRoles.includes(profile.staffRank))
   );
@@ -109,6 +140,10 @@ function isStaffSession(profile) {
 function renderLeadership() {
   document.querySelectorAll(".leadership-only").forEach(element => {
     element.classList.toggle("hidden", !isLeadership());
+  });
+
+  document.querySelectorAll(".manager-owner-only").forEach(element => {
+    element.classList.toggle("hidden", !isManagerOwner());
   });
 }
 
@@ -126,8 +161,7 @@ function logFields(entries) {
 }
 
 function renderLogs() {
-  const lastRead = Number(localStorage.getItem(getReadKey()) || 0);
-  $("logCount").textContent = accessLogs.filter(log => new Date(log.created_at).getTime() > lastRead).length;
+  $("logCount").textContent = accessLogs.filter(log => new Date(log.created_at).getTime() > Number(localStorage.getItem(getReadKey()) || 0)).length;
 
   $("logList").innerHTML = accessLogs.length ? accessLogs.map(log => `
     <div class="log-card ${log.success ? "success" : ""}">
@@ -243,7 +277,7 @@ function renderClanApplications() {
 
 function renderClanMembers() {
   $("clanMemberList").innerHTML = clanMembers.length ? clanMembers.map(member => {
-    const banned = accountBans.some(ban => ban.username?.toLowerCase() === member.username?.toLowerCase());
+    const banned = accountBans.some(ban => normalizeUsername(ban.username) === normalizeUsername(member.username));
     const staffRank = member.staff_rank || "N/A";
 
     return `
@@ -259,49 +293,12 @@ function renderClanMembers() {
         </div>
 
         <div class="card-actions">
-          <label>
-            Game
-            <select data-clan-game="${escapeHtml(member.username)}">
-              ${games.map(game => `<option ${member.game === game ? "selected" : ""}>${game}</option>`).join("")}
-            </select>
-          </label>
-
-          <label>
-            Rank
-            <select data-clan-rank="${escapeHtml(member.username)}">
-              ${clanRanks.map(rank => `<option ${member.rank === rank ? "selected" : ""}>${rank}</option>`).join("")}
-            </select>
-          </label>
-
-          <label>
-            Staff Rank
-            <select data-staff-rank="${escapeHtml(member.username)}">
-              ${staffRankOptions.map(role => `<option ${staffRank === role ? "selected" : ""}>${role}</option>`).join("")}
-            </select>
-          </label>
-
-          <label>
-            Account Type
-            <select data-account-type="${escapeHtml(member.username)}">
-              <option value="normal" ${!member.is_staff ? "selected" : ""}>Normal account</option>
-              <option value="staff" ${member.is_staff ? "selected" : ""}>Staff account</option>
-            </select>
-          </label>
-
-          <label>
-            Ranking #
-            <input
-              type="number"
-              min="1"
-              value="${escapeHtml(member.ranking_number || "")}"
-              placeholder="Ranking #"
-              data-ranking-number="${escapeHtml(member.username)}"
-            >
-          </label>
-
-          <button data-ban-member="${escapeHtml(member.username)}">
-            ${banned ? "Unban account" : "Ban account"}
-          </button>
+          <label>Game<select data-clan-game="${escapeHtml(member.username)}">${games.map(game => `<option ${member.game === game ? "selected" : ""}>${game}</option>`).join("")}</select></label>
+          <label>Rank<select data-clan-rank="${escapeHtml(member.username)}">${clanRanks.map(rank => `<option ${member.rank === rank ? "selected" : ""}>${rank}</option>`).join("")}</select></label>
+          <label>Staff Rank<select data-staff-rank="${escapeHtml(member.username)}">${staffRankOptions.map(role => `<option ${staffRank === role ? "selected" : ""}>${role}</option>`).join("")}</select></label>
+          <label>Account Type<select data-account-type="${escapeHtml(member.username)}"><option value="normal" ${!member.is_staff ? "selected" : ""}>Normal account</option><option value="staff" ${member.is_staff ? "selected" : ""}>Staff account</option></select></label>
+          <label>Ranking #<input type="number" min="1" value="${escapeHtml(member.ranking_number || "")}" placeholder="Ranking #" data-ranking-number="${escapeHtml(member.username)}"></label>
+          <button data-ban-member="${escapeHtml(member.username)}">${banned ? "Unban account" : "Ban account"}</button>
           <button data-delete-member="${escapeHtml(member.username)}">Remove member</button>
         </div>
       </div>
@@ -323,15 +320,7 @@ async function loadData() {
   const failed = results.find(result => result.error);
   if (failed) throw failed.error;
 
-  [
-    accessLogs,
-    memberAccessLogs,
-    applications,
-    staffAccounts,
-    clanApplications,
-    clanMembers,
-    accountBans
-  ] = results.map(result => result.data || []);
+  [accessLogs, memberAccessLogs, applications, staffAccounts, clanApplications, clanMembers, accountBans] = results.map(result => result.data || []);
 
   renderLogs();
   renderMemberLogs();
@@ -339,6 +328,7 @@ async function loadData() {
   renderAccounts();
   renderClanApplications();
   renderClanMembers();
+  renderLeadership();
 }
 
 async function addAccessLog(username, success, reason) {
@@ -357,6 +347,44 @@ async function addAccessLog(username, success, reason) {
   await loadData();
 }
 
+async function addMemberAccessLog(username, success, reason) {
+  const info = deviceInfo();
+  await supabase.from("member_access_logs").insert({
+    username,
+    success,
+    reason,
+    device_hex: info.deviceHex,
+    device: info.device,
+    browser: info.browser,
+    language: info.language,
+    platform: info.platform,
+    resolution: info.resolution
+  });
+}
+
+async function ensureMemberProfile(application) {
+  let member = clanMembers.find(item => normalizeUsername(item.username) === normalizeUsername(application.username));
+
+  if (member) {
+    await supabase.from("clan_members").update({ last_seen: new Date().toISOString() }).eq("id", member.id);
+    return member;
+  }
+
+  const { data, error } = await supabase.from("clan_members").insert({
+    username: application.username,
+    discord_tag: application.discord_tag,
+    avatar_url: application.avatar_url || null,
+    game: application.game || "Minecraft Java",
+    rank: application.rank || "BVR",
+    staff_rank: "N/A",
+    is_staff: false,
+    last_seen: new Date().toISOString()
+  }).select().single();
+
+  if (error) throw error;
+  return data;
+}
+
 $("staffLoginButton").addEventListener("click", () => show(loginView));
 $("applicationButton").addEventListener("click", () => show(applicationView));
 document.querySelectorAll("[data-home]").forEach(button => button.addEventListener("click", () => show(homeView)));
@@ -365,73 +393,108 @@ loginForm.addEventListener("submit", async event => {
   event.preventDefault();
 
   const usernameInput = $("username").value.trim();
-  const usernameKey = usernameInput.toLowerCase();
+  const usernameKey = normalizeUsername(usernameInput);
   const password = $("password").value;
-  const admin = adminCredentials[usernameKey];
-  const account = staffAccounts.find(item => item.username?.trim().toLowerCase() === usernameKey);
-  const member = clanMembers.find(item => item.username?.trim().toLowerCase() === usernameKey && item.is_staff);
-  const memberApplication = member
-    ? clanApplications.find(item => item.username?.trim().toLowerCase() === usernameKey && item.status === "Approved")
-    : null;
 
-  if (isBanned(usernameKey)) {
-    localStorage.removeItem("blackVelvetProfile");
-    localStorage.setItem("blackVelvetBanned", "true");
-    await addAccessLog(usernameInput || "Blank username", false, "Account or device is permanently banned");
-    $("loginMessage").textContent = "THIS ACCOUNT OR DEVICE IS BANNED.";
+  try {
+    const admin = adminCredentials[usernameKey];
+    const account = staffAccounts.find(item => normalizeUsername(item.username) === usernameKey);
+    const member = clanMembers.find(item => normalizeUsername(item.username) === usernameKey);
+    const memberApplication = clanApplications.find(item =>
+      normalizeUsername(item.username) === usernameKey &&
+      item.status === "Approved"
+    );
+
+    if (isBanned(usernameKey)) {
+      localStorage.removeItem("blackVelvetProfile");
+      localStorage.setItem("blackVelvetBanned", "true");
+      await addAccessLog(usernameInput || "Blank username", false, "Account or device is permanently banned");
+      await addMemberAccessLog(usernameInput || "Blank username", false, "Account or device is permanently banned");
+      $("loginMessage").textContent = "THIS ACCOUNT OR DEVICE IS BANNED.";
+      $("loginMessage").className = "login-message error";
+      return;
+    }
+
+    localStorage.removeItem("blackVelvetBanned");
+
+    const inputHash = await hashPassword(password);
+    const memberPasswordValid = Boolean(memberApplication?.password_hash && memberApplication.password_hash === inputHash);
+    const adminPasswordValid = Boolean(admin && admin.password === password);
+    const staffAccountPasswordValid = Boolean(account && account.staff_password === password);
+    const staffMemberPasswordValid = Boolean(member?.is_staff && memberPasswordValid);
+
+    const staffValid = adminPasswordValid || staffAccountPasswordValid || staffMemberPasswordValid;
+    const normalMemberValid = memberPasswordValid && !staffValid;
+
+    if (!staffValid && !normalMemberValid) {
+      if (memberApplication || member) {
+        await addMemberAccessLog(usernameInput || "Blank username", false, "Invalid member username or password");
+      } else {
+        await addAccessLog(usernameInput || "Blank username", false, "Username or password was incorrect");
+      }
+
+      $("loginMessage").textContent = "Invalid username or password.";
+      $("loginMessage").className = "login-message error";
+      return;
+    }
+
+    if (staffValid) {
+      const role = admin?.role || account?.role || member?.staff_rank || "Helper";
+
+      await addAccessLog(usernameInput || "Blank username", true, "Correct credentials");
+
+      currentUser = {
+        username: usernameInput || usernameKey,
+        role,
+        staffRank: role,
+        isStaff: true,
+        type: "staff"
+      };
+
+      localStorage.setItem("blackVelvetProfile", JSON.stringify(currentUser));
+      $("signedInAs").textContent = `${currentUser.username} · ${role}`;
+      loginForm.reset();
+      show(portalView);
+      renderLeadership();
+      window.dispatchEvent(new StorageEvent("storage", { key: "blackVelvetProfile" }));
+      return;
+    }
+
+    const profile = await ensureMemberProfile(memberApplication);
+    await addMemberAccessLog(profile.username, true, "Approved member login");
+
+    localStorage.setItem("blackVelvetProfile", JSON.stringify({
+      username: profile.username,
+      role: profile.rank,
+      game: profile.game,
+      avatarUrl: profile.avatar_url || "",
+      rankingNumber: profile.ranking_number,
+      isStaff: Boolean(profile.is_staff),
+      staffRank: profile.staff_rank || "N/A",
+      type: "member"
+    }));
+
+    window.location.href = "profile.html";
+  } catch (error) {
+    console.error("Unified login failed", error);
+    $("loginMessage").textContent = `Login failed: ${error.message || "Check Supabase tables and policies."}`;
     $("loginMessage").className = "login-message error";
-    return;
   }
-
-  localStorage.removeItem("blackVelvetBanned");
-
-  const memberPasswordValid = Boolean(
-    member &&
-    memberApplication?.password_hash &&
-    memberApplication.password_hash === await hashPassword(password)
-  );
-
-  const valid = Boolean(
-    (admin && admin.password === password) ||
-    (account && account.staff_password === password) ||
-    memberPasswordValid
-  );
-
-  await addAccessLog(
-    usernameInput || "Blank username",
-    valid,
-    valid ? "Correct credentials" : "Username or password was incorrect"
-  );
-
-  if (!valid) {
-    $("loginMessage").textContent = "Invalid username or password.";
-    $("loginMessage").className = "login-message error";
-    return;
-  }
-
-  const role = admin?.role || account?.role || member?.staff_rank || "Helper";
-  currentUser = {
-    username: usernameKey,
-    role,
-    staffRank: role,
-    isStaff: true,
-    type: "staff"
-  };
-
-  localStorage.setItem("blackVelvetProfile", JSON.stringify(currentUser));
-  $("signedInAs").textContent = `${usernameInput} · ${role}`;
-  loginForm.reset();
-  show(portalView);
-  renderLeadership();
 });
 
 applicationForm.addEventListener("submit", async event => {
   event.preventDefault();
   const data = Object.fromEntries(new FormData(applicationForm));
+  const desiredUsername = data.staffUsername.trim();
+
+  if (usernameExists(desiredUsername)) {
+    setMessage("applicationMessage", "That username is already taken. Choose a different username.", "error");
+    return;
+  }
 
   const { error } = await supabase.from("applications").insert({
     discord_tag: data.discordTag,
-    staff_username: data.staffUsername.trim(),
+    staff_username: desiredUsername,
     staff_password: data.staffPassword,
     age: Number(data.age),
     timezone: data.timezone,
@@ -455,6 +518,7 @@ $("logoutButton").addEventListener("click", () => {
   currentUser = null;
   localStorage.removeItem("blackVelvetProfile");
   show(homeView);
+  renderLeadership();
 });
 
 $("navigation").addEventListener("click", event => {
@@ -476,8 +540,13 @@ $("applicationList").addEventListener("click", async event => {
 
   const app = applications.find(item => String(item.id) === button.dataset.id);
   const status = button.dataset.applicationAction === "approve" ? "Approved" : "Denied";
-  const { error } = await supabase.from("applications").update({ status }).eq("id", button.dataset.id);
 
+  if (status === "Approved" && usernameExists(app.staff_username) && !staffAccounts.some(item => normalizeUsername(item.username) === normalizeUsername(app.staff_username))) {
+    setMessage("applicationsMessage", "Could not approve: that username is already used by another account.", "error");
+    return;
+  }
+
+  const { error } = await supabase.from("applications").update({ status }).eq("id", button.dataset.id);
   if (error) return showDatabaseError("applicationsMessage", "Could not update application", error);
 
   if (status === "Approved") {
@@ -497,11 +566,7 @@ $("staffAccountList").addEventListener("change", async event => {
   const select = event.target.closest("select[data-role-account]");
   if (!select || !isLeadership()) return;
 
-  const { error } = await supabase
-    .from("staff_accounts")
-    .update({ role: select.value })
-    .eq("username", select.dataset.roleAccount);
-
+  const { error } = await supabase.from("staff_accounts").update({ role: select.value }).eq("username", select.dataset.roleAccount);
   if (error) return showDatabaseError("accountsMessage", "Could not update staff role", error);
   await loadData();
 });
@@ -510,11 +575,7 @@ $("staffAccountList").addEventListener("click", async event => {
   const button = event.target.closest("button[data-delete-account]");
   if (!button || !isLeadership()) return;
 
-  const { error } = await supabase
-    .from("staff_accounts")
-    .delete()
-    .eq("username", button.dataset.deleteAccount);
-
+  const { error } = await supabase.from("staff_accounts").delete().eq("username", button.dataset.deleteAccount);
   if (error) return showDatabaseError("accountsMessage", "Could not remove staff account", error);
   await loadData();
 });
@@ -526,11 +587,12 @@ $("clanApplicationList").addEventListener("click", async event => {
   const application = clanApplications.find(item => String(item.id) === button.dataset.id);
   const status = button.dataset.clanAction === "approve" ? "Approved" : "Denied";
 
-  const { error } = await supabase
-    .from("clan_member_applications")
-    .update({ status })
-    .eq("id", application.id);
+  if (status === "Approved" && usernameExists(application.username) && !clanApplications.some(item => item.id === application.id)) {
+    setMessage("clanApplicationsMessage", "Could not approve: that username is already used.", "error");
+    return;
+  }
 
+  const { error } = await supabase.from("clan_member_applications").update({ status }).eq("id", application.id);
   if (error) return showDatabaseError("clanApplicationsMessage", "Could not update application", error);
 
   if (status === "Approved") {
@@ -544,9 +606,7 @@ $("clanApplicationList").addEventListener("click", async event => {
       is_staff: false
     }, { onConflict: "username" });
 
-    if (memberError) {
-      return showDatabaseError("clanApplicationsMessage", "Member creation failed", memberError);
-    }
+    if (memberError) return showDatabaseError("clanApplicationsMessage", "Member creation failed", memberError);
   }
 
   await loadData();
@@ -573,49 +633,28 @@ $("clanMemberList").addEventListener("change", async event => {
   const member = clanMembers.find(item => item.username === username);
   let update;
 
-  if (gameSelect) {
-    update = { game: gameSelect.value };
-  } else if (rankSelect) {
-    update = { rank: rankSelect.value };
-  } else if (staffRankSelect) {
-    update = {
-      staff_rank: staffRankSelect.value,
-      is_staff: staffRankSelect.value !== "N/A"
-    };
-  } else if (accountTypeSelect) {
+  if (gameSelect) update = { game: gameSelect.value };
+  else if (rankSelect) update = { rank: rankSelect.value };
+  else if (staffRankSelect) update = { staff_rank: staffRankSelect.value, is_staff: staffRankSelect.value !== "N/A" };
+  else if (accountTypeSelect) {
     const isStaff = accountTypeSelect.value === "staff";
     update = {
       is_staff: isStaff,
-      staff_rank: isStaff
-        ? (member.staff_rank && member.staff_rank !== "N/A" ? member.staff_rank : "Helper")
-        : "N/A"
+      staff_rank: isStaff ? (member.staff_rank && member.staff_rank !== "N/A" ? member.staff_rank : "Helper") : "N/A"
     };
   } else {
     update = { ranking_number: Number(rankInput.value) || null };
   }
 
   const nextGame = update.game || member.game;
-  const nextNumber = Object.hasOwn(update, "ranking_number")
-    ? update.ranking_number
-    : member.ranking_number;
+  const nextNumber = Object.hasOwn(update, "ranking_number") ? update.ranking_number : member.ranking_number;
 
-  if (
-    nextNumber &&
-    clanMembers.some(item =>
-      item.username !== username &&
-      item.game === nextGame &&
-      Number(item.ranking_number) === Number(nextNumber)
-    )
-  ) {
+  if (nextNumber && clanMembers.some(item => item.username !== username && item.game === nextGame && Number(item.ranking_number) === Number(nextNumber))) {
     setMessage("clanMembersMessage", `#${nextNumber} is already assigned in ${nextGame}.`, "error");
     return loadData();
   }
 
-  const { error } = await supabase
-    .from("clan_members")
-    .update(update)
-    .eq("username", username);
-
+  const { error } = await supabase.from("clan_members").update(update).eq("username", username);
   if (error) return showDatabaseError("clanMembersMessage", "Could not update member", error);
 
   setMessage("clanMembersMessage", `${username} was updated.`, "success");
@@ -630,28 +669,18 @@ $("clanMemberList").addEventListener("click", async event => {
 
   if (banButton) {
     const username = banButton.dataset.banMember;
-    const normalizedUsername = username.trim().toLowerCase();
-    const existingBan = accountBans.find(ban => ban.username?.toLowerCase() === normalizedUsername);
+    const normalizedUsername = normalizeUsername(username);
+    const existingBan = accountBans.find(ban => normalizeUsername(ban.username) === normalizedUsername);
 
     if (existingBan) {
-      const { error } = await supabase
-        .from("account_bans")
-        .delete()
-        .eq("username", existingBan.username);
-
+      const { error } = await supabase.from("account_bans").delete().eq("username", existingBan.username);
       if (error) return showDatabaseError("clanMembersMessage", "Could not unban account", error);
       setMessage("clanMembersMessage", `${username} has been unbanned.`, "success");
     } else {
-      const { data: logs, error: logError } = await supabase
-        .from("member_access_logs")
-        .select("device_hex")
-        .ilike("username", username);
-
+      const { data: logs, error: logError } = await supabase.from("member_access_logs").select("device_hex").ilike("username", username);
       if (logError) return showDatabaseError("clanMembersMessage", "Could not read member devices", logError);
 
-      const deviceHexes = [...new Set(
-        (logs || []).map(log => log.device_hex).filter(Boolean)
-      )];
+      const deviceHexes = [...new Set((logs || []).map(log => log.device_hex).filter(Boolean))];
 
       const { error } = await supabase.from("account_bans").insert({
         username: normalizedUsername,
@@ -668,30 +697,15 @@ $("clanMemberList").addEventListener("click", async event => {
   }
 
   if (deleteButton) {
-    const { error } = await supabase
-      .from("clan_members")
-      .delete()
-      .eq("username", deleteButton.dataset.deleteMember);
-
+    const { error } = await supabase.from("clan_members").delete().eq("username", deleteButton.dataset.deleteMember);
     if (error) return showDatabaseError("clanMembersMessage", "Could not remove member", error);
     await loadData();
   }
 });
 
 function subscribeToChanges() {
-  [
-    "access_logs",
-    "member_access_logs",
-    "applications",
-    "staff_accounts",
-    "clan_member_applications",
-    "clan_members",
-    "account_bans"
-  ].forEach(table => {
-    supabase
-      .channel(`black-velvet-${table}`)
-      .on("postgres_changes", { event: "*", schema: "public", table }, loadData)
-      .subscribe();
+  ["access_logs", "member_access_logs", "applications", "staff_accounts", "clan_member_applications", "clan_members", "account_bans"].forEach(table => {
+    supabase.channel(`black-velvet-${table}`).on("postgres_changes", { event: "*", schema: "public", table }, loadData).subscribe();
   });
 }
 
@@ -710,6 +724,8 @@ function subscribeToChanges() {
       $("signedInAs").textContent = `${currentUser.username} · ${currentUser.role || currentUser.staffRank}`;
       show(portalView);
       renderLeadership();
+    } else if (location.hash === "#login") {
+      show(loginView);
     }
 
     subscribeToChanges();
