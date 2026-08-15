@@ -53,6 +53,19 @@
     .console-details pre{max-height:300px;margin:13px 0 0;padding:14px;overflow:auto;border:1px solid var(--line);border-radius:7px;color:#d4dde2;background:#030506;font:12px/1.65 Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
     .home-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
     .home-actions a{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+
+    .unified-section{margin-top:30px;padding-top:25px;border-top:1px solid var(--line)}
+    .unified-section:first-of-type{margin-top:18px;padding-top:0;border-top:0}
+    .unified-section h2{margin:0;color:var(--silver);font-family:Cinzel,Georgia,serif;font-size:22px;letter-spacing:2px}
+    .unified-section .muted{margin-top:8px}
+    .login-log-group{margin-top:24px}
+    .login-log-group h2{display:flex;align-items:center;gap:10px}
+    .login-log-group h2::before{content:"";width:10px;height:10px;border-radius:50%;background:#168cff;box-shadow:0 0 14px rgba(22,140,255,.75)}
+    .clan-login-group h2::before{background:#050505;box-shadow:0 0 0 1px #777}
+    .staff-login-list .log-card{border-color:rgba(22,140,255,.72);background:linear-gradient(135deg,rgba(14,61,105,.34),rgba(5,8,11,.94))}
+    .staff-login-list .log-status{color:#72b9ff}
+    .clan-login-list .log-card{border:1px solid #050505;background:linear-gradient(135deg,rgba(25,25,25,.55),rgba(5,8,11,.96));box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+    .clan-login-list .log-status{color:#e1e1e1}
     @media(max-width:760px){.app-shell{width:min(92%,1180px)}.home-card{padding:38px 22px}.user-area{flex-wrap:wrap;justify-content:flex-end}.console-toolbar{align-items:stretch;flex-direction:column}.staff-feature-grid{grid-template-columns:1fr}}
   </style>
 </head>
@@ -117,10 +130,8 @@
             <button class="nav-button" data-panel="abuseGuide">Abuse Guide</button>
             <button class="nav-button" data-panel="tryoutGuide">Tryout Guide</button>
             <button class="nav-button" data-panel="ticketGuide">Ticket Guide</button>
-            <button class="nav-button leadership-only" data-panel="loginLogs">Staff Login Logs <span id="logCount" class="count">0</span></button>
-            <button class="nav-button leadership-only" data-panel="memberLoginLogs">Member Login Logs <span id="memberLogCount" class="count">0</span></button>
-            <button class="nav-button leadership-only" data-panel="applications">Staff Applications <span id="applicationCount" class="count">0</span></button>
-            <button class="nav-button leadership-only" data-panel="clanApplications">Clan Applications <span id="clanApplicationCount" class="count">0</span></button>
+            <button class="nav-button leadership-only" data-panel="loginLogs">Login Logs <span id="logCount" class="count">0</span><span id="memberLogCount" class="count">0</span></button>
+            <button class="nav-button leadership-only" data-panel="applications">Applications <span id="applicationCount" class="count">0</span><span id="clanApplicationCount" class="count">0</span></button>
             <button class="nav-button leadership-only" data-panel="clanMembers">Clan Members</button>
             <button class="nav-button leadership-only" data-panel="staffAccounts">Staff Accounts</button>
             <button class="nav-button manager-owner-only hidden" data-panel="systemConsole">Console <span id="consoleCount" class="count">0</span></button>
@@ -135,38 +146,46 @@
 
           <article id="loginLogs" class="panel leadership-only">
             <p class="eyebrow">SECURITY AUDIT // 05</p>
-            <h1>Staff Login Logs</h1>
-            <p class="muted">Staff login attempts, including successful and failed attempts.</p>
-            <label class="staff-search"><input data-staff-search="#logList" placeholder="Search staff login logs..." /></label>
-            <div id="logList" class="log-list"></div>
-          </article>
+            <h1>Login Logs</h1>
+            <p class="muted">Staff and clan-member login attempts are shown separately for easy identification.</p>
 
-          <article id="memberLoginLogs" class="panel leadership-only">
-            <p class="eyebrow">MEMBER ACCESS // 06</p>
-            <h1>Clan Login Logs</h1>
-            <p class="muted">Clan member login attempts, including device details and failed attempts.</p>
-            <label class="staff-search"><input data-staff-search="#memberLogList" placeholder="Search clan login logs..." /></label>
-            <div id="memberLogList" class="log-list"></div>
+            <section class="unified-section login-log-group staff-login-group">
+              <h2>Staff Logins <span class="verified-badge">BLUE</span></h2>
+              <p class="muted">Staff login attempts, including successful and failed attempts.</p>
+              <label class="staff-search"><input data-staff-search="#logList" placeholder="Search staff login logs..." /></label>
+              <div id="logList" class="log-list staff-login-list"></div>
+            </section>
+
+            <section id="memberLoginLogs" class="unified-section login-log-group clan-login-group">
+              <h2>Clan Member Logins <span class="verified-badge" style="color:#111;border-color:#555;background:#eee">BLACK</span></h2>
+              <p class="muted">Clan-member login attempts, including device details and failed attempts.</p>
+              <label class="staff-search"><input data-staff-search="#memberLogList" placeholder="Search clan-member login logs..." /></label>
+              <div id="memberLogList" class="log-list clan-login-list"></div>
+            </section>
           </article>
 
           <article id="applications" class="panel leadership-only">
-            <p class="eyebrow">LEADERSHIP // 07</p>
-            <h1>Staff Applications</h1>
-            <p id="applicationsMessage" class="action-message"></p>
-            <label class="staff-search"><input data-staff-search="#applicationList" placeholder="Search staff applications..." /></label>
-            <div id="applicationList" class="log-list"></div>
-          </article>
+            <p class="eyebrow">LEADERSHIP // 06</p>
+            <h1>Applications</h1>
+            <p class="muted">Staff and clan-member applications are managed together below.</p>
 
-          <article id="clanApplications" class="panel leadership-only">
-            <p class="eyebrow">CLAN MANAGEMENT // 08</p>
-            <h1>Clan Member Applications</h1>
-            <p id="clanApplicationsMessage" class="action-message"></p>
-            <label class="staff-search"><input data-staff-search="#clanApplicationList" placeholder="Search clan applications..." /></label>
-            <div id="clanApplicationList" class="log-list"></div>
+            <section class="unified-section">
+              <h2>Staff Applications</h2>
+              <p id="applicationsMessage" class="action-message"></p>
+              <label class="staff-search"><input data-staff-search="#applicationList" placeholder="Search staff applications..." /></label>
+              <div id="applicationList" class="log-list"></div>
+            </section>
+
+            <section id="clanApplications" class="unified-section">
+              <h2>Clan Member Applications</h2>
+              <p id="clanApplicationsMessage" class="action-message"></p>
+              <label class="staff-search"><input data-staff-search="#clanApplicationList" placeholder="Search clan applications..." /></label>
+              <div id="clanApplicationList" class="log-list"></div>
+            </section>
           </article>
 
           <article id="clanMembers" class="panel leadership-only">
-            <p class="eyebrow">CLAN MANAGEMENT // 09</p>
+            <p class="eyebrow">CLAN MANAGEMENT // 08</p>
             <h1>Clan Members</h1>
             <p class="muted">Turn any clan account into a staff account with the staff controls below.</p>
             <p id="clanMembersMessage" class="action-message"></p>
