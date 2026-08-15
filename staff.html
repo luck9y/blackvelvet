@@ -11,9 +11,9 @@
     body{margin:0;font-family:Orbitron,Arial,sans-serif}
     .app-shell{position:relative;z-index:1;width:min(1180px,90%);margin:auto;padding:28px 0 75px}
     .site-back{display:inline-flex;margin-bottom:28px;color:var(--silver);font-size:11px;font-weight:700;letter-spacing:1.8px;text-decoration:none}
-    .home-card,.login-card,.application-card,.portal{border:1px solid var(--line);border-radius:16px;background:rgba(5,8,11,.88);box-shadow:0 24px 70px #000}
+    .home-card,.login-card,.portal{border:1px solid var(--line);border-radius:16px;background:rgba(5,8,11,.88);box-shadow:0 24px 70px #000}
     .home-card{padding:50px;text-align:center}
-    .home-card h1,.login-card h1,.application-card h1,.panel h1{font-family:Cinzel,Georgia,serif;letter-spacing:3px}
+    .home-card h1,.login-card h1,.panel h1{font-family:Cinzel,Georgia,serif;letter-spacing:3px}
     .home-card h1{margin:10px 0 16px;font-size:clamp(42px,7vw,76px)}
     .home-card .muted{max-width:540px;margin:0 auto 30px;font:16px/1.75 Arial,sans-serif}
     .flower-mark{color:var(--silver);text-shadow:0 0 20px var(--silver)}
@@ -63,8 +63,7 @@
       <h1>STAFF COMMAND</h1>
       <p class="muted">Authorized Black Velvet staff access, applications, member management, and internal resources.</p>
       <div class="home-actions">
-        <button id="staffLoginButton" class="primary-button">Staff Login</button>
-        <button id="applicationButton" class="secondary-button">Staff Sign Up</button>
+        <button id="staffLoginButton" class="primary-button">Login</button>
       </div>
     </section>
 
@@ -72,8 +71,8 @@
       <button class="back-button" data-home>← Back to Staff Home</button>
       <div class="flower-mark small" aria-hidden="true">✽</div>
       <p class="eyebrow">BLACK VELVET // AUTHORIZED ACCESS</p>
-      <h1>Staff Login</h1>
-      <p class="muted">Authorized staff access only.</p>
+      <h1>Login</h1>
+      <p class="muted">Staff and clan member login are unified.</p>
 
       <form id="loginForm">
         <label for="username">Username</label>
@@ -87,34 +86,6 @@
       </form>
 
       <p class="security-note">Access attempts are audited without recording passwords.</p>
-    </section>
-
-    <section id="applicationView" class="application-card hidden">
-      <button class="back-button" data-home>← Back to Staff Home</button>
-      <p class="eyebrow">BLACK VELVET // STAFF APPLICATION</p>
-      <h1>Staff Signup</h1>
-      <p class="muted">Complete every section honestly before submitting your application.</p>
-
-      <form id="applicationForm" class="application-form">
-        <label>✓ Discord Tag<input name="discordTag" placeholder="Username#1234" required /><small>Provide the exact tag so we can verify your account.</small></label>
-        <label>✓ Desired Staff Username<input name="staffUsername" placeholder="Choose a username" required /></label>
-        <label>✓ Account Password<input name="staffPassword" type="password" minlength="6" required /></label>
-        <label>✓ Age<input name="age" type="number" min="13" required /></label>
-        <label>✓ Timezone<input name="timezone" required /></label>
-        <label>✓ Moderation / Staff Experience<textarea name="experience" rows="4" required></textarea></label>
-        <label>✓ Role applying for<select name="role" required><option value="">Select a role</option><option>Owner</option><option>Admin</option><option>Manager</option><option>President</option><option>Mod</option><option>Helper</option></select></label>
-        <label>✓ Availability<textarea name="availability" rows="3" required></textarea></label>
-        <label>✓ Why do you want to join staff?<textarea name="motivation" rows="4" required></textarea></label>
-        <label>✓ References <span class="optional">(optional)</span><textarea name="references" rows="3"></textarea></label>
-        <label class="checkbox-row"><input name="rulesAccepted" type="checkbox" required /><span>I have read and agree to follow the community and staff rules.</span></label>
-
-        <div class="form-actions">
-          <button class="primary-button" type="submit">Submit Signup</button>
-          <button id="clearApplicationButton" class="secondary-button" type="button">Clear</button>
-        </div>
-
-        <p id="applicationMessage" class="login-message" role="alert"></p>
-      </form>
     </section>
 
     <section id="portalView" class="portal hidden">
