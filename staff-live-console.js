@@ -1,142 +1,63 @@
 const SUPABASE_URL = "https://ptgzhljvzyceawwohmym.supabase.co";
 const SUPABASE_KEY = "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk";
 const STORAGE_KEY = "blackVelvetLocalConsoleErrors";
-const CHANNEL_NAME = "black-velvet-console-errors";
 
 const list = document.getElementById("consoleList");
 const count = document.getElementById("consoleCount");
 const message = document.getElementById("consoleMessage");
+const consoleButton = document.querySelector('[data-panel="systemConsole"]');
+const consolePanel = document.getElementById("systemConsole");
+const testButton = document.getElementById("testConsoleButton");
 
 const allowedRoles = ["owner", "manager"];
 const permanentOwners = ["imtherealluckyy", "suoaz"];
 
 let remoteErrors = [];
 let localErrors = [];
-let started = false;
-let lastSupabaseFailureMessage = "";
+let lastSupabaseFailure = "";
 let lastSupabaseFailureTime = 0;
 
-function esc(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, character => ({
     "&": "&amp;",
     "<": "&lt;",
     ">": "&gt;",
     '"': "&quot;",
     "'": "&#039;"
-  }[char]));
+  }[character]));
 }
 
-function safeJson(value) {
+function getProfile() {
   try {
-    return JSON.parse(value || "null");
+    return JSON.parse(localStorage.getItem("blackVelvetProfile") || "null");
   } catch {
     return null;
   }
 }
 
-function getProfile() {
-  return safeJson(localStorage.getItem("blackVelvetProfile"));
-}
-
-function flattenStorageValues(value, results = []) {
-  if (!value || results.length > 80) return results;
-
-  if (Array.isArray(value)) {
-    value.forEach(item => flattenStorageValues(item, results));
-    return results;
-  }
-
-  if (typeof value === "object") {
-    results.push(value);
-    Object.values(value).forEach(item => {
-      if (typeof item === "object") flattenStorageValues(item, results);
-    });
-  }
-
-  return results;
-}
-
-function getStoredObjects() {
-  const objects = [];
-
-  for (let index = 0; index < localStorage.length; index += 1) {
-    const key = localStorage.key(index);
-    const value = safeJson(localStorage.getItem(key));
-
-    if (value && typeof value === "object") {
-      flattenStorageValues(value, objects);
-    }
-  }
-
-  const profile = getProfile();
-  if (profile) objects.unshift(profile);
-
-  return objects;
-}
-
-function getCurrentUsername() {
-  const signedInText = document.getElementById("signedInAs")?.textContent || "";
-  const objects = getStoredObjects();
-
-  const names = objects
-    .map(item => item?.username || item?.staffUsername || item?.name || item?.displayName || item?.discordTag)
-    .filter(Boolean);
-
-  names.push(signedInText);
-
-  return names.map(name => String(name).toLowerCase()).join(" ");
-}
-
-function getCurrentRole() {
-  const signedInText = document.getElementById("signedInAs")?.textContent || "";
-  const objects = getStoredObjects();
-
-  const roles = objects
-    .map(item => item?.staffRank || item?.role || item?.rank || item?.accountType || item?.type)
-    .filter(Boolean);
-
-  roles.push(signedInText);
-
-  return roles.map(role => String(role).toLowerCase()).join(" ");
-}
-
 function canUseConsole() {
-  const username = getCurrentUsername();
-  const role = getCurrentRole();
+  const profile = getProfile();
+  const username = String(profile?.username || "").toLowerCase();
+  const role = String(profile?.role || profile?.staffRank || "").toLowerCase();
 
-  return permanentOwners.some(owner => username.includes(owner)) ||
-    allowedRoles.some(allowedRole => role.includes(allowedRole));
-}
-
-function activatePanel(panelId) {
-  document.querySelectorAll(".panel").forEach(panel => {
-    panel.classList.toggle("active-panel", panel.id === panelId);
-  });
-
-  document.querySelectorAll(".nav-button").forEach(button => {
-    button.classList.toggle("active", button.dataset.panel === panelId);
-  });
+  return permanentOwners.includes(username) ||
+    allowedRoles.includes(role);
 }
 
 function applyConsoleAccess() {
   const allowed = canUseConsole();
 
-  document.querySelectorAll(".manager-owner-only").forEach(element => {
-    element.classList.toggle("hidden", !allowed);
-    element.hidden = false;
-    if (allowed) element.style.display = "";
-  });
-
-  const consoleButton = document.querySelector('[data-panel="systemConsole"]');
-  const consolePanel = document.getElementById("systemConsole");
-
-  if (allowed) {
-    consoleButton?.classList.remove("hidden");
-    consolePanel?.classList.remove("hidden");
-  }
+  consoleButton?.classList.toggle("hidden", !allowed);
+  consolePanel?.classList.toggle("hidden", !allowed);
 
   if (!allowed && consolePanel?.classList.contains("active-panel")) {
-    activatePanel("staffGuide");
+    document.querySelectorAll(".panel").forEach(panel => {
+      panel.classList.toggle("active-panel", panel.id === "staffGuide");
+    });
+
+    document.querySelectorAll(".nav-button").forEach(button => {
+      button.classList.toggle("active", button.dataset.panel === "staffGuide");
+    });
   }
 
   return allowed;
@@ -152,64 +73,39 @@ function makeLocalError(source, errorMessage, stack = "") {
     message: String(errorMessage || "Unknown error"),
     stack_trace: stack || null,
     page_url: location.href,
-    username: profile?.username || profile?.staffUsername || null,
-    user_role: profile?.staffRank || profile?.role || profile?.rank || null,
+    username: profile?.username || null,
+    user_role: profile?.role || profile?.staffRank || null,
     device_hex: localStorage.getItem("blackVelvetDeviceHex") || null,
     browser: navigator.userAgent
   };
 }
 
-function writeLocal(payload) {
+function readLocalErrors() {
   try {
-    const current = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-    current.unshift(payload);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(current.slice(0, 500)));
-  } catch {}
-
-  localErrors.unshift(payload);
-  render();
-
-  try {
-    window.dispatchEvent(new CustomEvent("blackVelvetConsoleError", { detail: payload }));
-  } catch {}
-}
-
-async function saveRemote(payload) {
-  const { id, ...remotePayload } = payload;
-
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/system_errors`, {
-    method: "POST",
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-      "Content-Type": "application/json",
-      Prefer: "return=minimal"
-    },
-    body: JSON.stringify(remotePayload)
-  });
-
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`${response.status} ${response.statusText}${body ? ` | ${body}` : ""}`);
-  }
-}
-
-function recordSupabaseFailure(text, stack = "") {
-  const now = Date.now();
-  if (text === lastSupabaseFailureMessage && now - lastSupabaseFailureTime < 6000) return;
-
-  lastSupabaseFailureMessage = text;
-  lastSupabaseFailureTime = now;
-
-  writeLocal(makeLocalError("staff.console.supabase", text, stack));
-}
-
-function readLocal() {
-  try {
-    localErrors = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    localErrors = JSON.parse(
+      localStorage.getItem(STORAGE_KEY) || "[]"
+    );
   } catch {
     localErrors = [];
   }
+}
+
+function saveLocalError(error) {
+  try {
+    const errors = JSON.parse(
+      localStorage.getItem(STORAGE_KEY) || "[]"
+    );
+
+    errors.unshift(error);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(errors.slice(0, 500)));
+  } catch {}
+
+  localErrors.unshift(error);
+  render();
+
+  window.dispatchEvent(new CustomEvent("blackVelvetConsoleError", {
+    detail: error
+  }));
 }
 
 function uniqueErrors() {
@@ -217,12 +113,21 @@ function uniqueErrors() {
 
   return [...localErrors, ...remoteErrors]
     .filter(error => {
-      const key = `${error.id || ""}-${error.created_at}-${error.source}-${error.message}-${error.page_url}`;
+      const key = [
+        error.id,
+        error.created_at,
+        error.source,
+        error.message,
+        error.page_url
+      ].join("|");
+
       if (seen.has(key)) return false;
       seen.add(key);
       return true;
     })
-    .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))
+    .sort((a, b) =>
+      new Date(b.created_at || 0) - new Date(a.created_at || 0)
+    )
     .slice(0, 500);
 }
 
@@ -230,185 +135,229 @@ function render() {
   if (!list) return;
 
   const errors = uniqueErrors();
-  if (count) count.textContent = errors.length;
+
+  if (count) {
+    count.textContent = errors.length;
+  }
 
   if (!errors.length) {
-    list.innerHTML = `<div class="empty-state">No console errors captured yet. Click Test Live Error to verify it is working.</div>`;
-    window.dispatchEvent(new Event("staffSearchRefresh"));
+    list.innerHTML = `
+      <div class="empty-state">
+        No console errors captured yet. Click Test Live Error to verify it is working.
+      </div>
+    `;
     return;
   }
 
   list.innerHTML = errors.map(error => `
     <article class="log-card console-error-card">
       <div class="log-main">
-        <strong>${esc(error.source || "error")}</strong>
-        <span class="log-status">${esc(error.message || "Unknown error")}</span>
+        <strong>${escapeHtml(error.source || "Error")}</strong>
+        <span class="log-status">
+          ${escapeHtml(error.message || "Unknown error")}
+        </span>
       </div>
+
       <div class="log-meta">
-        <span>${esc(new Date(error.created_at || Date.now()).toLocaleString())}</span>
-        <span>${esc(error.username || "Guest")}</span>
-        <span>${esc(error.user_role || "No role")}</span>
-        <span>${esc(error.device_hex || "No device")}</span>
+        <span>${escapeHtml(new Date(error.created_at || Date.now()).toLocaleString())}</span>
+        <span>${escapeHtml(error.username || "Guest")}</span>
+        <span>${escapeHtml(error.user_role || "No role")}</span>
+        <span>${escapeHtml(error.device_hex || "No device")}</span>
       </div>
-      <p class="muted">${esc(error.page_url || "Unknown page")}</p>
+
+      <p class="muted">${escapeHtml(error.page_url || "Unknown page")}</p>
+
       ${error.stack_trace ? `
         <details class="console-details">
           <summary>STACK / DETAILS</summary>
-          <pre>${esc(error.stack_trace)}</pre>
+          <pre>${escapeHtml(error.stack_trace)}</pre>
         </details>
       ` : ""}
     </article>
   `).join("");
-
-  window.dispatchEvent(new Event("staffSearchRefresh"));
 }
 
-async function loadRemote() {
+async function saveRemote(error) {
+  const { id, ...payload } = error;
+
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/system_errors`,
+    {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal"
+      },
+      body: JSON.stringify(payload)
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `${response.status} ${response.statusText}: ${await response.text()}`
+    );
+  }
+}
+
+function recordSupabaseFailure(text, stack = "") {
+  const now = Date.now();
+
+  if (
+    text === lastSupabaseFailure &&
+    now - lastSupabaseFailureTime < 6000
+  ) {
+    return;
+  }
+
+  lastSupabaseFailure = text;
+  lastSupabaseFailureTime = now;
+
+  saveLocalError(makeLocalError(
+    "staff.console.supabase",
+    text,
+    stack
+  ));
+}
+
+async function loadRemoteErrors() {
   if (!list || !applyConsoleAccess()) return;
 
   try {
-    const response = await fetch(`${SUPABASE_URL}/rest/v1/system_errors?select=*&order=created_at.desc&limit=200`, {
-      headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/system_errors?select=*&order=created_at.desc&limit=200`,
+      {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`
+        }
       }
-    });
+    );
 
     if (!response.ok) {
-      throw new Error(`${response.status} ${response.statusText}: ${await response.text()}`);
+      throw new Error(
+        `${response.status} ${response.statusText}: ${await response.text()}`
+      );
     }
 
     remoteErrors = await response.json();
-    if (message) message.textContent = "Live console connected. Errors are being saved.";
+
+    if (message) {
+      message.textContent = "Live console connected. Errors are being saved.";
+    }
   } catch (error) {
-    const text = `Supabase console load failed. Run system-errors-setup.sql again. Details: ${error.message}`;
-    if (message) message.textContent = text;
+    const text =
+      `Supabase console load failed. Details: ${error.message}`;
+
+    if (message) {
+      message.textContent = text;
+    }
+
     recordSupabaseFailure(text, error.stack || "");
   }
 
-  readLocal();
+  readLocalErrors();
   render();
 }
 
 async function testLiveConsole() {
-  applyConsoleAccess();
+  if (!applyConsoleAccess()) return;
 
-  const payload = makeLocalError(
+  const error = makeLocalError(
     "test.live.button",
     "Black Velvet live console test error. The button is working.",
     new Error("Black Velvet live console test stack").stack
   );
 
-  writeLocal(payload);
+  saveLocalError(error);
 
   if (message) {
-    message.textContent = "Test error added locally. Trying to save it to Supabase...";
+    message.textContent = "Test error added locally. Saving to Supabase...";
   }
 
   try {
-    await saveRemote(payload);
-    if (message) message.textContent = "Test error added locally and saved to Supabase.";
-  } catch (error) {
-    const text = `Test error showed locally, but Supabase rejected the save. Details: ${error.message}`;
-    if (message) message.textContent = text;
-    recordSupabaseFailure(text, error.stack || "");
+    await saveRemote(error);
+
+    if (message) {
+      message.textContent =
+        "Test error added locally and saved to Supabase.";
+    }
+  } catch (saveError) {
+    const text =
+      `Test error saved locally, but Supabase rejected it. Details: ${saveError.message}`;
+
+    if (message) {
+      message.textContent = text;
+    }
+
+    recordSupabaseFailure(text, saveError.stack || "");
   }
 
-  loadRemote();
+  await loadRemoteErrors();
 }
 
-function installNavigationBackup() {
-  document.addEventListener("click", event => {
-    const button = event.target.closest("[data-panel]");
-    if (!button) return;
+function installNavigation() {
+  document.querySelectorAll(".nav-button").forEach(button => {
+    button.addEventListener("click", () => {
+      if (
+        button.dataset.panel === "systemConsole" &&
+        !canUseConsole()
+      ) {
+        return;
+      }
 
-    const panelId = button.dataset.panel;
-    if (panelId === "systemConsole" && !canUseConsole()) return;
+      document.querySelectorAll(".nav-button").forEach(item => {
+        item.classList.toggle("active", item === button);
+      });
 
-    activatePanel(panelId);
-  }, true);
+      document.querySelectorAll(".panel").forEach(panel => {
+        panel.classList.toggle(
+          "active-panel",
+          panel.id === button.dataset.panel
+        );
+      });
+    });
+  });
 }
 
-function startLiveConsole() {
-  if (!list || started) return;
-  started = true;
+function start() {
+  if (!list) return;
 
-  installNavigationBackup();
   applyConsoleAccess();
-  readLocal();
+  installNavigation();
+  readLocalErrors();
   render();
 
   if (message) {
-    message.textContent = "Live console started. Waiting for page errors...";
+    message.textContent =
+      "Live console started. Waiting for page errors...";
   }
 
-  loadRemote();
-
-  setInterval(() => {
-    applyConsoleAccess();
-    loadRemote();
-  }, 3000);
+  testButton?.addEventListener("click", testLiveConsole);
 
   window.addEventListener("blackVelvetConsoleError", event => {
-    if (!event.detail) return;
+    if (!event.detail || !canUseConsole()) return;
+
     localErrors.unshift(event.detail);
     render();
   });
 
   window.addEventListener("storage", event => {
-    if (event.key === STORAGE_KEY || event.key === "blackVelvetProfile") {
+    if (event.key === "blackVelvetProfile") {
       applyConsoleAccess();
-      readLocal();
+      readLocalErrors();
       render();
     }
   });
 
-  if ("BroadcastChannel" in window) {
-    const channel = new BroadcastChannel(CHANNEL_NAME);
-    channel.addEventListener("message", event => {
-      if (!event.data) return;
-      localErrors.unshift(event.data);
-      render();
-    });
-  }
+  loadRemoteErrors();
 
-  document.addEventListener("click", event => {
-    const button = event.target.closest("#testConsoleButton");
-    if (!button) return;
-
-    event.preventDefault();
-    testLiveConsole();
-  }, true);
-
-  const portal = document.getElementById("portalView");
-  if (portal) {
-    new MutationObserver(() => {
-      applyConsoleAccess();
-      loadRemote();
-    }).observe(portal, {
-      attributes: true,
-      attributeFilter: ["class"]
-    });
-  }
-
-  const signedInAs = document.getElementById("signedInAs");
-  if (signedInAs) {
-    new MutationObserver(() => {
-      applyConsoleAccess();
-      loadRemote();
-    }).observe(signedInAs, {
-      childList: true,
-      characterData: true,
-      subtree: true
-    });
-  }
-
-  new MutationObserver(applyConsoleAccess).observe(document.body, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    attributeFilter: ["class"]
-  });
+  setInterval(() => {
+    if (canUseConsole()) {
+      loadRemoteErrors();
+    }
+  }, 10000);
 }
 
-startLiveConsole();
+start();
