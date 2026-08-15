@@ -3,35 +3,116 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Black Velvet Staff Portal</title>
+  <meta name="theme-color" content="#070509">
+  <title>Black Velvet | Staff Portal</title>
   <link rel="stylesheet" href="styles.css">
+
   <style>
+    :root {
+      --bv-black: #070509;
+      --bv-panel: #0d0a12;
+      --bv-panel-2: #130e19;
+      --bv-border: rgba(212, 178, 92, .24);
+      --bv-gold: #d4b25c;
+      --bv-gold-bright: #f0d889;
+      --bv-purple: #7c4fa3;
+      --bv-text: #eee8dc;
+      --bv-muted: #9e96a8;
+      --bv-danger: #dc7777;
+      --bv-success: #8df0a6;
+      --bv-shadow: 0 18px 55px rgba(0, 0, 0, .52);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      margin: 0;
       min-height: 100vh;
-      color: #dce6ec;
-      background: #06090d;
-      font-family: Arial, sans-serif;
+      margin: 0;
+      color: var(--bv-text);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(124, 79, 163, .18), transparent 30rem),
+        radial-gradient(circle at 88% 100%, rgba(212, 178, 92, .08), transparent 28rem),
+        var(--bv-black);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
     }
 
     .staff-layout {
       display: grid;
-      grid-template-columns: 240px 1fr;
+      grid-template-columns: 265px minmax(0, 1fr);
       min-height: 100vh;
     }
 
     .staff-sidebar {
-      padding: 24px 16px;
-      border-right: 1px solid rgba(220, 230, 236, .16);
-      background: #090d12;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 30px 18px;
+      overflow-y: auto;
+      border-right: 1px solid var(--bv-border);
+      background:
+        linear-gradient(180deg, rgba(19, 14, 25, .98), rgba(7, 5, 9, .98)),
+        var(--bv-panel);
+      box-shadow: 10px 0 35px rgba(0, 0, 0, .3);
     }
 
-    .staff-sidebar h1 {
-      margin: 0 0 24px;
-      color: #dce6ec;
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 34px;
+    }
+
+    .brand-icon {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border: 1px solid rgba(212, 178, 92, .65);
+      border-radius: 50%;
+      color: var(--bv-gold-bright);
+      background: rgba(212, 178, 92, .08);
+      box-shadow: 0 0 22px rgba(212, 178, 92, .14);
+      font-size: 21px;
+    }
+
+    .brand-copy strong {
+      display: block;
+      color: var(--bv-gold-bright);
       font-family: Georgia, serif;
-      font-size: 22px;
-      letter-spacing: 1px;
+      font-size: 18px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .brand-copy span {
+      display: block;
+      margin-top: 4px;
+      color: var(--bv-muted);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .sidebar-label {
+      margin: 0 0 10px 8px;
+      color: #776c82;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
 
     .staff-nav {
@@ -44,56 +125,116 @@
       align-items: center;
       justify-content: space-between;
       width: 100%;
+      min-height: 45px;
       padding: 12px 13px;
-      border: 1px solid rgba(220, 230, 236, .16);
-      border-radius: 7px;
-      color: #b9c6cd;
-      background: rgba(255, 255, 255, .035);
+      border: 1px solid transparent;
+      border-radius: 8px;
+      color: #b9b0c1;
+      background: rgba(255, 255, 255, .025);
       text-align: left;
-      cursor: pointer;
+      transition: .2s ease;
     }
 
-    .nav-button:hover,
+    .nav-button:hover {
+      border-color: rgba(212, 178, 92, .35);
+      color: var(--bv-gold-bright);
+      background: rgba(212, 178, 92, .07);
+      transform: translateX(2px);
+    }
+
     .nav-button.active {
-      border-color: #8df0a6;
-      color: #8df0a6;
-      background: rgba(141, 240, 166, .09);
+      border-color: rgba(212, 178, 92, .65);
+      color: var(--bv-gold-bright);
+      background:
+        linear-gradient(90deg, rgba(212, 178, 92, .16), rgba(124, 79, 163, .08));
+      box-shadow: inset 3px 0 var(--bv-gold);
     }
 
     .unread-badge {
-      min-width: 20px;
-      height: 20px;
-      padding: 0 5px;
+      display: inline-grid;
+      min-width: 21px;
+      height: 21px;
+      padding: 0 6px;
+      place-items: center;
+      border: 1px solid rgba(240, 216, 137, .7);
       border-radius: 999px;
-      color: #07100a;
-      background: #8df0a6;
+      color: #160f05;
+      background: var(--bv-gold-bright);
       font-size: 11px;
       font-weight: 700;
-      line-height: 20px;
-      text-align: center;
+      line-height: 1;
+    }
+
+    .unread-badge:empty,
+    .unread-badge[data-count="0"] {
+      opacity: .45;
     }
 
     .staff-main {
+      width: min(1450px, 100%);
       min-width: 0;
-      padding: 32px;
+      margin: 0 auto;
+      padding: 42px clamp(20px, 4vw, 58px);
     }
 
     .staff-header {
-      margin-bottom: 24px;
+      position: relative;
+      margin-bottom: 32px;
+      padding-bottom: 25px;
+      border-bottom: 1px solid var(--bv-border);
+    }
+
+    .staff-header::after {
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 115px;
+      height: 2px;
+      background: var(--bv-gold);
+      content: "";
+    }
+
+    .eyebrow {
+      margin: 0 0 9px;
+      color: var(--bv-gold);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
     }
 
     .staff-header h2 {
       margin: 0 0 8px;
-      color: #f0f5f7;
-      font-family: Georgia, serif;
+      color: #fffaf0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 400;
+      letter-spacing: 1px;
+    }
+
+    .muted {
+      color: var(--bv-muted);
     }
 
     .panel {
       display: none;
+      animation: panel-in .25s ease;
     }
 
     .panel.active-panel {
       display: block;
+    }
+
+    @keyframes panel-in {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .panel-heading {
@@ -101,48 +242,97 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      margin-bottom: 18px;
+      margin-bottom: 19px;
     }
 
     .panel-heading h3 {
       margin: 0;
-      color: #f0f5f7;
-      font-family: Georgia, serif;
+      color: #fffaf0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 25px;
+      font-weight: 400;
+    }
+
+    .panel-heading p {
+      margin: 5px 0 0;
+      color: var(--bv-muted);
+      font-size: 13px;
+    }
+
+    .panel-heading > div:first-child {
+      min-width: 0;
+    }
+
+    .empty-state,
+    .log-card,
+    .staff-card,
+    .application-card {
+      border: 1px solid var(--bv-border);
+      border-radius: 10px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .015)),
+        var(--bv-panel);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, .16);
+    }
+
+    .empty-state {
+      padding: 25px;
+      color: var(--bv-muted);
+      text-align: center;
+    }
+
+    .empty-state.loading {
+      color: var(--bv-gold);
     }
 
     .log-list,
     .staff-list,
     .application-list {
       display: grid;
-      gap: 12px;
+      gap: 13px;
     }
 
     .log-card,
     .staff-card,
-    .application-card,
-    .empty-state {
-      padding: 18px;
-      border: 1px solid rgba(220, 230, 236, .16);
-      border-radius: 10px;
-      background: rgba(255, 255, 255, .035);
+    .application-card {
+      padding: 19px;
+    }
+
+    .log-card:hover,
+    .staff-card:hover,
+    .application-card:hover {
+      border-color: rgba(212, 178, 92, .48);
     }
 
     .log-main {
       display: grid;
-      gap: 6px;
+      gap: 7px;
     }
 
-    .log-status,
-    .muted {
-      color: #9eabb3;
+    .log-main strong {
+      color: #fff7e5;
+    }
+
+    .log-status {
+      color: #c2b9c9;
+      line-height: 1.5;
     }
 
     .log-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 12px;
-      color: #84929a;
+      gap: 9px 17px;
+      margin-top: 14px;
+      color: #80778b;
+      font-size: 12px;
+    }
+
+    .log-meta span {
+      overflow-wrap: anywhere;
+    }
+
+    .log-card > p {
+      overflow-wrap: anywhere;
       font-size: 12px;
     }
 
@@ -152,143 +342,188 @@
       align-items: center;
       gap: 12px;
       margin-bottom: 18px;
+      padding: 13px;
+      border: 1px solid var(--bv-border);
+      border-radius: 9px;
+      background: rgba(255, 255, 255, .025);
     }
 
-    .staff-button {
+    .staff-button,
+    .loading-retry {
       padding: 10px 14px;
-      border: 1px solid rgba(141, 240, 166, .65);
+      border: 1px solid rgba(212, 178, 92, .65);
       border-radius: 7px;
-      color: #8df0a6;
-      background: rgba(141, 240, 166, .08);
+      color: var(--bv-gold-bright);
+      background: rgba(212, 178, 92, .09);
+      font-size: 12px;
       font-weight: 700;
-      cursor: pointer;
+      letter-spacing: .4px;
+      transition: .2s ease;
     }
 
-    .staff-button:hover {
-      background: rgba(141, 240, 166, .18);
+    .staff-button:hover,
+    .loading-retry:hover {
+      border-color: var(--bv-gold-bright);
+      background: rgba(212, 178, 92, .2);
+      box-shadow: 0 0 16px rgba(212, 178, 92, .12);
     }
 
     .loading-error {
       display: grid;
-      gap: 12px;
-      color: #ffb0b0;
-      border-color: rgba(255, 100, 100, .4);
-      background: rgba(100, 20, 20, .18);
+      gap: 10px;
+      border-color: rgba(220, 119, 119, .45);
+      color: #e8a4a4;
+      background: rgba(100, 20, 25, .16);
     }
 
     .loading-error strong {
-      color: #ffcccc;
+      color: #ffd0d0;
     }
 
     .loading-retry {
       width: fit-content;
-      padding: 8px 12px;
-      border: 1px solid rgba(255, 176, 176, .55);
-      border-radius: 6px;
+      border-color: rgba(220, 119, 119, .6);
       color: #ffd0d0;
-      background: rgba(255, 100, 100, .12);
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .loading-retry:hover {
-      background: rgba(255, 100, 100, .24);
+      background: rgba(220, 119, 119, .1);
     }
 
     .hidden {
       display: none !important;
     }
 
-    @media (max-width: 760px) {
+    @media (max-width: 780px) {
       .staff-layout {
-        grid-template-columns: 1fr;
+        display: block;
       }
 
       .staff-sidebar {
+        position: static;
+        height: auto;
+        padding: 22px 15px;
         border-right: 0;
-        border-bottom: 1px solid rgba(220, 230, 236, .16);
+        border-bottom: 1px solid var(--bv-border);
+      }
+
+      .brand-mark {
+        margin-bottom: 22px;
+      }
+
+      .staff-nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .staff-main {
-        padding: 20px;
+        padding: 28px 16px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .staff-nav {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-heading {
+        align-items: flex-start;
       }
     }
   </style>
 </head>
+
 <body>
   <div class="staff-layout">
     <aside class="staff-sidebar">
-      <h1>Black Velvet</h1>
+      <div class="brand-mark">
+        <div class="brand-icon">♛</div>
+        <div class="brand-copy">
+          <strong>Black Velvet</strong>
+          <span>Staff Command</span>
+        </div>
+      </div>
+
+      <p class="sidebar-label">Management</p>
 
       <nav class="staff-nav" aria-label="Staff panels">
         <button class="nav-button active" data-panel="staffGuide" type="button">
-          Staff Guide
+          <span>Staff Guide</span>
         </button>
 
         <button class="nav-button" data-panel="loginLogs" type="button">
-          Logins
+          <span>Login Logs</span>
           <span class="unread-badge" id="logCount">0</span>
         </button>
 
         <button class="nav-button" data-panel="applications" type="button">
-          Applications
+          <span>Applications</span>
           <span class="unread-badge" id="applicationCount">0</span>
         </button>
 
         <button class="nav-button" data-panel="systemConsole" type="button">
-          Console
+          <span>System Console</span>
           <span class="unread-badge" id="consoleCount">0</span>
         </button>
 
         <button class="nav-button" data-panel="staffAccounts" type="button">
-          Staff Accounts
+          <span>Staff Accounts</span>
         </button>
 
         <button class="nav-button" data-panel="clanMembers" type="button">
-          Clan Members
+          <span>Clan Members</span>
         </button>
       </nav>
     </aside>
 
     <main class="staff-main">
       <header class="staff-header">
+        <p class="eyebrow">Restricted access</p>
         <h2>Staff Portal</h2>
         <p class="muted">Manage Black Velvet accounts, applications, members, and system activity.</p>
       </header>
 
       <section class="panel active-panel" id="staffGuide">
         <div class="panel-heading">
-          <h3>Staff Guide</h3>
+          <div>
+            <h3>Staff Guide</h3>
+            <p>Your command center for Black Velvet operations.</p>
+          </div>
         </div>
+
         <div class="empty-state">
-          Select a panel from the menu to manage staff activity.
+          Choose a management panel from the left to view and manage staff activity.
         </div>
       </section>
 
       <section class="panel" id="loginLogs">
         <div class="panel-heading">
-          <h3>Login Logs</h3>
-          <span class="unread-badge" id="loginPanelCount">0</span>
+          <div>
+            <h3>Login Logs</h3>
+            <p>Review account access and recent sign-in activity.</p>
+          </div>
         </div>
+
         <div class="log-list" id="loginLogsList">
-          <div class="empty-state">Loading login logs...</div>
+          <div class="empty-state loading">Loading login logs...</div>
         </div>
       </section>
 
       <section class="panel" id="applications">
         <div class="panel-heading">
-          <h3>Applications</h3>
-          <span class="unread-badge" id="applicationPanelCount">0</span>
+          <div>
+            <h3>Applications</h3>
+            <p>Review staff and clan-member applications.</p>
+          </div>
         </div>
+
         <div class="application-list" id="applicationsList">
-          <div class="empty-state">Loading applications...</div>
+          <div class="empty-state loading">Loading applications...</div>
         </div>
       </section>
 
       <section class="panel" id="systemConsole">
         <div class="panel-heading">
-          <h3>System Console</h3>
-          <span class="unread-badge" id="consolePanelCount">0</span>
+          <div>
+            <h3>System Console</h3>
+            <p>Review warnings and errors reported by Black Velvet.</p>
+          </div>
         </div>
 
         <div class="console-toolbar">
@@ -299,25 +534,33 @@
         </div>
 
         <div class="log-list" id="consoleList">
-          <div class="empty-state">Loading console errors...</div>
+          <div class="empty-state loading">Loading console errors...</div>
         </div>
       </section>
 
       <section class="panel" id="staffAccounts">
         <div class="panel-heading">
-          <h3>Staff Accounts</h3>
+          <div>
+            <h3>Staff Accounts</h3>
+            <p>Authorize, deny, and manage staff access.</p>
+          </div>
         </div>
+
         <div class="staff-list" id="staffAccountsList">
-          <div class="empty-state">Loading staff accounts...</div>
+          <div class="empty-state loading">Loading staff accounts...</div>
         </div>
       </section>
 
       <section class="panel" id="clanMembers">
         <div class="panel-heading">
-          <h3>Clan Members</h3>
+          <div>
+            <h3>Clan Members</h3>
+            <p>Manage member ranks, ranking numbers, and game types.</p>
+          </div>
         </div>
+
         <div class="staff-list" id="clanMembersList">
-          <div class="empty-state">Loading clan members...</div>
+          <div class="empty-state loading">Loading clan members...</div>
         </div>
       </section>
     </main>
@@ -325,17 +568,24 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      document.querySelectorAll(".nav-button[data-panel]").forEach(button => {
+      const buttons = document.querySelectorAll(".nav-button[data-panel]");
+      const panels = document.querySelectorAll(".panel");
+
+      buttons.forEach(button => {
         button.addEventListener("click", () => {
           const panelId = button.dataset.panel;
 
-          document.querySelectorAll(".nav-button").forEach(item => {
+          buttons.forEach(item => {
             item.classList.toggle("active", item === button);
           });
 
-          document.querySelectorAll(".panel").forEach(panel => {
+          panels.forEach(panel => {
             panel.classList.toggle("active-panel", panel.id === panelId);
           });
+
+          window.dispatchEvent(new CustomEvent("blackVelvetPanelOpened", {
+            detail: { panelId }
+          }));
         });
       });
 
@@ -347,7 +597,7 @@
         ["clanMembersList", "Clan members"]
       ];
 
-      setTimeout(() => {
+      window.setTimeout(() => {
         loadingTargets.forEach(([id, label]) => {
           const container = document.getElementById(id);
 
@@ -356,7 +606,7 @@
           container.innerHTML = `
             <div class="empty-state loading-error">
               <strong>${label} could not be loaded.</strong>
-              <span>Check your connection, Supabase settings, and staff permissions.</span>
+              <span>The data service did not respond. Check your connection and staff permissions.</span>
               <button class="loading-retry" type="button">Retry</button>
             </div>
           `;
@@ -365,7 +615,7 @@
             window.location.reload();
           });
         });
-      }, 10000);
+      }, 12000);
     });
 
     window.addEventListener("error", event => {
