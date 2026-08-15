@@ -11,6 +11,7 @@
 <body>
   <main><header class="top"><a href="home.html">← BLACK VELVET HOME</a><a href="clips.html">CLIPS</a></header><section id="profile" class="card">Loading profile...</section></main>
   <script src="theme.js"></script>
+  <script type="module" src="global-error-reporter.js"></script>
   <script type="module">
     import {createClient} from "https://esm.sh/@supabase/supabase-js@2";
     const supabase=createClient("https://ptgzhljvzyceawwohmym.supabase.co","sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk"),box=document.getElementById("profile"),saved=JSON.parse(localStorage.getItem("blackVelvetProfile")||"{}"),user=new URLSearchParams(location.search).get("user")||saved.username;
