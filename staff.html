@@ -51,6 +51,8 @@
     .console-details{margin-top:15px;border-top:1px solid var(--line);padding-top:13px}
     .console-details summary{color:var(--silver);font-size:10px;font-weight:700;letter-spacing:1.2px;cursor:pointer}
     .console-details pre{max-height:300px;margin:13px 0 0;padding:14px;overflow:auto;border:1px solid var(--line);border-radius:7px;color:#d4dde2;background:#030506;font:12px/1.65 Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+    .home-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+    .home-actions a{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
     @media(max-width:760px){.app-shell{width:min(92%,1180px)}.home-card{padding:38px 22px}.user-area{flex-wrap:wrap;justify-content:flex-end}.console-toolbar{align-items:stretch;flex-direction:column}.staff-feature-grid{grid-template-columns:1fr}}
   </style>
 </head>
@@ -60,19 +62,21 @@
       <a class="site-back" href="home.html">← BACK HOME</a>
       <div class="flower-mark" aria-hidden="true">✽</div>
       <p class="eyebrow">BLACK VELVET // PRIVATE NETWORK</p>
-      <h1>STAFF COMMAND</h1>
-      <p class="muted">Authorized Black Velvet staff access, applications, member management, and internal resources.</p>
+      <h1>BLACK VELVET</h1>
+      <p class="muted">One account system for clan members and staff. Log in to access your profile or staff portal, or sign up to apply.</p>
+
       <div class="home-actions">
-        <button id="staffLoginButton" class="primary-button">Login</button>
+        <button id="staffLoginButton" class="primary-button" type="button">LOG IN</button>
+        <a href="clan-signup.html" class="secondary-button">SIGN UP</a>
       </div>
     </section>
 
     <section id="loginView" class="login-card hidden">
-      <button class="back-button" data-home>← Back to Staff Home</button>
+      <button class="back-button" data-home type="button">← Back</button>
       <div class="flower-mark small" aria-hidden="true">✽</div>
-      <p class="eyebrow">BLACK VELVET // AUTHORIZED ACCESS</p>
-      <h1>Login</h1>
-      <p class="muted">Staff and clan member login are unified.</p>
+      <p class="eyebrow">BLACK VELVET // UNIFIED ACCESS</p>
+      <h1>LOG IN</h1>
+      <p class="muted">Use the same login for clan members and staff.</p>
 
       <form id="loginForm">
         <label for="username">Username</label>
@@ -81,11 +85,11 @@
         <label for="password">Password</label>
         <input id="password" type="password" autocomplete="current-password" required />
 
-        <button class="primary-button" type="submit">Sign in</button>
+        <button class="primary-button" type="submit">LOG IN</button>
         <p id="loginMessage" class="login-message" role="alert"></p>
       </form>
 
-      <p class="security-note">Access attempts are audited without recording passwords.</p>
+      <p class="security-note">Do not have an account? <a href="clan-signup.html">SIGN UP</a></p>
     </section>
 
     <section id="portalView" class="portal hidden">
@@ -101,7 +105,7 @@
         <div class="user-area">
           <a class="portal-home" href="home.html">← BACK HOME</a>
           <span id="signedInAs"></span>
-          <button id="logoutButton" class="ghost-button">Log out</button>
+          <button id="logoutButton" class="ghost-button" type="button">Log out</button>
         </div>
       </header>
 
@@ -164,9 +168,9 @@
           <article id="clanMembers" class="panel leadership-only">
             <p class="eyebrow">CLAN MANAGEMENT // 09</p>
             <h1>Clan Members</h1>
-            <p class="muted">Turn any clan account into a staff account with the Staff member checkbox. New staff default to Helper.</p>
+            <p class="muted">Turn any clan account into a staff account with the staff controls below.</p>
             <p id="clanMembersMessage" class="action-message"></p>
-            <label class="staff-search"><input data-staff-search="#clanStaffToggleList,#clanMemberList" placeholder="Search clan members by username, rank, game, staff status, or device..." /></label>
+            <label class="staff-search"><input data-staff-search="#clanStaffToggleList,#clanMemberList" placeholder="Search clan members..." /></label>
             <div id="clanStaffToggleList" class="log-list"></div>
             <hr class="member-divider" />
             <div id="clanMemberList" class="log-list"></div>
@@ -175,22 +179,22 @@
           <article id="staffAccounts" class="panel leadership-only">
             <p class="eyebrow">LEADERSHIP // 10</p>
             <h1>Staff Accounts <span class="verified-badge" title="Verified staff">✓</span></h1>
-            <p class="muted">Manage every staff-enabled account. Staff profiles and comments receive a verified checkmark.</p>
+            <p class="muted">Manage every staff-enabled account.</p>
             <div class="staff-feature-grid">
-              <div class="staff-feature"><b>Staff Rank</b><span>Adjust each staff account rank: Owner, Admin, Manager, President, Mod, or Helper.</span></div>
-              <div class="staff-feature"><b>Set Member</b><span>Removes staff access, sets staff rank to N/A, and turns the account back into a normal clan account.</span></div>
-              <div class="staff-feature"><b>Remove Account</b><span>Permanently removes the selected staff account and linked clan member record if one exists.</span></div>
+              <div class="staff-feature"><b>Staff Rank</b><span>Adjust each staff account rank.</span></div>
+              <div class="staff-feature"><b>Set Member</b><span>Remove staff access from an account.</span></div>
+              <div class="staff-feature"><b>Remove Account</b><span>Remove the selected staff account.</span></div>
             </div>
             <p id="accountsMessage" class="action-message"></p>
-            <label class="staff-search"><input data-staff-search="#staffAccountList" placeholder="Search staff accounts by username, rank, or account type..." /></label>
+            <label class="staff-search"><input data-staff-search="#staffAccountList" placeholder="Search staff accounts..." /></label>
             <div id="staffAccountList" class="log-list"></div>
           </article>
 
           <article id="systemConsole" class="panel manager-owner-only hidden">
             <p class="eyebrow">SYSTEM DIAGNOSTICS // 11</p>
             <h1>Console</h1>
-            <p class="muted">Live JavaScript, page, resource, fetch, and Supabase request errors from every page that loads theme.js.</p>
-            <label class="staff-search"><input data-staff-search="#consoleList" placeholder="Search console errors by page, user, message, or device..." /></label>
+            <p class="muted">Live JavaScript, page, resource, fetch, and Supabase request errors.</p>
+            <label class="staff-search"><input data-staff-search="#consoleList" placeholder="Search console errors..." /></label>
             <div class="console-toolbar">
               <p id="consoleMessage" class="action-message">Live console starting...</p>
               <div class="console-actions">
