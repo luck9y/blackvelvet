@@ -62,9 +62,15 @@
   <main class="shell">
     <nav class="nav">
       <a class="brand" href="home.html" aria-label="Black Velvet home"><span class="brand-flower" aria-hidden="true"></span>BLACK VELVET</a>
+
       <div class="nav-links">
-        <a href="#about">ABOUT</a><a href="Game.html">GAMES</a><a href="rankings.html">RANKINGS</a><a href="clips.html">CLIPS</a>
-        <a id="profileLink" href="member-login.html">MEMBER LOGIN</a><a href="rules.html">RULES</a><a href="staff.html">STAFF</a>
+        <a href="#about">ABOUT</a>
+        <a href="Game.html">GAMES</a>
+        <a href="rankings.html">RANKINGS</a>
+        <a href="clips.html">CLIPS</a>
+        <a id="profileLink" href="staff.html#login">LOG IN</a>
+        <a href="clan-signup.html">SIGN UP</a>
+        <a href="rules.html">RULES</a>
         <button id="logoutButton" class="session-button" hidden>LOG OUT</button>
       </div>
     </nav>
@@ -75,9 +81,14 @@
         <h1>BLACK<br><span>VELVET</span></h1>
         <p class="hero-copy">A disciplined clan built from legacy, loyalty, and players who refuse to disappear. Enter the network, meet the people behind it, and become part of what comes next.</p>
         <div class="actions">
-          <a class="button primary" href="clan-signup.html">SIGN UP</a><a class="button" href="Game.html">GAMES</a><a class="button" href="clips.html">WATCH CLIPS</a><a class="button" href="rankings.html">RANKINGS</a>
+          <a class="button primary" href="clan-signup.html">SIGN UP</a>
+          <a class="button" href="staff.html#login">LOG IN</a>
+          <a class="button" href="Game.html">GAMES</a>
+          <a class="button" href="clips.html">WATCH CLIPS</a>
+          <a class="button" href="rankings.html">RANKINGS</a>
         </div>
       </div>
+
       <aside class="terminal" aria-label="Member network profile">
         <div class="terminal-head"><span></span><span></span><span></span></div>
         <p><strong>BV://MEMBER_PROFILE</strong></p>
@@ -90,7 +101,10 @@
     </section>
 
     <section id="about" class="section">
-      <div class="section-heading"><div><p class="eyebrow">01 // THE FOUNDATION</p><h2>Built for the long run.</h2></div><p class="section-note">Black Velvet is a focused community where respect, activity, and improvement matter.</p></div>
+      <div class="section-heading">
+        <div><p class="eyebrow">01 // THE FOUNDATION</p><h2>Built for the long run.</h2></div>
+        <p class="section-note">Black Velvet is a focused community where respect, activity, and improvement matter.</p>
+      </div>
       <div class="grid">
         <article class="card"><span class="card-number">[ 01 ]</span><h3>Legacy</h3><p>Founded by people who understand that a clan is more than a name. Every member contributes to its history.</p></article>
         <article class="card"><span class="card-number">[ 02 ]</span><h3>Discipline</h3><p>We protect the community through clear expectations, reliable staff, and respectful competition.</p></article>
@@ -99,17 +113,31 @@
     </section>
 
     <section id="roster" class="section">
-      <div class="section-heading"><div><p class="eyebrow">02 // CLAN DIRECTORY</p><h2>Leadership roster.</h2></div><p class="section-note">The people responsible for maintaining the Black Velvet standard.</p></div>
+      <div class="section-heading">
+        <div><p class="eyebrow">02 // CLAN DIRECTORY</p><h2>Leadership roster.</h2></div>
+        <p class="section-note">The people responsible for maintaining the Black Velvet standard.</p>
+      </div>
       <div class="roster">
-        <article class="member"><div class="member-mark">L</div><div><h3>Luckyy</h3><p>FOUNDER · OWNER</p></div></article>
+        <article class="member"><div class="member-mark">L</div><div><h3>Imtherealluckyy</h3><p>FOUNDER · OWNER</p></div></article>
         <article class="member"><div class="member-mark">S</div><div><h3>Suoaz</h3><p>FOUNDER · OWNER</p></div></article>
         <article class="member"><div class="member-mark">G</div><div><h3>Gears</h3><p>MANAGEMENT</p></div></article>
       </div>
     </section>
 
     <section class="section">
-      <div class="rules-banner"><div><p class="eyebrow">03 // COMMUNITY PROTOCOL</p><h2>Know the rules before you enter.</h2><p>Read the community rules, then view the separate procedures that apply to Black Velvet staff.</p></div><div class="actions"><a class="button primary" href="rules.html">RULES</a><a class="button" href="staffrules.html">STAFF RULES</a></div></div>
+      <div class="rules-banner">
+        <div>
+          <p class="eyebrow">03 // COMMUNITY PROTOCOL</p>
+          <h2>Know the rules before you enter.</h2>
+          <p>Read the community rules, then view the separate procedures that apply to Black Velvet staff.</p>
+        </div>
+        <div class="actions">
+          <a class="button primary" href="rules.html">RULES</a>
+          <a class="button" href="staffrules.html">STAFF RULES</a>
+        </div>
+      </div>
     </section>
+
     <footer>BLACK VELVET CLAN // PRIVATE NETWORK // ALL SYSTEMS OPERATIONAL</footer>
   </main>
 
@@ -132,24 +160,42 @@
       deviceHex = createDeviceHex();
       localStorage.setItem("blackVelvetDeviceHex", deviceHex);
     }
+
     document.getElementById("profileUserId").textContent = deviceHex;
 
     if (profile?.username) {
-      profileLink.href = "profile.html";
-      profileLink.textContent = "MY PROFILE";
+      const isStaff = profile.type === "staff" || profile.isStaff === true;
+
+      profileLink.href = isStaff ? "staff.html" : "profile.html";
+      profileLink.textContent = isStaff ? "STAFF PORTAL" : "MY PROFILE";
       logoutButton.hidden = false;
+
       document.getElementById("profileMessage").textContent = `WELCOME, ${profile.username.toUpperCase()}`;
       document.getElementById("profileOnline").textContent = "TRUE";
 
-      const supabase = createClient("https://ptgzhljvzyceawwohmym.supabase.co", "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk");
-      const { data: member } = await supabase.from("clan_members").select("rank, ranking_number").ilike("username", profile.username).maybeSingle();
+      if (!isStaff) {
+        const supabase = createClient(
+          "https://ptgzhljvzyceawwohmym.supabase.co",
+          "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk"
+        );
 
-      document.getElementById("profileClanRank").textContent = member?.rank || profile.role || "N/A";
-      document.getElementById("profileRanking").textContent = member?.ranking_number ? `#${member.ranking_number}` : "N/A";
+        const { data: member } = await supabase
+          .from("clan_members")
+          .select("rank, ranking_number")
+          .ilike("username", profile.username)
+          .maybeSingle();
+
+        document.getElementById("profileClanRank").textContent = member?.rank || profile.role || "N/A";
+        document.getElementById("profileRanking").textContent = member?.ranking_number ? `#${member.ranking_number}` : "N/A";
+      } else {
+        document.getElementById("profileClanRank").textContent = profile.role || "STAFF";
+        document.getElementById("profileMessage").textContent = `STAFF ACCESS: ${profile.username.toUpperCase()}`;
+      }
     }
 
     logoutButton.addEventListener("click", () => {
       localStorage.removeItem("blackVelvetProfile");
+      localStorage.removeItem("blackVelvetBanned");
       window.location.href = "home.html";
     });
   </script>
