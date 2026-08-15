@@ -26,6 +26,59 @@
     .content{background:rgba(4,6,9,.35)}
     .placeholder,.empty-state{border:1px dashed var(--line);border-radius:10px;background:rgba(220,230,236,.025)}
 
+    .staff-feature-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+      margin:18px 0;
+    }
+
+    .staff-feature{
+      padding:15px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:linear-gradient(135deg,rgba(220,230,236,.06),rgba(7,11,15,.86));
+    }
+
+    .staff-feature b{
+      display:block;
+      margin-bottom:7px;
+      color:var(--silver);
+      font-size:10px;
+      letter-spacing:1.3px;
+      text-transform:uppercase;
+    }
+
+    .staff-feature span{
+      color:#9daab2;
+      font:12px/1.55 Arial,sans-serif;
+    }
+
+    .verified-badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:18px;
+      height:18px;
+      margin-left:6px;
+      border:1px solid rgba(143,211,255,.6);
+      border-radius:50%;
+      color:#8fd3ff;
+      background:rgba(143,211,255,.09);
+      font:700 11px Arial,sans-serif;
+      box-shadow:0 0 14px rgba(143,211,255,.28);
+      vertical-align:middle;
+    }
+
+    [data-staff-directory-card]{
+      border-color:rgba(143,211,255,.32);
+      background:linear-gradient(135deg,rgba(16,41,55,.26),rgba(6,9,12,.94));
+    }
+
+    [data-staff-directory-card] select{
+      min-width:145px;
+    }
+
     .console-toolbar{
       display:flex;
       align-items:center;
@@ -80,6 +133,7 @@
       .home-card{padding:38px 22px}
       .user-area{flex-wrap:wrap;justify-content:flex-end}
       .console-toolbar{align-items:stretch;flex-direction:column}
+      .staff-feature-grid{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -323,7 +377,26 @@
 
           <article id="staffAccounts" class="panel leadership-only">
             <p class="eyebrow">LEADERSHIP // 10</p>
-            <h1>Staff Accounts</h1>
+            <h1>Staff Accounts <span class="verified-badge" title="Verified staff">✓</span></h1>
+            <p class="muted">
+              Manage every staff-enabled account. Staff profiles and comments receive a verified checkmark.
+            </p>
+
+            <div class="staff-feature-grid">
+              <div class="staff-feature">
+                <b>Staff Rank</b>
+                <span>Adjust each staff account rank: Owner, Admin, Manager, President, Mod, or Helper.</span>
+              </div>
+              <div class="staff-feature">
+                <b>Set Member</b>
+                <span>Removes staff access, sets staff rank to N/A, and turns the account back into a normal clan account.</span>
+              </div>
+              <div class="staff-feature">
+                <b>Remove Account</b>
+                <span>Permanently removes the selected staff account and linked clan member record if one exists.</span>
+              </div>
+            </div>
+
             <p id="accountsMessage" class="action-message"></p>
             <div id="staffAccountList" class="log-list"></div>
           </article>
