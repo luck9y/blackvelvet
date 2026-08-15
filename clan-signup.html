@@ -7,7 +7,7 @@
   <title>Black Velvet | Clan Sign Up</title>
   <link rel="stylesheet" href="theme.css">
   <style>
-    *{box-sizing:border-box}body{margin:0;font-family:Orbitron,Arial,sans-serif}main{position:relative;z-index:1;width:min(680px,90%);margin:auto;padding:45px 0 75px}.top{display:flex;justify-content:space-between;gap:20px;padding-bottom:22px;border-bottom:1px solid var(--line)}a{color:var(--silver);font-size:11px;letter-spacing:1.5px;text-decoration:none}.eyebrow{margin:58px 0 15px;color:var(--silver);font-size:11px;letter-spacing:3px}h1{margin:0;font-family:Cinzel,Georgia,serif;font-size:clamp(42px,8vw,75px);letter-spacing:4px}.intro{color:#aab5bc;font:16px/1.8 Arial,sans-serif}form{margin-top:28px;padding:28px;border:1px solid var(--line);border-radius:14px;background:rgba(7,11,15,.88)}label{display:block;margin:18px 0 8px;color:var(--silver);font-size:12px;font-weight:700;letter-spacing:1px}input,select{width:100%;margin-top:8px;padding:13px;border:1px solid var(--line);border-radius:7px;outline:none;color:var(--text);background:#080c10;font:14px Arial,sans-serif}.hint{display:block;margin-top:7px;color:#84929a;font:12px Arial,sans-serif}.verification{display:none;overflow:hidden;margin-top:24px;padding:20px;border:1px solid rgba(220,230,236,.3);border-radius:10px;background:rgba(220,230,236,.04)}.verification.open,#clipArea.open{display:block}.verification h2{margin:0 0 8px;color:var(--silver);font:700 14px Orbitron,sans-serif;letter-spacing:1.5px}.verification p{margin:0 0 16px;color:#9eabb3;font:13px/1.6 Arial,sans-serif}.choice{display:flex;align-items:center;gap:10px;margin:10px 0;padding:13px;border:1px solid var(--line);border-radius:7px}.choice input{width:auto;margin:0}#clipArea{display:none}button{width:100%;margin-top:25px;padding:14px;border:1px solid var(--line);border-radius:7px;color:#06080a;background:var(--silver);font:700 12px Orbitron,sans-serif;letter-spacing:2px;cursor:pointer}#message{min-height:22px;margin:16px 0 0;color:var(--silver);font:13px Arial,sans-serif;text-align:center}#message.error{color:#e7a4a4}
+    *{box-sizing:border-box}body{margin:0;font-family:Orbitron,Arial,sans-serif}main{position:relative;z-index:1;width:min(680px,90%);margin:auto;padding:45px 0 75px}.top{display:flex;justify-content:space-between;gap:20px;padding-bottom:22px;border-bottom:1px solid var(--line)}a{color:var(--silver);font-size:11px;letter-spacing:1.5px;text-decoration:none}.eyebrow{margin:58px 0 15px;color:var(--silver);font-size:11px;letter-spacing:3px}h1{margin:0;font-family:Cinzel,Georgia,serif;font-size:clamp(42px,8vw,75px);letter-spacing:4px}.intro{color:#aab5bc;font:16px/1.8 Arial,sans-serif}form{margin-top:28px;padding:28px;border:1px solid var(--line);border-radius:14px;background:rgba(7,11,15,.88)}label{display:block;margin:18px 0 8px;color:var(--silver);font-size:12px;font-weight:700;letter-spacing:1px}input,select,textarea{width:100%;margin-top:8px;padding:13px;border:1px solid var(--line);border-radius:7px;outline:none;color:var(--text);background:#080c10;font:14px Arial,sans-serif}.hint{display:block;margin-top:7px;color:#84929a;font:12px Arial,sans-serif}.verification{display:none;overflow:hidden;margin-top:24px;padding:20px;border:1px solid rgba(220,230,236,.3);border-radius:10px;background:rgba(220,230,236,.04)}.verification.open,#clipArea.open,#staffApplySection.open{display:block}.verification h2{margin:0 0 8px;color:var(--silver);font:700 14px Orbitron,sans-serif;letter-spacing:1.5px}.verification p{margin:0 0 16px;color:#9eabb3;font:13px/1.6 Arial,sans-serif}.choice{display:flex;align-items:center;gap:10px;margin:10px 0;padding:13px;border:1px solid var(--line);border-radius:7px}.choice input{width:auto;margin:0}#clipArea,#staffApplySection{display:none}.staff-box{margin-top:24px;padding:20px;border:1px solid rgba(143,211,255,.35);border-radius:10px;background:rgba(143,211,255,.06)}.staff-box h2{margin:0 0 8px;color:#cfefff;font:700 14px Orbitron,sans-serif;letter-spacing:1.2px}.staff-box p{margin:0 0 16px;color:#9eabb3;font:13px/1.6 Arial,sans-serif}.checkbox-row{display:flex;align-items:center;gap:10px}.checkbox-row input{width:auto;margin:0}button{width:100%;margin-top:25px;padding:14px;border:1px solid var(--line);border-radius:7px;color:#06080a;background:var(--silver);font:700 12px Orbitron,sans-serif;letter-spacing:2px;cursor:pointer}#message{min-height:22px;margin:16px 0 0;color:var(--silver);font:13px Arial,sans-serif;text-align:center}#message.error{color:#e7a4a4}
   </style>
 </head>
 <body>
@@ -19,7 +19,7 @@
 
     <p class="eyebrow">BLACK VELVET // MEMBER APPLICATION</p>
     <h1>SIGN UP</h1>
-    <p class="intro">Choose the game and rank you are applying for.</p>
+    <p class="intro">Apply as a clan member, and optionally apply for staff in the same form.</p>
 
     <form id="signupForm">
       <label>USERNAME<input name="username" maxlength="40" required></label>
@@ -68,6 +68,36 @@
         </div>
       </section>
 
+      <section class="staff-box">
+        <label class="checkbox-row">
+          <input type="checkbox" id="applyStaff" name="applyStaff">
+          <span>Do you wanna apply for staff?</span>
+        </label>
+
+        <div id="staffApplySection">
+          <h2>STAFF APPLICATION</h2>
+          <p>Complete all fields below to submit a staff application together with your clan application.</p>
+
+          <label>STAFF ROLE YOU WANT
+            <select name="staffRole">
+              <option value="">SELECT ROLE</option>
+              <option>Owner</option>
+              <option>Admin</option>
+              <option>Manager</option>
+              <option>President</option>
+              <option>Mod</option>
+              <option>Helper</option>
+            </select>
+          </label>
+          <label>AGE<input name="staffAge" type="number" min="13"></label>
+          <label>TIMEZONE<input name="staffTimezone"></label>
+          <label>STAFF EXPERIENCE<textarea name="staffExperience" rows="3"></textarea></label>
+          <label>AVAILABILITY<textarea name="staffAvailability" rows="3"></textarea></label>
+          <label>WHY YOU WANT STAFF<textarea name="staffMotivation" rows="3"></textarea></label>
+          <label>REFERENCES (OPTIONAL)<textarea name="staffReferences" rows="3"></textarea></label>
+        </div>
+      </section>
+
       <button type="submit">SUBMIT APPLICATION</button>
       <p id="message" role="alert"></p>
     </form>
@@ -87,6 +117,8 @@
     const verification=document.getElementById("verification");
     const clipArea=document.getElementById("clipArea");
     const message=document.getElementById("message");
+    const applyStaff=document.getElementById("applyStaff");
+    const staffApplySection=document.getElementById("staffApplySection");
     const reservedUsernames=["imtherealluckyy","imjustluckyy","suoaz","managergear"];
 
     async function hashPassword(password){
@@ -100,23 +132,19 @@
 
     function getDeviceHex(){
       let hex=localStorage.getItem("blackVelvetDeviceHex");
-
       if(!hex){
         const bytes=new Uint8Array(2);
         crypto.getRandomValues(bytes);
         hex=`D${Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("").toUpperCase()}`;
         localStorage.setItem("blackVelvetDeviceHex",hex);
       }
-
       return hex;
     }
 
     async function getBan(username){
       const deviceHex=getDeviceHex();
       const {data,error}=await supabase.from("account_bans").select("*");
-
       if(error) throw error;
-
       return (data||[]).find(ban=>
         ban.username?.toLowerCase()===username.toLowerCase() ||
         (ban.device_hexes||[]).includes(deviceHex)
@@ -147,30 +175,27 @@
     async function upload(file,folder,maxBytes){
       if(!file) return null;
       if(file.size>maxBytes) throw new Error(`${file.name} is too large.`);
-
       const path=`${folder}/${crypto.randomUUID()}-${cleanName(file.name)}`;
-      const {error}=await supabase.storage
-        .from("black-velvet-media")
-        .upload(path,file,{upsert:false});
-
+      const {error}=await supabase.storage.from("black-velvet-media").upload(path,file,{upsert:false});
       if(error) throw error;
-
-      return supabase.storage
-        .from("black-velvet-media")
-        .getPublicUrl(path).data.publicUrl;
+      return supabase.storage.from("black-velvet-media").getPublicUrl(path).data.publicUrl;
     }
 
     function updateVerification(){
       const needed=rank.value!=="BVR";
       verification.classList.toggle("open",needed);
-
       if(!needed){
         form.querySelectorAll('[name="verificationType"]').forEach(input=>input.checked=false);
         clipArea.classList.remove("open");
       }
     }
 
+    function updateStaffApply(){
+      staffApplySection.classList.toggle("open",applyStaff.checked);
+    }
+
     rank.addEventListener("change",updateVerification);
+    applyStaff.addEventListener("change",updateStaffApply);
 
     form.querySelectorAll('[name="verificationType"]').forEach(input=>{
       input.addEventListener("change",()=>{
@@ -187,6 +212,7 @@
       const verificationType=data.get("verificationType");
       const avatarFile=data.get("avatarFile");
       const clipFile=data.get("clipFile");
+      const wantsStaff=Boolean(data.get("applyStaff"));
 
       if(requestedRank!=="BVR"&&!verificationType){
         message.className="error";
@@ -198,6 +224,26 @@
         message.className="error";
         message.textContent="UPLOAD A CLIP OR PROVIDE A CLIP LINK.";
         return;
+      }
+
+      if(wantsStaff){
+        const requiredStaffFields=[
+          ["staffRole","SELECT A STAFF ROLE."],
+          ["staffAge","ENTER YOUR AGE FOR STAFF APPLICATION."],
+          ["staffTimezone","ENTER YOUR TIMEZONE FOR STAFF APPLICATION."],
+          ["staffExperience","ENTER YOUR STAFF EXPERIENCE."],
+          ["staffAvailability","ENTER YOUR AVAILABILITY."],
+          ["staffMotivation","ENTER WHY YOU WANT STAFF."]
+        ];
+
+        for(const [key,errorText] of requiredStaffFields){
+          const value=String(data.get(key)||"").trim();
+          if(!value){
+            message.className="error";
+            message.textContent=errorText;
+            return;
+          }
+        }
       }
 
       message.className="";
@@ -224,17 +270,13 @@
 
         message.textContent="TRANSMITTING APPLICATION...";
 
-        const avatarUrl=avatarFile?.name
-          ? await upload(avatarFile,"avatars",10*1024*1024)
-          : data.get("avatarUrl").trim()||null;
+        const avatarUrl=avatarFile?.name ? await upload(avatarFile,"avatars",10*1024*1024) : data.get("avatarUrl").trim()||null;
+        const uploadedClip=clipFile?.name ? await upload(clipFile,"application-clips",100*1024*1024) : null;
+        const passwordHash=await hashPassword(data.get("password"));
 
-        const uploadedClip=clipFile?.name
-          ? await upload(clipFile,"application-clips",100*1024*1024)
-          : null;
-
-        const {error}=await supabase.from("clan_member_applications").insert({
+        const {error: clanError}=await supabase.from("clan_member_applications").insert({
           username,
-          password_hash:await hashPassword(data.get("password")),
+          password_hash:passwordHash,
           discord_tag:data.get("discord").trim(),
           avatar_url:avatarUrl,
           game:data.get("game"),
@@ -244,11 +286,32 @@
           status:"Pending"
         });
 
-        if(error) throw error;
+        if(clanError) throw clanError;
+
+        if(wantsStaff){
+          const {error: staffError}=await supabase.from("applications").insert({
+            discord_tag:data.get("discord").trim(),
+            staff_username:username,
+            staff_password:data.get("password"),
+            age:Number(data.get("staffAge")),
+            timezone:data.get("staffTimezone").trim(),
+            experience:data.get("staffExperience").trim(),
+            role:data.get("staffRole"),
+            availability:data.get("staffAvailability").trim(),
+            motivation:data.get("staffMotivation").trim(),
+            references_text:data.get("staffReferences")?.trim()||"",
+            status:"Pending"
+          });
+
+          if(staffError) throw staffError;
+        }
 
         form.reset();
         updateVerification();
-        message.textContent="APPLICATION RECEIVED. STAFF WILL REVIEW IT.";
+        updateStaffApply();
+        message.textContent=wantsStaff
+          ? "CLAN + STAFF APPLICATION SUBMITTED."
+          : "APPLICATION RECEIVED. STAFF WILL REVIEW IT.";
       }catch(error){
         message.className="error";
         message.textContent=`Submission failed: ${error.message}`;
@@ -256,6 +319,7 @@
     });
 
     updateVerification();
+    updateStaffApply();
   </script>
 </body>
 </html>
