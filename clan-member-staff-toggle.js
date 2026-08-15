@@ -6,21 +6,18 @@ const supabase = createClient(
 );
 
 const staffRoles = ["Owner", "Admin", "Manager", "President", "Mod", "Helper"];
+const clanRanks = ["BVR", "ELITE", "LEGEND"];
+const games = ["Minecraft Java", "Minecraft Bedrock", "Roblox", "Fortnite", "Other"];
 const leadershipRoles = ["Owner", "Admin", "Manager"];
 const permanentOwners = ["imjustluckyy", "suoaz"];
 
 const list = document.getElementById("clanStaffToggleList");
 const message = document.getElementById("clanMembersMessage");
-
 let members = [];
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, character => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;"
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
   }[character]));
 }
 
@@ -37,23 +34,25 @@ function canManage() {
   const username = String(profile?.username || "").toLowerCase();
   const role = String(profile?.role || profile?.staffRank || "");
 
-  return permanentOwners.includes(username) ||
-    leadershipRoles.includes(role);
+  return permanentOwners.includes(username) || leadershipRoles.includes(role);
 }
 
 function setMessage(text, type = "") {
   if (!message) return;
-
   message.textContent = text;
   message.className = `action-message ${type}`;
 }
 
-function validStaffRank(rank) {
-  return staffRoles.includes(rank) ? rank : "Helper";
-}
-
 function getMemberById(id) {
   return members.find(member => String(member.id) === String(id));
+}
+
+function optionList(values, selected) {
+  return values.map(value => `
+    <option value="${escapeHtml(value)}" ${String(selected) === value ? "selected" : ""}>
+      ${escapeHtml(value)}
+    </option>
+  `).join("");
 }
 
 function renderMembers() {
@@ -61,24 +60,19 @@ function renderMembers() {
 
   list.innerHTML = members.length
     ? members.map(member => {
-        const isStaff = Boolean(
-          member.is_staff && member.staff_rank && member.staff_rank !== "N/A"
-        );
-
-        const rank = validStaffRank(member.staff_rank);
+        const isStaff = Boolean(member.is_staff);
+        const staffRank = staffRoles.includes(member.staff_rank)
+          ? member.staff_rank
+          : "Helper";
 
         return `
           <article class="log-card" data-clan-staff-card="${escapeHtml(member.id)}">
             <div class="log-title">
               <span>
                 ${escapeHtml(member.username)}
-                ${isStaff
-                  ? '<span class="verified-badge" title="Verified staff">✓</span>'
-                  : ""}
+                ${isStaff ? '<span class="verified-badge" title="Verified staff">✓</span>' : ""}
               </span>
-              <span class="log-status">
-                ${isStaff ? `STAFF · ${escapeHtml(rank)}` : "MEMBER"}
-              </span>
+              <span class="log-status">${isStaff ? `STAFF · ${escapeHtml(staffRank)}` : "MEMBER"}</span>
             </div>
 
             <div class="log-grid">
@@ -86,44 +80,54 @@ function renderMembers() {
                 <span>Game</span>
                 <strong>${escapeHtml(member.game || "N/A")}</strong>
               </div>
-
               <div class="log-field">
                 <span>Clan Rank</span>
                 <strong>${escapeHtml(member.rank || "N/A")}</strong>
               </div>
-
+              <div class="log-field">
+                <span>Ranking</span>
+                <strong>${escapeHtml(member.ranking || "N/A")}</strong>
+              </div>
               <div class="log-field">
                 <span>Staff Rank</span>
-                <strong>${isStaff ? escapeHtml(rank) : "N/A"}</strong>
-              </div>
-
-              <div class="log-field">
-                <span>Saved Status</span>
-                <strong>${isStaff ? "Staff verified ✓" : "Normal member"}</strong>
+                <strong>${isStaff ? escapeHtml(staffRank) : "N/A"}</strong>
               </div>
             </div>
 
             <div class="card-actions">
               <label class="checkbox-row">
-                <input
-                  type="checkbox"
-                  data-staff-toggle="${escapeHtml(member.id)}"
-                  ${isStaff ? "checked" : ""}
-                />
+                <input type="checkbox" data-staff-toggle="${escapeHtml(member.id)}" ${isStaff ? "checked" : ""} />
                 <span>Staff member?</span>
               </label>
 
               <label>
                 Staff Rank
-                <select
-                  data-staff-rank="${escapeHtml(member.id)}"
-                  ${isStaff ? "" : "disabled"}
-                >
-                  ${staffRoles.map(role => `
-                    <option value="${role}" ${rank === role ? "selected" : ""}>
-                      ${role}
-                    </option>
-                  `).join("")}
+                <select data-staff-rank="${escapeHtml(member.id)}" ${isStaff ? "" : "disabled"}>
+                  ${optionList(staffRoles, staffRank)}
+                </select>
+              </label>
+
+              <label>
+                Clan Rank
+                <select data-clan-rank="${escapeHtml(member.id)}">
+                  ${optionList(clanRanks, member.rank || "BVR")}
+                </select>
+              </label>
+
+              <label>
+                Ranking
+                <input
+                  type="text"
+                  value="${escapeHtml(member.ranking || "")}"
+                  placeholder="1# or 4#"
+                  data-member-ranking="${escapeHtml(member.id)}"
+                />
+              </label>
+
+              <label>
+                Game Type
+                <select data-member-game="${escapeHtml(member.id)}">
+                  ${optionList(games, member.game || "Minecraft Java")}
                 </select>
               </label>
             </div>
@@ -142,41 +146,35 @@ async function loadMembers() {
     .order("username", { ascending: true });
 
   if (error) {
-    setMessage(`Could not load staff toggles: ${error.message}`, "error");
+    setMessage(`Could not load clan members: ${error.message}`, "error");
     return;
   }
 
   members = data || [];
   renderMembers();
-
   window.dispatchEvent(new CustomEvent("blackVelvetStaffAccountsRefresh"));
 }
 
-async function saveMemberStaffStatus(member, isStaff, staffRank) {
+async function saveMember(member, changes) {
   const { error } = await supabase
     .from("clan_members")
-    .update({
-      is_staff: isStaff,
-      staff_rank: staffRank
-    })
+    .update(changes)
     .eq("id", member.id);
 
   if (error) throw error;
 
-  const { data: savedMember, error: verifyError } = await supabase
+  const { data, error: verifyError } = await supabase
     .from("clan_members")
-    .select("id,is_staff,staff_rank")
+    .select("*")
     .eq("id", member.id)
     .maybeSingle();
 
   if (verifyError) throw verifyError;
 
-  if (
-    !savedMember ||
-    Boolean(savedMember.is_staff) !== isStaff ||
-    String(savedMember.staff_rank || "N/A") !== String(staffRank)
-  ) {
-    throw new Error("Supabase did not confirm the staff status change.");
+  for (const [key, value] of Object.entries(changes)) {
+    if (String(data?.[key] ?? "N/A") !== String(value ?? "N/A")) {
+      throw new Error(`Supabase did not confirm the ${key} change.`);
+    }
   }
 }
 
@@ -184,102 +182,87 @@ list?.addEventListener("change", async event => {
   if (!canManage()) return;
 
   const checkbox = event.target.closest("[data-staff-toggle]");
-  const select = event.target.closest("[data-staff-rank]");
+  const staffSelect = event.target.closest("[data-staff-rank]");
+  const clanSelect = event.target.closest("[data-clan-rank]");
+  const gameSelect = event.target.closest("[data-member-game]");
+
+  const control = checkbox || staffSelect || clanSelect || gameSelect;
+  if (!control) return;
+
+  const member = getMemberById(
+    control.dataset.staffToggle ||
+    control.dataset.staffRank ||
+    control.dataset.clanRank ||
+    control.dataset.memberGame
+  );
+
+  if (!member) return;
+
+  const card = control.closest("[data-clan-staff-card]");
+  const rankingInput = card?.querySelector("[data-member-ranking]");
+  const changes = {};
 
   if (checkbox) {
-    const id = checkbox.dataset.staffToggle;
-    const member = getMemberById(id);
-
-    if (!member) return;
-
-    const isStaff = checkbox.checked;
-    const staffRank = isStaff ? validStaffRank(member.staff_rank) : "N/A";
-    const card = checkbox.closest("[data-clan-staff-card]");
-    const controls = card?.querySelectorAll("input, select");
-
-    controls?.forEach(control => {
-      control.disabled = true;
-    });
-
-    setMessage(
-      isStaff
-        ? `Saving ${member.username} as staff...`
-        : `Removing staff access from ${member.username}...`
-    );
-
-    try {
-      await saveMemberStaffStatus(member, isStaff, staffRank);
-
-      setMessage(
-        isStaff
-          ? `${member.username} is now staff and confirmed in Supabase ✓`
-          : `${member.username} is now a normal member and confirmed in Supabase ✓`,
-        "success"
-      );
-
-      await loadMembers();
-    } catch (error) {
-      checkbox.checked = !isStaff;
-      setMessage(`Could not save staff status: ${error.message}`, "error");
-      controls?.forEach(control => {
-        control.disabled = control.matches("[data-staff-rank]")
-          ? !checkbox.checked
-          : false;
-      });
-    }
-
-    return;
+    changes.is_staff = checkbox.checked;
+    changes.staff_rank = checkbox.checked
+      ? (staffRoles.includes(member.staff_rank) ? member.staff_rank : "Helper")
+      : "N/A";
+  } else if (staffSelect) {
+    changes.is_staff = true;
+    changes.staff_rank = staffSelect.value;
+  } else if (clanSelect) {
+    changes.rank = clanSelect.value;
+  } else if (gameSelect) {
+    changes.game = gameSelect.value;
   }
 
-  if (select) {
-    const id = select.dataset.staffRank;
-    const member = getMemberById(id);
+  if (rankingInput) changes.ranking = rankingInput.value.trim() || "N/A";
 
-    if (!member) return;
+  card?.querySelectorAll("input, select").forEach(item => item.disabled = true);
+  setMessage(`Saving ${member.username}...`);
 
-    select.disabled = true;
-    setMessage(`Saving ${member.username}'s staff rank...`);
-
-    try {
-      await saveMemberStaffStatus(member, true, select.value);
-
-      setMessage(
-        `${member.username}'s staff rank is ${select.value}. Confirmed in Supabase ✓`,
-        "success"
-      );
-
-      await loadMembers();
-    } catch (error) {
-      setMessage(`Could not save staff rank: ${error.message}`, "error");
-      select.disabled = false;
-    }
+  try {
+    await saveMember(member, changes);
+    setMessage(`${member.username}'s account was saved and confirmed in Supabase ✓`, "success");
+    await loadMembers();
+  } catch (error) {
+    setMessage(`Could not save ${member.username}: ${error.message}`, "error");
+    await loadMembers();
   }
 });
 
-document
-  .querySelector('[data-panel="clanMembers"]')
+list?.addEventListener("blur", event => {
+  const input = event.target.closest("[data-member-ranking]");
+  if (!input || !canManage()) return;
+
+  const member = getMemberById(input.dataset.memberRanking);
+  if (!member) return;
+
+  saveMember(member, {
+    ranking: input.value.trim() || "N/A"
+  }).then(() => {
+    setMessage(`${member.username}'s ranking was saved ✓`, "success");
+    loadMembers();
+  }).catch(error => {
+    setMessage(`Could not save ranking: ${error.message}`, "error");
+  });
+}, true);
+
+document.querySelector('[data-panel="clanMembers"]')
   ?.addEventListener("click", loadMembers);
 
-window.addEventListener(
-  "blackVelvetStaffAccountsRefresh",
-  () => {
-    if (document.getElementById("staffAccounts")?.classList.contains("active-panel")) {
-      window.dispatchEvent(new CustomEvent("blackVelvetStaffDirectoryRefresh"));
-    }
+window.addEventListener("blackVelvetStaffAccountsRefresh", () => {
+  if (document.getElementById("staffAccounts")?.classList.contains("active-panel")) {
+    window.dispatchEvent(new CustomEvent("blackVelvetStaffDirectoryRefresh"));
   }
-);
+});
 
 await loadMembers();
 
-supabase
-  .channel("live-clan-staff-toggle")
-  .on(
-    "postgres_changes",
-    {
-      event: "*",
-      schema: "public",
-      table: "clan_members"
-    },
-    loadMembers
-  )
+supabase.channel("live-clan-staff-toggle")
+  .on("postgres_changes", {
+    event: "*",
+    schema: "public",
+    table: "clan_members"
+  }, loadMembers)
   .subscribe();
