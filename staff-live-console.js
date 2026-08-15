@@ -1,6 +1,7 @@
 const SUPABASE_URL = "https://ptgzhljvzyceawwohmym.supabase.co";
 const SUPABASE_KEY = "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk";
 const STORAGE_KEY = "blackVelvetLocalConsoleErrors";
+const DONE_STORAGE_KEY = "blackVelvetConsoleDoneItems";
 
 const list = document.getElementById("consoleList");
 const count = document.getElementById("consoleCount");
@@ -14,9 +15,74 @@ const permanentOwners = ["imtherealluckyy", "suoaz"];
 
 let remoteErrors = [];
 let localErrors = [];
+let completedErrors = {};
 let lastSupabaseFailure = "";
 let lastSupabaseFailureTime = 0;
 let diagnosticsComplete = false;
+
+function addConsoleStyles() {
+  if (document.getElementById("console-status-styles")) return;
+
+  const style = document.createElement("style");
+  style.id = "console-status-styles";
+  style.textContent = `
+    .console-warning-card {
+      border-color: rgba(245, 190, 55, .78) !important;
+      background: linear-gradient(135deg, rgba(94, 69, 12, .32), rgba(8, 9, 6, .96)) !important;
+    }
+
+    .console-warning-card .log-status {
+      color: #ffd866 !important;
+    }
+
+    .console-warning-label {
+      display: inline-flex;
+      width: fit-content;
+      margin-bottom: 8px;
+      padding: 4px 8px;
+      border: 1px solid rgba(245, 190, 55, .75);
+      border-radius: 5px;
+      color: #ffd866;
+      background: rgba(245, 190, 55, .14);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .console-done-card {
+      opacity: .52;
+      border-color: rgba(125, 220, 150, .45) !important;
+    }
+
+    .console-done-card .console-done-button {
+      color: #8df0a6;
+      border-color: rgba(125, 220, 150, .7);
+      background: rgba(40, 160, 80, .16);
+    }
+
+    .console-done-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      padding: 7px 10px;
+      border: 1px solid rgba(220, 230, 236, .35);
+      border-radius: 6px;
+      color: #dce6ec;
+      background: rgba(220, 230, 236, .07);
+      font: 700 10px Arial, sans-serif;
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+
+    .console-done-button:hover {
+      border-color: #8df0a6;
+      color: #8df0a6;
+    }
+  `;
+
+  document.head.appendChild(style);
+}
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, character => ({
@@ -86,6 +152,14 @@ function readLocalErrors() {
   } catch {
     localErrors = [];
   }
+
+  try {
+    completedErrors = JSON.parse(
+      localStorage.getItem(DONE_STORAGE_KEY) || "{}"
+    );
+  } catch {
+    completedErrors = {};
+  }
 }
 
 function saveLocalError(error) {
@@ -101,6 +175,47 @@ function saveLocalError(error) {
   window.dispatchEvent(new CustomEvent("blackVelvetConsoleError", {
     detail: error
   }));
+}
+
+function getErrorKey(error) {
+  return [
+    error.source || "",
+    error.message || "",
+    error.page_url || ""
+  ].join("|");
+}
+
+function isWarning(error) {
+  const source = String(error.source || "").toLowerCase();
+  const messageText = String(error.message || "").toLowerCase();
+
+  return source.includes("warn") ||
+    source.includes("warning") ||
+    messageText.includes("console.warn") ||
+    messageText.includes("warning");
+}
+
+function isDone(error) {
+  return Boolean(completedErrors[getErrorKey(error)]);
+}
+
+function setDone(error, done) {
+  const key = getErrorKey(error);
+
+  if (done) {
+    completedErrors[key] = true;
+  } else {
+    delete completedErrors[key];
+  }
+
+  try {
+    localStorage.setItem(
+      DONE_STORAGE_KEY,
+      JSON.stringify(completedErrors)
+    );
+  } catch {}
+
+  render();
 }
 
 function uniqueErrors() {
@@ -130,8 +245,9 @@ function render() {
   if (!list) return;
 
   const errors = uniqueErrors();
+  const activeCount = errors.filter(error => !isDone(error)).length;
 
-  if (count) count.textContent = errors.length;
+  if (count) count.textContent = activeCount;
 
   if (!errors.length) {
     list.innerHTML = `
@@ -142,30 +258,51 @@ function render() {
     return;
   }
 
-  list.innerHTML = errors.map(error => `
-    <article class="log-card console-error-card">
-      <div class="log-main">
-        <strong>${escapeHtml(error.source || "Error")}</strong>
-        <span class="log-status">${escapeHtml(error.message || "Unknown error")}</span>
-      </div>
+  list.innerHTML = errors.map(error => {
+    const warning = isWarning(error);
+    const done = isDone(error);
+    const cardClasses = [
+      "log-card",
+      "console-error-card",
+      warning ? "console-warning-card" : "",
+      done ? "console-done-card" : ""
+    ].filter(Boolean).join(" ");
 
-      <div class="log-meta">
-        <span>${escapeHtml(new Date(error.created_at || Date.now()).toLocaleString())}</span>
-        <span>${escapeHtml(error.username || "Guest")}</span>
-        <span>${escapeHtml(error.user_role || "No role")}</span>
-        <span>${escapeHtml(error.device_hex || "No device")}</span>
-      </div>
+    return `
+      <article class="${cardClasses}">
+        <div class="log-main">
+          ${warning ? '<span class="console-warning-label">⚠ WARNING</span>' : ""}
+          <strong>${escapeHtml(error.source || "Error")}</strong>
+          <span class="log-status">${escapeHtml(error.message || "Unknown error")}</span>
+        </div>
 
-      <p class="muted">${escapeHtml(error.page_url || "Unknown page")}</p>
+        <div class="log-meta">
+          <span>${escapeHtml(new Date(error.created_at || Date.now()).toLocaleString())}</span>
+          <span>${escapeHtml(error.username || "Guest")}</span>
+          <span>${escapeHtml(error.user_role || "No role")}</span>
+          <span>${escapeHtml(error.device_hex || "No device")}</span>
+        </div>
 
-      ${error.stack_trace ? `
-        <details class="console-details">
-          <summary>STACK / DETAILS</summary>
-          <pre>${escapeHtml(error.stack_trace)}</pre>
-        </details>
-      ` : ""}
-    </article>
-  `).join("");
+        <p class="muted">${escapeHtml(error.page_url || "Unknown page")}</p>
+
+        ${error.stack_trace ? `
+          <details class="console-details">
+            <summary>STACK / DETAILS</summary>
+            <pre>${escapeHtml(error.stack_trace)}</pre>
+          </details>
+        ` : ""}
+
+        <button
+          class="console-done-button"
+          type="button"
+          data-console-done="${escapeHtml(getErrorKey(error))}"
+          aria-pressed="${done}"
+        >
+          ${done ? "✓ DONE — UNCHECK" : "☐ MARK AS DONE"}
+        </button>
+      </article>
+    `;
+  }).join("");
 }
 
 async function saveRemote(error) {
@@ -361,11 +498,28 @@ function installNavigation() {
   });
 }
 
+function installDoneButtons() {
+  list?.addEventListener("click", event => {
+    const button = event.target.closest("[data-console-done]");
+    if (!button) return;
+
+    const error = uniqueErrors().find(
+      item => getErrorKey(item) === button.dataset.consoleDone
+    );
+
+    if (error) {
+      setDone(error, !isDone(error));
+    }
+  });
+}
+
 function start() {
   if (!list) return;
 
+  addConsoleStyles();
   applyConsoleAccess();
   installNavigation();
+  installDoneButtons();
   readLocalErrors();
   render();
 
