@@ -1,15 +1,13 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
 if (!window.__blackVelvetErrorReporterInstalled) {
   window.__blackVelvetErrorReporterInstalled = true;
 
-  const supabase = createClient(
-    "https://ptgzhljvzyceawwohmym.supabase.co",
-    "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk"
-  );
+  const SUPABASE_URL = "https://ptgzhljvzyceawwohmym.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk";
+  const STORAGE_KEY = "blackVelvetLocalConsoleErrors";
 
   const originalConsoleError = console.error.bind(console);
   const originalFetch = window.fetch.bind(window);
+  const channel = "BroadcastChannel" in window ? new BroadcastChannel("black-velvet-console-errors") : null;
 
   let queue = Promise.resolve();
   let lastSignature = "";
@@ -37,23 +35,47 @@ if (!window.__blackVelvetErrorReporterInstalled) {
     return String(value);
   }
 
-  function shouldIgnore(message = "") {
-    return String(message).includes("system_errors");
+  function shouldIgnore(message = "", url = "") {
+    const text = `${message} ${url}`;
+    return text.includes("system_errors") || text.includes("blackVelvetLocalConsoleErrors");
   }
 
-  async function saveError(payload) {
-    await supabase.from("system_errors").insert(payload);
+  function saveLocal(payload) {
+    try {
+      const current = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      current.unshift(payload);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(current.slice(0, 200)));
+    } catch {}
+
+    window.dispatchEvent(new CustomEvent("blackVelvetConsoleError", { detail: payload }));
+    channel?.postMessage(payload);
+  }
+
+  async function saveRemote(payload) {
+    const response = await originalFetch(`${SUPABASE_URL}/rest/v1/system_errors`, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error(`system_errors insert failed: ${response.status} ${await response.text()}`);
+    }
   }
 
   function reportError(source, message, stack = "") {
     const text = String(message || "").trim();
-
     if (!text || shouldIgnore(text)) return;
 
     const signature = `${source}:${text}:${location.pathname}`;
     const now = Date.now();
 
-    if (signature === lastSignature && now - lastTime < 2500) return;
+    if (signature === lastSignature && now - lastTime < 1200) return;
 
     lastSignature = signature;
     lastTime = now;
@@ -61,17 +83,20 @@ if (!window.__blackVelvetErrorReporterInstalled) {
     const profile = getProfile();
 
     const payload = {
+      id: `local-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      created_at: new Date().toISOString(),
       source,
       message: text.slice(0, 4000),
       stack_trace: String(stack || "").slice(0, 12000) || null,
       page_url: location.href,
       username: profile?.username || null,
-      user_role: profile?.role || profile?.staffRank || null,
+      user_role: profile?.staffRank || profile?.role || null,
       device_hex: localStorage.getItem("blackVelvetDeviceHex") || null,
       browser: navigator.userAgent
     };
 
-    queue = queue.then(() => saveError(payload)).catch(() => {});
+    saveLocal(payload);
+    queue = queue.then(() => saveRemote(payload)).catch(() => {});
   }
 
   window.BlackVelvetReportError = reportError;
@@ -95,7 +120,8 @@ if (!window.__blackVelvetErrorReporterInstalled) {
 
       reportError(
         "resource.error",
-        `Failed to load ${target.tagName || "resource"}: ${url}`
+        `Failed to load ${target.tagName || "resource"}: ${url}`,
+        ""
       );
 
       return;
@@ -117,21 +143,40 @@ if (!window.__blackVelvetErrorReporterInstalled) {
   });
 
   window.fetch = async (...args) => {
+    const url = typeof args[0] === "string" ? args[0] : args[0]?.url || "";
+
     try {
       const response = await originalFetch(...args);
-      const url = typeof args[0] === "string" ? args[0] : args[0]?.url || "";
 
-      if (!response.ok && !url.includes("system_errors")) {
+      if (!response.ok && !shouldIgnore("", url)) {
+        let body = "";
+
+        try {
+          body = await response.clone().text();
+        } catch {}
+
         reportError(
           "fetch.error",
-          `${response.status} ${response.statusText} while requesting ${url || "unknown URL"}`
+          `${response.status} ${response.statusText} while requesting ${url || "unknown URL"}${body ? ` | Response: ${body}` : ""}`,
+          ""
         );
       }
 
       return response;
     } catch (error) {
-      reportError("fetch.exception", error.message, error.stack);
+      if (!shouldIgnore(error.message, url)) {
+        reportError(
+          "fetch.exception",
+          `${error.message} while requesting ${url || "unknown URL"}`,
+          error.stack
+        );
+      }
+
       throw error;
     }
+  };
+
+  window.BlackVelvetTestConsoleError = () => {
+    console.error(new Error("Black Velvet live console test error"));
   };
 }
