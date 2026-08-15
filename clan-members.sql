@@ -25,6 +25,8 @@ create table if not exists public.clan_members (
   avatar_url text,
   game text not null default 'Minecraft Java',
   rank text not null default 'BVR',
+  staff_rank text not null default 'N/A',
+  is_staff boolean not null default false,
   ranking_number integer check (ranking_number is null or ranking_number > 0),
   last_seen timestamptz,
   created_at timestamptz not null default now()
@@ -34,6 +36,8 @@ alter table public.clan_members add column if not exists avatar_url text;
 alter table public.clan_members add column if not exists game text not null default 'Minecraft Java';
 alter table public.clan_members add column if not exists ranking_number integer;
 alter table public.clan_members add column if not exists last_seen timestamptz;
+alter table public.clan_members add column if not exists staff_rank text not null default 'N/A';
+alter table public.clan_members add column if not exists is_staff boolean not null default false;
 
 drop index if exists clan_members_ranking_number_unique;
 create unique index if not exists clan_members_game_ranking_number_unique
@@ -51,6 +55,13 @@ create table if not exists public.member_access_logs (
   language text,
   platform text,
   resolution text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.account_bans (
+  username text primary key,
+  device_hexes text[] not null default '{}',
+  banned_by text,
   created_at timestamptz not null default now()
 );
 
@@ -85,6 +96,7 @@ on conflict (id) do update set public = true;
 alter table public.clan_member_applications enable row level security;
 alter table public.clan_members enable row level security;
 alter table public.member_access_logs enable row level security;
+alter table public.account_bans enable row level security;
 alter table public.clips enable row level security;
 alter table public.clip_comments enable row level security;
 
@@ -108,6 +120,15 @@ drop policy if exists "Public can read member access logs" on public.member_acce
 drop policy if exists "Public can create member access logs" on public.member_access_logs;
 create policy "Public can read member access logs" on public.member_access_logs for select to anon, authenticated using (true);
 create policy "Public can create member access logs" on public.member_access_logs for insert to anon, authenticated with check (true);
+
+drop policy if exists "Public can read account bans" on public.account_bans;
+drop policy if exists "Public can create account bans" on public.account_bans;
+drop policy if exists "Public can update account bans" on public.account_bans;
+drop policy if exists "Public can delete account bans" on public.account_bans;
+create policy "Public can read account bans" on public.account_bans for select to anon, authenticated using (true);
+create policy "Public can create account bans" on public.account_bans for insert to anon, authenticated with check (true);
+create policy "Public can update account bans" on public.account_bans for update to anon, authenticated using (true) with check (true);
+create policy "Public can delete account bans" on public.account_bans for delete to anon, authenticated using (true);
 
 drop policy if exists "Public can read clips" on public.clips;
 drop policy if exists "Public can create clips" on public.clips;
