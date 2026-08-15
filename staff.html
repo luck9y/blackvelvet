@@ -25,116 +25,27 @@
     .nav-button{letter-spacing:.8px}
     .content{background:rgba(4,6,9,.35)}
     .placeholder,.empty-state{border:1px dashed var(--line);border-radius:10px;background:rgba(220,230,236,.025)}
-
-    .staff-feature-grid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:12px;
-      margin:18px 0;
-    }
-
-    .staff-feature{
-      padding:15px;
-      border:1px solid var(--line);
-      border-radius:10px;
-      background:linear-gradient(135deg,rgba(220,230,236,.06),rgba(7,11,15,.86));
-    }
-
-    .staff-feature b{
-      display:block;
-      margin-bottom:7px;
-      color:var(--silver);
-      font-size:10px;
-      letter-spacing:1.3px;
-      text-transform:uppercase;
-    }
-
-    .staff-feature span{
-      color:#9daab2;
-      font:12px/1.55 Arial,sans-serif;
-    }
-
-    .verified-badge{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      width:18px;
-      height:18px;
-      margin-left:6px;
-      border:1px solid rgba(143,211,255,.6);
-      border-radius:50%;
-      color:#8fd3ff;
-      background:rgba(143,211,255,.09);
-      font:700 11px Arial,sans-serif;
-      box-shadow:0 0 14px rgba(143,211,255,.28);
-      vertical-align:middle;
-    }
-
-    [data-staff-directory-card]{
-      border-color:rgba(143,211,255,.32);
-      background:linear-gradient(135deg,rgba(16,41,55,.26),rgba(6,9,12,.94));
-    }
-
-    [data-staff-directory-card] select{
-      min-width:145px;
-    }
-
-    .console-toolbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      margin:18px 0;
-      padding:14px;
-      border:1px solid var(--line);
-      border-radius:9px;
-      background:rgba(7,11,15,.78);
-    }
-
+    .staff-feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}
+    .staff-feature{padding:15px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(135deg,rgba(220,230,236,.06),rgba(7,11,15,.86))}
+    .staff-feature b{display:block;margin-bottom:7px;color:var(--silver);font-size:10px;letter-spacing:1.3px;text-transform:uppercase}
+    .staff-feature span{color:#9daab2;font:12px/1.55 Arial,sans-serif}
+    .verified-badge{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-left:6px;border:1px solid rgba(143,211,255,.6);border-radius:50%;color:#8fd3ff;background:rgba(143,211,255,.09);font:700 11px Arial,sans-serif;box-shadow:0 0 14px rgba(143,211,255,.28);vertical-align:middle}
+    [data-staff-directory-card]{border-color:rgba(143,211,255,.32);background:linear-gradient(135deg,rgba(16,41,55,.26),rgba(6,9,12,.94))}
+    [data-staff-directory-card] select{min-width:145px}
+    #clanStaffToggleList{margin:18px 0 24px}
+    #clanStaffToggleList .log-card{border-color:rgba(143,211,255,.24)}
+    #clanStaffToggleList .checkbox-row{display:inline-flex;align-items:center;gap:8px;margin:0;color:var(--silver);font-size:11px;letter-spacing:1px}
+    #clanStaffToggleList .checkbox-row input{width:auto;margin:0}
+    #clanStaffToggleList select{min-width:145px}
+    .member-divider{height:1px;margin:22px 0;border:0;background:var(--line)}
+    .console-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:18px 0;padding:14px;border:1px solid var(--line);border-radius:9px;background:rgba(7,11,15,.78)}
     .console-toolbar p{margin:0}
-
-    .console-error-card{
-      border-color:rgba(221,112,112,.42);
-      background:linear-gradient(135deg,rgba(75,20,20,.19),rgba(6,9,12,.94));
-    }
-
+    .console-error-card{border-color:rgba(221,112,112,.42);background:linear-gradient(135deg,rgba(75,20,20,.19),rgba(6,9,12,.94))}
     .console-error-card .log-status{color:#ef9c9c}
-
-    .console-details{
-      margin-top:15px;
-      border-top:1px solid var(--line);
-      padding-top:13px;
-    }
-
-    .console-details summary{
-      color:var(--silver);
-      font-size:10px;
-      font-weight:700;
-      letter-spacing:1.2px;
-      cursor:pointer;
-    }
-
-    .console-details pre{
-      max-height:300px;
-      margin:13px 0 0;
-      padding:14px;
-      overflow:auto;
-      border:1px solid var(--line);
-      border-radius:7px;
-      color:#d4dde2;
-      background:#030506;
-      font:12px/1.65 Consolas,monospace;
-      white-space:pre-wrap;
-      overflow-wrap:anywhere;
-    }
-
-    @media(max-width:760px){
-      .app-shell{width:min(92%,1180px)}
-      .home-card{padding:38px 22px}
-      .user-area{flex-wrap:wrap;justify-content:flex-end}
-      .console-toolbar{align-items:stretch;flex-direction:column}
-      .staff-feature-grid{grid-template-columns:1fr}
-    }
+    .console-details{margin-top:15px;border-top:1px solid var(--line);padding-top:13px}
+    .console-details summary{color:var(--silver);font-size:10px;font-weight:700;letter-spacing:1.2px;cursor:pointer}
+    .console-details pre{max-height:300px;margin:13px 0 0;padding:14px;overflow:auto;border:1px solid var(--line);border-radius:7px;color:#d4dde2;background:#030506;font:12px/1.65 Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+    @media(max-width:760px){.app-shell{width:min(92%,1180px)}.home-card{padding:38px 22px}.user-area{flex-wrap:wrap;justify-content:flex-end}.console-toolbar{align-items:stretch;flex-direction:column}.staff-feature-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -179,69 +90,17 @@
       <p class="muted">Complete every section honestly before submitting your application.</p>
 
       <form id="applicationForm" class="application-form">
-        <label>
-          ✓ Discord Tag
-          <input name="discordTag" placeholder="Username#1234" required />
-          <small>Provide the exact tag so we can verify your account.</small>
-        </label>
-
-        <label>
-          ✓ Desired Staff Username
-          <input name="staffUsername" placeholder="Choose a username" required />
-        </label>
-
-        <label>
-          ✓ Account Password
-          <input name="staffPassword" type="password" minlength="6" required />
-        </label>
-
-        <label>
-          ✓ Age
-          <input name="age" type="number" min="13" required />
-        </label>
-
-        <label>
-          ✓ Timezone
-          <input name="timezone" required />
-        </label>
-
-        <label>
-          ✓ Moderation / Staff Experience
-          <textarea name="experience" rows="4" required></textarea>
-        </label>
-
-        <label>
-          ✓ Role applying for
-          <select name="role" required>
-            <option value="">Select a role</option>
-            <option>Owner</option>
-            <option>Admin</option>
-            <option>Manager</option>
-            <option>President</option>
-            <option>Mod</option>
-            <option>Helper</option>
-          </select>
-        </label>
-
-        <label>
-          ✓ Availability
-          <textarea name="availability" rows="3" required></textarea>
-        </label>
-
-        <label>
-          ✓ Why do you want to join staff?
-          <textarea name="motivation" rows="4" required></textarea>
-        </label>
-
-        <label>
-          ✓ References <span class="optional">(optional)</span>
-          <textarea name="references" rows="3"></textarea>
-        </label>
-
-        <label class="checkbox-row">
-          <input name="rulesAccepted" type="checkbox" required />
-          <span>I have read and agree to follow the community and staff rules.</span>
-        </label>
+        <label>✓ Discord Tag<input name="discordTag" placeholder="Username#1234" required /><small>Provide the exact tag so we can verify your account.</small></label>
+        <label>✓ Desired Staff Username<input name="staffUsername" placeholder="Choose a username" required /></label>
+        <label>✓ Account Password<input name="staffPassword" type="password" minlength="6" required /></label>
+        <label>✓ Age<input name="age" type="number" min="13" required /></label>
+        <label>✓ Timezone<input name="timezone" required /></label>
+        <label>✓ Moderation / Staff Experience<textarea name="experience" rows="4" required></textarea></label>
+        <label>✓ Role applying for<select name="role" required><option value="">Select a role</option><option>Owner</option><option>Admin</option><option>Manager</option><option>President</option><option>Mod</option><option>Helper</option></select></label>
+        <label>✓ Availability<textarea name="availability" rows="3" required></textarea></label>
+        <label>✓ Why do you want to join staff?<textarea name="motivation" rows="4" required></textarea></label>
+        <label>✓ References <span class="optional">(optional)</span><textarea name="references" rows="3"></textarea></label>
+        <label class="checkbox-row"><input name="rulesAccepted" type="checkbox" required /><span>I have read and agree to follow the community and staff rules.</span></label>
 
         <div class="form-actions">
           <button class="primary-button" type="submit">Submit Signup</button>
@@ -272,72 +131,26 @@
       <div class="portal-layout">
         <aside class="sidebar">
           <p class="sidebar-label">Command Navigation</p>
-
           <nav id="navigation">
             <button class="nav-button active" data-panel="staffGuide">Staff Guide</button>
             <button class="nav-button" data-panel="abuseGuide">Abuse Guide</button>
             <button class="nav-button" data-panel="tryoutGuide">Tryout Guide</button>
             <button class="nav-button" data-panel="ticketGuide">Ticket Guide</button>
-
-            <button class="nav-button leadership-only" data-panel="loginLogs">
-              Staff Login Logs
-              <span id="logCount" class="count">0</span>
-            </button>
-
-            <button class="nav-button leadership-only" data-panel="memberLoginLogs">
-              Member Login Logs
-              <span id="memberLogCount" class="count">0</span>
-            </button>
-
-            <button class="nav-button leadership-only" data-panel="applications">
-              Staff Applications
-              <span id="applicationCount" class="count">0</span>
-            </button>
-
-            <button class="nav-button leadership-only" data-panel="clanApplications">
-              Clan Applications
-              <span id="clanApplicationCount" class="count">0</span>
-            </button>
-
-            <button class="nav-button leadership-only" data-panel="clanMembers">
-              Clan Members
-            </button>
-
-            <button class="nav-button leadership-only" data-panel="staffAccounts">
-              Staff Accounts
-            </button>
-
-            <button class="nav-button manager-owner-only hidden" data-panel="systemConsole">
-              Console
-              <span id="consoleCount" class="count">0</span>
-            </button>
+            <button class="nav-button leadership-only" data-panel="loginLogs">Staff Login Logs <span id="logCount" class="count">0</span></button>
+            <button class="nav-button leadership-only" data-panel="memberLoginLogs">Member Login Logs <span id="memberLogCount" class="count">0</span></button>
+            <button class="nav-button leadership-only" data-panel="applications">Staff Applications <span id="applicationCount" class="count">0</span></button>
+            <button class="nav-button leadership-only" data-panel="clanApplications">Clan Applications <span id="clanApplicationCount" class="count">0</span></button>
+            <button class="nav-button leadership-only" data-panel="clanMembers">Clan Members</button>
+            <button class="nav-button leadership-only" data-panel="staffAccounts">Staff Accounts</button>
+            <button class="nav-button manager-owner-only hidden" data-panel="systemConsole">Console <span id="consoleCount" class="count">0</span></button>
           </nav>
         </aside>
 
         <section class="content">
-          <article id="staffGuide" class="panel active-panel">
-            <p class="eyebrow">STAFF RESOURCES // 01</p>
-            <h1>Staff Guide</h1>
-            <div class="placeholder">To be continued</div>
-          </article>
-
-          <article id="abuseGuide" class="panel">
-            <p class="eyebrow">STAFF RESOURCES // 02</p>
-            <h1>Abuse Guide</h1>
-            <div class="placeholder">To be continued</div>
-          </article>
-
-          <article id="tryoutGuide" class="panel">
-            <p class="eyebrow">STAFF RESOURCES // 03</p>
-            <h1>Tryout Guide</h1>
-            <div class="placeholder">To be continued</div>
-          </article>
-
-          <article id="ticketGuide" class="panel">
-            <p class="eyebrow">STAFF RESOURCES // 04</p>
-            <h1>Ticket Guide</h1>
-            <div class="placeholder">To be continued</div>
-          </article>
+          <article id="staffGuide" class="panel active-panel"><p class="eyebrow">STAFF RESOURCES // 01</p><h1>Staff Guide</h1><div class="placeholder">To be continued</div></article>
+          <article id="abuseGuide" class="panel"><p class="eyebrow">STAFF RESOURCES // 02</p><h1>Abuse Guide</h1><div class="placeholder">To be continued</div></article>
+          <article id="tryoutGuide" class="panel"><p class="eyebrow">STAFF RESOURCES // 03</p><h1>Tryout Guide</h1><div class="placeholder">To be continued</div></article>
+          <article id="ticketGuide" class="panel"><p class="eyebrow">STAFF RESOURCES // 04</p><h1>Ticket Guide</h1><div class="placeholder">To be continued</div></article>
 
           <article id="loginLogs" class="panel leadership-only">
             <p class="eyebrow">SECURITY AUDIT // 05</p>
@@ -370,31 +183,24 @@
           <article id="clanMembers" class="panel leadership-only">
             <p class="eyebrow">CLAN MANAGEMENT // 09</p>
             <h1>Clan Members</h1>
-            <p class="muted">Change game rank, staff rank, account type, leaderboard position, or ban status.</p>
+            <p class="muted">Turn any clan account into a staff account with the Staff member checkbox. New staff default to Helper.</p>
             <p id="clanMembersMessage" class="action-message"></p>
+
+            <div id="clanStaffToggleList" class="log-list"></div>
+            <hr class="member-divider" />
+
             <div id="clanMemberList" class="log-list"></div>
           </article>
 
           <article id="staffAccounts" class="panel leadership-only">
             <p class="eyebrow">LEADERSHIP // 10</p>
             <h1>Staff Accounts <span class="verified-badge" title="Verified staff">✓</span></h1>
-            <p class="muted">
-              Manage every staff-enabled account. Staff profiles and comments receive a verified checkmark.
-            </p>
+            <p class="muted">Manage every staff-enabled account. Staff profiles and comments receive a verified checkmark.</p>
 
             <div class="staff-feature-grid">
-              <div class="staff-feature">
-                <b>Staff Rank</b>
-                <span>Adjust each staff account rank: Owner, Admin, Manager, President, Mod, or Helper.</span>
-              </div>
-              <div class="staff-feature">
-                <b>Set Member</b>
-                <span>Removes staff access, sets staff rank to N/A, and turns the account back into a normal clan account.</span>
-              </div>
-              <div class="staff-feature">
-                <b>Remove Account</b>
-                <span>Permanently removes the selected staff account and linked clan member record if one exists.</span>
-              </div>
+              <div class="staff-feature"><b>Staff Rank</b><span>Adjust each staff account rank: Owner, Admin, Manager, President, Mod, or Helper.</span></div>
+              <div class="staff-feature"><b>Set Member</b><span>Removes staff access, sets staff rank to N/A, and turns the account back into a normal clan account.</span></div>
+              <div class="staff-feature"><b>Remove Account</b><span>Permanently removes the selected staff account and linked clan member record if one exists.</span></div>
             </div>
 
             <p id="accountsMessage" class="action-message"></p>
@@ -405,14 +211,10 @@
             <p class="eyebrow">SYSTEM DIAGNOSTICS // 11</p>
             <h1>Console</h1>
             <p class="muted">Persistent JavaScript and request errors. This section is visible only to Owners and Managers.</p>
-
             <div class="console-toolbar">
               <p id="consoleMessage" class="action-message"></p>
-              <button id="clearConsoleButton" class="secondary-button" type="button">
-                Clear Console
-              </button>
+              <button id="clearConsoleButton" class="secondary-button" type="button">Clear Console</button>
             </div>
-
             <div id="consoleList" class="log-list"></div>
           </article>
         </section>
@@ -421,7 +223,9 @@
   </main>
 
   <script src="theme.js"></script>
+  <script type="module" src="global-error-reporter.js"></script>
   <script type="module" src="staff-console.js"></script>
   <script type="module" src="script.js"></script>
+  <script type="module" src="clan-member-staff-toggle.js"></script>
 </body>
 </html>
