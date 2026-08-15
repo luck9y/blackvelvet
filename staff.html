@@ -8,7 +8,79 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="theme.css" />
   <style>
-    body{margin:0;font-family:Orbitron,Arial,sans-serif}.app-shell{position:relative;z-index:1;width:min(1180px,90%);margin:auto;padding:28px 0 75px}.site-back{display:inline-flex;margin-bottom:28px;color:var(--silver);font-size:11px;font-weight:700;letter-spacing:1.8px;text-decoration:none}.home-card,.login-card,.application-card,.portal{border:1px solid var(--line);border-radius:16px;background:rgba(5,8,11,.88);box-shadow:0 24px 70px #000}.home-card{padding:50px;text-align:center}.home-card h1,.login-card h1,.application-card h1,.panel h1{font-family:Cinzel,Georgia,serif;letter-spacing:3px}.home-card h1{margin:10px 0 16px;font-size:clamp(42px,7vw,76px)}.home-card .muted{max-width:540px;margin:0 auto 30px;font:16px/1.75 Arial,sans-serif}.flower-mark{color:var(--silver);text-shadow:0 0 20px var(--silver)}.portal{overflow:hidden}.topbar{border-bottom:1px solid var(--line);background:rgba(11,16,21,.9)}.brand h2{margin:3px 0 0;font-family:Cinzel,Georgia,serif;letter-spacing:2px}.portal-home{color:var(--silver);font-size:10px;font-weight:700;letter-spacing:1.4px;text-decoration:none}.sidebar{background:rgba(8,12,16,.8);border-right:1px solid var(--line)}.nav-button{letter-spacing:.8px}.content{background:rgba(4,6,9,.35)}.placeholder,.empty-state{border:1px dashed var(--line);border-radius:10px;background:rgba(220,230,236,.025)}@media(max-width:760px){.app-shell{width:min(92%,1180px)}.home-card{padding:38px 22px}.user-area{flex-wrap:wrap;justify-content:flex-end}}
+    body{margin:0;font-family:Orbitron,Arial,sans-serif}
+    .app-shell{position:relative;z-index:1;width:min(1180px,90%);margin:auto;padding:28px 0 75px}
+    .site-back{display:inline-flex;margin-bottom:28px;color:var(--silver);font-size:11px;font-weight:700;letter-spacing:1.8px;text-decoration:none}
+    .home-card,.login-card,.application-card,.portal{border:1px solid var(--line);border-radius:16px;background:rgba(5,8,11,.88);box-shadow:0 24px 70px #000}
+    .home-card{padding:50px;text-align:center}
+    .home-card h1,.login-card h1,.application-card h1,.panel h1{font-family:Cinzel,Georgia,serif;letter-spacing:3px}
+    .home-card h1{margin:10px 0 16px;font-size:clamp(42px,7vw,76px)}
+    .home-card .muted{max-width:540px;margin:0 auto 30px;font:16px/1.75 Arial,sans-serif}
+    .flower-mark{color:var(--silver);text-shadow:0 0 20px var(--silver)}
+    .portal{overflow:hidden}
+    .topbar{border-bottom:1px solid var(--line);background:rgba(11,16,21,.9)}
+    .brand h2{margin:3px 0 0;font-family:Cinzel,Georgia,serif;letter-spacing:2px}
+    .portal-home{color:var(--silver);font-size:10px;font-weight:700;letter-spacing:1.4px;text-decoration:none}
+    .sidebar{background:rgba(8,12,16,.8);border-right:1px solid var(--line)}
+    .nav-button{letter-spacing:.8px}
+    .content{background:rgba(4,6,9,.35)}
+    .placeholder,.empty-state{border:1px dashed var(--line);border-radius:10px;background:rgba(220,230,236,.025)}
+
+    .console-toolbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin:18px 0;
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:9px;
+      background:rgba(7,11,15,.78);
+    }
+
+    .console-toolbar p{margin:0}
+
+    .console-error-card{
+      border-color:rgba(221,112,112,.42);
+      background:linear-gradient(135deg,rgba(75,20,20,.19),rgba(6,9,12,.94));
+    }
+
+    .console-error-card .log-status{color:#ef9c9c}
+
+    .console-details{
+      margin-top:15px;
+      border-top:1px solid var(--line);
+      padding-top:13px;
+    }
+
+    .console-details summary{
+      color:var(--silver);
+      font-size:10px;
+      font-weight:700;
+      letter-spacing:1.2px;
+      cursor:pointer;
+    }
+
+    .console-details pre{
+      max-height:300px;
+      margin:13px 0 0;
+      padding:14px;
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:7px;
+      color:#d4dde2;
+      background:#030506;
+      font:12px/1.65 Consolas,monospace;
+      white-space:pre-wrap;
+      overflow-wrap:anywhere;
+    }
+
+    @media(max-width:760px){
+      .app-shell{width:min(92%,1180px)}
+      .home-card{padding:38px 22px}
+      .user-area{flex-wrap:wrap;justify-content:flex-end}
+      .console-toolbar{align-items:stretch;flex-direction:column}
+    }
   </style>
 </head>
 <body>
@@ -31,73 +103,252 @@
       <p class="eyebrow">BLACK VELVET // AUTHORIZED ACCESS</p>
       <h1>Staff Login</h1>
       <p class="muted">Authorized staff access only.</p>
+
       <form id="loginForm">
-        <label for="username">Username</label><input id="username" type="text" autocomplete="username" required />
-        <label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required />
+        <label for="username">Username</label>
+        <input id="username" type="text" autocomplete="username" required />
+
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" required />
+
         <button class="primary-button" type="submit">Sign in</button>
         <p id="loginMessage" class="login-message" role="alert"></p>
       </form>
+
       <p class="security-note">Access attempts are audited without recording passwords.</p>
     </section>
 
     <section id="applicationView" class="application-card hidden">
       <button class="back-button" data-home>← Back to Staff Home</button>
-      <p class="eyebrow">BLACK VELVET // STAFF APPLICATION</p><h1>Staff Signup</h1>
+      <p class="eyebrow">BLACK VELVET // STAFF APPLICATION</p>
+      <h1>Staff Signup</h1>
       <p class="muted">Complete every section honestly before submitting your application.</p>
+
       <form id="applicationForm" class="application-form">
-        <label>✓ Discord Tag<input name="discordTag" placeholder="Username#1234" required /><small>Provide the exact tag so we can verify your account.</small></label>
-        <label>✓ Desired Staff Username<input name="staffUsername" placeholder="Choose a username" required /></label>
-        <label>✓ Account Password<input name="staffPassword" type="password" minlength="6" required /></label>
-        <label>✓ Age<input name="age" type="number" min="13" required /></label>
-        <label>✓ Timezone<input name="timezone" required /></label>
-        <label>✓ Moderation / Staff Experience<textarea name="experience" rows="4" required></textarea></label>
-        <label>✓ Role applying for<select name="role" required><option value="">Select a role</option><option>Owner</option><option>Admin</option><option>Manager</option><option>President</option><option>Mod</option><option>Helper</option></select></label>
-        <label>✓ Availability<textarea name="availability" rows="3" required></textarea></label>
-        <label>✓ Why do you want to join staff?<textarea name="motivation" rows="4" required></textarea></label>
-        <label>✓ References <span class="optional">(optional)</span><textarea name="references" rows="3"></textarea></label>
-        <label class="checkbox-row"><input name="rulesAccepted" type="checkbox" required /><span>I have read and agree to follow the community and staff rules.</span></label>
-        <div class="form-actions"><button class="primary-button" type="submit">Submit Signup</button><button id="clearApplicationButton" class="secondary-button" type="button">Clear</button></div>
+        <label>
+          ✓ Discord Tag
+          <input name="discordTag" placeholder="Username#1234" required />
+          <small>Provide the exact tag so we can verify your account.</small>
+        </label>
+
+        <label>
+          ✓ Desired Staff Username
+          <input name="staffUsername" placeholder="Choose a username" required />
+        </label>
+
+        <label>
+          ✓ Account Password
+          <input name="staffPassword" type="password" minlength="6" required />
+        </label>
+
+        <label>
+          ✓ Age
+          <input name="age" type="number" min="13" required />
+        </label>
+
+        <label>
+          ✓ Timezone
+          <input name="timezone" required />
+        </label>
+
+        <label>
+          ✓ Moderation / Staff Experience
+          <textarea name="experience" rows="4" required></textarea>
+        </label>
+
+        <label>
+          ✓ Role applying for
+          <select name="role" required>
+            <option value="">Select a role</option>
+            <option>Owner</option>
+            <option>Admin</option>
+            <option>Manager</option>
+            <option>President</option>
+            <option>Mod</option>
+            <option>Helper</option>
+          </select>
+        </label>
+
+        <label>
+          ✓ Availability
+          <textarea name="availability" rows="3" required></textarea>
+        </label>
+
+        <label>
+          ✓ Why do you want to join staff?
+          <textarea name="motivation" rows="4" required></textarea>
+        </label>
+
+        <label>
+          ✓ References <span class="optional">(optional)</span>
+          <textarea name="references" rows="3"></textarea>
+        </label>
+
+        <label class="checkbox-row">
+          <input name="rulesAccepted" type="checkbox" required />
+          <span>I have read and agree to follow the community and staff rules.</span>
+        </label>
+
+        <div class="form-actions">
+          <button class="primary-button" type="submit">Submit Signup</button>
+          <button id="clearApplicationButton" class="secondary-button" type="button">Clear</button>
+        </div>
+
         <p id="applicationMessage" class="login-message" role="alert"></p>
       </form>
     </section>
 
     <section id="portalView" class="portal hidden">
       <header class="topbar">
-        <div class="brand"><div class="flower-mark tiny">✽</div><div><p class="eyebrow">BLACK VELVET // INTERNAL</p><h2>Staff Portal</h2></div></div>
-        <div class="user-area"><a class="portal-home" href="home.html">← BACK HOME</a><span id="signedInAs"></span><button id="logoutButton" class="ghost-button">Log out</button></div>
+        <div class="brand">
+          <div class="flower-mark tiny">✽</div>
+          <div>
+            <p class="eyebrow">BLACK VELVET // INTERNAL</p>
+            <h2>Staff Portal</h2>
+          </div>
+        </div>
+
+        <div class="user-area">
+          <a class="portal-home" href="home.html">← BACK HOME</a>
+          <span id="signedInAs"></span>
+          <button id="logoutButton" class="ghost-button">Log out</button>
+        </div>
       </header>
+
       <div class="portal-layout">
         <aside class="sidebar">
           <p class="sidebar-label">Command Navigation</p>
+
           <nav id="navigation">
             <button class="nav-button active" data-panel="staffGuide">Staff Guide</button>
             <button class="nav-button" data-panel="abuseGuide">Abuse Guide</button>
             <button class="nav-button" data-panel="tryoutGuide">Tryout Guide</button>
             <button class="nav-button" data-panel="ticketGuide">Ticket Guide</button>
-            <button class="nav-button leadership-only" data-panel="loginLogs">Staff Login Logs <span id="logCount" class="count">0</span></button>
-            <button class="nav-button leadership-only" data-panel="memberLoginLogs">Member Login Logs <span id="memberLogCount" class="count">0</span></button>
-            <button class="nav-button leadership-only" data-panel="applications">Staff Applications <span id="applicationCount" class="count">0</span></button>
-            <button class="nav-button leadership-only" data-panel="clanApplications">Clan Applications <span id="clanApplicationCount" class="count">0</span></button>
-            <button class="nav-button leadership-only" data-panel="clanMembers">Clan Members</button>
-            <button class="nav-button leadership-only" data-panel="staffAccounts">Staff Accounts</button>
+
+            <button class="nav-button leadership-only" data-panel="loginLogs">
+              Staff Login Logs
+              <span id="logCount" class="count">0</span>
+            </button>
+
+            <button class="nav-button leadership-only" data-panel="memberLoginLogs">
+              Member Login Logs
+              <span id="memberLogCount" class="count">0</span>
+            </button>
+
+            <button class="nav-button leadership-only" data-panel="applications">
+              Staff Applications
+              <span id="applicationCount" class="count">0</span>
+            </button>
+
+            <button class="nav-button leadership-only" data-panel="clanApplications">
+              Clan Applications
+              <span id="clanApplicationCount" class="count">0</span>
+            </button>
+
+            <button class="nav-button leadership-only" data-panel="clanMembers">
+              Clan Members
+            </button>
+
+            <button class="nav-button leadership-only" data-panel="staffAccounts">
+              Staff Accounts
+            </button>
+
+            <button class="nav-button manager-owner-only hidden" data-panel="systemConsole">
+              Console
+              <span id="consoleCount" class="count">0</span>
+            </button>
           </nav>
         </aside>
+
         <section class="content">
-          <article id="staffGuide" class="panel active-panel"><p class="eyebrow">STAFF RESOURCES // 01</p><h1>Staff Guide</h1><div class="placeholder">To be continued</div></article>
-          <article id="abuseGuide" class="panel"><p class="eyebrow">STAFF RESOURCES // 02</p><h1>Abuse Guide</h1><div class="placeholder">To be continued</div></article>
-          <article id="tryoutGuide" class="panel"><p class="eyebrow">STAFF RESOURCES // 03</p><h1>Tryout Guide</h1><div class="placeholder">To be continued</div></article>
-          <article id="ticketGuide" class="panel"><p class="eyebrow">STAFF RESOURCES // 04</p><h1>Ticket Guide</h1><div class="placeholder">To be continued</div></article>
-          <article id="loginLogs" class="panel leadership-only"><p class="eyebrow">SECURITY AUDIT // 05</p><h1>Staff Login Logs</h1><p class="muted">Staff login attempts, including failed attempts.</p><div id="logList" class="log-list"></div></article>
-          <article id="memberLoginLogs" class="panel leadership-only"><p class="eyebrow">MEMBER ACCESS // 06</p><h1>Member Login Logs</h1><p class="muted">Normal member login attempts, including device details and failed attempts.</p><div id="memberLogList" class="log-list"></div></article>
-          <article id="applications" class="panel leadership-only"><p class="eyebrow">LEADERSHIP // 07</p><h1>Staff Applications</h1><p id="applicationsMessage" class="action-message"></p><div id="applicationList" class="log-list"></div></article>
-          <article id="clanApplications" class="panel leadership-only"><p class="eyebrow">CLAN MANAGEMENT // 08</p><h1>Clan Member Applications</h1><p id="clanApplicationsMessage" class="action-message"></p><div id="clanApplicationList" class="log-list"></div></article>
-          <article id="clanMembers" class="panel leadership-only"><p class="eyebrow">CLAN MANAGEMENT // 09</p><h1>Clan Members</h1><p id="clanMembersMessage" class="action-message"></p><div id="clanMemberList" class="log-list"></div></article>
-          <article id="staffAccounts" class="panel leadership-only"><p class="eyebrow">LEADERSHIP // 10</p><h1>Staff Accounts</h1><p id="accountsMessage" class="action-message"></p><div id="staffAccountList" class="log-list"></div></article>
+          <article id="staffGuide" class="panel active-panel">
+            <p class="eyebrow">STAFF RESOURCES // 01</p>
+            <h1>Staff Guide</h1>
+            <div class="placeholder">To be continued</div>
+          </article>
+
+          <article id="abuseGuide" class="panel">
+            <p class="eyebrow">STAFF RESOURCES // 02</p>
+            <h1>Abuse Guide</h1>
+            <div class="placeholder">To be continued</div>
+          </article>
+
+          <article id="tryoutGuide" class="panel">
+            <p class="eyebrow">STAFF RESOURCES // 03</p>
+            <h1>Tryout Guide</h1>
+            <div class="placeholder">To be continued</div>
+          </article>
+
+          <article id="ticketGuide" class="panel">
+            <p class="eyebrow">STAFF RESOURCES // 04</p>
+            <h1>Ticket Guide</h1>
+            <div class="placeholder">To be continued</div>
+          </article>
+
+          <article id="loginLogs" class="panel leadership-only">
+            <p class="eyebrow">SECURITY AUDIT // 05</p>
+            <h1>Staff Login Logs</h1>
+            <p class="muted">Staff login attempts, including successful and failed attempts.</p>
+            <div id="logList" class="log-list"></div>
+          </article>
+
+          <article id="memberLoginLogs" class="panel leadership-only">
+            <p class="eyebrow">MEMBER ACCESS // 06</p>
+            <h1>Clan Login Logs</h1>
+            <p class="muted">Clan member login attempts, including device details and failed attempts.</p>
+            <div id="memberLogList" class="log-list"></div>
+          </article>
+
+          <article id="applications" class="panel leadership-only">
+            <p class="eyebrow">LEADERSHIP // 07</p>
+            <h1>Staff Applications</h1>
+            <p id="applicationsMessage" class="action-message"></p>
+            <div id="applicationList" class="log-list"></div>
+          </article>
+
+          <article id="clanApplications" class="panel leadership-only">
+            <p class="eyebrow">CLAN MANAGEMENT // 08</p>
+            <h1>Clan Member Applications</h1>
+            <p id="clanApplicationsMessage" class="action-message"></p>
+            <div id="clanApplicationList" class="log-list"></div>
+          </article>
+
+          <article id="clanMembers" class="panel leadership-only">
+            <p class="eyebrow">CLAN MANAGEMENT // 09</p>
+            <h1>Clan Members</h1>
+            <p class="muted">Change game rank, staff rank, account type, leaderboard position, or ban status.</p>
+            <p id="clanMembersMessage" class="action-message"></p>
+            <div id="clanMemberList" class="log-list"></div>
+          </article>
+
+          <article id="staffAccounts" class="panel leadership-only">
+            <p class="eyebrow">LEADERSHIP // 10</p>
+            <h1>Staff Accounts</h1>
+            <p id="accountsMessage" class="action-message"></p>
+            <div id="staffAccountList" class="log-list"></div>
+          </article>
+
+          <article id="systemConsole" class="panel manager-owner-only hidden">
+            <p class="eyebrow">SYSTEM DIAGNOSTICS // 11</p>
+            <h1>Console</h1>
+            <p class="muted">Persistent JavaScript and request errors. This section is visible only to Owners and Managers.</p>
+
+            <div class="console-toolbar">
+              <p id="consoleMessage" class="action-message"></p>
+              <button id="clearConsoleButton" class="secondary-button" type="button">
+                Clear Console
+              </button>
+            </div>
+
+            <div id="consoleList" class="log-list"></div>
+          </article>
         </section>
       </div>
     </section>
   </main>
+
   <script src="theme.js"></script>
+  <script type="module" src="staff-console.js"></script>
   <script type="module" src="script.js"></script>
 </body>
 </html>
