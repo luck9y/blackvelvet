@@ -168,6 +168,33 @@
       background: rgba(141, 240, 166, .18);
     }
 
+    .loading-error {
+      display: grid;
+      gap: 12px;
+      color: #ffb0b0;
+      border-color: rgba(255, 100, 100, .4);
+      background: rgba(100, 20, 20, .18);
+    }
+
+    .loading-error strong {
+      color: #ffcccc;
+    }
+
+    .loading-retry {
+      width: fit-content;
+      padding: 8px 12px;
+      border: 1px solid rgba(255, 176, 176, .55);
+      border-radius: 6px;
+      color: #ffd0d0;
+      background: rgba(255, 100, 100, .12);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .loading-retry:hover {
+      background: rgba(255, 100, 100, .24);
+    }
+
     .hidden {
       display: none !important;
     }
@@ -261,6 +288,7 @@
       <section class="panel" id="systemConsole">
         <div class="panel-heading">
           <h3>System Console</h3>
+          <span class="unread-badge" id="consolePanelCount">0</span>
         </div>
 
         <div class="console-toolbar">
@@ -310,6 +338,42 @@
           });
         });
       });
+
+      const loadingTargets = [
+        ["loginLogsList", "Login logs"],
+        ["applicationsList", "Applications"],
+        ["consoleList", "Console errors"],
+        ["staffAccountsList", "Staff accounts"],
+        ["clanMembersList", "Clan members"]
+      ];
+
+      setTimeout(() => {
+        loadingTargets.forEach(([id, label]) => {
+          const container = document.getElementById(id);
+
+          if (!container || !/loading/i.test(container.textContent)) return;
+
+          container.innerHTML = `
+            <div class="empty-state loading-error">
+              <strong>${label} could not be loaded.</strong>
+              <span>Check your connection, Supabase settings, and staff permissions.</span>
+              <button class="loading-retry" type="button">Retry</button>
+            </div>
+          `;
+
+          container.querySelector(".loading-retry")?.addEventListener("click", () => {
+            window.location.reload();
+          });
+        });
+      }, 10000);
+    });
+
+    window.addEventListener("error", event => {
+      console.error("Staff portal error:", event.error || event.message);
+    });
+
+    window.addEventListener("unhandledrejection", event => {
+      console.error("Staff portal request error:", event.reason);
     });
   </script>
 
