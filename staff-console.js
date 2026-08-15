@@ -62,7 +62,6 @@ function setConsoleVisibility() {
 
     if (activeConsolePanel) {
       activeConsolePanel.classList.remove("active-panel");
-
       document.getElementById("staffGuide")?.classList.add("active-panel");
 
       document.querySelectorAll(".nav-button").forEach(button => {
@@ -129,7 +128,7 @@ async function saveError(source, error, extraStack = "") {
       browser: navigator.userAgent
     });
   } catch {
-    // Avoid creating another console error while saving an error.
+    // Prevent recursive console errors.
   } finally {
     savingError = false;
   }
@@ -200,7 +199,10 @@ async function loadErrors() {
     .limit(250);
 
   if (error) {
-    originalConsoleError("Could not load the staff console:", error.message);
+    originalConsoleError(
+      "Could not load the staff console:",
+      error.message
+    );
     return;
   }
 
@@ -225,7 +227,8 @@ window.addEventListener("error", event => {
   saveError(
     "window.error",
     event.error || event.message || "Unknown browser error",
-    event.error?.stack || `${event.filename}:${event.lineno}:${event.colno}`
+    event.error?.stack ||
+      `${event.filename}:${event.lineno}:${event.colno}`
   );
 });
 
@@ -301,3 +304,5 @@ supabase
     loadErrors
   )
   .subscribe();
+
+await import("./staff-account-manager.js");
