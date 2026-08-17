@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#010204">
+  <link rel="icon" type="image/png" href="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/servericon.png">
   <title>Black Velvet | Rules</title>
   <link rel="stylesheet" href="theme.css">
   <style>
@@ -11,6 +12,8 @@
     body { margin: 0; font-family: Orbitron, Arial, sans-serif; }
     main { position: relative; z-index: 1; width: min(900px, 90%); margin: auto; padding: 45px 0 75px; }
     .top { display: flex; justify-content: space-between; gap: 20px; align-items: center; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+    .home-brand { display: inline-flex; align-items: center; gap: 10px; }
+    .clan-icon { width: 34px; height: 34px; padding: 4px; border: 1px solid var(--line); border-radius: 50%; background: #808080; object-fit: contain; }
     a { color: var(--silver); text-decoration: none; font-size: 11px; letter-spacing: 1.5px; }
     .eyebrow { margin: 58px 0 15px; color: var(--silver); font-size: 11px; letter-spacing: 3px; }
     h1, h2 { font-family: Cinzel, Georgia, serif; }
@@ -27,7 +30,14 @@
 <body>
   <main>
     <header class="top">
-      <a href="home.html">← BLACK VELVET HOME</a>
+      <a class="home-brand" href="home.html">
+        <img
+          class="clan-icon"
+          src="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/servericon.png"
+          alt="Black Velvet Clan icon"
+        >
+        <span>← BLACK VELVET HOME</span>
+      </a>
       <a href="staff.html">STAFF PORTAL</a>
     </header>
 
