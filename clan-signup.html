@@ -4,16 +4,100 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#010204">
+  <link rel="icon" type="image/png" href="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/servericon.png">
   <title>Black Velvet | Clan Sign Up</title>
   <link rel="stylesheet" href="theme.css">
   <style>
-    *{box-sizing:border-box}body{margin:0;font-family:Orbitron,Arial,sans-serif}main{position:relative;z-index:1;width:min(680px,90%);margin:auto;padding:45px 0 75px}.top{display:flex;justify-content:space-between;gap:20px;padding-bottom:22px;border-bottom:1px solid var(--line)}a{color:var(--silver);font-size:11px;letter-spacing:1.5px;text-decoration:none}.eyebrow{margin:58px 0 15px;color:var(--silver);font-size:11px;letter-spacing:3px}h1{margin:0;font-family:Cinzel,Georgia,serif;font-size:clamp(42px,8vw,75px);letter-spacing:4px}.intro{color:#aab5bc;font:16px/1.8 Arial,sans-serif}form{margin-top:28px;padding:28px;border:1px solid var(--line);border-radius:14px;background:rgba(7,11,15,.88)}label{display:block;margin:18px 0 8px;color:var(--silver);font-size:12px;font-weight:700;letter-spacing:1px}input,select,textarea{width:100%;margin-top:8px;padding:13px;border:1px solid var(--line);border-radius:7px;outline:none;color:var(--text);background:#080c10;font:14px Arial,sans-serif}.hint{display:block;margin-top:7px;color:#84929a;font:12px Arial,sans-serif}.verification{display:none;overflow:hidden;margin-top:24px;padding:20px;border:1px solid rgba(220,230,236,.3);border-radius:10px;background:rgba(220,230,236,.04)}.verification.open,#clipArea.open,#staffApplySection.open{display:block}.verification h2{margin:0 0 8px;color:var(--silver);font:700 14px Orbitron,sans-serif;letter-spacing:1.5px}.verification p{margin:0 0 16px;color:#9eabb3;font:13px/1.6 Arial,sans-serif}.choice{display:flex;align-items:center;gap:10px;margin:10px 0;padding:13px;border:1px solid var(--line);border-radius:7px}.choice input{width:auto;margin:0}#clipArea,#staffApplySection{display:none}.staff-box{margin-top:24px;padding:20px;border:1px solid rgba(143,211,255,.35);border-radius:10px;background:rgba(143,211,255,.06)}.staff-box h2{margin:0 0 8px;color:#cfefff;font:700 14px Orbitron,sans-serif;letter-spacing:1.2px}.staff-box p{margin:0 0 16px;color:#9eabb3;font:13px/1.6 Arial,sans-serif}.checkbox-row{display:flex;align-items:center;gap:10px}.checkbox-row input{width:auto;margin:0}button{width:100%;margin-top:25px;padding:14px;border:1px solid var(--line);border-radius:7px;color:#06080a;background:var(--silver);font:700 12px Orbitron,sans-serif;letter-spacing:2px;cursor:pointer}#message{min-height:22px;margin:16px 0 0;color:var(--silver);font:13px Arial,sans-serif;text-align:center}#message.error{color:#e7a4a4}
+    *{box-sizing:border-box}
+    [hidden]{display:none!important}
+    body{margin:0;font-family:Orbitron,Arial,sans-serif}
+    main{position:relative;z-index:1;width:min(680px,90%);margin:auto;padding:45px 0 75px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:20px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+    .home-brand{display:inline-flex;align-items:center;gap:10px}
+    .clan-icon{width:34px;height:34px;padding:4px;border:1px solid var(--line);border-radius:50%;background:#808080;object-fit:contain}
+    a{color:var(--silver);font-size:11px;letter-spacing:1.5px;text-decoration:none}
+    .eyebrow{margin:58px 0 15px;color:var(--silver);font-size:11px;letter-spacing:3px}
+    h1{margin:0;font-family:Cinzel,Georgia,serif;font-size:clamp(42px,8vw,75px);letter-spacing:4px}
+    .intro{color:#aab5bc;font:16px/1.8 Arial,sans-serif}
+    form{margin-top:28px;padding:28px;border:1px solid var(--line);border-radius:14px;background:rgba(7,11,15,.88)}
+    label{display:block;margin:18px 0 8px;color:var(--silver);font-size:12px;font-weight:700;letter-spacing:1px}
+    input,select,textarea{width:100%;margin-top:8px;padding:13px;border:1px solid var(--line);border-radius:7px;outline:none;color:var(--text);background:#080c10;font:14px Arial,sans-serif}
+    .hint{display:block;margin-top:7px;color:#84929a;font:12px Arial,sans-serif}
+    .file-row{display:flex;align-items:center;gap:8px}
+    .file-row input{flex:1}
+    .remove-file{display:none;width:auto;margin:8px 0 0;padding:10px 12px;color:#d7dde0;background:#252b30;font-size:10px;letter-spacing:1px}
+    .remove-file.visible{display:block}
+    .avatar-preview{display:flex;align-items:center;gap:12px;margin-top:12px;color:#84929a;font:12px Arial,sans-serif}
+    .avatar-preview img{width:52px;height:52px;border:1px solid #59636b;border-radius:50%;object-fit:cover;background:#050607}
+    .verification{display:none;overflow:hidden;margin-top:24px;padding:20px;border:1px solid rgba(220,230,236,.3);border-radius:10px;background:rgba(220,230,236,.04)}
+    .verification.open,#clipArea.open,#staffApplySection.open{display:block}
+    .verification h2{margin:0 0 8px;color:var(--silver);font:700 14px Orbitron,sans-serif;letter-spacing:1.5px}
+    .verification p{margin:0 0 16px;color:#9eabb3;font:13px/1.6 Arial,sans-serif}
+    .choice{display:flex;align-items:center;gap:10px;margin:10px 0;padding:13px;border:1px solid var(--line);border-radius:7px}
+    .choice input{width:auto;margin:0}
+    #clipArea,#staffApplySection{display:none}
+    .staff-box{margin-top:24px;padding:20px;border:1px solid rgba(143,211,255,.35);border-radius:10px;background:rgba(143,211,255,.06)}
+    .staff-box h2{margin:0 0 8px;color:#cfefff;font:700 14px Orbitron,sans-serif;letter-spacing:1.2px}
+    .staff-box p{margin:0 0 16px;color:#9eabb3;font:13px/1.6 Arial,sans-serif}
+    .checkbox-row{display:flex;align-items:center;gap:10px}
+    .checkbox-row input{width:auto;margin:0}
+    button{width:100%;margin-top:25px;padding:14px;border:1px solid var(--line);border-radius:7px;color:#06080a;background:var(--silver);font:700 12px Orbitron,sans-serif;letter-spacing:2px;cursor:pointer}
+    .file-row button{width:auto;margin-top:8px}
+    #message{min-height:22px;margin:16px 0 0;color:var(--silver);font:13px Arial,sans-serif;text-align:center}
+    #message.error{color:#e7a4a4}
+
+    .age-modal{
+      position:fixed;
+      inset:0;
+      z-index:1000;
+      display:grid;
+      place-items:center;
+      padding:20px;
+      background:rgba(0,0,0,.78);
+      backdrop-filter:blur(6px);
+    }
+
+    .age-modal-card{
+      width:min(420px,100%);
+      padding:28px;
+      border:1px solid #68737c;
+      border-radius:14px;
+      color:#d9e0e4;
+      background:linear-gradient(145deg,#20262b,#0d1114);
+      box-shadow:0 18px 70px rgba(0,0,0,.65);
+      text-align:center;
+    }
+
+    .age-modal-card h2{
+      margin:0 0 12px;
+      color:#f0f3f5;
+      font:700 18px Orbitron,sans-serif;
+      letter-spacing:1.5px;
+    }
+
+    .age-modal-card p{
+      margin:0;
+      color:#aeb9c0;
+      font:14px/1.6 Arial,sans-serif;
+    }
+
+    .age-modal-card button{
+      margin-top:22px;
+      background:#d7dde1;
+    }
   </style>
 </head>
 <body>
   <main>
     <header class="top">
-      <a href="home.html">← BLACK VELVET HOME</a>
+      <a class="home-brand" href="home.html">
+        <img
+          class="clan-icon"
+          src="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/servericon.png"
+          alt="Black Velvet Clan icon"
+        >
+        <span>← BLACK VELVET HOME</span>
+      </a>
       <a href="staff.html#login">LOGIN</a>
     </header>
 
@@ -24,12 +108,20 @@
     <form id="signupForm">
       <label>USERNAME<input name="username" maxlength="40" required></label>
       <label>PASSWORD<input name="password" type="password" minlength="6" autocomplete="new-password" required></label>
+      <label>EMAIL<input name="email" type="email" maxlength="120" autocomplete="email" required></label>
+      <label>AGE<input name="age" type="number" min="1" max="120" required></label>
       <label>DISCORD USER<input name="discord" maxlength="80" required></label>
 
-      <label>PROFILE PICTURE
-        <input name="avatarFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
-        <input name="avatarUrl" type="url" placeholder="Or paste an image URL">
-        <span class="hint">Upload an image or paste an image URL. Maximum upload size: 10 MB.</span>
+      <label>PROFILE PICTURE <span class="hint">Optional. Upload an image or paste an image URL.</span>
+        <div class="file-row">
+          <input id="avatarFile" name="avatarFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+          <button type="button" class="remove-file" id="removeAvatarFile">REMOVE</button>
+        </div>
+        <input id="avatarUrl" name="avatarUrl" type="url" placeholder="Or paste an image URL">
+        <button type="button" class="remove-file" id="removeAvatarUrl">REMOVE IMAGE URL</button>
+        <div class="avatar-preview">
+          <img id="avatarPreview" alt="Profile picture preview">
+        </div>
       </label>
 
       <label>GAME YOU ARE APPLYING FOR
@@ -55,6 +147,9 @@
         </select>
       </label>
 
+      <input type="hidden" name="country">
+      <input type="hidden" name="timezone">
+
       <section id="verification" class="verification">
         <h2>RANK VERIFICATION REQUIRED</h2>
         <p>Select how staff should verify the requested rank.</p>
@@ -62,7 +157,12 @@
         <label class="choice"><input type="radio" name="verificationType" value="clip"><span>SEND A CLIP</span></label>
 
         <div id="clipArea">
-          <label>UPLOAD CLIP<input name="clipFile" type="file" accept="video/mp4,video/webm,video/quicktime"></label>
+          <label>UPLOAD CLIP
+            <div class="file-row">
+              <input id="clipFile" name="clipFile" type="file" accept="video/mp4,video/webm,video/quicktime">
+              <button type="button" class="remove-file" id="removeClipFile">REMOVE</button>
+            </div>
+          </label>
           <label>CLIP LINK<input id="clipUrl" name="clipUrl" type="url" placeholder="Or paste a YouTube, Twitch, Medal, or other clip link"></label>
           <span class="hint">Upload a video or provide one clip link. Maximum upload size: 100 MB.</span>
         </div>
@@ -89,8 +189,6 @@
               <option>Helper</option>
             </select>
           </label>
-          <label>AGE<input name="staffAge" type="number" min="13"></label>
-          <label>TIMEZONE<input name="staffTimezone"></label>
           <label>STAFF EXPERIENCE<textarea name="staffExperience" rows="3"></textarea></label>
           <label>AVAILABILITY<textarea name="staffAvailability" rows="3"></textarea></label>
           <label>WHY YOU WANT STAFF<textarea name="staffMotivation" rows="3"></textarea></label>
@@ -103,6 +201,14 @@
     </form>
   </main>
 
+  <div id="ageModal" class="age-modal" hidden role="dialog" aria-modal="true" aria-labelledby="ageModalTitle">
+    <div class="age-modal-card">
+      <h2 id="ageModalTitle">ACCESS RESTRICTED</h2>
+      <p>You must be at least 13 years old to use the Black Velvet website.</p>
+      <button type="button" id="ageModalOkay">OKAY</button>
+    </div>
+  </div>
+
   <script src="theme.js"></script>
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -112,6 +218,8 @@
       "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk"
     );
 
+    const DEFAULT_AVATAR_URL="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/defaulticon.jpg";
+
     const form=document.getElementById("signupForm");
     const rank=document.getElementById("rank");
     const verification=document.getElementById("verification");
@@ -119,7 +227,72 @@
     const message=document.getElementById("message");
     const applyStaff=document.getElementById("applyStaff");
     const staffApplySection=document.getElementById("staffApplySection");
+    const ageModal=document.getElementById("ageModal");
+    const ageModalOkay=document.getElementById("ageModalOkay");
+    const avatarFile=document.getElementById("avatarFile");
+    const avatarUrl=document.getElementById("avatarUrl");
+    const avatarPreview=document.getElementById("avatarPreview");
+    const removeAvatarFile=document.getElementById("removeAvatarFile");
+    const removeAvatarUrl=document.getElementById("removeAvatarUrl");
+    const clipFile=document.getElementById("clipFile");
+    const removeClipFile=document.getElementById("removeClipFile");
     const reservedUsernames=["imtherealluckyy","imjustluckyy","suoaz","managergear"];
+
+    function showAgeModal(){
+      ageModal.hidden=false;
+      ageModalOkay.focus();
+    }
+
+    function closeAgeModal(){
+      ageModal.hidden=true;
+    }
+
+    ageModalOkay.addEventListener("click",closeAgeModal);
+
+    function setAutomaticLocation(){
+      form.elements.country.value=navigator.language?.split("-")[1]?.toUpperCase()||"Unknown";
+      form.elements.timezone.value=Intl.DateTimeFormat().resolvedOptions().timeZone||"Unknown";
+    }
+
+    function updateAvatarPreview(){
+      const url=avatarUrl.value.trim();
+      avatarPreview.src=url||DEFAULT_AVATAR_URL;
+
+      removeAvatarFile.classList.toggle("visible",Boolean(avatarFile.files.length));
+      removeAvatarUrl.classList.toggle("visible",Boolean(url));
+    }
+
+    avatarFile.addEventListener("change",()=>{
+      if(avatarFile.files.length) avatarUrl.value="";
+      updateAvatarPreview();
+    });
+
+    avatarUrl.addEventListener("input",updateAvatarPreview);
+
+    avatarPreview.addEventListener("error",()=>{
+      if(avatarPreview.src!==DEFAULT_AVATAR_URL){
+        avatarPreview.src=DEFAULT_AVATAR_URL;
+      }
+    });
+
+    removeAvatarFile.addEventListener("click",()=>{
+      avatarFile.value="";
+      updateAvatarPreview();
+    });
+
+    removeAvatarUrl.addEventListener("click",()=>{
+      avatarUrl.value="";
+      updateAvatarPreview();
+    });
+
+    clipFile.addEventListener("change",()=>{
+      removeClipFile.classList.toggle("visible",Boolean(clipFile.files.length));
+    });
+
+    removeClipFile.addEventListener("click",()=>{
+      clipFile.value="";
+      removeClipFile.classList.remove("visible");
+    });
 
     async function hashPassword(password){
       const hash=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(password));
@@ -184,6 +357,7 @@
     function updateVerification(){
       const needed=rank.value!=="BVR";
       verification.classList.toggle("open",needed);
+
       if(!needed){
         form.querySelectorAll('[name="verificationType"]').forEach(input=>input.checked=false);
         clipArea.classList.remove("open");
@@ -208,11 +382,25 @@
 
       const data=new FormData(form);
       const username=data.get("username").trim();
+      const age=Number(data.get("age"));
       const requestedRank=data.get("rank");
       const verificationType=data.get("verificationType");
-      const avatarFile=data.get("avatarFile");
-      const clipFile=data.get("clipFile");
+      const selectedAvatarFile=data.get("avatarFile");
+      const selectedClipFile=data.get("clipFile");
       const wantsStaff=Boolean(data.get("applyStaff"));
+
+      if(!Number.isInteger(age)||age<1||age>120){
+        message.className="error";
+        message.textContent="ENTER A VALID AGE.";
+        return;
+      }
+
+      if(age<13){
+        message.className="error";
+        message.textContent="YOU ARE NOT ALLOWED TO SIGN UP.";
+        showAgeModal();
+        return;
+      }
 
       if(requestedRank!=="BVR"&&!verificationType){
         message.className="error";
@@ -220,7 +408,7 @@
         return;
       }
 
-      if(verificationType==="clip"&&!clipFile?.name&&!data.get("clipUrl").trim()){
+      if(verificationType==="clip"&&!selectedClipFile?.name&&!data.get("clipUrl").trim()){
         message.className="error";
         message.textContent="UPLOAD A CLIP OR PROVIDE A CLIP LINK.";
         return;
@@ -229,8 +417,6 @@
       if(wantsStaff){
         const requiredStaffFields=[
           ["staffRole","SELECT A STAFF ROLE."],
-          ["staffAge","ENTER YOUR AGE FOR STAFF APPLICATION."],
-          ["staffTimezone","ENTER YOUR TIMEZONE FOR STAFF APPLICATION."],
           ["staffExperience","ENTER YOUR STAFF EXPERIENCE."],
           ["staffAvailability","ENTER YOUR AVAILABILITY."],
           ["staffMotivation","ENTER WHY YOU WANT STAFF."]
@@ -270,15 +456,25 @@
 
         message.textContent="TRANSMITTING APPLICATION...";
 
-        const avatarUrl=avatarFile?.name ? await upload(avatarFile,"avatars",10*1024*1024) : data.get("avatarUrl").trim()||null;
-        const uploadedClip=clipFile?.name ? await upload(clipFile,"application-clips",100*1024*1024) : null;
+        const uploadedAvatar=selectedAvatarFile?.name
+          ? await upload(selectedAvatarFile,"avatars",10*1024*1024)
+          : data.get("avatarUrl").trim()||DEFAULT_AVATAR_URL;
+
+        const uploadedClip=selectedClipFile?.name
+          ? await upload(selectedClipFile,"application-clips",100*1024*1024)
+          : null;
+
         const passwordHash=await hashPassword(data.get("password"));
 
         const {error: clanError}=await supabase.from("clan_member_applications").insert({
           username,
           password_hash:passwordHash,
+          email:data.get("email").trim(),
+          age,
+          country:data.get("country"),
+          timezone:data.get("timezone"),
           discord_tag:data.get("discord").trim(),
-          avatar_url:avatarUrl,
+          avatar_url:uploadedAvatar,
           game:data.get("game"),
           rank:requestedRank,
           preferred_tryout:verificationType==="tryout",
@@ -293,8 +489,8 @@
             discord_tag:data.get("discord").trim(),
             staff_username:username,
             staff_password:data.get("password"),
-            age:Number(data.get("staffAge")),
-            timezone:data.get("staffTimezone").trim(),
+            age,
+            timezone:data.get("timezone"),
             experience:data.get("staffExperience").trim(),
             role:data.get("staffRole"),
             availability:data.get("staffAvailability").trim(),
@@ -307,6 +503,8 @@
         }
 
         form.reset();
+        setAutomaticLocation();
+        updateAvatarPreview();
         updateVerification();
         updateStaffApply();
         message.textContent=wantsStaff
@@ -318,6 +516,8 @@
       }
     });
 
+    setAutomaticLocation();
+    updateAvatarPreview();
     updateVerification();
     updateStaffApply();
   </script>
