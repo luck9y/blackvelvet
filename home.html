@@ -4,18 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#010204">
+  <link rel="icon" type="image/png" href="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/servericon.png">
   <title>Black Velvet Clan | Home</title>
   <link rel="stylesheet" href="theme.css">
   <style>
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body { margin: 0; font-family: Orbitron, Arial, sans-serif; }
+    [hidden],
+    .auth-link-hidden { display: none !important; }
     .shell { position: relative; z-index: 1; width: min(1180px, 90%); margin: auto; padding: 24px 0 75px; }
     .nav { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 16px 0 22px; border-bottom: 1px solid var(--line); }
     .brand { display: flex; align-items: center; gap: 12px; color: var(--text); font-size: 14px; font-weight: 700; letter-spacing: 3px; text-decoration: none; }
-    .brand-flower { position: relative; width: 28px; height: 28px; border: 1px solid var(--line); border-radius: 50%; background: radial-gradient(circle, #87929a 0 10%, #151b20 30%, #020304 72%); box-shadow: 0 0 18px rgba(220, 230, 236, .3); }
-    .brand-flower::before, .brand-flower::after { position: absolute; inset: 4px; content: ""; border: 1px solid rgba(220, 230, 236, .35); border-radius: 70% 30% 70% 30%; }
-    .brand-flower::after { transform: rotate(90deg); }
+    .brand-flower { display: block; width: 32px; height: 32px; padding: 3px; border: 1px solid var(--line); border-radius: 50%; background: #808080; box-shadow: 0 0 18px rgba(220, 230, 236, .3); object-fit: contain; }
     .nav-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 18px; }
     .nav-links a, .session-button { color: var(--muted); border: 0; padding: 0; background: transparent; font: 11px Orbitron, Arial, sans-serif; letter-spacing: 1.5px; text-decoration: none; cursor: pointer; }
     .nav-links a:hover, .session-button:hover { color: var(--silver); }
@@ -61,16 +62,16 @@
 <body>
   <main class="shell">
     <nav class="nav">
-      <a class="brand" href="home.html" aria-label="Black Velvet home"><span class="brand-flower" aria-hidden="true"></span>BLACK VELVET</a>
-
+      <a class="brand" href="home.html" aria-label="Black Velvet home"><img class="brand-flower" src="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/servericon.png" alt="Black Velvet Clan icon">BLACK VELVET</a>
       <div class="nav-links">
         <a href="#about">ABOUT</a>
         <a href="Game.html">GAMES</a>
         <a href="rankings.html">RANKINGS</a>
         <a href="clips.html">CLIPS</a>
-        <a id="profileLink" href="staff.html#login">LOG IN</a>
-        <a href="clan-signup.html">SIGN UP</a>
+        <a id="profileLink" class="auth-link" href="member-login.html">LOG IN</a>
+        <a class="signupLink auth-link" href="clan-signup.html">SIGN UP</a>
         <a href="rules.html">RULES</a>
+        <a id="staffPortalButton" href="staff.html" hidden>STAFF PORTAL</a>
         <button id="logoutButton" class="session-button" hidden>LOG OUT</button>
       </div>
     </nav>
@@ -81,8 +82,8 @@
         <h1>BLACK<br><span>VELVET</span></h1>
         <p class="hero-copy">A disciplined clan built from legacy, loyalty, and players who refuse to disappear. Enter the network, meet the people behind it, and become part of what comes next.</p>
         <div class="actions">
-          <a class="button primary" href="clan-signup.html">SIGN UP</a>
-          <a class="button" href="staff.html#login">LOG IN</a>
+          <a class="button primary signupLink auth-link" href="clan-signup.html">SIGN UP</a>
+          <a id="loginAction" class="button auth-link" href="member-login.html">LOG IN</a>
           <a class="button" href="Game.html">GAMES</a>
           <a class="button" href="clips.html">WATCH CLIPS</a>
           <a class="button" href="rankings.html">RANKINGS</a>
@@ -145,9 +146,24 @@
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-    const profile = JSON.parse(localStorage.getItem("blackVelvetProfile") || "null");
+    let profile = null;
+
+    try {
+      const savedProfile = localStorage.getItem("blackVelvetProfile");
+      const parsedProfile = savedProfile ? JSON.parse(savedProfile) : null;
+
+      if (parsedProfile && typeof parsedProfile === "object") {
+        profile = parsedProfile;
+      }
+    } catch {
+      localStorage.removeItem("blackVelvetProfile");
+    }
+
     const profileLink = document.getElementById("profileLink");
+    const loginAction = document.getElementById("loginAction");
     const logoutButton = document.getElementById("logoutButton");
+    const staffPortalButton = document.getElementById("staffPortalButton");
+    const authLinks = document.querySelectorAll(".auth-link");
 
     function createDeviceHex() {
       const bytes = new Uint8Array(2);
@@ -163,17 +179,67 @@
 
     document.getElementById("profileUserId").textContent = deviceHex;
 
-    if (profile?.username) {
-      const isStaff = profile.type === "staff" || profile.isStaff === true;
+    const staffRoles = [
+      "owner", "admin", "administrator", "manager", "management",
+      "president", "moderator", "mod", "helper", "staff"
+    ];
 
-      profileLink.href = isStaff ? "staff.html" : "profile.html";
-      profileLink.textContent = isStaff ? "STAFF PORTAL" : "MY PROFILE";
-      logoutButton.hidden = false;
+    const ownerAccounts = [
+      "imtherealluckyy", "imjustluckyy", "suoaz", "managergear", "gears"
+    ];
 
-      document.getElementById("profileMessage").textContent = `WELCOME, ${profile.username.toUpperCase()}`;
+    function normalize(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function isStaff(profile) {
+      const username = normalize(profile?.username);
+      const role = normalize(
+        profile?.role ||
+        profile?.staffRank ||
+        profile?.staff_role ||
+        profile?.staffRole
+      );
+      const accountType = normalize(
+        profile?.type ||
+        profile?.accountType ||
+        profile?.account_type
+      );
+
+      return Boolean(
+        ownerAccounts.includes(username) ||
+        staffRoles.includes(role) ||
+        staffRoles.includes(accountType) ||
+        profile?.isStaff === true ||
+        profile?.is_staff === true ||
+        profile?.staff === true
+      );
+    }
+
+    function updateAuthenticationLinks() {
+      const loggedIn = Boolean(profile && typeof profile === "object");
+      const staff = loggedIn && isStaff(profile);
+
+      authLinks.forEach(link => {
+        link.hidden = loggedIn;
+        link.classList.toggle("auth-link-hidden", loggedIn);
+        link.setAttribute("aria-hidden", String(loggedIn));
+      });
+
+      logoutButton.hidden = !loggedIn;
+      staffPortalButton.hidden = !staff;
+    }
+
+    updateAuthenticationLinks();
+
+    if (profile) {
+      const staff = isStaff(profile);
+
+      document.getElementById("profileMessage").textContent =
+        `WELCOME, ${(profile.username || "MEMBER").toUpperCase()}`;
       document.getElementById("profileOnline").textContent = "TRUE";
 
-      if (!isStaff) {
+      if (!staff) {
         const supabase = createClient(
           "https://ptgzhljvzyceawwohmym.supabase.co",
           "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk"
@@ -182,14 +248,18 @@
         const { data: member } = await supabase
           .from("clan_members")
           .select("rank, ranking_number")
-          .ilike("username", profile.username)
+          .ilike("username", profile.username || "")
           .maybeSingle();
 
-        document.getElementById("profileClanRank").textContent = member?.rank || profile.role || "N/A";
-        document.getElementById("profileRanking").textContent = member?.ranking_number ? `#${member.ranking_number}` : "N/A";
+        document.getElementById("profileClanRank").textContent =
+          member?.rank || profile.role || "N/A";
+        document.getElementById("profileRanking").textContent =
+          member?.ranking_number ? `#${member.ranking_number}` : "N/A";
       } else {
-        document.getElementById("profileClanRank").textContent = profile.role || "STAFF";
-        document.getElementById("profileMessage").textContent = `STAFF ACCESS: ${profile.username.toUpperCase()}`;
+        document.getElementById("profileClanRank").textContent =
+          profile.role || "STAFF";
+        document.getElementById("profileMessage").textContent =
+          `STAFF ACCESS: ${(profile.username || "STAFF").toUpperCase()}`;
       }
     }
 
@@ -197,6 +267,12 @@
       localStorage.removeItem("blackVelvetProfile");
       localStorage.removeItem("blackVelvetBanned");
       window.location.href = "home.html";
+    });
+
+    window.addEventListener("storage", event => {
+      if (event.key === "blackVelvetProfile") {
+        window.location.reload();
+      }
     });
   </script>
 </body>
