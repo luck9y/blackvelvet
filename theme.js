@@ -1,4 +1,8 @@
 (() => {
+  import("./global-error-reporter.js").catch(error => {
+    console.warn("Black Velvet error reporter could not load:", error);
+  });
+
   const reducedMotion = window.matchMedia?.(
     "(prefers-reduced-motion: reduce)"
   ).matches;
