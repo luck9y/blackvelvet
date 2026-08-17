@@ -4,11 +4,813 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#050608">
+
+  <link rel="icon" type="image/png" href="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/servericon.png">
+
   <title>Black Velvet Clan</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="intro.css">
   <link rel="stylesheet" href="theme.css">
   <link rel="stylesheet" href="intro-ui.css">
+
+  <style>
+    :root {
+      --intro-black: #050608;
+      --intro-silver: #e2e5e8;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    body.intro-page {
+      position: relative;
+      min-height: 100svh;
+      background-color: var(--intro-black);
+    }
+
+    .crest {
+      display: none !important;
+    }
+
+    .hacker-background,
+    .hacker-lines,
+    #velvetRain,
+    #fallingFlower {
+      pointer-events: none !important;
+      transform-origin: center center !important;
+      will-change: transform, filter !important;
+    }
+
+    .hacker-background {
+      position: fixed !important;
+      inset: -25vmax !important;
+      z-index: 0 !important;
+      overflow: hidden !important;
+      animation: none !important;
+    }
+
+    body.intro-running .hacker-background,
+    body.intro-running .hacker-lines,
+    body.intro-running #velvetRain,
+    body.intro-running #fallingFlower {
+      animation: cinematicBackgroundSpiral 60s cubic-bezier(.22, .05, .38, 1) forwards !important;
+    }
+
+    .hacker-background::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+      background:
+        radial-gradient(
+          circle at center,
+          transparent 10%,
+          rgba(5, 6, 8, 0.12) 52%,
+          rgba(5, 6, 8, 0.68) 100%
+        );
+      pointer-events: none;
+    }
+
+    .code-stream {
+      backface-visibility: hidden;
+      will-change: transform, opacity, filter;
+      transition:
+        opacity 350ms ease,
+        filter 350ms ease !important;
+    }
+
+    .code-stream.refreshing {
+      opacity: 0 !important;
+      filter: blur(5px) !important;
+    }
+
+    @keyframes cinematicBackgroundSpiral {
+      0% {
+        transform: rotate(0deg) scale(1);
+        filter: brightness(0.9);
+      }
+
+      30% {
+        transform: rotate(3deg) scale(1.12);
+        filter: brightness(0.95);
+      }
+
+      62% {
+        transform: rotate(8deg) scale(1.35);
+        filter: brightness(1);
+      }
+
+      82% {
+        transform: rotate(13deg) scale(1.62);
+        filter: brightness(1.04);
+      }
+
+      100% {
+        transform: rotate(20deg) scale(2.05);
+        filter: brightness(1.1);
+      }
+    }
+
+    .hacker-lines,
+    #velvetRain,
+    #fallingFlower {
+      z-index: 1 !important;
+    }
+
+    #startScreen {
+      position: fixed !important;
+      inset: 0 !important;
+      z-index: 1000 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 100vw !important;
+      height: 100svh !important;
+      padding: 24px !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
+      background:
+        radial-gradient(circle at center, rgba(130, 145, 160, 0.1), transparent 42%) !important;
+      pointer-events: auto !important;
+    }
+
+    #startScreen.closed {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+
+    #startScreen .start-card {
+      position: relative !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: clamp(210px, 46vw, 310px) !important;
+      aspect-ratio: 1 !important;
+      padding: 12px !important;
+      border: 1px solid rgba(225, 235, 245, 0.3) !important;
+      border-radius: 50% !important;
+      background:
+        conic-gradient(
+          from 0deg,
+          rgba(255, 255, 255, 0.04),
+          rgba(220, 235, 248, 0.5),
+          rgba(255, 255, 255, 0.03),
+          rgba(155, 190, 220, 0.35),
+          rgba(255, 255, 255, 0.04)
+        ) !important;
+      box-shadow:
+        0 0 0 5px rgba(0, 0, 0, 0.92),
+        0 0 0 6px rgba(225, 235, 245, 0.1),
+        0 0 45px rgba(170, 205, 230, 0.2),
+        0 25px 70px rgba(0, 0, 0, 0.75) !important;
+      box-sizing: border-box !important;
+      animation: rotateStartRing 8s linear infinite !important;
+    }
+
+    #startScreen .start-card::before,
+    #startScreen .start-card::after {
+      position: absolute !important;
+      display: block !important;
+      content: "" !important;
+      border-radius: 50% !important;
+      pointer-events: none !important;
+    }
+
+    #startScreen .start-card::before {
+      inset: -13px !important;
+      border: 1px solid rgba(220, 235, 248, 0.16) !important;
+      border-top-color: rgba(255, 255, 255, 0.85) !important;
+      border-bottom-color: rgba(130, 175, 210, 0.55) !important;
+      animation: rotateStartRing 5s linear infinite reverse !important;
+    }
+
+    #startScreen .start-card::after {
+      inset: -25px !important;
+      border: 1px dashed rgba(205, 225, 240, 0.2) !important;
+      animation: rotateStartRing 18s linear infinite !important;
+    }
+
+    #startBtn {
+      position: relative !important;
+      z-index: 1 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 100% !important;
+      min-height: 0 !important;
+      aspect-ratio: 1 !important;
+      margin: 0 !important;
+      padding: 20px !important;
+      overflow: hidden !important;
+      border: 1px solid rgba(240, 246, 252, 0.62) !important;
+      border-radius: 50% !important;
+      background:
+        radial-gradient(circle at 36% 28%, rgba(230, 240, 248, 0.15), transparent 24%),
+        radial-gradient(circle at center, #141a20 0%, #07090c 55%, #010203 100%) !important;
+      color: #fff !important;
+      font-family: "Cinzel", Georgia, serif !important;
+      font-size: clamp(1.65rem, 5vw, 2.8rem) !important;
+      font-weight: 700 !important;
+      line-height: 1 !important;
+      letter-spacing: 0.2em !important;
+      text-align: center !important;
+      text-indent: 0.2em !important;
+      white-space: nowrap !important;
+      cursor: pointer !important;
+      box-sizing: border-box !important;
+      text-shadow:
+        0 1px 0 #fff,
+        0 0 12px rgba(225, 235, 245, 0.5),
+        0 0 28px rgba(150, 195, 225, 0.35) !important;
+      box-shadow:
+        inset 0 0 0 7px rgba(0, 0, 0, 0.72),
+        inset 0 0 0 8px rgba(235, 243, 250, 0.12),
+        inset 0 0 45px rgba(170, 205, 230, 0.1),
+        0 0 25px rgba(185, 215, 235, 0.2) !important;
+      transition:
+        transform 350ms cubic-bezier(.16, 1, .3, 1),
+        border-color 350ms ease,
+        box-shadow 350ms ease,
+        letter-spacing 350ms ease !important;
+      animation: startButtonPulse 3s ease-in-out infinite !important;
+    }
+
+    #startBtn::before {
+      position: absolute !important;
+      top: -20% !important;
+      left: -125% !important;
+      display: block !important;
+      width: 70% !important;
+      height: 140% !important;
+      content: "" !important;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      ) !important;
+      transform: skewX(-24deg) !important;
+      transition: left 800ms ease !important;
+      pointer-events: none !important;
+    }
+
+    #startBtn::after {
+      position: absolute !important;
+      inset: 13px !important;
+      display: block !important;
+      content: "" !important;
+      border: 1px solid rgba(230, 240, 248, 0.16) !important;
+      border-radius: 50% !important;
+      pointer-events: none !important;
+    }
+
+    #startBtn:hover {
+      transform: scale(1.055) !important;
+      border-color: rgba(255, 255, 255, 0.95) !important;
+      letter-spacing: 0.25em !important;
+    }
+
+    #startBtn:hover::before {
+      left: 150% !important;
+    }
+
+    #startBtn:active {
+      transform: scale(0.96) !important;
+    }
+
+    #startBtn:focus-visible {
+      outline: 2px solid rgba(235, 242, 248, 0.9) !important;
+      outline-offset: 8px !important;
+    }
+
+    #startBtn:disabled {
+      opacity: 1 !important;
+      cursor: default !important;
+    }
+
+    @keyframes rotateStartRing {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes startButtonPulse {
+      0%,
+      100% {
+        filter: brightness(1);
+      }
+
+      50% {
+        filter: brightness(1.15);
+      }
+    }
+
+    #startScreen::before,
+    #startScreen::after,
+    #skipBtn,
+    .eyebrow,
+    .start-copy,
+    .start-card h1 {
+      display: none !important;
+      content: none !important;
+    }
+
+    #introStage {
+      position: fixed !important;
+      inset: 0 !important;
+      z-index: 100 !important;
+      display: block !important;
+      width: 100vw !important;
+      height: 100svh !important;
+      overflow: hidden !important;
+      pointer-events: none !important;
+      contain: layout paint !important;
+    }
+
+    #introStage .intro-text,
+    #introStage #mainTitle {
+      position: absolute !important;
+      top: 50% !important;
+      left: 50% !important;
+      z-index: 2 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: min(88vw, 1000px) !important;
+      max-width: 88vw !important;
+      max-height: 78svh !important;
+      margin: 0 !important;
+      padding: 18px !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
+      opacity: 0;
+      visibility: hidden;
+      transform: translate(-50%, -50%);
+      color: var(--intro-silver) !important;
+      font-family: "Cormorant Garamond", Georgia, serif !important;
+      font-size: clamp(1.4rem, 4.4vw, 3.8rem) !important;
+      font-weight: 600 !important;
+      line-height: 1.16 !important;
+      letter-spacing: 0.055em !important;
+      text-align: center !important;
+      overflow-wrap: anywhere !important;
+      white-space: normal !important;
+      text-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.45),
+        0 0 14px rgba(210, 225, 238, 0.25),
+        0 12px 34px rgba(0, 0, 0, 0.95) !important;
+      pointer-events: none !important;
+    }
+
+    #introStage .intro-text {
+      background: linear-gradient(
+        180deg,
+        #ffffff 0%,
+        #d7dde3 48%,
+        #8f99a4 100%
+      ) !important;
+      background-clip: text !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+    }
+
+    #introStage .accent {
+      color: #59adff !important;
+      font-family: "Cinzel", Georgia, serif !important;
+      font-size: 0.86em !important;
+      font-weight: 700 !important;
+      -webkit-text-fill-color: #59adff !important;
+      text-shadow:
+        0 0 4px #d9efff,
+        0 0 10px #58adff,
+        0 0 22px #1685ff,
+        0 0 42px rgba(0, 102, 255, 0.9) !important;
+    }
+
+    #introStage #l1 {
+      font-style: italic !important;
+    }
+
+    #introStage #l2 {
+      font-family: "Cinzel", Georgia, serif !important;
+      font-size: clamp(1.2rem, 3.7vw, 3.2rem) !important;
+      font-weight: 600 !important;
+      text-transform: uppercase !important;
+    }
+
+    #introStage #l3 {
+      letter-spacing: 0.1em !important;
+    }
+
+    #introStage #l4 {
+      font-family: "Cinzel", Georgia, serif !important;
+      font-size: clamp(1.15rem, 3.5vw, 3rem) !important;
+      text-transform: uppercase !important;
+    }
+
+    #introStage #l5 {
+      flex-direction: column !important;
+      gap: 0.08em !important;
+      width: min(82vw, 600px) !important;
+      max-height: 86svh !important;
+      font-family: "Cinzel", Georgia, serif !important;
+      font-size: clamp(0.85rem, min(3.8vw, 3.35svh), 2.45rem) !important;
+      font-weight: 700 !important;
+      line-height: 0.98 !important;
+      letter-spacing: clamp(0.04em, 0.7vw, 0.15em) !important;
+      text-transform: uppercase !important;
+    }
+
+    #introStage #l5 span {
+      display: block !important;
+      max-width: 100% !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      transform: translateY(18px) scale(0.94);
+      filter: blur(6px);
+      white-space: nowrap !important;
+    }
+
+    #introStage #l5 span.word-visible {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+
+    #introStage #l7 {
+      width: min(88vw, 1050px) !important;
+      color: #111820 !important;
+      font-family: "Cinzel", Georgia, serif !important;
+      font-size: clamp(1.15rem, 4.5vw, 4.15rem) !important;
+      font-weight: 700 !important;
+      line-height: 1.05 !important;
+      letter-spacing: clamp(0.04em, 1vw, 0.12em) !important;
+      -webkit-text-fill-color: #111820 !important;
+      text-shadow:
+        0 0 2px #fff,
+        0 0 7px #fff,
+        0 0 16px rgba(255, 255, 255, 0.95),
+        0 0 32px rgba(235, 245, 255, 0.85),
+        0 0 55px rgba(215, 235, 255, 0.65) !important;
+    }
+
+    #introStage #mainTitle {
+      isolation: isolate !important;
+      width: min(96vw, 1280px) !important;
+      min-height: min(62svh, 600px) !important;
+      overflow: visible !important;
+      color: #000 !important;
+      font-family: "Cinzel", Georgia, serif !important;
+      font-size: clamp(1.35rem, 5.5vw, 5.5rem) !important;
+      font-weight: 800 !important;
+      line-height: 1.05 !important;
+      letter-spacing: clamp(0.025em, 0.85vw, 0.095em) !important;
+      text-transform: uppercase !important;
+      will-change: transform, opacity, filter;
+    }
+
+    #introStage .title-layout {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(12px, 3vw, 48px);
+      width: 100%;
+    }
+
+    #introStage .title-copy {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      overflow: visible;
+      isolation: isolate;
+    }
+
+    #introStage .title-copy::after {
+      position: absolute;
+      top: -12%;
+      left: -18%;
+      z-index: 8;
+      width: clamp(2px, 0.28vw, 5px);
+      height: 124%;
+      content: "";
+      opacity: 0;
+      border-radius: 999px;
+      background: linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.25) 8%,
+        #fff 30%,
+        #fff 70%,
+        rgba(255, 255, 255, 0.25) 92%,
+        transparent 100%
+      );
+      transform: skewX(-14deg);
+      box-shadow:
+        0 0 4px #fff,
+        0 0 9px #fff,
+        0 0 18px rgba(255, 255, 255, 0.98),
+        0 0 34px rgba(225, 240, 255, 0.9),
+        -12px 0 30px rgba(255, 255, 255, 0.32),
+        12px 0 30px rgba(255, 255, 255, 0.32);
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    #introStage .title-copy::before {
+      position: absolute;
+      top: 43%;
+      left: -18%;
+      z-index: 9;
+      width: clamp(12px, 1.5vw, 24px);
+      aspect-ratio: 1;
+      content: "";
+      opacity: 0;
+      border-radius: 50%;
+      background:
+        linear-gradient(90deg, transparent 43%, #fff 49%, #fff 51%, transparent 57%),
+        linear-gradient(0deg, transparent 43%, #fff 49%, #fff 51%, transparent 57%),
+        radial-gradient(circle, #fff 0 18%, rgba(255, 255, 255, 0.9) 20%, transparent 70%);
+      transform: translate(-50%, -50%) rotate(45deg);
+      filter:
+        drop-shadow(0 0 4px #fff)
+        drop-shadow(0 0 10px #fff)
+        drop-shadow(0 0 22px rgba(220, 240, 255, 0.95));
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    #introStage #mainTitle.line-active .title-copy::after {
+      animation: titleShineLine 3.1s cubic-bezier(.35, 0, .2, 1) infinite;
+    }
+
+    #introStage #mainTitle.line-active .title-copy::before {
+      animation: titleShineStar 3.1s cubic-bezier(.35, 0, .2, 1) infinite;
+    }
+
+    #introStage .title-primary {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0.28em;
+      padding: 0.14em 0 0.24em;
+      white-space: nowrap;
+    }
+
+    #introStage .title-word,
+    #introStage .title-clan {
+      position: relative;
+      z-index: 2;
+      color: #000 !important;
+      background: none !important;
+      -webkit-background-clip: border-box !important;
+      background-clip: border-box !important;
+      -webkit-text-fill-color: #000 !important;
+      text-shadow:
+        0 0 1px #fff,
+        0 0 3px #fff,
+        0 0 7px rgba(255, 255, 255, 1),
+        0 0 15px rgba(255, 255, 255, 0.98),
+        0 0 28px rgba(235, 245, 255, 0.88),
+        0 0 50px rgba(215, 235, 255, 0.65),
+        0 14px 36px #000 !important;
+    }
+
+    #introStage .title-clan {
+      margin-top: 0.08em;
+      font-size: 0.46em;
+      letter-spacing: 0.42em;
+      text-indent: 0.42em;
+    }
+
+    #introStage .title-line-track {
+      display: none !important;
+    }
+
+    #introStage .title-flower {
+      position: relative;
+      z-index: 3;
+      flex: 0 0 auto;
+      display: block;
+      width: clamp(72px, 13vw, 175px);
+      height: clamp(72px, 13vw, 175px);
+      border-radius: 50%;
+      object-fit: contain;
+      opacity: 0.9;
+      filter:
+        grayscale(1)
+        brightness(0.34)
+        contrast(1.75)
+        drop-shadow(0 0 2px #fff)
+        drop-shadow(0 0 9px rgba(255, 255, 255, 0.95))
+        drop-shadow(0 0 24px rgba(220, 235, 248, 0.68));
+      animation: titleFlowerBreathe 3.6s ease-in-out infinite;
+    }
+
+    #introStage .title-flower-left {
+      transform: rotate(-12deg);
+      animation-delay: -1.8s;
+    }
+
+    #introStage .title-flower-right {
+      transform: rotate(12deg);
+    }
+
+    @keyframes titleShineLine {
+      0%,
+      12% {
+        left: -18%;
+        opacity: 0;
+      }
+
+      18% {
+        opacity: 1;
+      }
+
+      68% {
+        left: 118%;
+        opacity: 1;
+      }
+
+      76%,
+      100% {
+        left: 118%;
+        opacity: 0;
+      }
+    }
+
+    @keyframes titleShineStar {
+      0%,
+      12% {
+        left: -18%;
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(30deg) scale(0.5);
+      }
+
+      18% {
+        opacity: 1;
+        transform: translate(-50%, -50%) rotate(45deg) scale(1);
+      }
+
+      44% {
+        opacity: 1;
+        transform: translate(-50%, -50%) rotate(90deg) scale(1.45);
+      }
+
+      68% {
+        left: 118%;
+        opacity: 1;
+        transform: translate(-50%, -50%) rotate(145deg) scale(1);
+      }
+
+      76%,
+      100% {
+        left: 118%;
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(175deg) scale(0.5);
+      }
+    }
+
+    @keyframes titleFlowerBreathe {
+      0%,
+      100% {
+        opacity: 0.72;
+        filter:
+          grayscale(1)
+          brightness(0.28)
+          contrast(1.8)
+          drop-shadow(0 0 2px #fff)
+          drop-shadow(0 0 8px rgba(255, 255, 255, 0.75))
+          drop-shadow(0 0 18px rgba(220, 235, 248, 0.48));
+      }
+
+      50% {
+        opacity: 1;
+        filter:
+          grayscale(1)
+          brightness(0.42)
+          contrast(1.65)
+          drop-shadow(0 0 3px #fff)
+          drop-shadow(0 0 13px rgba(255, 255, 255, 1))
+          drop-shadow(0 0 34px rgba(220, 235, 248, 0.78));
+      }
+    }
+
+    #exitFade {
+      position: fixed;
+      inset: 0;
+      z-index: 5000;
+      background: #000;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    #exitFade.active {
+      visibility: visible;
+      animation: fadeIntoHome 1500ms ease-in forwards;
+    }
+
+    @keyframes fadeIntoHome {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 600px) {
+      #startScreen {
+        padding: 34px !important;
+      }
+
+      #startScreen .start-card {
+        width: clamp(195px, 66vw, 275px) !important;
+      }
+
+      #startBtn {
+        min-height: 0 !important;
+        padding: 16px !important;
+        font-size: clamp(1.5rem, 8vw, 2.35rem) !important;
+      }
+
+      #introStage .intro-text {
+        width: 90vw !important;
+        max-width: 90vw !important;
+        padding: 12px !important;
+        font-size: clamp(1.15rem, 6vw, 2.1rem) !important;
+      }
+
+      #introStage #l2,
+      #introStage #l4 {
+        font-size: clamp(1rem, 5vw, 1.8rem) !important;
+      }
+
+      #introStage #l5 {
+        font-size: clamp(0.78rem, min(5vw, 3.2svh), 1.65rem) !important;
+      }
+
+      #introStage #l7 {
+        font-size: clamp(1rem, 6vw, 2.4rem) !important;
+      }
+
+      #introStage #mainTitle {
+        width: 98vw !important;
+        font-size: clamp(1.05rem, 7vw, 3rem) !important;
+      }
+
+      #introStage .title-layout {
+        gap: 8px;
+      }
+
+      #introStage .title-flower {
+        width: clamp(48px, 16vw, 88px);
+        height: clamp(48px, 16vw, 88px);
+      }
+
+      #introStage .title-primary {
+        gap: 0.18em;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body.intro-running .hacker-background,
+      body.intro-running .hacker-lines,
+      body.intro-running #velvetRain,
+      body.intro-running #fallingFlower,
+      #startScreen .start-card,
+      #startScreen .start-card::before,
+      #startScreen .start-card::after,
+      #startBtn,
+      #introStage .title-flower,
+      #introStage #mainTitle.line-active .title-copy::before,
+      #introStage #mainTitle.line-active .title-copy::after {
+        animation: none !important;
+      }
+
+      #introStage .title-copy::before,
+      #introStage .title-copy::after {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
+
 <body class="intro-page">
   <div class="hacker-background" aria-hidden="true">
     <div class="code-stream stream-one">01001101 00110010 ACCESS_GRANTED 01101011</div>
@@ -25,41 +827,558 @@
 
   <div id="startScreen">
     <div class="start-card">
-      <div class="crest" aria-label="Black velvet flower">
-        <span class="crest-petal"></span>
-        <span class="crest-petal"></span>
-        <span class="crest-petal"></span>
-        <span class="crest-petal"></span>
-        <span class="crest-petal"></span>
-        <span class="crest-petal"></span>
-        <span class="crest-core"></span>
-      </div>
-
-      <p class="eyebrow">WELCOME TO THE ABYSS</p>
-      <h1>BLACK<br><span>VELVET</span></h1>
-      <p class="start-copy">A new legacy is about to begin.</p>
-      <button id="startBtn" type="button">ENTER</button>
+      <button id="startBtn" type="button" aria-label="Play introduction">PLAY</button>
     </div>
   </div>
 
-  <button id="skipBtn" type="button">SKIP INTRO</button>
+  <audio id="introAudio" src="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/intro2.MP3" preload="auto"></audio>
+  <audio id="part1Audio" src="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/swoosh.mp3" preload="auto"></audio>
+  <audio id="part2Audio" src="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/Swoosh2.mp3" preload="auto"></audio>
+  <audio id="part3Audio" src="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/swoosh3.mp3" preload="auto"></audio>
+  <audio id="part4Audio" src="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/swoosh4.mp3" preload="auto"></audio>
+  <audio id="part5Audio" src="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/swoosh5.mp3" preload="auto"></audio>
+  <audio id="deepAudio" src="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/DEEP.mp3" preload="auto"></audio>
 
-  <audio id="introAudio" src="sounds/intro2.mp3" preload="metadata"></audio>
+  <main id="introStage" aria-live="polite">
+    <div class="intro-text" id="l1">
+      By the founders of&nbsp;<span class="accent">Azul Clan</span>
+    </div>
+    <div class="intro-text" id="l2">Forged stronger in the abyss</div>
+    <div class="intro-text" id="l3">Motivated by memories</div>
+    <div class="intro-text" id="l4">A legacy carved in darkness</div>
 
-  <main aria-live="polite">
-    <div id="mainTitle">BLACK VELVET CLAN</div>
+    <div class="intro-text" id="l5">
+      <span>FOUND</span>
+      <span>BY</span>
+      <span>THOSE</span>
+      <span>WHO</span>
+      <span>NEVER</span>
+      <span>STOPPED</span>
+      <span>DREAMING.</span>
+    </div>
 
-    <div class="label" id="l1">By the founders of <span class="accent">Azul Clan</span></div>
-    <div class="label" id="l2">Forged stronger in the abyss</div>
-    <div class="label" id="l3">Motivated by memories</div>
-    <div class="label" id="l4">A legacy carved in darkness</div>
-    <div class="label" id="l5">Directed by those who never stopped dreaming</div>
-    <div class="label" id="l6">Managed by Gears</div>
-    <div class="label" id="l7">Back like we never left</div>
-    <div class="label" id="l8">FOUNDED BY LUCKYY AND SUOAZ</div>
+    <div class="intro-text" id="l7">A new chapter begins.</div>
+
+    <div id="mainTitle">
+      <div class="title-layout">
+        <img
+          class="title-flower title-flower-left"
+          src="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/servericon.png"
+          alt=""
+          aria-hidden="true"
+        >
+
+        <div class="title-copy">
+          <div class="title-primary">
+            <span class="title-word">BLACK</span>
+            <span class="title-word">VELVET</span>
+            <span class="title-line-track" aria-hidden="true"></span>
+          </div>
+          <span class="title-clan">CLAN</span>
+        </div>
+
+        <img
+          class="title-flower title-flower-right"
+          src="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/servericon.png"
+          alt=""
+          aria-hidden="true"
+        >
+      </div>
+    </div>
   </main>
 
+  <div id="exitFade" aria-hidden="true"></div>
+
   <script src="theme.js"></script>
-  <script src="intro.js"></script>
+
+  <script>
+    const MAX_VOLUME = 0.1;
+    const LOWER_EFFECT_VOLUME = MAX_VOLUME * 0.8;
+    const TITLE_VOLUME = Math.min(1, MAX_VOLUME * 1.2);
+    const EXIT_FADE_DURATION = 1500;
+
+    const startBtn = document.getElementById("startBtn");
+    const startScreen = document.getElementById("startScreen");
+    const introAudio = document.getElementById("introAudio");
+    const deepAudio = document.getElementById("deepAudio");
+    const exitFade = document.getElementById("exitFade");
+    const stackWords = [...document.querySelectorAll("#l5 span")];
+    const codeStreams = [...document.querySelectorAll(".code-stream")];
+
+    const codeMessages = [
+      "01001110 00110101 SHADOW_NETWORK_CONNECTED",
+      "SYSTEM://BLACK-VELVET//SEQUENCE_ACTIVE",
+      "0xBVC A7 19 FF 001 101 011 110",
+      "CLAN_PROTOCOL // DARKNESS_RECOGNIZED",
+      "[ MEMORY ] [ LOYALTY ] [ LEGACY ]",
+      "10110101 00101110 11100010 010101",
+      "ARCHIVE://FOUNDERS//RECORD_RECOVERED",
+      "SIGNAL_LOCKED // ACCESS_LEVEL: VELVET",
+      "VOID_CHANNEL_OPEN // TRANSMISSION_FOUND",
+      "MEMORY_CORE_ACTIVE // DREAMERS_DETECTED",
+      "BLACK_VELVET://A_NEW_CHAPTER_BEGINS",
+      "LEGACY_ENGINE_RUNNING // STATUS: ETERNAL"
+    ];
+
+    const partSounds = {
+      l1: document.getElementById("part1Audio"),
+      l2: document.getElementById("part2Audio"),
+      l3: document.getElementById("part3Audio"),
+      l4: document.getElementById("part4Audio"),
+      l5: document.getElementById("part5Audio"),
+      l7: document.getElementById("part5Audio")
+    };
+
+    const allEffectSources = [
+      ...new Set([...Object.values(partSounds), deepAudio])
+    ];
+
+    const activeEffects = new Set();
+    const sceneIds = ["l1", "l2", "l3", "l4", "l5", "l7", "mainTitle"];
+    const timers = [];
+
+    let started = false;
+    let redirecting = false;
+    let audioStartTimer = null;
+    let audioFadeFrame = null;
+    let nextCodeMessage = 0;
+
+    introAudio.volume = MAX_VOLUME;
+
+    allEffectSources.forEach(effect => {
+      effect.volume = MAX_VOLUME;
+    });
+
+    function refreshCodeStream(stream) {
+      if (stream.dataset.refreshing === "true") return;
+
+      stream.dataset.refreshing = "true";
+      stream.classList.add("refreshing");
+
+      window.setTimeout(() => {
+        stream.textContent = codeMessages[nextCodeMessage % codeMessages.length];
+        nextCodeMessage += 1;
+
+        window.setTimeout(() => {
+          stream.classList.remove("refreshing");
+          stream.dataset.refreshing = "false";
+        }, 60);
+      }, 360);
+    }
+
+    codeStreams.forEach((stream, index) => {
+      stream.addEventListener("animationiteration", event => {
+        if (event.target === stream) refreshCodeStream(stream);
+      });
+
+      window.setInterval(() => {
+        refreshCodeStream(stream);
+      }, 8500 + index * 900);
+    });
+
+    const animations = {
+      l1: [
+        { opacity: 0, transform: "translate(-50%, -34%) scale(0.96)", filter: "blur(7px)" },
+        { opacity: 1, transform: "translate(-50%, -50%) scale(1)", filter: "blur(0)" }
+      ],
+      l2: [
+        { opacity: 0, transform: "translate(-50%, -50%) scale(0.52)", filter: "blur(3px)" },
+        { opacity: 1, transform: "translate(-50%, -50%) scale(1)", filter: "blur(0)" }
+      ],
+      l3: [
+        { opacity: 0, transform: "translate(-76%, -50%)", filter: "blur(9px)" },
+        { opacity: 1, transform: "translate(-50%, -50%)", filter: "blur(0)" }
+      ],
+      l4: [
+        { opacity: 0, transform: "translate(-50%, -66%)", letterSpacing: "0.24em", filter: "blur(5px)" },
+        { opacity: 1, transform: "translate(-50%, -50%)", letterSpacing: "0.055em", filter: "blur(0)" }
+      ],
+      l7: [
+        { opacity: 0, transform: "translate(-50%, -50%) scale(0.68)", filter: "blur(16px) brightness(2)" },
+        { opacity: 1, transform: "translate(-50%, -50%) scale(1)", filter: "blur(0) brightness(1)" }
+      ]
+    };
+
+    function queue(callback, seconds) {
+      const timer = window.setTimeout(callback, Math.max(0, seconds) * 1000);
+      timers.push(timer);
+    }
+
+    function cancelTimers() {
+      timers.forEach(timer => clearTimeout(timer));
+      timers.length = 0;
+
+      if (audioStartTimer !== null) {
+        clearTimeout(audioStartTimer);
+        audioStartTimer = null;
+      }
+
+      if (audioFadeFrame !== null) {
+        cancelAnimationFrame(audioFadeFrame);
+        audioFadeFrame = null;
+      }
+    }
+
+    function stopEffects() {
+      activeEffects.forEach(effect => {
+        effect.pause();
+        effect.removeAttribute("src");
+        effect.load();
+      });
+
+      activeEffects.clear();
+
+      allEffectSources.forEach(effect => {
+        effect.pause();
+        effect.currentTime = 0;
+      });
+    }
+
+    function playEffect(source, playbackRate = 1, volume = MAX_VOLUME) {
+      if (!started || !source) return;
+
+      const effect = source.cloneNode(true);
+      effect.volume = Math.min(1, Math.max(0, volume));
+      effect.playbackRate = playbackRate;
+      effect.preservesPitch = false;
+
+      activeEffects.add(effect);
+
+      const removeEffect = () => activeEffects.delete(effect);
+
+      effect.addEventListener("ended", removeEffect, { once: true });
+      effect.addEventListener("error", removeEffect, { once: true });
+
+      const promise = effect.play();
+
+      if (promise) {
+        promise.catch(error => {
+          removeEffect();
+          console.warn("Sound effect could not play:", error);
+        });
+      }
+    }
+
+    function fadeOutAllAudio(duration = EXIT_FADE_DURATION) {
+      if (audioFadeFrame !== null) {
+        cancelAnimationFrame(audioFadeFrame);
+      }
+
+      const audioElements = [
+        introAudio,
+        ...allEffectSources,
+        ...activeEffects
+      ];
+
+      const uniqueAudio = [...new Set(audioElements)];
+      const startingVolumes = new Map(
+        uniqueAudio.map(audio => [audio, audio.volume])
+      );
+      const startTime = performance.now();
+
+      function fadeFrame(currentTime) {
+        const progress = Math.min(1, (currentTime - startTime) / duration);
+        const volumeMultiplier = 1 - progress;
+
+        uniqueAudio.forEach(audio => {
+          const startingVolume = startingVolumes.get(audio) || 0;
+          audio.volume = Math.max(0, startingVolume * volumeMultiplier);
+        });
+
+        if (progress < 1) {
+          audioFadeFrame = requestAnimationFrame(fadeFrame);
+          return;
+        }
+
+        uniqueAudio.forEach(audio => {
+          audio.volume = 0;
+          audio.pause();
+        });
+
+        audioFadeFrame = null;
+      }
+
+      audioFadeFrame = requestAnimationFrame(fadeFrame);
+    }
+
+    function resetStackWords() {
+      stackWords.forEach(word => {
+        word.getAnimations().forEach(animation => animation.cancel());
+        word.classList.remove("word-visible");
+        word.style.transform = "translateY(18px) scale(0.94)";
+        word.style.filter = "blur(6px)";
+      });
+    }
+
+    function resetScene(element) {
+      element.getAnimations().forEach(animation => animation.cancel());
+      element.style.opacity = "0";
+      element.style.visibility = "hidden";
+      element.style.transform = "translate(-50%, -50%)";
+      element.style.filter = "";
+
+      if (element.id === "mainTitle") {
+        element.classList.remove("line-active");
+      }
+    }
+
+    function resetAll() {
+      sceneIds.forEach(id => resetScene(document.getElementById(id)));
+      resetStackWords();
+      exitFade.classList.remove("active");
+    }
+
+    function hideOtherScenes(activeId) {
+      sceneIds.forEach(id => {
+        if (id !== activeId) resetScene(document.getElementById(id));
+      });
+    }
+
+    function showScene(id, duration = 1200) {
+      hideOtherScenes(id);
+
+      const element = document.getElementById(id);
+      element.getAnimations().forEach(animation => animation.cancel());
+      element.style.visibility = "visible";
+      element.style.opacity = "1";
+
+      element.animate(animations[id], {
+        duration,
+        easing: "cubic-bezier(.16, 1, .3, 1)",
+        fill: "forwards"
+      });
+    }
+
+    function hideScene(id, duration = 650) {
+      const element = document.getElementById(id);
+
+      if (element.style.visibility === "hidden") return;
+
+      element.getAnimations().forEach(animation => animation.cancel());
+
+      const animation = element.animate(
+        [
+          { opacity: 1, filter: "blur(0)" },
+          { opacity: 0, filter: "blur(7px)" }
+        ],
+        { duration, easing: "ease", fill: "forwards" }
+      );
+
+      animation.onfinish = () => {
+        resetScene(element);
+        if (id === "l5") resetStackWords();
+      };
+    }
+
+    function showWordStack() {
+      hideOtherScenes("l5");
+      resetStackWords();
+
+      const stack = document.getElementById("l5");
+      stack.getAnimations().forEach(animation => animation.cancel());
+      stack.style.visibility = "visible";
+      stack.style.opacity = "1";
+      stack.style.transform = "translate(-50%, -50%)";
+      stack.style.filter = "none";
+    }
+
+    function showStackWord(index) {
+      const word = stackWords[index];
+      if (!word) return;
+
+      word.getAnimations().forEach(animation => animation.cancel());
+      word.classList.add("word-visible");
+
+      const animation = word.animate(
+        [
+          { transform: "translateY(18px) scale(0.94)", filter: "blur(6px)" },
+          { transform: "translateY(0) scale(1)", filter: "blur(0)" }
+        ],
+        {
+          duration: 620,
+          easing: "cubic-bezier(.16, 1, .3, 1)",
+          fill: "forwards"
+        }
+      );
+
+      animation.onfinish = () => {
+        word.style.transform = "translateY(0) scale(1)";
+        word.style.filter = "blur(0)";
+      };
+    }
+
+    function showStackWordWithSound(index, playbackRate) {
+      playEffect(partSounds.l5, playbackRate);
+      showStackWord(index);
+    }
+
+    function showTitle() {
+      hideOtherScenes("mainTitle");
+      playEffect(deepAudio);
+      introAudio.volume = TITLE_VOLUME;
+
+      const title = document.getElementById("mainTitle");
+      title.getAnimations().forEach(animation => animation.cancel());
+      title.classList.remove("line-active");
+      void title.offsetWidth;
+      title.classList.add("line-active");
+      title.style.visibility = "visible";
+      title.style.opacity = "1";
+
+      const animation = title.animate(
+        [
+          {
+            opacity: 0,
+            transform: "translate(-50%, -50%) scale(0.72)",
+            filter: "blur(18px) brightness(2.2)",
+            offset: 0
+          },
+          {
+            opacity: 1,
+            transform: "translate(-50%, -50%) scale(1)",
+            filter: "blur(0) brightness(1)",
+            offset: 0.21
+          },
+          {
+            opacity: 1,
+            transform: "translate(-50%, -50%) scale(1.18)",
+            filter: "blur(0) brightness(1)",
+            offset: 0.5
+          },
+          {
+            opacity: 0.75,
+            transform: "translate(-50%, -50%) scale(1.85)",
+            filter: "blur(1px) brightness(1.08)",
+            offset: 0.88
+          },
+          {
+            opacity: 0,
+            transform: "translate(-50%, -50%) scale(2.5)",
+            filter: "blur(9px) brightness(1.25)",
+            offset: 1
+          }
+        ],
+        {
+          duration: 11500,
+          easing: "linear",
+          fill: "forwards"
+        }
+      );
+
+      animation.onfinish = () => resetScene(title);
+    }
+
+    function fadeIntoHome() {
+      if (redirecting) return;
+
+      redirecting = true;
+      fadeOutAllAudio(EXIT_FADE_DURATION);
+      exitFade.classList.add("active");
+
+      window.setTimeout(() => {
+        window.location.href = "home.html";
+      }, EXIT_FADE_DURATION);
+    }
+
+    function scheduleTimeline() {
+      cancelTimers();
+      resetAll();
+
+      queue(() => playEffect(partSounds.l1, 1, LOWER_EFFECT_VOLUME), 2.6);
+      queue(() => showScene("l1"), 3);
+      queue(() => hideScene("l1"), 6);
+
+      queue(() => playEffect(partSounds.l2, 1, LOWER_EFFECT_VOLUME), 6.4);
+      queue(() => showScene("l2"), 7);
+      queue(() => hideScene("l2"), 10);
+
+      queue(() => playEffect(partSounds.l3, 1, LOWER_EFFECT_VOLUME), 10.4);
+      queue(() => showScene("l3"), 11);
+      queue(() => hideScene("l3"), 14);
+
+      queue(() => playEffect(partSounds.l4, 1, LOWER_EFFECT_VOLUME), 14.4);
+      queue(() => showScene("l4"), 15);
+      queue(() => hideScene("l4"), 18);
+
+      queue(showWordStack, 18.5);
+
+      queue(() => showStackWordWithSound(0, 1.15), 19);
+      queue(() => showStackWordWithSound(1, 1.28), 20);
+      queue(() => showStackWordWithSound(2, 1.42), 21);
+      queue(() => showStackWordWithSound(3, 1.56), 23);
+      queue(() => showStackWordWithSound(4, 1.7), 24);
+      queue(() => showStackWordWithSound(5, 1.85), 25);
+      queue(() => showStackWordWithSound(6, 2), 26);
+
+      queue(() => hideScene("l5"), 30);
+
+      queue(() => playEffect(partSounds.l7, 1, LOWER_EFFECT_VOLUME), 32.4);
+      queue(() => showScene("l7", 1800), 33);
+      queue(() => hideScene("l7"), 40);
+
+      queue(showTitle, 43);
+      queue(fadeIntoHome, 55);
+    }
+
+    function restorePlayButton() {
+      started = false;
+      redirecting = false;
+      document.body.classList.remove("intro-running");
+      cancelTimers();
+      resetAll();
+      stopEffects();
+
+      introAudio.pause();
+      introAudio.currentTime = 0;
+      introAudio.volume = MAX_VOLUME;
+
+      allEffectSources.forEach(effect => {
+        effect.volume = MAX_VOLUME;
+      });
+
+      startBtn.disabled = false;
+      startScreen.classList.remove("closed");
+    }
+
+    startBtn.addEventListener("click", async () => {
+      if (started) return;
+
+      started = true;
+      redirecting = false;
+      startBtn.disabled = true;
+
+      introAudio.pause();
+      introAudio.currentTime = 0;
+      introAudio.volume = 0;
+
+      try {
+        await introAudio.play();
+
+        document.body.classList.remove("intro-running");
+        void document.body.offsetWidth;
+        document.body.classList.add("intro-running");
+
+        startScreen.classList.add("closed");
+
+        audioStartTimer = window.setTimeout(() => {
+          if (!started) return;
+
+          introAudio.currentTime = 0;
+          introAudio.volume = MAX_VOLUME;
+          scheduleTimeline();
+        }, 3000);
+      } catch (error) {
+        console.error("Unable to play intro audio:", error);
+        restorePlayButton();
+      }
+    });
+
+    introAudio.addEventListener("error", () => {
+      console.error("The intro audio could not be loaded:", introAudio.error);
+      restorePlayButton();
+    });
+
+    resetAll();
+  </script>
 </body>
 </html>
