@@ -3,13 +3,391 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="refresh" content="0; url=staff.html#login">
+  <meta name="theme-color" content="#010204">
   <title>Black Velvet | Login</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Orbitron, Arial, sans-serif; }
+    main { width: min(520px, 90%); margin: auto; padding: 45px 0 75px; }
+    .top { display: flex; justify-content: space-between; gap: 20px; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+    a { color: var(--silver); font-size: 11px; letter-spacing: 1.5px; text-decoration: none; }
+    .eyebrow { margin: 58px 0 15px; color: var(--silver); font-size: 11px; letter-spacing: 3px; }
+    h1 { margin: 0; font-family: Cinzel, Georgia, serif; font-size: clamp(42px, 8vw, 75px); letter-spacing: 4px; }
+    .intro { color: #aab5bc; font: 16px/1.8 Arial, sans-serif; }
+    form { margin-top: 28px; padding: 28px; border: 1px solid var(--line); border-radius: 14px; background: rgba(7, 11, 15, .88); }
+    label { display: block; margin: 18px 0 8px; color: var(--silver); font-size: 12px; font-weight: 700; letter-spacing: 1px; }
+    input { width: 100%; margin-top: 8px; padding: 13px; border: 1px solid var(--line); border-radius: 7px; outline: none; color: var(--text); background: #080c10; font: 14px Arial, sans-serif; }
+    input:focus { border-color: var(--silver); }
+    button { width: 100%; margin-top: 25px; padding: 14px; border: 1px solid var(--line); border-radius: 7px; color: #06080a; background: var(--silver); font: 700 12px Orbitron, sans-serif; letter-spacing: 2px; cursor: pointer; }
+    button:disabled { cursor: wait; opacity: .65; }
+    #message { min-height: 22px; margin: 16px 0 0; color: var(--silver); font: 13px/1.5 Arial, sans-serif; text-align: center; }
+    #message.error { color: #e7a4a4; }
+    #message.success { color: #9de0b0; }
+  </style>
 </head>
 <body>
-  <p>Opening unified login...</p>
-  <script>
-    window.location.replace("staff.html#login");
+  <main>
+    <header class="top">
+      <a href="home.html">← BLACK VELVET HOME</a>
+      <a href="clan-signup.html">SIGN UP</a>
+    </header>
+
+    <p class="eyebrow">BLACK VELVET // MEMBER NETWORK</p>
+    <h1>LOG IN</h1>
+    <p class="intro">
+      Sign in with your Black Velvet username or account email. Staff members
+      can use the Staff Portal and publish announcements after signing in.
+    </p>
+
+    <form id="loginForm">
+      <label>
+        USERNAME OR EMAIL
+        <input
+          name="identifier"
+          autocomplete="username"
+          maxlength="254"
+          required
+        >
+      </label>
+
+      <label>
+        PASSWORD
+        <input
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          required
+        >
+      </label>
+
+      <button id="loginButton" type="submit">LOG IN</button>
+      <p id="message" role="alert" aria-live="polite"></p>
+    </form>
+  </main>
+
+  <script src="theme.js"></script>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const SUPABASE_URL =
+      "https://ptgzhljvzyceawwohmym.supabase.co";
+    const SUPABASE_KEY =
+      "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk";
+    const AUTH_STORAGE_KEY = "black-velvet-supabase-auth";
+    const ADMIN_USERNAME = "administrator";
+    const ADMIN_EMAIL = "administrator@blackvelvet.local";
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: {
+        storage: window.localStorage,
+        storageKey: AUTH_STORAGE_KEY,
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
+
+    const form = document.getElementById("loginForm");
+    const button = document.getElementById("loginButton");
+    const message = document.getElementById("message");
+
+    function normalize(value) {
+      return String(value ?? "").trim().toLowerCase();
+    }
+
+    function identifierToEmail(identifier) {
+      const value = normalize(identifier);
+
+      if (!value) {
+        throw new Error("Enter your username or email.");
+      }
+
+      if (value === ADMIN_USERNAME) {
+        return ADMIN_EMAIL;
+      }
+
+      if (value.includes("@")) {
+        return value;
+      }
+
+      const username = value.replace(/[^a-z0-9._-]/g, "");
+
+      if (!username) {
+        throw new Error("Enter a valid username or email.");
+      }
+
+      return `${username}@blackvelvet.local`;
+    }
+
+    function getUsername(user, enteredIdentifier = "") {
+      const metadataUsername = normalize(
+        user?.user_metadata?.username ||
+        user?.user_metadata?.display_name
+      );
+
+      if (metadataUsername) {
+        return metadataUsername;
+      }
+
+      const entered = normalize(enteredIdentifier);
+
+      if (entered && !entered.includes("@")) {
+        return entered;
+      }
+
+      return normalize(user?.email?.split("@")[0]) || "member";
+    }
+
+    async function getStaffRecord(userId) {
+      const { data, error } = await supabase
+        .from("staff_users")
+        .select("staff_role")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      if (error) {
+        console.warn("Staff lookup failed:", error.message);
+        return null;
+      }
+
+      return data || null;
+    }
+
+    function saveProfile(user, username, staffRecord) {
+      const administrator =
+        normalize(user.email) === ADMIN_EMAIL;
+
+      const isStaff = Boolean(staffRecord) || administrator;
+      const role = normalize(
+        staffRecord?.staff_role ||
+        (administrator ? "administrator" : "member")
+      );
+
+      localStorage.removeItem("blackVelvetBanned");
+
+      localStorage.setItem(
+        "blackVelvetProfile",
+        JSON.stringify({
+          id: user.id,
+          authUserId: user.id,
+          username,
+          display_name:
+            user.user_metadata?.display_name || username,
+          discord_username:
+            user.user_metadata?.discord_username || username,
+          email: user.email,
+          role,
+          staffRank: isStaff ? role : "N/A",
+          type: isStaff ? "staff" : "member",
+          accountType: isStaff
+            ? "staff account"
+            : "member account",
+          account_type: isStaff
+            ? "staff account"
+            : "member account",
+          isStaff,
+          is_staff: isStaff
+        })
+      );
+
+      return { isStaff, role };
+    }
+
+    function getReturnPage(isStaff) {
+      const saved = sessionStorage.getItem(
+        "blackVelvetLoginReturnTo"
+      );
+
+      sessionStorage.removeItem("blackVelvetLoginReturnTo");
+
+      if (saved) {
+        try {
+          const url = new URL(saved, location.href);
+
+          if (url.origin === location.origin) {
+            return `${url.pathname}${url.search}${url.hash}`;
+          }
+        } catch {
+          // Use the default page.
+        }
+      }
+
+      return isStaff ? "staff.html" : "home.html";
+    }
+
+    function saveLocalLoginLog(log) {
+      try {
+        const logs = JSON.parse(
+          localStorage.getItem("blackVelvetLoginAlerts") || "[]"
+        );
+
+        logs.unshift(log);
+
+        localStorage.setItem(
+          "blackVelvetLoginAlerts",
+          JSON.stringify(logs.slice(0, 250))
+        );
+      } catch {
+        // Login logging must not block authentication.
+      }
+    }
+
+    function recordLoginAttempt({
+      username,
+      success,
+      role = null,
+      reason = ""
+    }) {
+      const log = {
+        username: normalize(username) || "unknown",
+        success: Boolean(success),
+        event_type: success ? "login_success" : "login_failed",
+        account_type: role ? "staff account" : "member account",
+        accountType: role ? "staff account" : "member account",
+        role,
+        failure_reason: success
+          ? null
+          : reason || "Invalid username or password",
+        page_url: location.href,
+        created_at: new Date().toISOString()
+      };
+
+      saveLocalLoginLog(log);
+
+      supabase
+        .from("login_logs")
+        .insert(log)
+        .then(({ error }) => {
+          if (error) {
+            console.warn("Remote login log failed:", error.message);
+          }
+        })
+        .catch(error => {
+          console.warn("Remote login logging unavailable:", error);
+        });
+    }
+
+    function showAuthError(error) {
+      const text = String(error?.message || "");
+
+      message.className = "error";
+
+      if (/invalid login credentials/i.test(text)) {
+        message.textContent =
+          "USERNAME OR PASSWORD IS INCORRECT. CONFIRM THAT THE ACCOUNT EXISTS IN SUPABASE AUTHENTICATION.";
+      } else if (/email not confirmed/i.test(text)) {
+        message.textContent =
+          "THIS ACCOUNT HAS NOT BEEN CONFIRMED IN SUPABASE.";
+      } else if (/failed to fetch|network/i.test(text)) {
+        message.textContent =
+          "SUPABASE COULD NOT BE REACHED. CHECK YOUR CONNECTION AND PROJECT SETTINGS.";
+      } else {
+        message.textContent =
+          text || "LOGIN FAILED. PLEASE TRY AGAIN.";
+      }
+    }
+
+    async function restoreExistingSession() {
+      try {
+        const {
+          data: { session },
+          error
+        } = await supabase.auth.getSession();
+
+        if (error || !session?.user) {
+          return;
+        }
+
+        const username = getUsername(session.user);
+        const staffRecord = await getStaffRecord(session.user.id);
+        const profile = saveProfile(
+          session.user,
+          username,
+          staffRecord
+        );
+
+        message.className = "success";
+        message.textContent = profile.isStaff
+          ? "A STAFF SESSION IS ACTIVE. YOU MAY LOG IN AGAIN OR RETURN TO THE STAFF PORTAL."
+          : "YOU ARE ALREADY SIGNED IN.";
+      } catch (error) {
+        console.warn("Existing session check failed:", error);
+      }
+    }
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+      const identifier = String(
+        formData.get("identifier") || ""
+      ).trim();
+      const password = String(
+        formData.get("password") || ""
+      );
+
+      message.className = "";
+      message.textContent = "SIGNING IN...";
+      button.disabled = true;
+
+      try {
+        const email = identifierToEmail(identifier);
+
+        const { data, error } =
+          await supabase.auth.signInWithPassword({
+            email,
+            password
+          });
+
+        if (error) {
+          throw error;
+        }
+
+        if (!data?.session?.access_token || !data?.user) {
+          throw new Error(
+            "Supabase did not return a valid login session."
+          );
+        }
+
+        const username = getUsername(data.user, identifier);
+        const staffRecord = await getStaffRecord(data.user.id);
+        const profile = saveProfile(
+          data.user,
+          username,
+          staffRecord
+        );
+
+        recordLoginAttempt({
+          username,
+          success: true,
+          role: profile.isStaff ? profile.role : null
+        });
+
+        message.className = "success";
+        message.textContent = "LOGIN SUCCESSFUL. REDIRECTING...";
+
+        window.setTimeout(() => {
+          window.location.replace(
+            getReturnPage(profile.isStaff)
+          );
+        }, 250);
+      } catch (error) {
+        console.error("Login failed:", error);
+
+        recordLoginAttempt({
+          username: identifier,
+          success: false,
+          reason: error?.message || "Login failed"
+        });
+
+        showAuthError(error);
+        button.disabled = false;
+      }
+    });
+
+    restoreExistingSession();
   </script>
 </body>
 </html>
