@@ -5,11 +5,14 @@ if (!window.__blackVelvetErrorReporterInstalled) {
   const SUPABASE_KEY = "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk";
   const STORAGE_KEY = "blackVelvetLocalConsoleErrors";
   const CHANNEL_NAME = "black-velvet-console-errors";
+  const REQUEST_TIMEOUT = 10000;
 
   const originalConsoleError = console.error.bind(console);
   const originalConsoleWarn = console.warn.bind(console);
   const originalFetch = window.fetch.bind(window);
-  const channel = "BroadcastChannel" in window ? new BroadcastChannel(CHANNEL_NAME) : null;
+  const channel = "BroadcastChannel" in window
+    ? new BroadcastChannel(CHANNEL_NAME)
+    : null;
 
   let queue = Promise.resolve();
   let lastSignature = "";
@@ -26,6 +29,7 @@ if (!window.__blackVelvetErrorReporterInstalled) {
 
   function stringify(value) {
     if (value instanceof Error) return value.stack || value.message || "Error";
+
     if (typeof value === "object") {
       try {
         return JSON.stringify(value);
@@ -33,12 +37,16 @@ if (!window.__blackVelvetErrorReporterInstalled) {
         return String(value);
       }
     }
+
     return String(value);
   }
 
   function shouldIgnore(message = "", url = "") {
-    const text = `${message} ${url}`;
-    return text.includes("blackVelvetLocalConsoleErrors");
+    const text = `${message} ${url}`.toLowerCase();
+
+    return text.includes("blackvelvetlocalconsoleerrors") ||
+      text.includes("reporter.supabase") ||
+      text.includes("system_errors");
   }
 
   function makePayload(source, message, stack = "") {
@@ -60,49 +68,85 @@ if (!window.__blackVelvetErrorReporterInstalled) {
 
   function saveLocal(payload) {
     try {
-      const current = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      const current = JSON.parse(
+        localStorage.getItem(STORAGE_KEY) || "[]"
+      );
+
       current.unshift(payload);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(current.slice(0, 500)));
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(current.slice(0, 500))
+      );
     } catch {}
 
-    window.dispatchEvent(new CustomEvent("blackVelvetConsoleError", { detail: payload }));
+    window.dispatchEvent(new CustomEvent(
+      "blackVelvetConsoleError",
+      { detail: payload }
+    ));
+
     channel?.postMessage(payload);
   }
 
   async function saveRemote(payload) {
     const { id, ...remotePayload } = payload;
+    const controller = new AbortController();
+    const timeout = setTimeout(
+      () => controller.abort(),
+      REQUEST_TIMEOUT
+    );
 
-    const response = await originalFetch(`${SUPABASE_URL}/rest/v1/system_errors`, {
-      method: "POST",
-      headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`,
-        "Content-Type": "application/json",
-        Prefer: "return=minimal"
-      },
-      body: JSON.stringify(remotePayload)
-    });
+    try {
+      const response = await originalFetch(
+        `${SUPABASE_URL}/rest/v1/system_errors`,
+        {
+          method: "POST",
+          mode: "cors",
+          signal: controller.signal,
+          headers: {
+            apikey: SUPABASE_KEY,
+            Authorization: `Bearer ${SUPABASE_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal"
+          },
+          body: JSON.stringify(remotePayload)
+        }
+      );
 
-    if (!response.ok) {
-      const body = await response.text();
-      throw new Error(`system_errors insert failed: ${response.status} ${response.statusText}${body ? ` | ${body}` : ""}`);
+      if (!response.ok) {
+        const body = await response.text();
+
+        throw new Error(
+          `system_errors insert failed: ${response.status} ${body}`
+        );
+      }
+    } catch (error) {
+      if (error.name === "AbortError") {
+        throw new Error("Supabase request timed out");
+      }
+
+      throw error;
+    } finally {
+      clearTimeout(timeout);
     }
   }
 
   function saveReporterFailure(error) {
     const now = Date.now();
-    if (now - lastReporterFailure < 5000) return;
+
+    if (now - lastReporterFailure < 30000) return;
     lastReporterFailure = now;
 
-    saveLocal(makePayload(
-      "reporter.supabase",
-      `Supabase error reporter save failed: ${error.message}`,
-      error.stack || ""
-    ));
+    // Use the original console only. Do not create another console record.
+    originalConsoleWarn(
+      "[Black Velvet] Remote error reporting unavailable:",
+      error?.message || error
+    );
   }
 
   function reportError(source, message, stack = "") {
     const text = String(message || "").trim();
+
     if (!text || shouldIgnore(text)) return;
 
     const signature = `${source}:${text}:${location.pathname}`;
@@ -116,9 +160,11 @@ if (!window.__blackVelvetErrorReporterInstalled) {
     const payload = makePayload(source, text, stack);
     saveLocal(payload);
 
+    if (!navigator.onLine) return;
+
     queue = queue
       .then(() => saveRemote(payload))
-      .catch(error => saveReporterFailure(error));
+      .catch(saveReporterFailure);
   }
 
   window.BlackVelvetReportError = reportError;
@@ -126,27 +172,44 @@ if (!window.__blackVelvetErrorReporterInstalled) {
 
   console.error = (...parts) => {
     originalConsoleError(...parts);
+
     const firstError = parts.find(part => part instanceof Error);
-    reportError("console.error", parts.map(stringify).join(" "), firstError?.stack || new Error().stack || "");
+
+    reportError(
+      "console.error",
+      parts.map(stringify).join(" "),
+      firstError?.stack || new Error().stack || ""
+    );
   };
 
   console.warn = (...parts) => {
     originalConsoleWarn(...parts);
-    reportError("console.warn", parts.map(stringify).join(" "), new Error().stack || "");
+
+    const text = parts.map(stringify).join(" ");
+
+    if (!shouldIgnore(text)) {
+      reportError("console.warn", text, new Error().stack || "");
+    }
   };
 
   window.addEventListener("error", event => {
     if (event.target && event.target !== window) {
       const target = event.target;
       const url = target.src || target.href || "unknown resource";
-      reportError("resource.error", `Failed to load ${target.tagName || "resource"}: ${url}`, "");
+
+      reportError(
+        "resource.error",
+        `Failed to load ${target.tagName || "resource"}: ${url}`
+      );
+
       return;
     }
 
     reportError(
       "window.error",
       event.error?.message || event.message || "Unknown browser error",
-      event.error?.stack || `${event.filename}:${event.lineno}:${event.colno}`
+      event.error?.stack ||
+        `${event.filename}:${event.lineno}:${event.colno}`
     );
   }, true);
 
@@ -157,40 +220,6 @@ if (!window.__blackVelvetErrorReporterInstalled) {
       event.reason?.stack || ""
     );
   });
-
-  window.fetch = async (...args) => {
-    const url = typeof args[0] === "string" ? args[0] : args[0]?.url || "";
-
-    try {
-      const response = await originalFetch(...args);
-
-      if (!response.ok && !url.includes("/system_errors") && !shouldIgnore("", url)) {
-        let body = "";
-
-        try {
-          body = await response.clone().text();
-        } catch {}
-
-        reportError(
-          "fetch.error",
-          `${response.status} ${response.statusText} while requesting ${url || "unknown URL"}${body ? ` | Response: ${body}` : ""}`,
-          ""
-        );
-      }
-
-      return response;
-    } catch (error) {
-      if (!url.includes("/system_errors") && !shouldIgnore(error.message, url)) {
-        reportError(
-          "fetch.exception",
-          `${error.message} while requesting ${url || "unknown URL"}`,
-          error.stack || ""
-        );
-      }
-
-      throw error;
-    }
-  };
 
   window.BlackVelvetTestConsoleError = () => {
     reportError(
