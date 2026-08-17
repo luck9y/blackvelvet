@@ -3,24 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#070509">
+  <meta name="theme-color" content="#08090b">
+  <link rel="icon" type="image/png" href="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/servericon.png">
   <title>Black Velvet | Staff Portal</title>
+
+  <script>
+    (() => {
+      const ownerAccounts = [
+        "imtherealluckyy",
+        "suoaz",
+        "managergear",
+        "gears"
+      ];
+
+      const staffRoles = [
+        "owner",
+        "admin",
+        "administrator",
+        "manager",
+        "management",
+        "president",
+        "moderator",
+        "mod",
+        "helper",
+        "staff"
+      ];
+
+      let profile = null;
+
+      try {
+        profile = JSON.parse(
+          localStorage.getItem("blackVelvetProfile") || "null"
+        );
+      } catch {
+        profile = null;
+      }
+
+      const username = String(
+        profile?.username ||
+        profile?.userName ||
+        profile?.display_name ||
+        ""
+      ).trim().toLowerCase();
+
+      const role = String(
+        profile?.role ||
+        profile?.staffRank ||
+        profile?.staff_role ||
+        profile?.staffRole ||
+        ""
+      ).trim().toLowerCase();
+
+      const accountType = String(
+        profile?.type ||
+        profile?.accountType ||
+        profile?.account_type ||
+        ""
+      ).trim().toLowerCase();
+
+      const isStaff =
+        Boolean(username) &&
+        (
+          ownerAccounts.includes(username) ||
+          staffRoles.includes(role) ||
+          ["staff", "owner", "admin", "administrator"].includes(accountType) ||
+          profile?.isStaff === true ||
+          profile?.is_staff === true ||
+          profile?.staff === true
+        );
+
+      if (!isStaff) {
+        window.location.replace("home.html");
+      }
+    })();
+  </script>
+
   <link rel="stylesheet" href="styles.css">
 
   <style>
     :root {
-      --bv-black: #070509;
-      --bv-panel: #0d0a12;
-      --bv-panel-2: #130e19;
-      --bv-border: rgba(212, 178, 92, .24);
-      --bv-gold: #d4b25c;
-      --bv-gold-bright: #f0d889;
-      --bv-purple: #7c4fa3;
-      --bv-text: #eee8dc;
-      --bv-muted: #9e96a8;
-      --bv-danger: #dc7777;
-      --bv-success: #8df0a6;
-      --bv-shadow: 0 18px 55px rgba(0, 0, 0, .52);
+      --black: #08090b;
+      --black-2: #0d0f12;
+      --panel: #13161a;
+      --panel-2: #191d22;
+      --border: #30363d;
+      --border-light: #454d56;
+      --grey: #aab1b8;
+      --light: #e7eaed;
+      --white: #fff;
+      --green: #8ee6a5;
+      --red: #e68e8e;
+      --shadow: 0 15px 40px rgba(0, 0, 0, .38);
     }
 
     * {
@@ -30,11 +103,11 @@
     body {
       min-height: 100vh;
       margin: 0;
-      color: var(--bv-text);
+      color: var(--light);
       background:
-        radial-gradient(circle at 12% 0%, rgba(124, 79, 163, .18), transparent 30rem),
-        radial-gradient(circle at 88% 100%, rgba(212, 178, 92, .08), transparent 28rem),
-        var(--bv-black);
+        radial-gradient(circle at 15% 0, #252a30 0, transparent 30rem),
+        radial-gradient(circle at 100% 100%, #171b20 0, transparent 28rem),
+        var(--black);
       font-family: Arial, Helvetica, sans-serif;
     }
 
@@ -51,7 +124,7 @@
 
     .staff-layout {
       display: grid;
-      grid-template-columns: 265px minmax(0, 1fr);
+      grid-template-columns: 260px minmax(0, 1fr);
       min-height: 100vh;
     }
 
@@ -59,40 +132,47 @@
       position: sticky;
       top: 0;
       height: 100vh;
-      padding: 30px 18px;
+      padding: 26px 17px;
       overflow-y: auto;
-      border-right: 1px solid var(--bv-border);
-      background:
-        linear-gradient(180deg, rgba(19, 14, 25, .98), rgba(7, 5, 9, .98)),
-        var(--bv-panel);
-      box-shadow: 10px 0 35px rgba(0, 0, 0, .3);
+      border-right: 1px solid var(--border);
+      background: linear-gradient(180deg, #15181c, #090a0c);
+      box-shadow: 10px 0 35px rgba(0, 0, 0, .35);
     }
 
     .brand-mark {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 34px;
+      margin-bottom: 25px;
     }
 
     .brand-icon {
       display: grid;
-      width: 42px;
-      height: 42px;
+      width: 43px;
+      height: 43px;
+      padding: 5px;
       place-items: center;
-      border: 1px solid rgba(212, 178, 92, .65);
+      border: 1px solid var(--border-light);
       border-radius: 50%;
-      color: var(--bv-gold-bright);
-      background: rgba(212, 178, 92, .08);
-      box-shadow: 0 0 22px rgba(212, 178, 92, .14);
-      font-size: 21px;
+      background: #808080;
+      box-shadow: 0 0 14px rgba(128, 128, 128, .25);
+      object-fit: contain;
     }
 
     .brand-copy strong {
       display: block;
-      color: var(--bv-gold-bright);
+      color: var(--white);
       font-family: Georgia, serif;
       font-size: 18px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .brand-copy span,
+    .sidebar-label,
+    .eyebrow {
+      color: #7f8992;
+      font-size: 10px;
       letter-spacing: 2px;
       text-transform: uppercase;
     }
@@ -100,19 +180,11 @@
     .brand-copy span {
       display: block;
       margin-top: 4px;
-      color: var(--bv-muted);
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
     }
 
     .sidebar-label {
       margin: 0 0 10px 8px;
-      color: #776c82;
-      font-size: 10px;
       font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
     }
 
     .staff-nav {
@@ -120,34 +192,40 @@
       gap: 8px;
     }
 
-    .nav-button {
+    .nav-button,
+    .home-button {
       display: flex;
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      min-height: 45px;
-      padding: 12px 13px;
+      min-height: 43px;
+      padding: 11px 13px;
       border: 1px solid transparent;
-      border-radius: 8px;
-      color: #b9b0c1;
-      background: rgba(255, 255, 255, .025);
+      border-radius: 7px;
+      color: #b9c0c7;
+      background: #171a1e;
       text-align: left;
       transition: .2s ease;
     }
 
-    .nav-button:hover {
-      border-color: rgba(212, 178, 92, .35);
-      color: var(--bv-gold-bright);
-      background: rgba(212, 178, 92, .07);
-      transform: translateX(2px);
+    .nav-button:hover,
+    .home-button:hover {
+      border-color: var(--border-light);
+      color: var(--white);
+      background: #252a30;
     }
 
     .nav-button.active {
-      border-color: rgba(212, 178, 92, .65);
-      color: var(--bv-gold-bright);
-      background:
-        linear-gradient(90deg, rgba(212, 178, 92, .16), rgba(124, 79, 163, .08));
-      box-shadow: inset 3px 0 var(--bv-gold);
+      border-color: #69737d;
+      color: var(--white);
+      background: #2a3037;
+      box-shadow: inset 3px 0 #e5e8eb;
+    }
+
+    .home-button {
+      margin-bottom: 25px;
+      color: var(--light);
+      text-decoration: none;
     }
 
     .unread-badge {
@@ -156,69 +234,57 @@
       height: 21px;
       padding: 0 6px;
       place-items: center;
-      border: 1px solid rgba(240, 216, 137, .7);
+      border: 1px solid #68727c;
       border-radius: 999px;
-      color: #160f05;
-      background: var(--bv-gold-bright);
+      color: var(--white);
+      background: #30373e;
       font-size: 11px;
       font-weight: 700;
-      line-height: 1;
-    }
-
-    .unread-badge:empty,
-    .unread-badge[data-count="0"] {
-      opacity: .45;
     }
 
     .staff-main {
       width: min(1450px, 100%);
       min-width: 0;
       margin: 0 auto;
-      padding: 42px clamp(20px, 4vw, 58px);
+      padding: 40px clamp(18px, 4vw, 58px);
     }
 
     .staff-header {
       position: relative;
-      margin-bottom: 32px;
-      padding-bottom: 25px;
-      border-bottom: 1px solid var(--bv-border);
+      margin-bottom: 30px;
+      padding-bottom: 23px;
+      border-bottom: 1px solid var(--border);
     }
 
     .staff-header::after {
       position: absolute;
       bottom: -1px;
       left: 0;
-      width: 115px;
+      width: 110px;
       height: 2px;
-      background: var(--bv-gold);
+      background: #d9dde1;
       content: "";
     }
 
     .eyebrow {
       margin: 0 0 9px;
-      color: var(--bv-gold);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 3px;
-      text-transform: uppercase;
+    }
+
+    .staff-header h2,
+    .panel-heading h3 {
+      margin: 0;
+      color: var(--white);
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 400;
     }
 
     .staff-header h2 {
-      margin: 0 0 8px;
-      color: #fffaf0;
-      font-family: Georgia, "Times New Roman", serif;
       font-size: clamp(28px, 4vw, 42px);
-      font-weight: 400;
-      letter-spacing: 1px;
-    }
-
-    .muted {
-      color: var(--bv-muted);
     }
 
     .panel {
       display: none;
-      animation: panel-in .25s ease;
+      animation: panel-in .2s ease;
     }
 
     .panel.active-panel {
@@ -239,50 +305,43 @@
 
     .panel-heading {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 19px;
+      gap: 15px;
+      margin-bottom: 18px;
     }
 
     .panel-heading h3 {
-      margin: 0;
-      color: #fffaf0;
-      font-family: Georgia, "Times New Roman", serif;
       font-size: 25px;
-      font-weight: 400;
     }
 
-    .panel-heading p {
-      margin: 5px 0 0;
-      color: var(--bv-muted);
+    .panel-heading p,
+    .muted {
+      color: var(--grey);
       font-size: 13px;
     }
 
-    .panel-heading > div:first-child {
-      min-width: 0;
+    .panel-heading p {
+      margin: 6px 0 0;
     }
 
     .empty-state,
     .log-card,
-    .staff-card,
-    .application-card {
-      border: 1px solid var(--bv-border);
-      border-radius: 10px;
-      background:
-        linear-gradient(135deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .015)),
-        var(--bv-panel);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, .16);
+    .application-card,
+    .console-toolbar {
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: linear-gradient(135deg, #1b1f24, #101215);
+      box-shadow: var(--shadow);
     }
 
     .empty-state {
       padding: 25px;
-      color: var(--bv-muted);
+      color: var(--grey);
       text-align: center;
     }
 
     .empty-state.loading {
-      color: var(--bv-gold);
+      color: #d0d5da;
     }
 
     .log-list,
@@ -293,47 +352,13 @@
     }
 
     .log-card,
-    .staff-card,
     .application-card {
-      padding: 19px;
+      padding: 18px;
     }
 
     .log-card:hover,
-    .staff-card:hover,
     .application-card:hover {
-      border-color: rgba(212, 178, 92, .48);
-    }
-
-    .log-main {
-      display: grid;
-      gap: 7px;
-    }
-
-    .log-main strong {
-      color: #fff7e5;
-    }
-
-    .log-status {
-      color: #c2b9c9;
-      line-height: 1.5;
-    }
-
-    .log-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 9px 17px;
-      margin-top: 14px;
-      color: #80778b;
-      font-size: 12px;
-    }
-
-    .log-meta span {
-      overflow-wrap: anywhere;
-    }
-
-    .log-card > p {
-      overflow-wrap: anywhere;
-      font-size: 12px;
+      border-color: var(--border-light);
     }
 
     .console-toolbar {
@@ -343,52 +368,278 @@
       gap: 12px;
       margin-bottom: 18px;
       padding: 13px;
-      border: 1px solid var(--bv-border);
-      border-radius: 9px;
-      background: rgba(255, 255, 255, .025);
+      box-shadow: none;
     }
 
     .staff-button,
-    .loading-retry {
-      padding: 10px 14px;
-      border: 1px solid rgba(212, 178, 92, .65);
-      border-radius: 7px;
-      color: var(--bv-gold-bright);
-      background: rgba(212, 178, 92, .09);
+    .loading-retry,
+    .card-actions button {
+      padding: 9px 13px;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      color: var(--light);
+      background: #252b31;
       font-size: 12px;
       font-weight: 700;
-      letter-spacing: .4px;
-      transition: .2s ease;
     }
 
     .staff-button:hover,
-    .loading-retry:hover {
-      border-color: var(--bv-gold-bright);
-      background: rgba(212, 178, 92, .2);
-      box-shadow: 0 0 16px rgba(212, 178, 92, .12);
+    .loading-retry:hover,
+    .card-actions button:hover {
+      background: #353c44;
     }
 
     .loading-error {
       display: grid;
       gap: 10px;
-      border-color: rgba(220, 119, 119, .45);
-      color: #e8a4a4;
-      background: rgba(100, 20, 25, .16);
+      border-color: #704b4b;
+      color: var(--red);
+      background: #241719;
     }
 
     .loading-error strong {
-      color: #ffd0d0;
+      color: #ffcaca;
     }
 
     .loading-retry {
       width: fit-content;
-      border-color: rgba(220, 119, 119, .6);
-      color: #ffd0d0;
-      background: rgba(220, 119, 119, .1);
+      color: #ffcaca;
+      background: #3a2224;
     }
 
     .hidden {
       display: none !important;
+    }
+
+    .announcement-form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 17px;
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: linear-gradient(135deg, #1b1f24, #101215);
+      box-shadow: var(--shadow);
+    }
+
+    .announcement-field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .announcement-field span {
+      color: #aab1b8;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    .announcement-field input,
+    .announcement-field textarea {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      outline: none;
+      color: var(--white);
+      background: #0d1013;
+      resize: vertical;
+    }
+
+    .announcement-field input:focus,
+    .announcement-field textarea:focus {
+      border-color: #d9dde1;
+      box-shadow: 0 0 0 2px rgba(217, 221, 225, .08);
+    }
+
+    .announcement-message-field,
+    .announcement-actions {
+      grid-column: 1 / -1;
+    }
+
+    .announcement-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .announcement-status {
+      margin: 0;
+      color: var(--grey);
+      font-size: 12px;
+    }
+
+    .announcement-status.success {
+      color: var(--green);
+    }
+
+    .announcement-status.error {
+      color: var(--red);
+    }
+
+    .announcement-status.pending {
+      color: var(--light);
+    }
+
+    #publishAnnouncementButton:disabled {
+      cursor: wait;
+      opacity: .65;
+    }
+
+    #applicationsList.application-list {
+      gap: 6px;
+    }
+
+    #applicationsList .application-card {
+      padding: 10px 12px;
+      border-color: #444b52;
+      border-radius: 6px;
+      color: #aeb5bb;
+      background: #1a1e22;
+      box-shadow: none;
+      line-height: 1.25;
+    }
+
+    #applicationsList .application-card:hover {
+      border-color: #606970;
+      background: #20252a;
+    }
+
+    #applicationsList .application-header {
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 7px;
+      padding: 0 0 7px;
+      border-bottom: 1px solid #363d43;
+    }
+
+    #applicationsList .application-header h4 {
+      margin: 0 0 2px;
+      color: #d0d5d9;
+      font-size: 16px;
+      line-height: 1.15;
+    }
+
+    #applicationsList .application-type {
+      color: #858e96;
+      font-size: 10px;
+      letter-spacing: .8px;
+    }
+
+    #applicationsList .application-status {
+      padding: 4px 7px;
+      border-color: #596168;
+      color: #b9c0c6;
+      background: #292e33;
+      font-size: 9px;
+      letter-spacing: .7px;
+    }
+
+    #applicationsList .application-section {
+      margin: 8px 0;
+    }
+
+    #applicationsList .application-section h5 {
+      margin: 0 0 4px;
+      color: #959da4;
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+
+    #applicationsList .application-fields {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 4px;
+    }
+
+    #applicationsList .application-field {
+      min-width: 0;
+      padding: 6px 8px;
+      border: 1px solid #343b41;
+      border-radius: 4px;
+      background: #20252a;
+    }
+
+    #applicationsList .application-field span {
+      margin-bottom: 2px;
+      color: #7f8991;
+      font-size: 9px;
+      letter-spacing: .7px;
+    }
+
+    #applicationsList .application-field strong,
+    #applicationsList .application-answer,
+    #applicationsList .application-answer strong {
+      color: #b7bec4;
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    #applicationsList .application-field strong {
+      margin: 0;
+    }
+
+    #applicationsList .application-answer {
+      margin: 3px 0;
+      padding: 7px 9px;
+      border-left: 2px solid #626a71;
+      border-radius: 4px;
+      background: #20252a;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    #applicationsList .application-answer strong {
+      display: block;
+      margin-bottom: 2px;
+      color: #aeb6bc;
+    }
+
+    #applicationsList .application-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 8px;
+      padding-top: 7px;
+      border-top: 1px solid #363d43;
+    }
+
+    #applicationsList .application-actions button {
+      padding: 5px 8px;
+      border-color: #555e66;
+      color: #bfc6cb;
+      background: #2a3035;
+      font-size: 10px;
+    }
+
+    #applicationsList .application-actions button[data-application-status="Approved"] {
+      border-color: #65736a;
+      color: #b5c1b8;
+      background: #29332c;
+    }
+
+    #applicationsList .application-actions button[data-application-status="Denied"] {
+      border-color: #746667;
+      color: #c2b5b5;
+      background: #352c2d;
+    }
+
+    #applicationsList .empty-state {
+      padding: 16px;
+      box-shadow: none;
+    }
+
+    #loginLogs .login-event-card.staff-login-event {
+      border-color: #469bff;
+      background: linear-gradient(135deg, rgba(18, 70, 125, .48), #081321);
+      box-shadow: 0 0 18px rgba(45, 135, 255, .2);
+    }
+
+    #loginLogs .staff-login-event .login-event-title,
+    #loginLogs .staff-login-event .login-event-meta {
+      color: #72b8ff;
     }
 
     @media (max-width: 780px) {
@@ -399,13 +650,8 @@
       .staff-sidebar {
         position: static;
         height: auto;
-        padding: 22px 15px;
         border-right: 0;
-        border-bottom: 1px solid var(--bv-border);
-      }
-
-      .brand-mark {
-        margin-bottom: 22px;
+        border-bottom: 1px solid var(--border);
       }
 
       .staff-nav {
@@ -417,13 +663,25 @@
       }
     }
 
+    @media (max-width: 650px) {
+      .announcement-form {
+        grid-template-columns: 1fr;
+      }
+
+      .announcement-field,
+      .announcement-message-field,
+      .announcement-actions {
+        grid-column: 1;
+      }
+    }
+
     @media (max-width: 430px) {
       .staff-nav {
         grid-template-columns: 1fr;
       }
 
-      .panel-heading {
-        align-items: flex-start;
+      #applicationsList .application-fields {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -433,16 +691,26 @@
   <div class="staff-layout">
     <aside class="staff-sidebar">
       <div class="brand-mark">
-        <div class="brand-icon">♛</div>
+        <img
+          class="brand-icon"
+          src="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/servericon.png"
+          alt="Black Velvet Clan icon"
+        >
         <div class="brand-copy">
           <strong>Black Velvet</strong>
           <span>Staff Command</span>
         </div>
       </div>
 
+      <a class="home-button" href="home.html">← Back Home</a>
+
       <p class="sidebar-label">Management</p>
 
       <nav class="staff-nav" aria-label="Staff panels">
+        <button class="nav-button" data-panel="announcements" type="button">
+          <span>Announcements</span>
+        </button>
+
         <button class="nav-button active" data-panel="staffGuide" type="button">
           <span>Staff Guide</span>
         </button>
@@ -462,12 +730,8 @@
           <span class="unread-badge" id="consoleCount">0</span>
         </button>
 
-        <button class="nav-button" data-panel="staffAccounts" type="button">
-          <span>Staff Accounts</span>
-        </button>
-
         <button class="nav-button" data-panel="clanMembers" type="button">
-          <span>Clan Members</span>
+          <span>Members &amp; Staff</span>
         </button>
       </nav>
     </aside>
@@ -476,8 +740,76 @@
       <header class="staff-header">
         <p class="eyebrow">Restricted access</p>
         <h2>Staff Portal</h2>
-        <p class="muted">Manage Black Velvet accounts, applications, members, and system activity.</p>
+        <p class="muted">
+          Manage Black Velvet applications, members, staff access, and system activity.
+        </p>
       </header>
+
+      <section class="panel" id="announcements">
+        <div class="panel-heading">
+          <div>
+            <h3>Announcements</h3>
+            <p>Publish an announcement to the website and Discord.</p>
+          </div>
+        </div>
+
+        <form class="announcement-form" id="announcementForm">
+          <label class="announcement-field">
+            <span>Announcement title</span>
+            <input
+              id="announcementTitle"
+              name="title"
+              type="text"
+              maxlength="120"
+              placeholder="Scheduled clan event"
+              autocomplete="off"
+              required
+            >
+          </label>
+
+          <label class="announcement-field">
+            <span>Discord username</span>
+            <input
+              id="announcementAuthor"
+              name="discordUsername"
+              type="text"
+              maxlength="80"
+              placeholder="imjustluckyy_"
+              autocomplete="off"
+              required
+            >
+          </label>
+
+          <label class="announcement-field announcement-message-field">
+            <span>Announcement</span>
+            <textarea
+              id="announcementMessage"
+              name="message"
+              rows="8"
+              maxlength="2000"
+              placeholder="Write the announcement here..."
+              required
+            ></textarea>
+          </label>
+
+          <div class="announcement-actions">
+            <button
+              class="staff-button"
+              id="publishAnnouncementButton"
+              type="submit"
+            >
+              Publish Announcement
+            </button>
+
+            <p
+              class="announcement-status"
+              id="announcementStatus"
+              role="status"
+              aria-live="polite"
+            ></p>
+          </div>
+        </form>
+      </section>
 
       <section class="panel active-panel" id="staffGuide">
         <div class="panel-heading">
@@ -488,7 +820,7 @@
         </div>
 
         <div class="empty-state">
-          Choose a management panel from the left to view and manage staff activity.
+          Choose a management panel from the left to view staff activity.
         </div>
       </section>
 
@@ -538,29 +870,22 @@
         </div>
       </section>
 
-      <section class="panel" id="staffAccounts">
-        <div class="panel-heading">
-          <div>
-            <h3>Staff Accounts</h3>
-            <p>Authorize, deny, and manage staff access.</p>
-          </div>
-        </div>
-
-        <div class="staff-list" id="staffAccountsList">
-          <div class="empty-state loading">Loading staff accounts...</div>
-        </div>
-      </section>
-
       <section class="panel" id="clanMembers">
         <div class="panel-heading">
           <div>
-            <h3>Clan Members</h3>
-            <p>Manage member ranks, ranking numbers, and game types.</p>
+            <h3>Members &amp; Staff</h3>
+            <p>
+              Manage every clan member's staff status, staff rank, clan rank,
+              ranking number, and game type. Use <strong>N/A</strong> for members
+              who are not staff.
+            </p>
           </div>
         </div>
 
-        <div class="staff-list" id="clanMembersList">
-          <div class="empty-state loading">Loading clan members...</div>
+        <p class="muted" id="clanMembersMessage"></p>
+
+        <div class="staff-list" id="clanStaffToggleList">
+          <div class="empty-state loading">Loading members and staff...</div>
         </div>
       </section>
     </main>
@@ -589,16 +914,13 @@
         });
       });
 
-      const loadingTargets = [
-        ["loginLogsList", "Login logs"],
-        ["applicationsList", "Applications"],
-        ["consoleList", "Console errors"],
-        ["staffAccountsList", "Staff accounts"],
-        ["clanMembersList", "Clan members"]
-      ];
-
-      window.setTimeout(() => {
-        loadingTargets.forEach(([id, label]) => {
+      setTimeout(() => {
+        [
+          ["loginLogsList", "Login logs"],
+          ["applicationsList", "Applications"],
+          ["consoleList", "Console errors"],
+          ["clanStaffToggleList", "Members and staff"]
+        ].forEach(([id, label]) => {
           const container = document.getElementById(id);
 
           if (!container || !/loading/i.test(container.textContent)) return;
@@ -606,7 +928,10 @@
           container.innerHTML = `
             <div class="empty-state loading-error">
               <strong>${label} could not be loaded.</strong>
-              <span>The data service did not respond. Check your connection and staff permissions.</span>
+              <span>
+                Check that you are signed in with a staff role and that Supabase
+                policies allow this request.
+              </span>
               <button class="loading-retry" type="button">Retry</button>
             </div>
           `;
@@ -615,22 +940,15 @@
             window.location.reload();
           });
         });
-      }, 12000);
-    });
-
-    window.addEventListener("error", event => {
-      console.error("Staff portal error:", event.error || event.message);
-    });
-
-    window.addEventListener("unhandledrejection", event => {
-      console.error("Staff portal request error:", event.reason);
+      }, 15000);
     });
   </script>
 
   <script type="module" src="staff-panel-unread.js"></script>
   <script src="staff-live-console.js"></script>
-  <script src="staff-account-manager.js"></script>
-  <script src="clan-member-staff-toggle.js"></script>
+  <script type="module" src="clan-member-staff-toggle.js"></script>
   <script src="staff-live-search.js"></script>
+  <script type="module" src="staff-login-tools.js"></script>
+  <script type="module" src="staff-announcements.js"></script>
 </body>
 </html>
