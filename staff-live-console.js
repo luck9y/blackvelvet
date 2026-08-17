@@ -2,6 +2,7 @@ const SUPABASE_URL = "https://ptgzhljvzyceawwohmym.supabase.co";
 const SUPABASE_KEY = "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk";
 const STORAGE_KEY = "blackVelvetLocalConsoleErrors";
 const DONE_STORAGE_KEY = "blackVelvetConsoleDoneItems";
+const REMOTE_TIMEOUT = 10000;
 
 const list = document.getElementById("consoleList");
 const count = document.getElementById("consoleCount");
@@ -10,15 +11,24 @@ const consoleButton = document.querySelector('[data-panel="systemConsole"]');
 const consolePanel = document.getElementById("systemConsole");
 const testButton = document.getElementById("testConsoleButton");
 
-const allowedRoles = ["owner", "manager"];
-const permanentOwners = ["imtherealluckyy", "suoaz"];
+const allowedRoles = [
+  "owner", "manager", "management", "admin", "administrator",
+  "moderator", "mod", "helper", "staff"
+];
+
+const permanentOwners = [
+  "imtherealluckyy",
+  "imjustluckyy",
+  "suoaz",
+  "managergear",
+  "gears"
+];
 
 let remoteErrors = [];
 let localErrors = [];
 let completedErrors = {};
-let lastSupabaseFailure = "";
-let lastSupabaseFailureTime = 0;
-let diagnosticsComplete = false;
+let lastFailure = "";
+let activeFilter = "errors";
 
 function addConsoleStyles() {
   if (document.getElementById("console-status-styles")) return;
@@ -26,37 +36,149 @@ function addConsoleStyles() {
   const style = document.createElement("style");
   style.id = "console-status-styles";
   style.textContent = `
+    .console-filter-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      width: 100%;
+      margin-bottom: 18px;
+    }
+
+    .console-filter-tab {
+      padding: 9px 14px;
+      border: 1px solid #454d56;
+      border-radius: 6px;
+      color: #cbd2d8;
+      background: #171b20;
+      font: 700 12px Arial, sans-serif;
+      cursor: pointer;
+    }
+
+    .console-filter-tab:hover,
+    .console-filter-tab.active {
+      color: #fff;
+      background: #2a3037;
+    }
+
+    .console-filter-tab.errors.active {
+      border-color: #e68e8e;
+      color: #ffaaaa;
+    }
+
+    .console-filter-tab.warnings.active {
+      border-color: #ffd866;
+      color: #ffd866;
+    }
+
+    .console-filter-tab.fixed.active {
+      border-color: #8df0a6;
+      color: #8df0a6;
+    }
+
+    .console-section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #30363d;
+      font: 700 14px Arial, sans-serif;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .console-section-heading.errors {
+      color: #ff9292;
+      border-color: rgba(230, 80, 80, .55);
+    }
+
+    .console-section-heading.warnings {
+      color: #ffd866;
+      border-color: rgba(245, 190, 55, .55);
+    }
+
+    .console-section-heading.fixed {
+      color: #8df0a6;
+      border-color: rgba(125, 220, 150, .55);
+    }
+
+    .console-section-count {
+      min-width: 23px;
+      padding: 3px 7px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      text-align: center;
+      font-size: 11px;
+    }
+
+    .console-error-card {
+      border-color: rgba(230, 80, 80, .8) !important;
+      background: linear-gradient(
+        135deg,
+        rgba(115, 28, 28, .35),
+        rgba(16, 10, 12, .96)
+      ) !important;
+    }
+
     .console-warning-card {
-      border-color: rgba(245, 190, 55, .78) !important;
-      background: linear-gradient(135deg, rgba(94, 69, 12, .32), rgba(8, 9, 6, .96)) !important;
+      border-color: rgba(245, 190, 55, .8) !important;
+      background: linear-gradient(
+        135deg,
+        rgba(94, 69, 12, .35),
+        rgba(14, 12, 6, .96)
+      ) !important;
+    }
+
+    .console-fixed-card {
+      border-color: rgba(125, 220, 150, .75) !important;
+      background: linear-gradient(
+        135deg,
+        rgba(35, 105, 55, .3),
+        rgba(8, 15, 10, .96)
+      ) !important;
+    }
+
+    .console-error-card .log-status {
+      color: #ffaaaa;
     }
 
     .console-warning-card .log-status {
-      color: #ffd866 !important;
+      color: #ffd866;
     }
 
-    .console-warning-label {
+    .console-fixed-card .log-status {
+      color: #8df0a6;
+    }
+
+    .console-error-label,
+    .console-warning-label,
+    .console-fixed-label {
       display: inline-flex;
       width: fit-content;
       margin-bottom: 8px;
       padding: 4px 8px;
-      border: 1px solid rgba(245, 190, 55, .75);
       border-radius: 5px;
-      color: #ffd866;
-      background: rgba(245, 190, 55, .14);
       font-size: 10px;
       font-weight: 700;
       letter-spacing: 1px;
     }
 
-    .console-done-card {
-      opacity: .52;
-      border-color: rgba(125, 220, 150, .45) !important;
+    .console-error-label {
+      border: 1px solid #e68e8e;
+      color: #ffaaaa;
+      background: rgba(180, 40, 40, .16);
     }
 
-    .console-done-card .console-done-button {
+    .console-warning-label {
+      border: 1px solid #f5be37;
+      color: #ffd866;
+      background: rgba(245, 190, 55, .14);
+    }
+
+    .console-fixed-label {
+      border: 1px solid #7ddc96;
       color: #8df0a6;
-      border-color: rgba(125, 220, 150, .7);
       background: rgba(40, 160, 80, .16);
     }
 
@@ -69,9 +191,6 @@ function addConsoleStyles() {
 
     .console-done-button,
     .console-description-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
       padding: 7px 10px;
       border: 1px solid rgba(220, 230, 236, .35);
       border-radius: 6px;
@@ -144,12 +263,47 @@ function getProfile() {
   }
 }
 
-function canUseConsole() {
-  const profile = getProfile();
-  const username = String(profile?.username || "").toLowerCase();
-  const role = String(profile?.role || profile?.staffRank || "").toLowerCase();
+function normalize(value) {
+  return String(value ?? "").trim().toLowerCase();
+}
 
-  return permanentOwners.includes(username) || allowedRoles.includes(role);
+function getRole(profile) {
+  return normalize(
+    profile?.role ||
+    profile?.staffRank ||
+    profile?.staff_role ||
+    profile?.staffRole ||
+    profile?.user_role
+  );
+}
+
+function getAccountType(profile) {
+  return normalize(
+    profile?.accountType ||
+    profile?.account_type ||
+    profile?.userType ||
+    profile?.user_type ||
+    profile?.type
+  );
+}
+
+function isStaffProfile(profile) {
+  const username = normalize(profile?.username);
+  const role = getRole(profile);
+  const accountType = getAccountType(profile);
+
+  return Boolean(
+    permanentOwners.includes(username) ||
+    allowedRoles.includes(role) ||
+    ["staff", "staff account", "owner", "manager", "admin"].includes(accountType) ||
+    profile?.isStaff === true ||
+    profile?.is_staff === true ||
+    profile?.staff === true
+  );
+}
+
+function canUseConsole() {
+  return isStaffProfile(getProfile());
 }
 
 function applyConsoleAccess() {
@@ -164,7 +318,10 @@ function applyConsoleAccess() {
     });
 
     document.querySelectorAll(".nav-button").forEach(button => {
-      button.classList.toggle("active", button.dataset.panel === "staffGuide");
+      button.classList.toggle(
+        "active",
+        button.dataset.panel === "staffGuide"
+      );
     });
   }
 
@@ -173,6 +330,7 @@ function applyConsoleAccess() {
 
 function makeLocalError(source, errorMessage, stack = "") {
   const profile = getProfile();
+  const staff = isStaffProfile(profile);
 
   return {
     id: `local-${Date.now()}-${Math.random().toString(16).slice(2)}`,
@@ -182,15 +340,20 @@ function makeLocalError(source, errorMessage, stack = "") {
     stack_trace: stack || null,
     page_url: location.href,
     username: profile?.username || null,
-    user_role: profile?.role || profile?.staffRank || null,
+    user_role: getRole(profile) || null,
+    account_type: staff ? "staff account" : "member account",
+    accountType: staff ? "staff account" : "member account",
+    is_staff: staff,
     device_hex: localStorage.getItem("blackVelvetDeviceHex") || null,
     browser: navigator.userAgent
   };
 }
 
-function readLocalErrors() {
+function readStoredData() {
   try {
-    localErrors = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    localErrors = JSON.parse(
+      localStorage.getItem(STORAGE_KEY) || "[]"
+    );
   } catch {
     localErrors = [];
   }
@@ -204,11 +367,25 @@ function readLocalErrors() {
   }
 }
 
+function getErrorKey(error) {
+  return [
+    error.source || "",
+    error.message || "",
+    error.page_url || ""
+  ].join("|");
+}
+
 function saveLocalError(error) {
   try {
-    const errors = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-    errors.unshift(error);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(errors.slice(0, 500)));
+    const stored = JSON.parse(
+      localStorage.getItem(STORAGE_KEY) || "[]"
+    );
+
+    stored.unshift(error);
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(stored.slice(0, 500))
+    );
   } catch {}
 
   localErrors.unshift(error);
@@ -219,17 +396,9 @@ function saveLocalError(error) {
   }));
 }
 
-function getErrorKey(error) {
-  return [
-    error.source || "",
-    error.message || "",
-    error.page_url || ""
-  ].join("|");
-}
-
 function isWarning(error) {
-  const source = String(error.source || "").toLowerCase();
-  const messageText = String(error.message || "").toLowerCase();
+  const source = normalize(error.source);
+  const messageText = normalize(error.message);
 
   return source.includes("warn") ||
     source.includes("warning") ||
@@ -237,14 +406,14 @@ function isWarning(error) {
     messageText.includes("warning");
 }
 
-function isDone(error) {
+function isFixed(error) {
   return Boolean(completedErrors[getErrorKey(error)]);
 }
 
-function setDone(error, done) {
+function setFixed(error, fixed) {
   const key = getErrorKey(error);
 
-  if (done) {
+  if (fixed) {
     completedErrors[key] = true;
   } else {
     delete completedErrors[key];
@@ -260,7 +429,7 @@ function setDone(error, done) {
   render();
 }
 
-function uniqueErrors() {
+function allErrors() {
   const seen = new Set();
 
   return [...localErrors, ...remoteErrors]
@@ -274,6 +443,7 @@ function uniqueErrors() {
       ].join("|");
 
       if (seen.has(key)) return false;
+
       seen.add(key);
       return true;
     })
@@ -283,188 +453,259 @@ function uniqueErrors() {
     .slice(0, 500);
 }
 
+function renderEmpty(text) {
+  return `<div class="empty-state">${escapeHtml(text)}</div>`;
+}
+
+function renderCard(error, section) {
+  const warning = isWarning(error);
+  const fixed = section === "fixed";
+  const key = escapeHtml(getErrorKey(error));
+  const description = error.message || "Unknown error";
+  const stack = error.stack_trace || "";
+
+  const cardClass = fixed
+    ? "console-fixed-card"
+    : warning
+      ? "console-warning-card"
+      : "console-error-card";
+
+  const label = fixed
+    ? '<span class="console-fixed-label">✓ FIXED</span>'
+    : warning
+      ? '<span class="console-warning-label">⚠ WARNING</span>'
+      : '<span class="console-error-label">✖ ERROR</span>';
+
+  return `
+    <article class="log-card ${cardClass}" data-console-card>
+      <div class="log-main">
+        ${label}
+        <strong>${escapeHtml(error.source || "Error")}</strong>
+        <span class="log-status">${escapeHtml(description)}</span>
+      </div>
+
+      <div class="log-meta">
+        <span>${escapeHtml(
+          new Date(error.created_at || Date.now()).toLocaleString()
+        )}</span>
+        <span>${escapeHtml(error.username || "Guest")}</span>
+        <span>
+          ACCOUNT TYPE:
+          ${escapeHtml(
+            String(
+              error.account_type ||
+              error.accountType ||
+              "member account"
+            ).toUpperCase()
+          )}
+        </span>
+        <span>
+          ROLE:
+          ${escapeHtml(
+            String(
+              error.user_role ||
+              error.staff_rank ||
+              error.role ||
+              "no role"
+            ).toUpperCase()
+          )}
+        </span>
+        <span>${escapeHtml(error.device_hex || "No device")}</span>
+      </div>
+
+      <p class="muted">${escapeHtml(
+        error.page_url || "Unknown page"
+      )}</p>
+
+      <div class="console-description" data-console-description-panel>
+        <span class="console-description-title">ISSUE DESCRIPTION</span>
+        ${escapeHtml(description)}
+        ${stack ? `<pre>${escapeHtml(stack)}</pre>` : ""}
+      </div>
+
+      <div class="console-actions">
+        <button
+          class="console-description-toggle"
+          type="button"
+          data-console-description="${key}"
+          aria-expanded="false"
+        >
+          ✓ VIEW DESCRIPTION
+        </button>
+
+        <button
+          class="console-done-button"
+          type="button"
+          data-console-done="${key}"
+          aria-pressed="${fixed}"
+        >
+          ${fixed ? "↶ MOVE TO ACTIVE" : "✓ MARK AS FIXED"}
+        </button>
+      </div>
+    </article>
+  `;
+}
+
+function getFilteredErrors() {
+  const errors = allErrors();
+  const fixed = errors.filter(isFixed);
+  const active = errors.filter(error => !isFixed(error));
+  const warnings = active.filter(isWarning);
+  const redErrors = active.filter(error => !isWarning(error));
+
+  return {
+    errors: redErrors,
+    warnings,
+    fixed
+  };
+}
+
+function renderTabs(groups) {
+  return `
+    <div class="console-filter-tabs" role="tablist" aria-label="Console log status">
+      <button
+        class="console-filter-tab errors ${activeFilter === "errors" ? "active" : ""}"
+        type="button"
+        data-console-filter="errors"
+        role="tab"
+        aria-selected="${activeFilter === "errors"}"
+      >
+        Errors (${groups.errors.length})
+      </button>
+
+      <button
+        class="console-filter-tab warnings ${activeFilter === "warnings" ? "active" : ""}"
+        type="button"
+        data-console-filter="warnings"
+        role="tab"
+        aria-selected="${activeFilter === "warnings"}"
+      >
+        Warnings (${groups.warnings.length})
+      </button>
+
+      <button
+        class="console-filter-tab fixed ${activeFilter === "fixed" ? "active" : ""}"
+        type="button"
+        data-console-filter="fixed"
+        role="tab"
+        aria-selected="${activeFilter === "fixed"}"
+      >
+        Fixed (${groups.fixed.length})
+      </button>
+    </div>
+  `;
+}
+
 function render() {
   if (!list) return;
 
-  const errors = uniqueErrors();
-  const activeCount = errors.filter(error => !isDone(error)).length;
+  const groups = getFilteredErrors();
+  const items = groups[activeFilter];
 
-  if (count) count.textContent = activeCount;
-
-  if (!errors.length) {
-    list.innerHTML = `
-      <div class="empty-state">
-        No console errors captured yet. Click Test Live Error to verify it is working.
-      </div>
-    `;
-    return;
+  if (count) {
+    count.textContent = String(
+      groups.errors.length + groups.warnings.length
+    );
   }
 
-  list.innerHTML = errors.map(error => {
-    const warning = isWarning(error);
-    const done = isDone(error);
-    const cardClasses = [
-      "log-card",
-      "console-error-card",
-      warning ? "console-warning-card" : "",
-      done ? "console-done-card" : ""
-    ].filter(Boolean).join(" ");
+  const title = activeFilter === "errors"
+    ? "Errors"
+    : activeFilter === "warnings"
+      ? "Warnings"
+      : "Fixed";
 
-    const description = error.message || "Unknown error";
-    const stack = error.stack_trace || "";
+  const emptyText = activeFilter === "errors"
+    ? "No active errors."
+    : activeFilter === "warnings"
+      ? "No active warnings."
+      : "No fixed issues yet.";
 
-    return `
-      <article class="${cardClasses}">
-        <div class="log-main">
-          ${warning ? '<span class="console-warning-label">⚠ WARNING</span>' : ""}
-          <strong>${escapeHtml(error.source || "Error")}</strong>
-          <span class="log-status">${escapeHtml(description)}</span>
-        </div>
+  list.innerHTML = `
+    ${renderTabs(groups)}
+    <section class="console-section">
+      <h4 class="console-section-heading ${activeFilter}">
+        <span>${title}</span>
+        <span class="console-section-count">${items.length}</span>
+      </h4>
 
-        <div class="log-meta">
-          <span>${escapeHtml(new Date(error.created_at || Date.now()).toLocaleString())}</span>
-          <span>${escapeHtml(error.username || "Guest")}</span>
-          <span>${escapeHtml(error.user_role || "No role")}</span>
-          <span>${escapeHtml(error.device_hex || "No device")}</span>
-        </div>
+      <div class="log-list">
+        ${items.length
+          ? items.map(error =>
+              renderCard(error, activeFilter)
+            ).join("")
+          : renderEmpty(emptyText)}
+      </div>
+    </section>
+  `;
+}
 
-        <p class="muted">${escapeHtml(error.page_url || "Unknown page")}</p>
+async function requestWithTimeout(url, options = {}) {
+  const controller = new AbortController();
+  const timeout = setTimeout(
+    () => controller.abort(),
+    REMOTE_TIMEOUT
+  );
 
-        <div class="console-description" data-console-description-panel>
-          <span class="console-description-title">ERROR DESCRIPTION</span>
-          ${escapeHtml(description)}
-          ${stack ? `<pre>${escapeHtml(stack)}</pre>` : ""}
-        </div>
+  try {
+    return await fetch(url, {
+      ...options,
+      mode: "cors",
+      signal: controller.signal
+    });
+  } catch (error) {
+    if (error.name === "AbortError") {
+      throw new Error("Supabase request timed out.");
+    }
 
-        <div class="console-actions">
-          <button
-            class="console-description-toggle"
-            type="button"
-            data-console-description="${escapeHtml(getErrorKey(error))}"
-            aria-expanded="false"
-          >
-            ✓ VIEW DESCRIPTION
-          </button>
-
-          <button
-            class="console-done-button"
-            type="button"
-            data-console-done="${escapeHtml(getErrorKey(error))}"
-            aria-pressed="${done}"
-          >
-            ${done ? "✓ DONE — UNCHECK" : "☐ MARK AS DONE"}
-          </button>
-        </div>
-      </article>
-    `;
-  }).join("");
+    throw new Error(
+      "Supabase is unreachable. Check the Supabase URL or connection."
+    );
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 async function saveRemote(error) {
   const { id, ...payload } = error;
 
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/system_errors`, {
-    method: "POST",
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-      "Content-Type": "application/json",
-      Prefer: "return=minimal"
-    },
-    body: JSON.stringify(payload)
-  });
-
-  if (!response.ok) {
-    throw new Error(
-      `${response.status} ${response.statusText}: ${await response.text()}`
-    );
-  }
-}
-
-function recordSupabaseFailure(text, stack = "") {
-  const now = Date.now();
-
-  if (
-    text === lastSupabaseFailure &&
-    now - lastSupabaseFailureTime < 6000
-  ) {
-    return;
-  }
-
-  lastSupabaseFailure = text;
-  lastSupabaseFailureTime = now;
-
-  saveLocalError(makeLocalError("staff.console.supabase", text, stack));
-}
-
-async function checkColumn(table, column) {
-  const response = await fetch(
-    `${SUPABASE_URL}/rest/v1/${table}?select=${column}&limit=1`,
+  const response = await requestWithTimeout(
+    `${SUPABASE_URL}/rest/v1/system_errors`,
     {
+      method: "POST",
       headers: {
         apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`
-      }
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal"
+      },
+      body: JSON.stringify(payload)
     }
   );
 
   if (!response.ok) {
-    const details = await response.text();
-
-    const readableMessage = details.toLowerCase().includes("column") ||
-      details.toLowerCase().includes("schema cache")
-        ? `NOT FOUND: "${column}" is missing from the "${table}" table in Supabase.`
-        : `Could not check "${column}" on "${table}". Details: ${details}`;
-
-    saveLocalError(makeLocalError(
-      "database.schema",
-      readableMessage,
-      details
-    ));
-
-    return false;
+    throw new Error(
+      `${response.status}: ${await response.text()}`
+    );
   }
-
-  return true;
 }
 
-async function runDiagnostics() {
-  if (diagnosticsComplete || !canUseConsole()) return;
+function recordFailure(text, stack = "") {
+  if (text === lastFailure) return;
 
-  diagnosticsComplete = true;
+  lastFailure = text;
 
-  const checks = [
-    ["applications", "avatar_url"],
-    ["clan_member_applications", "avatar_url"],
-    ["clan_members", "avatar_url"],
-    ["clan_members", "password_hash"],
-    ["system_errors", "source"]
-  ];
-
-  for (const [table, column] of checks) {
-    try {
-      await checkColumn(table, column);
-    } catch (error) {
-      saveLocalError(makeLocalError(
-        "database.connection",
-        `Could not inspect "${table}.${column}". ${error.message}`,
-        error.stack || ""
-      ));
-    }
+  if (message) {
+    message.textContent = text;
   }
 
-  if (message && diagnosticsComplete) {
-    message.textContent = "Console connected. Database diagnostics completed.";
-  }
-
-  render();
+  console.warn("[Black Velvet Console]", text, stack);
 }
 
 async function loadRemoteErrors() {
   if (!list || !applyConsoleAccess()) return;
 
   try {
-    const response = await fetch(
+    const response = await requestWithTimeout(
       `${SUPABASE_URL}/rest/v1/system_errors?select=*&order=created_at.desc&limit=200`,
       {
         headers: {
@@ -476,27 +717,25 @@ async function loadRemoteErrors() {
 
     if (!response.ok) {
       throw new Error(
-        `${response.status} ${response.statusText}: ${await response.text()}`
+        `${response.status}: ${await response.text()}`
       );
     }
 
     remoteErrors = await response.json();
 
     if (message) {
-      message.textContent = "Live console connected. Errors are being saved.";
+      message.textContent =
+        "Live console connected. Updating automatically.";
     }
   } catch (error) {
-    const text = `Supabase console load failed. Details: ${error.message}`;
-
-    if (message) message.textContent = text;
-
-    recordSupabaseFailure(text, error.stack || "");
+    recordFailure(
+      `Console refresh unavailable: ${error.message}`,
+      error.stack || ""
+    );
   }
 
-  readLocalErrors();
+  readStoredData();
   render();
-
-  await runDiagnostics();
 }
 
 async function testLiveConsole() {
@@ -511,76 +750,75 @@ async function testLiveConsole() {
   saveLocalError(error);
 
   if (message) {
-    message.textContent = "Test error added locally. Saving to Supabase...";
+    message.textContent =
+      "Test error added. Saving to Supabase...";
   }
 
   try {
     await saveRemote(error);
 
     if (message) {
-      message.textContent = "Test error added locally and saved to Supabase.";
+      message.textContent = "Test error saved to Supabase.";
     }
   } catch (saveError) {
-    const text =
-      `Test error saved locally, but Supabase rejected it. Details: ${saveError.message}`;
-
-    if (message) message.textContent = text;
-
-    recordSupabaseFailure(text, saveError.stack || "");
+    if (message) {
+      message.textContent =
+        `Test error saved locally only: ${saveError.message}`;
+    }
   }
 
   await loadRemoteErrors();
 }
 
-function installNavigation() {
-  document.querySelectorAll(".nav-button").forEach(button => {
-    button.addEventListener("click", () => {
-      if (button.dataset.panel === "systemConsole" && !canUseConsole()) {
-        return;
-      }
-
-      document.querySelectorAll(".nav-button").forEach(item => {
-        item.classList.toggle("active", item === button);
-      });
-
-      document.querySelectorAll(".panel").forEach(panel => {
-        panel.classList.toggle(
-          "active-panel",
-          panel.id === button.dataset.panel
-        );
-      });
-    });
-  });
-}
-
-function installDoneButtons() {
+function installInteractions() {
   list?.addEventListener("click", event => {
-    const descriptionButton = event.target.closest("[data-console-description]");
+    const filterButton = event.target.closest("[data-console-filter]");
+
+    if (filterButton) {
+      activeFilter = filterButton.dataset.consoleFilter || "errors";
+      render();
+      return;
+    }
+
+    const descriptionButton = event.target.closest(
+      "[data-console-description]"
+    );
 
     if (descriptionButton) {
-      const card = descriptionButton.closest(".console-error-card");
-      const description = card?.querySelector("[data-console-description-panel]");
+      const card = descriptionButton.closest("[data-console-card]");
+      const description = card?.querySelector(
+        "[data-console-description-panel]"
+      );
+
       if (!description) return;
 
       const visible = description.classList.toggle("is-visible");
-      descriptionButton.setAttribute("aria-expanded", String(visible));
+
+      descriptionButton.setAttribute(
+        "aria-expanded",
+        String(visible)
+      );
+
       descriptionButton.textContent = visible
         ? "✓ HIDE DESCRIPTION"
         : "✓ VIEW DESCRIPTION";
+
       return;
     }
 
     const doneButton = event.target.closest("[data-console-done]");
     if (!doneButton) return;
 
-    const error = uniqueErrors().find(
-      item => getErrorKey(item) === doneButton.dataset.consoleDone
+    const error = allErrors().find(item =>
+      getErrorKey(item) === doneButton.dataset.consoleDone
     );
 
     if (error) {
-      setDone(error, !isDone(error));
+      setFixed(error, !isFixed(error));
     }
   });
+
+  testButton?.addEventListener("click", testLiveConsole);
 }
 
 function start() {
@@ -588,31 +826,37 @@ function start() {
 
   addConsoleStyles();
   applyConsoleAccess();
-  installNavigation();
-  installDoneButtons();
-  readLocalErrors();
+  installInteractions();
+  readStoredData();
   render();
 
   if (message) {
-    message.textContent = "Live console started. Waiting for page errors...";
+    message.textContent =
+      "Live console started. Waiting for updates...";
   }
 
-  testButton?.addEventListener("click", testLiveConsole);
-
-  window.addEventListener("blackVelvetConsoleError", event => {
-    if (!event.detail || !canUseConsole()) return;
-
-    localErrors.unshift(event.detail);
-    render();
-  });
+  window.addEventListener(
+    "blackVelvetConsoleError",
+    event => {
+      if (event.detail && canUseConsole()) {
+        localErrors.unshift(event.detail);
+        render();
+      }
+    }
+  );
 
   window.addEventListener("storage", event => {
-    if (event.key === "blackVelvetProfile") {
-      diagnosticsComplete = false;
-      applyConsoleAccess();
-      readLocalErrors();
+    if (
+      event.key === STORAGE_KEY ||
+      event.key === DONE_STORAGE_KEY
+    ) {
+      readStoredData();
       render();
-      runDiagnostics();
+    }
+
+    if (event.key === "blackVelvetProfile") {
+      applyConsoleAccess();
+      loadRemoteErrors();
     }
   });
 
@@ -622,7 +866,7 @@ function start() {
     if (canUseConsole()) {
       loadRemoteErrors();
     }
-  }, 10000);
+  }, 5000);
 }
 
 start();
