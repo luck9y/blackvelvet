@@ -5,7 +5,7 @@ const supabase = createClient(
   "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk"
 );
 
-const staffRoles = ["Owner", "Admin", "Manager", "President", "Mod", "Helper"];
+const staffRoles = ["N/A", "Owner", "Admin", "Manager", "President", "Mod", "Helper"];
 const clanRanks = ["BVR", "ELITE", "LEGEND"];
 const games = ["Minecraft Java", "Minecraft Bedrock", "Roblox", "Fortnite", "Other"];
 const leadershipRoles = ["Owner", "Admin", "Manager"];
@@ -13,11 +13,16 @@ const permanentOwners = ["imjustluckyy", "suoaz"];
 
 const list = document.getElementById("clanStaffToggleList");
 const message = document.getElementById("clanMembersMessage");
+
 let members = [];
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, character => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
   }[character]));
 }
 
@@ -47,6 +52,12 @@ function getMemberById(id) {
   return members.find(member => String(member.id) === String(id));
 }
 
+function getStaffRank(member) {
+  return staffRoles.includes(member.staff_rank)
+    ? member.staff_rank
+    : "N/A";
+}
+
 function optionList(values, selected) {
   return values.map(value => `
     <option value="${escapeHtml(value)}" ${String(selected) === value ? "selected" : ""}>
@@ -60,10 +71,8 @@ function renderMembers() {
 
   list.innerHTML = members.length
     ? members.map(member => {
-        const isStaff = Boolean(member.is_staff);
-        const staffRank = staffRoles.includes(member.staff_rank)
-          ? member.staff_rank
-          : "Helper";
+        const staffRank = getStaffRank(member);
+        const isStaff = Boolean(member.is_staff) && staffRank !== "N/A";
 
         return `
           <article class="log-card" data-clan-staff-card="${escapeHtml(member.id)}">
@@ -72,7 +81,9 @@ function renderMembers() {
                 ${escapeHtml(member.username)}
                 ${isStaff ? '<span class="verified-badge" title="Verified staff">✓</span>' : ""}
               </span>
-              <span class="log-status">${isStaff ? `STAFF · ${escapeHtml(staffRank)}` : "MEMBER"}</span>
+              <span class="log-status">
+                ${isStaff ? `STAFF · ${escapeHtml(staffRank)}` : "MEMBER · N/A"}
+              </span>
             </div>
 
             <div class="log-grid">
@@ -80,14 +91,17 @@ function renderMembers() {
                 <span>Game</span>
                 <strong>${escapeHtml(member.game || "N/A")}</strong>
               </div>
+
               <div class="log-field">
                 <span>Clan Rank</span>
                 <strong>${escapeHtml(member.rank || "N/A")}</strong>
               </div>
+
               <div class="log-field">
                 <span>Ranking</span>
                 <strong>${escapeHtml(member.ranking || "N/A")}</strong>
               </div>
+
               <div class="log-field">
                 <span>Staff Rank</span>
                 <strong>${isStaff ? escapeHtml(staffRank) : "N/A"}</strong>
@@ -96,14 +110,18 @@ function renderMembers() {
 
             <div class="card-actions">
               <label class="checkbox-row">
-                <input type="checkbox" data-staff-toggle="${escapeHtml(member.id)}" ${isStaff ? "checked" : ""} />
+                <input
+                  type="checkbox"
+                  data-staff-toggle="${escapeHtml(member.id)}"
+                  ${isStaff ? "checked" : ""}
+                />
                 <span>Staff member?</span>
               </label>
 
               <label>
                 Staff Rank
                 <select data-staff-rank="${escapeHtml(member.id)}" ${isStaff ? "" : "disabled"}>
-                  ${optionList(staffRoles, staffRank)}
+                  ${optionList(staffRoles, isStaff ? staffRank : "N/A")}
                 </select>
               </label>
 
@@ -152,6 +170,7 @@ async function loadMembers() {
 
   members = data || [];
   renderMembers();
+
   window.dispatchEvent(new CustomEvent("blackVelvetStaffAccountsRefresh"));
 }
 
@@ -200,25 +219,40 @@ list?.addEventListener("change", async event => {
 
   const card = control.closest("[data-clan-staff-card]");
   const rankingInput = card?.querySelector("[data-member-ranking]");
+  const staffRankSelect = card?.querySelector("[data-staff-rank]");
+  const staffCheckbox = card?.querySelector("[data-staff-toggle]");
   const changes = {};
 
   if (checkbox) {
     changes.is_staff = checkbox.checked;
     changes.staff_rank = checkbox.checked
-      ? (staffRoles.includes(member.staff_rank) ? member.staff_rank : "Helper")
+      ? (getStaffRank(member) === "N/A" ? "Helper" : getStaffRank(member))
       : "N/A";
+
+    if (staffRankSelect) {
+      staffRankSelect.disabled = !checkbox.checked;
+      staffRankSelect.value = changes.staff_rank;
+    }
   } else if (staffSelect) {
-    changes.is_staff = true;
+    changes.is_staff = staffSelect.value !== "N/A";
     changes.staff_rank = staffSelect.value;
+
+    if (staffCheckbox) staffCheckbox.checked = changes.is_staff;
+    staffSelect.disabled = !changes.is_staff;
   } else if (clanSelect) {
     changes.rank = clanSelect.value;
   } else if (gameSelect) {
     changes.game = gameSelect.value;
   }
 
-  if (rankingInput) changes.ranking = rankingInput.value.trim() || "N/A";
+  if (rankingInput && !["ranking", "rank", "game"].some(key => key in changes)) {
+    changes.ranking = rankingInput.value.trim() || "N/A";
+  }
 
-  card?.querySelectorAll("input, select").forEach(item => item.disabled = true);
+  card?.querySelectorAll("input, select").forEach(item => {
+    if (item !== rankingInput) item.disabled = true;
+  });
+
   setMessage(`Saving ${member.username}...`);
 
   try {
@@ -250,12 +284,6 @@ list?.addEventListener("blur", event => {
 
 document.querySelector('[data-panel="clanMembers"]')
   ?.addEventListener("click", loadMembers);
-
-window.addEventListener("blackVelvetStaffAccountsRefresh", () => {
-  if (document.getElementById("staffAccounts")?.classList.contains("active-panel")) {
-    window.dispatchEvent(new CustomEvent("blackVelvetStaffDirectoryRefresh"));
-  }
-});
 
 await loadMembers();
 
