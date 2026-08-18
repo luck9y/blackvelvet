@@ -30,6 +30,7 @@
     .button { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 13px 18px; border: 1px solid var(--line); border-radius: 6px; color: var(--text); background: rgba(15, 20, 25, .88); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-decoration: none; }
     .button:hover { transform: translateY(-2px); border-color: var(--silver); box-shadow: 0 0 24px rgba(220, 230, 236, .28); }
     .button.primary { color: #06080a; background: var(--silver); }
+    .terminal-stack { display: grid; gap: 18px; min-width: 0; }
     .terminal { position: relative; overflow: hidden; padding: 26px; border: 1px solid var(--line); border-radius: 14px; background: rgba(5, 8, 11, .82); box-shadow: 0 20px 65px #000, inset 0 0 35px rgba(220, 230, 236, .04); }
     .terminal::before { position: absolute; top: 0; left: 0; width: 100%; height: 2px; content: ""; background: linear-gradient(90deg, transparent, var(--silver), transparent); box-shadow: 0 0 16px var(--silver); }
     .terminal-head { display: flex; gap: 6px; margin-bottom: 25px; }
@@ -37,6 +38,135 @@
     .terminal p { margin: 12px 0; color: #8d9aa2; font-size: 11px; letter-spacing: 1px; line-height: 1.65; }
     .terminal strong { color: var(--silver); }
     .terminal .cursor { animation: blink .8s steps(1) infinite; }
+
+    .live-announcements {
+      position: relative;
+      overflow: hidden;
+      padding: 23px;
+      border: 1px solid rgba(220, 230, 236, .34);
+      border-radius: 14px;
+      background: rgba(5, 8, 11, .92);
+      box-shadow:
+        0 0 28px rgba(220, 230, 236, .12),
+        inset 0 0 32px rgba(220, 230, 236, .035);
+    }
+
+    .live-announcements::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      content: "";
+      background: linear-gradient(
+        90deg,
+        transparent,
+        #f1f6f8,
+        transparent
+      );
+      box-shadow: 0 0 18px var(--silver);
+    }
+
+    .live-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 17px;
+    }
+
+    .live-heading h2 {
+      margin: 0;
+      color: #eef3f5;
+      font: 700 13px Orbitron, Arial, sans-serif;
+      letter-spacing: 2px;
+    }
+
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #aeb9bf;
+      font-size: 8px;
+      letter-spacing: 1.5px;
+    }
+
+    .live-indicator::before {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #dce6eb;
+      box-shadow: 0 0 10px #ffffff;
+      content: "";
+      animation: livePulse 1.8s ease-in-out infinite;
+    }
+
+    .live-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .live-card {
+      min-width: 0;
+      padding: 13px;
+      border: 1px solid rgba(220, 230, 236, .14);
+      border-radius: 8px;
+      background: rgba(16, 21, 26, .74);
+    }
+
+    .live-card h3 {
+      margin: 0 0 6px;
+      color: #edf1f3;
+      font-family: Cinzel, Georgia, serif;
+      font-size: 15px;
+      letter-spacing: 1px;
+      overflow-wrap: anywhere;
+    }
+
+    .live-card-message {
+      display: -webkit-box;
+      margin: 0;
+      overflow: hidden;
+      color: #aab4ba;
+      font: 12px/1.55 Arial, sans-serif;
+      overflow-wrap: anywhere;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    .live-card-meta {
+      margin: 8px 0 0;
+      color: #707c84;
+      font: 8px/1.5 Orbitron, Arial, sans-serif;
+      letter-spacing: .8px;
+    }
+
+    .live-status {
+      margin: 0;
+      padding: 12px 0;
+      color: #8d99a1;
+      font: 11px/1.6 Arial, sans-serif;
+      text-align: center;
+    }
+
+    .live-status.error {
+      color: #e7a4a4;
+    }
+
+    .live-footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 15px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(220, 230, 236, .12);
+    }
+
+    .see-more {
+      min-height: 34px;
+      padding: 9px 13px;
+      font-size: 9px;
+    }
+
     .section { margin-top: 45px; scroll-margin-top: 20px; }
     .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 25px; margin-bottom: 20px; }
     h2 { margin: 0; color: #edf1f3; font-size: clamp(27px, 4vw, 43px); letter-spacing: 2px; }
@@ -54,20 +184,47 @@
     .rules-banner h2 { font-size: 30px; }
     .rules-banner p { margin: 10px 0 0; color: #aeb8be; font: 14px/1.6 Arial, sans-serif; }
     footer { margin-top: 70px; padding-top: 20px; border-top: 1px solid var(--line); color: #77838b; font-size: 10px; letter-spacing: 2px; text-align: center; }
-    @keyframes blink { 50% { opacity: 0; } }
-    @media (max-width: 850px) { .hero { grid-template-columns: 1fr; padding: 65px 0; } .grid, .roster { grid-template-columns: 1fr; } .section-heading, .rules-banner { align-items: flex-start; flex-direction: column; } .section-note { text-align: left; } }
-    @media (max-width: 600px) { .shell { width: min(92%, 1180px); } .nav { align-items: flex-start; flex-direction: column; } .nav-links { justify-content: flex-start; } h1 { letter-spacing: 2px; } }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    @keyframes livePulse {
+      50% {
+        opacity: .45;
+        transform: scale(.75);
+      }
+    }
+
+    @media (max-width: 850px) {
+      .hero { grid-template-columns: 1fr; padding: 65px 0; }
+      .grid, .roster { grid-template-columns: 1fr; }
+      .section-heading, .rules-banner { align-items: flex-start; flex-direction: column; }
+      .section-note { text-align: left; }
+    }
+
+    @media (max-width: 600px) {
+      .shell { width: min(92%, 1180px); }
+      .nav { align-items: flex-start; flex-direction: column; }
+      .nav-links { justify-content: flex-start; }
+      h1 { letter-spacing: 2px; }
+    }
   </style>
 </head>
 <body>
   <main class="shell">
     <nav class="nav">
-      <a class="brand" href="home.html" aria-label="Black Velvet home"><img class="brand-flower" src="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/servericon.png" alt="Black Velvet Clan icon">BLACK VELVET</a>
+      <a class="brand" href="home.html" aria-label="Black Velvet home">
+        <img class="brand-flower" src="https://ptgzhljvzyceawwohmym.supabase.co/storage/v1/object/public/black-velvet-media/servericon.png" alt="Black Velvet Clan icon">
+        BLACK VELVET
+      </a>
+
       <div class="nav-links">
         <a href="#about">ABOUT</a>
         <a href="Game.html">GAMES</a>
         <a href="rankings.html">RANKINGS</a>
         <a href="clips.html">CLIPS</a>
+        <a id="announcementsLink" href="announcements.html" hidden>ANNOUNCEMENTS</a>
         <a id="profileLink" class="auth-link" href="member-login.html">LOG IN</a>
         <a class="signupLink auth-link" href="clan-signup.html">SIGN UP</a>
         <a href="rules.html">RULES</a>
@@ -81,6 +238,7 @@
         <p class="eyebrow">CLAN NETWORK // ESTABLISHED IN THE ABYSS</p>
         <h1>BLACK<br><span>VELVET</span></h1>
         <p class="hero-copy">A disciplined clan built from legacy, loyalty, and players who refuse to disappear. Enter the network, meet the people behind it, and become part of what comes next.</p>
+
         <div class="actions">
           <a class="button primary signupLink auth-link" href="clan-signup.html">SIGN UP</a>
           <a id="loginAction" class="button auth-link" href="member-login.html">LOG IN</a>
@@ -90,38 +248,116 @@
         </div>
       </div>
 
-      <aside class="terminal" aria-label="Member network profile">
-        <div class="terminal-head"><span></span><span></span><span></span></div>
-        <p><strong>BV://MEMBER_PROFILE</strong></p>
-        <p>CLAN RANK............ <strong id="profileClanRank">N/A</strong></p>
-        <p>USERID............... <strong id="profileUserId">LOADING</strong></p>
-        <p>RANKING.............. <strong id="profileRanking">N/A</strong></p>
-        <p>ONLINE............... <strong id="profileOnline">FALSE</strong></p>
-        <p>MESSAGE: <strong id="profileMessage">GUEST ACCESS DETECTED</strong><span class="cursor">_</span></p>
-      </aside>
+      <div class="terminal-stack">
+        <aside class="terminal" aria-label="Member network profile">
+          <div class="terminal-head">
+            <span></span><span></span><span></span>
+          </div>
+
+          <p><strong>BV://MEMBER_PROFILE</strong></p>
+          <p>CLAN RANK............ <strong id="profileClanRank">N/A</strong></p>
+          <p>USERID............... <strong id="profileUserId">LOADING</strong></p>
+          <p>RANKING.............. <strong id="profileRanking">N/A</strong></p>
+          <p>ONLINE............... <strong id="profileOnline">FALSE</strong></p>
+          <p>MESSAGE: <strong id="profileMessage">GUEST ACCESS DETECTED</strong><span class="cursor">_</span></p>
+        </aside>
+
+        <aside
+          id="liveAnnouncements"
+          class="live-announcements"
+          aria-label="Live member announcements"
+          hidden
+        >
+          <div class="live-heading">
+            <h2>BV://LIVE ANNOUNCEMENTS</h2>
+            <span class="live-indicator">LIVE</span>
+          </div>
+
+          <div id="liveAnnouncementList" class="live-list"></div>
+
+          <p
+            id="liveAnnouncementStatus"
+            class="live-status"
+            role="status"
+            aria-live="polite"
+          >
+            Loading secure feed...
+          </p>
+
+          <div class="live-footer">
+            <a class="button see-more" href="announcements.html">
+              SEE MORE
+            </a>
+          </div>
+        </aside>
+      </div>
     </section>
 
     <section id="about" class="section">
       <div class="section-heading">
-        <div><p class="eyebrow">01 // THE FOUNDATION</p><h2>Built for the long run.</h2></div>
+        <div>
+          <p class="eyebrow">01 // THE FOUNDATION</p>
+          <h2>Built for the long run.</h2>
+        </div>
+
         <p class="section-note">Black Velvet is a focused community where respect, activity, and improvement matter.</p>
       </div>
+
       <div class="grid">
-        <article class="card"><span class="card-number">[ 01 ]</span><h3>Legacy</h3><p>Founded by people who understand that a clan is more than a name. Every member contributes to its history.</p></article>
-        <article class="card"><span class="card-number">[ 02 ]</span><h3>Discipline</h3><p>We protect the community through clear expectations, reliable staff, and respectful competition.</p></article>
-        <article class="card"><span class="card-number">[ 03 ]</span><h3>Growth</h3><p>There is room for members who are ready to learn, improve, and prove themselves.</p></article>
+        <article class="card">
+          <span class="card-number">[ 01 ]</span>
+          <h3>Legacy</h3>
+          <p>Founded by people who understand that a clan is more than a name. Every member contributes to its history.</p>
+        </article>
+
+        <article class="card">
+          <span class="card-number">[ 02 ]</span>
+          <h3>Discipline</h3>
+          <p>We protect the community through clear expectations, reliable staff, and respectful competition.</p>
+        </article>
+
+        <article class="card">
+          <span class="card-number">[ 03 ]</span>
+          <h3>Growth</h3>
+          <p>There is room for members who are ready to learn, improve, and prove themselves.</p>
+        </article>
       </div>
     </section>
 
     <section id="roster" class="section">
       <div class="section-heading">
-        <div><p class="eyebrow">02 // CLAN DIRECTORY</p><h2>Leadership roster.</h2></div>
+        <div>
+          <p class="eyebrow">02 // CLAN DIRECTORY</p>
+          <h2>Leadership roster.</h2>
+        </div>
+
         <p class="section-note">The people responsible for maintaining the Black Velvet standard.</p>
       </div>
+
       <div class="roster">
-        <article class="member"><div class="member-mark">L</div><div><h3>Imtherealluckyy</h3><p>FOUNDER · OWNER</p></div></article>
-        <article class="member"><div class="member-mark">S</div><div><h3>Suoaz</h3><p>FOUNDER · OWNER</p></div></article>
-        <article class="member"><div class="member-mark">G</div><div><h3>Gears</h3><p>MANAGEMENT</p></div></article>
+        <article class="member">
+          <div class="member-mark">L</div>
+          <div>
+            <h3>Imtherealluckyy</h3>
+            <p>FOUNDER · OWNER</p>
+          </div>
+        </article>
+
+        <article class="member">
+          <div class="member-mark">S</div>
+          <div>
+            <h3>Suoaz</h3>
+            <p>FOUNDER · OWNER</p>
+          </div>
+        </article>
+
+        <article class="member">
+          <div class="member-mark">G</div>
+          <div>
+            <h3>Gears</h3>
+            <p>MANAGEMENT</p>
+          </div>
+        </article>
       </div>
     </section>
 
@@ -132,6 +368,7 @@
           <h2>Know the rules before you enter.</h2>
           <p>Read the community rules, then view the separate procedures that apply to Black Velvet staff.</p>
         </div>
+
         <div class="actions">
           <a class="button primary" href="rules.html">RULES</a>
           <a class="button" href="staffrules.html">STAFF RULES</a>
@@ -143,14 +380,35 @@
   </main>
 
   <script src="theme.js"></script>
+
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+    const SUPABASE_URL =
+      "https://ptgzhljvzyceawwohmym.supabase.co";
+    const SUPABASE_KEY =
+      "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk";
+    const AUTH_STORAGE_KEY = "black-velvet-supabase-auth";
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: {
+        storage: window.localStorage,
+        storageKey: AUTH_STORAGE_KEY,
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
+
     let profile = null;
+    let liveChannel = null;
+    let liveRefreshTimer = null;
 
     try {
       const savedProfile = localStorage.getItem("blackVelvetProfile");
-      const parsedProfile = savedProfile ? JSON.parse(savedProfile) : null;
+      const parsedProfile = savedProfile
+        ? JSON.parse(savedProfile)
+        : null;
 
       if (parsedProfile && typeof parsedProfile === "object") {
         profile = parsedProfile;
@@ -162,62 +420,91 @@
     const profileLink = document.getElementById("profileLink");
     const loginAction = document.getElementById("loginAction");
     const logoutButton = document.getElementById("logoutButton");
-    const staffPortalButton = document.getElementById("staffPortalButton");
+    const staffPortalButton =
+      document.getElementById("staffPortalButton");
+    const announcementsLink =
+      document.getElementById("announcementsLink");
+    const liveAnnouncements =
+      document.getElementById("liveAnnouncements");
+    const liveAnnouncementList =
+      document.getElementById("liveAnnouncementList");
+    const liveAnnouncementStatus =
+      document.getElementById("liveAnnouncementStatus");
     const authLinks = document.querySelectorAll(".auth-link");
 
     function createDeviceHex() {
       const bytes = new Uint8Array(2);
       crypto.getRandomValues(bytes);
-      return `D${Array.from(bytes, value => value.toString(16).padStart(2, "0")).join("").toUpperCase()}`;
+
+      return `D${Array.from(
+        bytes,
+        value => value.toString(16).padStart(2, "0")
+      ).join("").toUpperCase()}`;
     }
 
     let deviceHex = localStorage.getItem("blackVelvetDeviceHex");
+
     if (!deviceHex) {
       deviceHex = createDeviceHex();
       localStorage.setItem("blackVelvetDeviceHex", deviceHex);
     }
 
-    document.getElementById("profileUserId").textContent = deviceHex;
+    document.getElementById("profileUserId").textContent =
+      deviceHex;
 
     const staffRoles = [
-      "owner", "admin", "administrator", "manager", "management",
-      "president", "moderator", "mod", "helper", "staff"
+      "owner",
+      "admin",
+      "administrator",
+      "manager",
+      "management",
+      "president",
+      "moderator",
+      "mod",
+      "helper",
+      "staff"
     ];
 
     const ownerAccounts = [
-      "imtherealluckyy", "imjustluckyy", "suoaz", "managergear", "gears"
+      "imtherealluckyy",
+      "imjustluckyy",
+      "suoaz",
+      "managergear",
+      "gears"
     ];
 
     function normalize(value) {
       return String(value || "").trim().toLowerCase();
     }
 
-    function isStaff(profile) {
-      const username = normalize(profile?.username);
+    function isStaff(profileData) {
+      const username = normalize(profileData?.username);
       const role = normalize(
-        profile?.role ||
-        profile?.staffRank ||
-        profile?.staff_role ||
-        profile?.staffRole
+        profileData?.role ||
+        profileData?.staffRank ||
+        profileData?.staff_role ||
+        profileData?.staffRole
       );
       const accountType = normalize(
-        profile?.type ||
-        profile?.accountType ||
-        profile?.account_type
+        profileData?.type ||
+        profileData?.accountType ||
+        profileData?.account_type
       );
 
       return Boolean(
         ownerAccounts.includes(username) ||
         staffRoles.includes(role) ||
         staffRoles.includes(accountType) ||
-        profile?.isStaff === true ||
-        profile?.is_staff === true ||
-        profile?.staff === true
+        profileData?.isStaff === true ||
+        profileData?.is_staff === true ||
+        profileData?.staff === true
       );
     }
 
     function updateAuthenticationLinks() {
-      const loggedIn = Boolean(profile && typeof profile === "object");
+      const loggedIn = Boolean(
+        profile && typeof profile === "object"
+      );
       const staff = loggedIn && isStaff(profile);
 
       authLinks.forEach(link => {
@@ -230,6 +517,134 @@
       staffPortalButton.hidden = !staff;
     }
 
+    function formatAnnouncementDate(value) {
+      const date = new Date(value);
+
+      if (!value || Number.isNaN(date.getTime())) {
+        return "RECENTLY";
+      }
+
+      return date.toLocaleString([], {
+        dateStyle: "medium",
+        timeStyle: "short"
+      }).toUpperCase();
+    }
+
+    function createLiveCard(announcement) {
+      const card = document.createElement("article");
+      card.className = "live-card";
+
+      const title = document.createElement("h3");
+      title.textContent =
+        announcement.title || "ANNOUNCEMENT";
+
+      const message = document.createElement("p");
+      message.className = "live-card-message";
+      message.textContent = announcement.message || "";
+
+      const meta = document.createElement("p");
+      meta.className = "live-card-meta";
+      meta.textContent =
+        `BY ${String(
+          announcement.discord_username || "BLACK VELVET"
+        ).toUpperCase()} // ` +
+        formatAnnouncementDate(announcement.created_at);
+
+      card.append(title, message, meta);
+      return card;
+    }
+
+    function renderLiveAnnouncements(announcements) {
+      liveAnnouncementList.replaceChildren();
+
+      if (!announcements.length) {
+        liveAnnouncementStatus.className = "live-status";
+        liveAnnouncementStatus.textContent =
+          "No announcements have been posted yet.";
+        liveAnnouncementStatus.hidden = false;
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+
+      for (const announcement of announcements) {
+        fragment.appendChild(createLiveCard(announcement));
+      }
+
+      liveAnnouncementList.appendChild(fragment);
+      liveAnnouncementStatus.hidden = true;
+    }
+
+    async function loadLiveAnnouncements() {
+      const { data, error } = await supabase
+        .from("announcements")
+        .select(
+          "id, title, message, discord_username, created_at"
+        )
+        .order("created_at", { ascending: false })
+        .limit(3);
+
+      if (error) {
+        console.error(
+          "Live announcements failed:",
+          error.message
+        );
+
+        liveAnnouncementStatus.hidden = false;
+        liveAnnouncementStatus.className =
+          "live-status error";
+        liveAnnouncementStatus.textContent =
+          "The secure announcement feed is unavailable.";
+        return;
+      }
+
+      renderLiveAnnouncements(data || []);
+    }
+
+    function startLiveAnnouncements() {
+      if (liveChannel) {
+        return;
+      }
+
+      liveChannel = supabase
+        .channel("home-live-announcements")
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "announcements"
+          },
+          () => {
+            loadLiveAnnouncements();
+          }
+        )
+        .subscribe();
+
+      liveRefreshTimer = window.setInterval(() => {
+        loadLiveAnnouncements();
+      }, 30_000);
+    }
+
+    async function verifyMemberAndLoadAnnouncements() {
+      const {
+        data: { user },
+        error
+      } = await supabase.auth.getUser();
+
+      if (error || !user) {
+        announcementsLink.hidden = true;
+        liveAnnouncements.hidden = true;
+        return;
+      }
+
+      announcementsLink.hidden = false;
+      liveAnnouncements.hidden = false;
+
+      await loadLiveAnnouncements();
+      startLiveAnnouncements();
+    }
+
     updateAuthenticationLinks();
 
     if (profile) {
@@ -237,33 +652,52 @@
 
       document.getElementById("profileMessage").textContent =
         `WELCOME, ${(profile.username || "MEMBER").toUpperCase()}`;
-      document.getElementById("profileOnline").textContent = "TRUE";
+      document.getElementById("profileOnline").textContent =
+        "TRUE";
 
       if (!staff) {
-        const supabase = createClient(
-          "https://ptgzhljvzyceawwohmym.supabase.co",
-          "sb_publishable_H-6UMCfs6yyEG3JcBhETSg_sjr0aoVk"
-        );
-
         const { data: member } = await supabase
           .from("clan_members")
           .select("rank, ranking_number")
           .ilike("username", profile.username || "")
           .maybeSingle();
 
-        document.getElementById("profileClanRank").textContent =
+        document.getElementById(
+          "profileClanRank"
+        ).textContent =
           member?.rank || profile.role || "N/A";
-        document.getElementById("profileRanking").textContent =
-          member?.ranking_number ? `#${member.ranking_number}` : "N/A";
+
+        document.getElementById(
+          "profileRanking"
+        ).textContent =
+          member?.ranking_number
+            ? `#${member.ranking_number}`
+            : "N/A";
       } else {
-        document.getElementById("profileClanRank").textContent =
-          profile.role || "STAFF";
-        document.getElementById("profileMessage").textContent =
+        document.getElementById(
+          "profileClanRank"
+        ).textContent = profile.role || "STAFF";
+
+        document.getElementById(
+          "profileMessage"
+        ).textContent =
           `STAFF ACCESS: ${(profile.username || "STAFF").toUpperCase()}`;
       }
     }
 
-    logoutButton.addEventListener("click", () => {
+    logoutButton.addEventListener("click", async () => {
+      logoutButton.disabled = true;
+
+      if (liveRefreshTimer) {
+        clearInterval(liveRefreshTimer);
+      }
+
+      if (liveChannel) {
+        await supabase.removeChannel(liveChannel);
+      }
+
+      await supabase.auth.signOut();
+
       localStorage.removeItem("blackVelvetProfile");
       localStorage.removeItem("blackVelvetBanned");
       window.location.href = "home.html";
@@ -274,6 +708,8 @@
         window.location.reload();
       }
     });
+
+    verifyMemberAndLoadAnnouncements();
   </script>
 </body>
 </html>
